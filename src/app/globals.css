@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-/* 同时支持类切换与原生主题开关，静态导出页面无需等待 JavaScript 水合。 */
-@custom-variant dark (&:where(.dark, .dark *), body:has(#theme-toggle:checked) &);
+/* 仅依赖 <html> 上的 `dark` 类。所有状态由统一的脚本负责设置，避免叠加策略。 */
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #fafafa;
@@ -20,6 +20,16 @@ html { scroll-behavior: smooth; }
 body { background: var(--background); color: var(--foreground); font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif; }
 ::selection { background: rgba(37, 99, 235, 0.2); }
 button, a { cursor: pointer; }
+
+/* 始终给出可见焦点环，颜色取自主色蓝，保证键盘用户可达。 */
+:where(button, a, [role="button"], [role="switch"], summary):focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+:where(button, a, [role="button"], [role="switch"], summary):focus:not(:focus-visible) {
+  outline: none;
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
