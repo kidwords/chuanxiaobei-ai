@@ -6,19 +6,28 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "verify": "npm run lint && npm run typecheck"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
     "lucide-react": "^1.24.0",
     "next": "16.2.11",
+    "next-mdx-remote": "^6.0.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "rss": "^1.2.2"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.6",
+    "@eslint/js": "^9.39.5",
+    "@next/eslint-plugin-next": "16.2.11",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/rss": "^0.0.32",
     "eslint": "^9",
     "eslint-config-next": "16.2.11",
     "playwright": "^1.61.1",
@@ -28,5 +37,8 @@
   "overrides": {
     "postcss": "8.5.22",
     "sharp": "0.35.3"
+  },
+  "engines": {
+    "node": ">=20.18.0"
   }
 }

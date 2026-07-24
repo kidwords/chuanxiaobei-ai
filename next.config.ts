@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  typescript: {
+    ignoreBuildErrors: false,
+  },
   turbopack: {
     root: path.resolve(__dirname),
   },
