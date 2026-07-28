@@ -3,6 +3,8 @@ import { ProjectGrid } from "./ProjectGrid";
 import type { ProjectMeta } from "../../../lib/projects";
 
 export function HomeHero({ projects }: { projects: ProjectMeta[] }) {
+  const { basePath } = siteConstant;
+
   return (
     <div className="site-shell">
       <div className="min-h-screen bg-[#fafafa] text-zinc-950 transition-colors duration-250 dark:bg-zinc-950 dark:text-zinc-50">
@@ -14,10 +16,10 @@ export function HomeHero({ projects }: { projects: ProjectMeta[] }) {
             <h1 className="mt-6 max-w-3xl text-4xl font-semibold leading-[1.2] tracking-[0.01em] sm:text-5xl lg:text-6xl">把 AI 的想法，做成真正能用的项目。</h1>
             <p className="mt-6 max-w-2xl text-base leading-[1.7] text-zinc-600 sm:text-lg dark:text-zinc-300">{siteConstant.authorBio}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a className="inline-flex h-11 items-center gap-2 rounded-[10px] bg-blue-600 px-5 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition-all duration-250 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md" href="/projects">
+              <a className="inline-flex h-11 items-center gap-2 rounded-[10px] bg-blue-600 px-5 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition-all duration-250 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md" href={`${basePath}/projects`}>
                 浏览项目
               </a>
-              <a className="inline-flex h-11 items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-5 text-sm font-medium text-zinc-800 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-white" href="/about">
+              <a className="inline-flex h-11 items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-5 text-sm font-medium text-zinc-800 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-white" href={`${basePath}/about`}>
                 了解我
               </a>
             </div>
