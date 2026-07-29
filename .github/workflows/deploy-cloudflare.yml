@@ -1,0 +1,48 @@
+name: 部署到 Cloudflare
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# 防止并发部署互相覆盖;不取消进行中的部署,避免线上服务被中途打断
+concurrency:
+  group: cloudflare-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: 构建并发布到 Cloudflare Workers
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 设置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      # Cloudflare 端面向根域名 dingbeichuan.com,不能带 BASE_PATH,
+      # 否则静态资产路径会落到 /chuanxiaobei-ai 下导致 404
+      - name: 构建静态站点
+        run: npm run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: ""
+
+      - name: 发布到 Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: ./
+          # 不传 command,默认执行 wrangler deploy
+          # wrangler.jsonc 已配置 assets.directory=./out,会一并上传
+          # routes.dingbeichuan.com 已声明 custom_domain:true,部署后自动绑定
