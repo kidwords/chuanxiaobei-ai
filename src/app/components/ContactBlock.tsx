@@ -4,7 +4,7 @@ import { Icon } from "./Icon";
 export function ContactBlock() {
   return (
     <section id="contact" className="relative isolate overflow-hidden border-t border-zinc-200 bg-zinc-100 px-4 py-12 text-zinc-950 dark:border-white/10 dark:bg-zinc-950 dark:text-white sm:px-6 sm:py-16">
-      <div className="ambient-orb ambient-orb-blue -right-28 -top-32 size-72 sm:size-96" aria-hidden="true" />
+      <div className="ambient-wash ambient-wash-contact" aria-hidden="true" />
       <div className="relative z-10 mx-auto flex max-w-6xl flex-col justify-between gap-8 lg:flex-row lg:items-end">
         <div>
           <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">联系</p>
