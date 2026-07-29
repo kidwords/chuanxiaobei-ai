@@ -21,6 +21,25 @@ body { background: var(--background); color: var(--foreground); font-family: var
 ::selection { background: rgba(37, 99, 235, 0.2); }
 button, a { cursor: pointer; }
 
+/* 页面氛围只使用主色蓝与中性色，背景缓慢漂移但不影响内容阅读。 */
+.ambient-orb {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(56px);
+  will-change: transform;
+  animation: ambient-drift 22s ease-in-out infinite alternate;
+}
+.ambient-orb-blue { background: rgba(37, 99, 235, 0.1); }
+.ambient-orb-neutral { background: rgba(24, 24, 27, 0.045); animation-delay: -9s; }
+.dark .ambient-orb-blue { background: rgba(96, 165, 250, 0.1); }
+.dark .ambient-orb-neutral { background: rgba(255, 255, 255, 0.035); }
+
+@keyframes ambient-drift {
+  from { transform: translate3d(-2%, -2%, 0) scale(1); }
+  to { transform: translate3d(4%, 3%, 0) scale(1.08); }
+}
+
 /* 始终给出可见焦点环，颜色取自主色蓝，保证键盘用户可达。 */
 :where(button, a, [role="button"], [role="switch"], summary):focus-visible {
   outline: 2px solid #2563eb;
@@ -33,4 +52,5 @@ button, a { cursor: pointer; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  .ambient-orb { animation: none; }
 }

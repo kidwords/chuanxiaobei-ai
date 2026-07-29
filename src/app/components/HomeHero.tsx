@@ -10,8 +10,10 @@ export function HomeHero({ projects }: { projects: ProjectMeta[] }) {
   return (
     <div className="site-shell">
       <div className="min-h-screen bg-[#fafafa] text-zinc-950 transition-colors duration-250 dark:bg-zinc-950 dark:text-zinc-50">
-        <section className="mx-auto grid max-w-6xl gap-12 px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-[1fr_320px] lg:items-end lg:pb-28 lg:pt-28">
-          <div>
+        <section className="relative isolate mx-auto grid max-w-6xl gap-12 overflow-hidden px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-[1fr_320px] lg:items-end lg:pb-28 lg:pt-28">
+          <div className="ambient-orb ambient-orb-blue -right-24 top-8 size-72 sm:size-96" aria-hidden="true" />
+          <div className="ambient-orb ambient-orb-neutral -bottom-36 left-1/4 size-72 sm:size-[28rem]" aria-hidden="true" />
+          <div className="relative z-10">
             <div className="inline-flex items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-600 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-zinc-300">
               独立开发 · AI 实践 · 产品设计
             </div>
@@ -28,7 +30,7 @@ export function HomeHero({ projects }: { projects: ProjectMeta[] }) {
               </a>
             </div>
           </div>
-          <aside className="border-l border-zinc-200 pl-6 dark:border-white/10" aria-label="已上线成果">
+          <aside className="relative z-10 border-l border-zinc-200 pl-6 dark:border-white/10" aria-label="已上线成果">
             <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">已上线成果</p>
             <dl className="mt-5 grid grid-cols-3 gap-3 text-zinc-950 dark:text-zinc-50">
               <div>
