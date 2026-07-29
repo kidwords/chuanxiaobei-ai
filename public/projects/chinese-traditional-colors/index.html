@@ -132,6 +132,7 @@ body {
 .solar-dot {
   width: 100%;
   aspect-ratio: 1 / 1;
+  padding: 0;
   border-radius: 3px;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -146,25 +147,26 @@ body {
 .solar-term-hero .st-next { opacity: 0.65; }
 
 /* Solar gallery cards */
-.solar-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
-@media (min-width: 1440px) { .solar-gallery-grid { grid-template-columns: repeat(8, 1fr); } }
+.solar-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(248px, 1fr)); gap: 16px; }
+@media (min-width: 1440px) { .solar-gallery-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .solar-gallery-card {
   border-radius: 14px;
   overflow: hidden;
   background: #fff;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  border: 1px solid rgba(24,24,27,0.08);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   cursor: pointer;
-  transition: transform 0.25s, box-shadow 0.25s;
+  transition: all 0.25s ease;
 }
-.solar-gallery-card:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+.solar-gallery-card:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 24px rgba(0,0,0,0.12); }
 .solar-card-top {
-  height: 56px;
+  height: 88px;
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 6px 10px;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 12px;
 }
 .solar-card-name {
   font-size: 0.82rem;
@@ -175,24 +177,57 @@ body {
   letter-spacing: 0.5px;
 }
 .solar-card-colors {
-  display: flex;
-  height: 32px;
+  display: grid;
+  gap: 4px;
+  padding: 8px;
+  background: rgba(250,250,250,0.92);
 }
-.solar-card-color {
-  flex: 1; cursor: pointer;
-  border-radius: 3px;
-  border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-  transition: all 0.25s;
+.palette-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 5px 6px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #27272a;
+  font: inherit;
+  line-height: 1.2;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.25s ease;
 }
-.solar-card-color:hover {
-  transform: scale(1.08);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
-  z-index: 1;
+.palette-row:hover,
+.palette-row:focus-visible {
+  transform: translateX(2px);
+  border-color: rgba(24,24,27,0.12);
+  background: rgba(255,255,255,0.9);
+  outline: none;
+}
+.palette-row-color {
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(24,24,27,0.1);
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.28);
+}
+.palette-row-name {
+  overflow: hidden;
+  color: #3f3f46;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.palette-row-hex {
+  color: #71717a;
+  font-family: 'SF Mono', 'Consolas', monospace;
+  font-size: 0.67rem;
 }
 .solar-card-mode {
-  position: absolute;
-  top: 5px; right: 5px;
+  position: static;
   background: rgba(255,255,255,0.2);
   border: 1px solid rgba(255,255,255,0.25);
   border-radius: 6px;
@@ -204,6 +239,18 @@ body {
   -webkit-backdrop-filter: blur(4px);
 }
 .solar-card-mode:hover { background: rgba(255,255,255,0.35); }
+.solar-card-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  opacity: 0.78;
+  transition: opacity 0.25s ease;
+}
+.solar-gallery-card:hover .solar-card-actions,
+.solar-gallery-card:focus-within .solar-card-actions { opacity: 1; }
 
 /* ============================== */
 /* VIEW 2: GALLERY (重构)          */
@@ -681,10 +728,12 @@ body {
   /* === 全部浏览卡片 === */
   .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
   .solar-gallery-card { border-radius: 12px; }
-  .solar-card-top { height: 60px; padding: 6px 8px; }
-  .solar-card-name { font-size: 0.7rem; }
-  .solar-card-colors { height: 32px; }
+  .solar-card-top { height: 76px; padding: 10px; }
+  .solar-card-name { font-size: 0.82rem; }
+  .solar-card-colors { padding: 8px; }
   .solar-card-mode { font-size: 0.6rem; padding: 2px 6px; }
+  .palette-row { grid-template-columns: 26px minmax(0, 1fr) auto; }
+  .palette-row-color { width: 26px; height: 26px; border-radius: 10px; }
 
   /* === 逐步览色：底部色卡横滑条 === */
   .imm-layout { flex-direction: column; }
@@ -743,6 +792,7 @@ body {
 
 @media (max-width: 480px) {
   .gallery-grid { grid-template-columns: 1fr; }
+  .solar-gallery-grid { grid-template-columns: 1fr; }
   .solar-grid { grid-template-columns: repeat(2, 1fr); }
   .imm-swatch { width: 64px !important; height: 48px !important; }
   .cover h1 { font-size: 1.7rem; }
@@ -1989,6 +2039,14 @@ document.addEventListener('touchstart', function(e) {
 // === SOLAR DATA ===
 var solarCardModes = new Array(24).fill('light');
 
+function paletteRowMarkup(color, action) {
+  return '<button type="button" class="palette-row" title="应用 ' + color.name + ' ' + color.hex + '" onclick="event.stopPropagation();' + action + '">' +
+    '<span class="palette-row-color" style="background:' + color.hex + '"></span>' +
+    '<span class="palette-row-name">' + color.name + '</span>' +
+    '<span class="palette-row-hex">' + color.hex + '</span>' +
+  '</button>';
+}
+
 // === Solar sections in gallery ===
 function renderSolarSectionsInGallery() {
   var container = document.getElementById('solarSectionsInGallery');
@@ -2014,12 +2072,14 @@ function renderSolarSectionsInGallery() {
       var gradient = 'linear-gradient(135deg,' + colors[1].hex + ',' + colors[2].hex + ')';
       var colorSq = '';
       for (var c = 0; c < colors.length; c++) {
-        colorSq += '<div class="solar-card-color" style="background:' + colors[c].hex + '" title="' + colors[c].name + ' ' + colors[c].hex + '" onclick="event.stopPropagation();document.body.style.background=\'' + colors[c].hex + '\'"></div>';
+        colorSq += paletteRowMarkup(colors[c], 'document.body.style.background=\'' + colors[c].hex + '\'');
       }
       html += '<div class="solar-gallery-card" onclick="document.body.style.background=\'' + gradient + '\';document.body.style.backgroundSize=\'cover\'">' +
         '<div class="solar-card-top" style="background:' + gradient + '">' +
-          '<button class="solar-card-mode" onclick="event.stopPropagation();toggleSolarCardMode(' + idx + ')">' + (mode === 'light' ? '深' : '浅') + '</button>' +
-          '<button class="solar-card-mode" style="top:auto;bottom:5px;" onclick="event.stopPropagation();copySolarCardPrompt(' + idx + ')">复制</button>' +
+          '<div class="solar-card-actions">' +
+            '<button class="solar-card-mode" type="button" onclick="event.stopPropagation();toggleSolarCardMode(' + idx + ')">' + (mode === 'light' ? '深' : '浅') + '</button>' +
+            '<button class="solar-card-mode" type="button" onclick="event.stopPropagation();copySolarCardPrompt(' + idx + ')">复制</button>' +
+          '</div>' +
           '<div class="solar-card-name">' + name + '</div>' +
         '</div>' +
         '<div class="solar-card-colors">' + colorSq + '</div>' +
@@ -2542,15 +2602,17 @@ function renderGallery() {
     var gradient = 'linear-gradient(135deg,' + colors[1].hex + ',' + colors[2].hex + ')';
     var colorSq = '';
     for (var c = 0; c < colors.length; c++) {
-      colorSq += '<div class="solar-card-color" style="background:' + colors[c].hex + '" title="' + colors[c].name + ' ' + colors[c].hex + '" onclick="event.stopPropagation();previewColor(\'' + colors[c].hex + '\')"></div>';
+      colorSq += paletteRowMarkup(colors[c], 'previewColor(\'' + colors[c].hex + '\')');
     }
     var card = document.createElement('div');
     card.className = 'solar-gallery-card';
     card.onclick = (function(idx, m) { return function() { previewScene(idx, m); }; })(i, mode);
     card.innerHTML =
       '<div class="solar-card-top" style="background:' + gradient + '">' +
-        '<button class="solar-card-mode" onclick="event.stopPropagation();toggleCardMode(' + i + ')">' + (mode === 'light' ? '深' : '浅') + '</button>' +
-        '<button class="solar-card-mode" style="top:auto;bottom:5px;" onclick="event.stopPropagation();copyCardPrompt(' + i + ')">复制</button>' +
+        '<div class="solar-card-actions">' +
+          '<button class="solar-card-mode" type="button" onclick="event.stopPropagation();toggleCardMode(' + i + ')">' + (mode === 'light' ? '深' : '浅') + '</button>' +
+          '<button class="solar-card-mode" type="button" onclick="event.stopPropagation();copyCardPrompt(' + i + ')">复制</button>' +
+        '</div>' +
         '<div class="solar-card-name">' + name + '</div>' +
       '</div>' +
       '<div class="solar-card-colors">' + colorSq + '</div>';
@@ -2668,7 +2730,7 @@ function renderSolarHome() {
       var labelColor = labelLuma > 160 ? '#333' : '#fff';
       html += '<div class="solar-group" style="background:' + blendBg + ';border:none;cursor:pointer;" onclick="var hb=document.getElementById(\'homeBg\');hb.style.background=\'' + blendBg + '\';hb.style.backgroundSize=\'cover\';document.body.style.background=\'' + blendBg + '\';document.body.style.backgroundSize=\'cover\';updateHomeTextColors(\'' + colors[0].hex + '\')"><div class="solar-label" style="color:' + labelColor + '">' + name + '</div><div class="solar-dots">';
       for (var c = 0; c < colors.length; c++) {
-        html += '<div class="solar-dot" style="background:' + colors[c].hex + '" title="' + colors[c].name + ' ' + colors[c].hex + '" onclick="event.stopPropagation();var hb=document.getElementById(\'homeBg\');hb.style.background=\'' + colors[c].hex + '\';hb.style.backgroundSize=\'\';document.body.style.background=\'' + colors[c].hex + '\';document.body.style.backgroundSize=\'\';updateHomeTextColors(\'' + colors[c].hex + '\')"></div>';
+        html += '<button type="button" class="solar-dot" style="background:' + colors[c].hex + '" title="应用 ' + colors[c].name + ' ' + colors[c].hex + '" aria-label="应用 ' + colors[c].name + ' ' + colors[c].hex + '" onclick="event.stopPropagation();var hb=document.getElementById(\'homeBg\');hb.style.background=\'' + colors[c].hex + '\';hb.style.backgroundSize=\'\';document.body.style.background=\'' + colors[c].hex + '\';document.body.style.backgroundSize=\'\';updateHomeTextColors(\'' + colors[c].hex + '\')"></button>';
       }
       html += '</div></div>';
     }
