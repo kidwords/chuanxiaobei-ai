@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { GitFork, ExternalLink } from "lucide-react";
 
-import { artworkSrc, projectHref } from "../../../lib/projects.data";
+import { artworkSrc, projectDemoHref, projectHref } from "../../../lib/projects.data";
 import type { ProjectMeta } from "../../../lib/projects";
 import { Icon } from "./Icon";
 
@@ -41,7 +41,7 @@ export function ProjectGrid({ projects }: { projects: ProjectMeta[] }) {
                 <Icon size={16}>{GitFork}</Icon> 查看源代码 <Icon size={14}>{ExternalLink}</Icon>
               </a>
               {project.demo ? (
-                <a className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-800 transition-all duration-250 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-white" href={project.demo} target="_blank" rel="noreferrer">
+                <a className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-800 transition-all duration-250 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-white" href={projectDemoHref(project.demo)} target="_blank" rel="noreferrer">
                   在线浏览
                 </a>
               ) : null}

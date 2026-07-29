@@ -13,6 +13,7 @@ export interface ProjectFrontmatter {
   updatedAt: string;
   github: string;
   demo?: string;
+  embeddedDemo?: boolean;
   artwork: string;
 }
 

@@ -82,3 +82,8 @@ export function artworkSrc(artwork: string): string {
 export function projectHref(slug: string): string {
   return `${basePath}/projects/${slug}`;
 }
+
+export function projectDemoHref(demo: string): string {
+  if (!demo.startsWith("/")) return demo;
+  return demo.startsWith(basePath) ? demo : `${basePath}${demo}`;
+}
