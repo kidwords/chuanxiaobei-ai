@@ -37,6 +37,20 @@ jobs:
         env:
           NEXT_PUBLIC_BASE_PATH: ""
 
+      - name: 检查 Cloudflare secrets 是否存在
+        # 临时诊断步骤:打印是否存在,长度多少,不打印值本身(避免泄露)
+        # 诊断完成后会移除
+        run: |
+          echo "CF_API_TOKEN length: ${#CF_API_TOKEN}"
+          echo "CF_ACCOUNT_ID length: ${#CF_ACCOUNT_ID}"
+          echo "CLOUDFLARE_API_TOKEN length: ${#CLOUDFLARE_API_TOKEN}"
+          echo "CLOUDFLARE_ACCOUNT_ID length: ${#CLOUDFLARE_ACCOUNT_ID}"
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+
       - name: 发布到 Cloudflare Workers
         uses: cloudflare/wrangler-action@v4
         with:
