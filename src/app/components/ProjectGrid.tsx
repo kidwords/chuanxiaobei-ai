@@ -37,14 +37,14 @@ export function ProjectGrid({ projects }: { projects: ProjectMeta[] }) {
               ))}
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a className="inline-flex h-10 items-center gap-2 rounded-[10px] bg-zinc-950 px-4 text-sm font-medium text-white transition-all duration-250 hover:-translate-y-0.5 hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200" href={project.github} target="_blank" rel="noreferrer">
-                <Icon size={16}>{GitFork}</Icon> 查看源代码 <Icon size={14}>{ExternalLink}</Icon>
-              </a>
               {project.demo ? (
-                <a className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-800 transition-all duration-250 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-white" href={projectDemoHref(project.demo)} target="_blank" rel="noreferrer">
-                  在线浏览
+                <a className="inline-flex h-10 items-center gap-2 rounded-[10px] bg-blue-600 px-4 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition-all duration-250 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md" href={projectDemoHref(project.demo)}>
+                  立即体验 <Icon size={14}>{ExternalLink}</Icon>
                 </a>
               ) : null}
+              <a className="inline-flex h-10 items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-4 text-sm font-medium text-zinc-800 transition-all duration-250 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-white" href={project.github} target="_blank" rel="noreferrer">
+                <Icon size={16}>{GitFork}</Icon> 查看源代码 <Icon size={14}>{ExternalLink}</Icon>
+              </a>
             </div>
           </div>
         </article>

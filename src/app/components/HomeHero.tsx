@@ -1,9 +1,11 @@
 import { siteConstant } from "../../../lib/seo";
+import { projectDemoHref } from "../../../lib/projects.data";
 import { ProjectGrid } from "./ProjectGrid";
 import type { ProjectMeta } from "../../../lib/projects";
 
 export function HomeHero({ projects }: { projects: ProjectMeta[] }) {
   const { basePath } = siteConstant;
+  const featuredProject = projects.find((project) => project.demo);
 
   return (
     <div className="site-shell">
@@ -16,22 +18,32 @@ export function HomeHero({ projects }: { projects: ProjectMeta[] }) {
             <h1 className="mt-6 max-w-3xl text-4xl font-semibold leading-[1.2] tracking-[0.01em] sm:text-5xl lg:text-6xl">把 AI 的想法，做成真正能用的项目。</h1>
             <p className="mt-6 max-w-2xl text-base leading-[1.7] text-zinc-600 sm:text-lg dark:text-zinc-300">{siteConstant.authorBio}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a className="inline-flex h-11 items-center gap-2 rounded-[10px] bg-blue-600 px-5 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition-all duration-250 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md" href={`${basePath}/projects`}>
+              {featuredProject?.demo ? (
+                <a className="inline-flex h-11 items-center gap-2 rounded-[10px] bg-blue-600 px-5 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition-all duration-250 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md" href={projectDemoHref(featuredProject.demo)}>
+                  立即体验：中国传统色
+                </a>
+              ) : null}
+              <a className="inline-flex h-11 items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-5 text-sm font-medium text-zinc-800 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-white" href={`${basePath}/projects`}>
                 浏览项目
-              </a>
-              <a className="inline-flex h-11 items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-5 text-sm font-medium text-zinc-800 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-white" href={`${basePath}/about`}>
-                了解我
               </a>
             </div>
           </div>
-          <aside className="border-l border-zinc-200 pl-6 dark:border-white/10">
-            <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">持续构建</p>
-            <p className="mt-3 text-4xl font-semibold">
-              {String(projects.length).padStart(2, "0")}
-            </p>
-            <p className="mt-2 text-sm leading-[1.6] text-zinc-600 dark:text-zinc-300">
-              个原创公开项目，持续更新中。
-            </p>
+          <aside className="border-l border-zinc-200 pl-6 dark:border-white/10" aria-label="已上线成果">
+            <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">已上线成果</p>
+            <dl className="mt-5 grid grid-cols-3 gap-3 text-zinc-950 dark:text-zinc-50">
+              <div>
+                <dt className="text-2xl font-semibold">{String(projects.length).padStart(2, "0")}</dt>
+                <dd className="mt-1 text-xs leading-[1.5] text-zinc-600 dark:text-zinc-300">可用工具</dd>
+              </div>
+              <div>
+                <dt className="text-2xl font-semibold">384</dt>
+                <dd className="mt-1 text-xs leading-[1.5] text-zinc-600 dark:text-zinc-300">传统色</dd>
+              </div>
+              <div>
+                <dt className="text-2xl font-semibold">24</dt>
+                <dd className="mt-1 text-xs leading-[1.5] text-zinc-600 dark:text-zinc-300">节气灵感</dd>
+              </div>
+            </dl>
           </aside>
         </section>
         <section className="border-y border-zinc-200 bg-white py-16 dark:border-white/10 dark:bg-zinc-900/40 sm:py-20" id="projects">
