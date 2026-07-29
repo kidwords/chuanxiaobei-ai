@@ -184,7 +184,7 @@ body {
 }
 .palette-row {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr) auto;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
   min-width: 0;
@@ -207,10 +207,10 @@ body {
   outline: none;
 }
 .palette-row-color {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border: 1px solid rgba(24,24,27,0.1);
-  border-radius: 10px;
+  border-radius: 8px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.28);
 }
 .palette-row-name {
@@ -302,7 +302,7 @@ body {
 
 /* Gallery grid */
 .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
-@media (min-width: 1440px) { .gallery-grid { grid-template-columns: repeat(6, 1fr); } }
+@media (min-width: 1200px) { .gallery-grid { grid-template-columns: repeat(6, 1fr); } }
 @media (max-width: 1100px) { .gallery-grid { grid-template-columns: repeat(4, 1fr); } }
 @media (max-width: 768px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
 @media (max-width: 480px) { .gallery-grid { grid-template-columns: 1fr; } }
@@ -732,8 +732,8 @@ body {
   .solar-card-name { font-size: 0.82rem; }
   .solar-card-colors { padding: 8px; }
   .solar-card-mode { font-size: 0.6rem; padding: 2px 6px; }
-  .palette-row { grid-template-columns: 26px minmax(0, 1fr) auto; }
-  .palette-row-color { width: 26px; height: 26px; border-radius: 10px; }
+  .palette-row { grid-template-columns: 20px minmax(0, 1fr) auto; }
+  .palette-row-color { width: 20px; height: 20px; border-radius: 6px; }
 
   /* === 逐步览色：底部色卡横滑条 === */
   .imm-layout { flex-direction: column; }
