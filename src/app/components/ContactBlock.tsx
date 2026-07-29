@@ -1,4 +1,4 @@
-import { GitFork, ExternalLink } from "lucide-react";
+import { GitFork, ExternalLink, Mail } from "lucide-react";
 import { Icon } from "./Icon";
 
 export function ContactBlock() {
@@ -13,6 +13,9 @@ export function ContactBlock() {
         <div className="flex flex-wrap gap-3">
           <a className="inline-flex h-11 items-center gap-2 rounded-[10px] bg-zinc-950 px-5 text-sm font-medium text-white shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:bg-zinc-800 hover:shadow-md dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200" href="https://github.com/kidwords" target="_blank" rel="noreferrer">
             <Icon size={16}>{GitFork}</Icon> GitHub 主页 <Icon size={14}>{ExternalLink}</Icon>
+          </a>
+          <a className="inline-flex h-11 items-center gap-2 rounded-[10px] border border-zinc-300 bg-white/70 px-5 text-sm font-medium text-zinc-800 shadow-sm transition-all duration-250 hover:-translate-y-0.5 hover:border-zinc-400 hover:bg-white hover:shadow-md dark:border-white/15 dark:bg-white/5 dark:text-white dark:hover:bg-white/10" href="mailto:954563114@qq.com">
+            <Icon size={16}>{Mail}</Icon> 954563114@qq.com
           </a>
         </div>
       </div>

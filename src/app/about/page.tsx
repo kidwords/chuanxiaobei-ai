@@ -14,6 +14,12 @@ const capabilities = [
   { title: "工程实现", description: "将原型推进为可部署、可维护、可迭代的静态站与应用。" },
 ];
 
+const workingMethod = [
+  { title: "从真实问题开始", description: "先确认要解决的使用场景，再决定功能、内容和技术路径。" },
+  { title: "尽早做成可用版本", description: "不把价值停留在概念与原型中，而是让人能够打开、使用和反馈。" },
+  { title: "把细节持续打磨", description: "从访问路径、界面层级到部署稳定性，让每一次迭代都更接近完整体验。" },
+];
+
 const links = [
   { label: "GitHub 项目地址", href: "https://github.com/kidwords", value: "github.com/kidwords" },
   { label: "Gitee 项目地址", href: "https://gitee.com/kidwords", value: "gitee.com/kidwords" },
@@ -41,6 +47,24 @@ export default function AboutPage() {
           </li>
         ))}
       </ol>
+      <section className="mt-12 grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
+        <div className="rounded-[14px] border border-zinc-200 bg-zinc-100 p-6 dark:border-white/10 dark:bg-white/5">
+          <p className="text-sm font-medium text-blue-600 dark:text-blue-400">当前关注</p>
+          <h2 className="mt-3 text-2xl font-semibold leading-[1.3]">让技术成为可以直接使用的体验。</h2>
+          <p className="mt-4 text-sm leading-[1.8] text-zinc-600 dark:text-zinc-300">目前持续探索 AI 应用、中文内容工具与产品交互，也会把公开项目作为长期验证与迭代的载体。</p>
+        </div>
+        <div className="rounded-[14px] border border-zinc-200 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-zinc-900">
+          <p className="text-sm font-medium text-blue-600 dark:text-blue-400">工作方式</p>
+          <ul className="mt-5 grid gap-4 sm:grid-cols-3">
+            {workingMethod.map((item) => (
+              <li key={item.title}>
+                <h3 className="text-sm font-semibold">{item.title}</h3>
+                <p className="mt-2 text-sm leading-[1.7] text-zinc-600 dark:text-zinc-300">{item.description}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
       <ul className="mt-12 grid gap-3">
         {links.map((link) => (
           <li key={link.href}>

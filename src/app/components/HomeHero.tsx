@@ -10,9 +10,10 @@ export function HomeHero({ projects }: { projects: ProjectMeta[] }) {
   return (
     <div className="site-shell">
       <div className="min-h-screen bg-[#fafafa] text-zinc-950 transition-colors duration-250 dark:bg-zinc-950 dark:text-zinc-50">
-        <section className="relative isolate mx-auto grid max-w-6xl gap-12 overflow-hidden px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-[1fr_320px] lg:items-end lg:pb-28 lg:pt-28">
+        <div className="relative isolate overflow-hidden">
           <div className="ambient-wash" aria-hidden="true" />
-          <div className="relative z-10">
+          <section className="relative z-10 mx-auto grid max-w-6xl gap-12 px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-[1fr_320px] lg:items-end lg:pb-28 lg:pt-28">
+            <div>
             <div className="inline-flex items-center gap-2 rounded-[10px] border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-600 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-zinc-300">
               独立开发 · AI 实践 · 产品设计
             </div>
@@ -29,7 +30,7 @@ export function HomeHero({ projects }: { projects: ProjectMeta[] }) {
               </a>
             </div>
           </div>
-          <aside className="relative z-10 border-l border-zinc-200 pl-6 dark:border-white/10" aria-label="已上线成果">
+            <aside className="border-l border-zinc-200 pl-6 dark:border-white/10" aria-label="已上线成果">
             <p className="text-sm font-medium text-zinc-500 dark:text-zinc-400">已上线成果</p>
             <dl className="mt-5 grid grid-cols-3 gap-3 text-zinc-950 dark:text-zinc-50">
               <div>
@@ -45,8 +46,9 @@ export function HomeHero({ projects }: { projects: ProjectMeta[] }) {
                 <dd className="mt-1 text-xs leading-[1.5] text-zinc-600 dark:text-zinc-300">节气灵感</dd>
               </div>
             </dl>
-          </aside>
-        </section>
+            </aside>
+          </section>
+        </div>
         <section className="border-y border-zinc-200 bg-white py-16 dark:border-white/10 dark:bg-zinc-900/40 sm:py-20" id="projects">
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4 sm:mb-10">
