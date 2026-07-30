@@ -147,10 +147,10 @@ body {
 .solar-term-hero .st-next { opacity: 0.65; }
 
 /* Solar gallery cards */
-.solar-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+.solar-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 24px; }
 @media (min-width: 1440px) { .solar-gallery-grid { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
 .solar-gallery-card {
-  border-radius: 14px;
+  border-radius: 20px;
   overflow: hidden;
   background: #fff;
   border: 1px solid rgba(24,24,27,0.08);
@@ -178,19 +178,19 @@ body {
 }
 .solar-card-colors {
   display: grid;
-  gap: 4px;
+  gap: 8px;
   padding: 8px;
   background: rgba(250,250,250,0.92);
 }
 .palette-row {
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) auto;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
   align-items: center;
   gap: 8px;
   min-width: 0;
-  padding: 5px 6px;
+  padding: 6px 10px;
   border: 1px solid transparent;
-  border-radius: 10px;
+  border-radius: 999px;
   background: transparent;
   color: #27272a;
   font: inherit;
@@ -207,10 +207,10 @@ body {
   outline: none;
 }
 .palette-row-color {
-  width: 22px;
-  height: 22px;
+  width: 40px;
+  height: 18px;
   border: 1px solid rgba(24,24,27,0.1);
-  border-radius: 8px;
+  border-radius: 999px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.28);
 }
 .palette-row-name {
@@ -727,13 +727,13 @@ body {
 
   /* === 全部浏览卡片 === */
   .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .solar-gallery-card { border-radius: 12px; }
+  .solar-gallery-card { border-radius: 18px; }
   .solar-card-top { height: 76px; padding: 10px; }
   .solar-card-name { font-size: 0.82rem; }
   .solar-card-colors { padding: 8px; }
   .solar-card-mode { font-size: 0.6rem; padding: 2px 6px; }
-  .palette-row { grid-template-columns: 20px minmax(0, 1fr) auto; }
-  .palette-row-color { width: 20px; height: 20px; border-radius: 6px; }
+  .palette-row { grid-template-columns: 36px minmax(0, 1fr) auto; }
+  .palette-row-color { width: 36px; height: 16px; border-radius: 999px; }
 
   /* === 逐步览色：底部色卡横滑条 === */
   .imm-layout { flex-direction: column; }
