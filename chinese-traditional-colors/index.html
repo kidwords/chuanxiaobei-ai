@@ -77,19 +77,17 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 }
 .cover h1 strong {
   font-weight: 700;
-  background: linear-gradient(115deg, #fff799 0%, #f3a694 8%, #d12920 16%, #e18a3b 24%, #f7d154 32%, #c67915 40%, #4c8045 48%, #3d8e86 56%, #00a6a6 64%, #3271ae 72%, #9b8ea9 80%, #903754 88%, #a14fb5 100%);
-  background-size: 220% 220%;
+  background: linear-gradient(115deg, #fff799 0%, #f3a694 8%, #d12920 16%, #e18a3b 24%, #f7d154 32%, #c67915 40%, #4c8045 48%, #3d8e86 56%, #00a6a6 64%, #3271ae 72%, #9b8ea9 80%, #903754 88%, #a14fb5 94%, #fff799 100%);
+  background-size: 800% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
   text-shadow: 0 4px 18px rgba(84,82,120,0.12);
-  animation: title-fluid 5.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: title-lightflow 30s linear infinite;
   will-change: background-position;
   backface-visibility: hidden;
 }
-@keyframes title-fluid {
-  0% { background-position: 0% 50%; }
-  35% { background-position: 46% 18%; }
-  70% { background-position: 82% 82%; }
-  100% { background-position: 100% 50%; }
+@keyframes title-lightflow {
+  from { background-position: 0% 50%; }
+  to { background-position: 100% 50%; }
 }
 @media (prefers-reduced-motion: reduce) { .cover h1 strong { animation: none; } }
 .cover .sub { font-size: 0.95rem; color: #888; letter-spacing: 0.06em; margin-bottom: 1.5rem; }
@@ -292,12 +290,13 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 .gallery-header {
   display: flex; align-items: center; justify-content: space-between;
   margin-bottom: 1.5rem; padding: 0.8rem 1.2rem;
-  position: relative;
+  position: sticky; top: 12px; z-index: 30;
   border-radius: 16px;
   background: rgba(255,255,255,0.6);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 8px 24px rgba(42,34,38,0.08);
 }
 .gallery-header h2 { font-size: 1.3rem; font-weight: 600; }
 .gallery-heading { display: flex; flex-direction: column; gap: 2px; min-width: 220px; }
@@ -855,7 +854,7 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
   .imm-top-back { right: auto; }
 
   /* === 顶部导航 === */
-  .gallery-header { padding: 8px 12px; flex-wrap: wrap; gap: 6px; }
+  .gallery-header { top: 8px; padding: 8px 12px; flex-wrap: wrap; gap: 6px; }
   .gallery-header > div:last-child { margin-left: 0; padding-right: 0; flex-wrap: wrap; }
   .gallery-header h2 { font-size: 1.1rem; }
   .gallery-heading { min-width: 0; }
@@ -2491,7 +2490,7 @@ function renderPalAllColors() {
       for (var k = 0; k < selectedPaletteColors.length; k++) {
         if (selectedPaletteColors[k].hex === c.hex) { isSel = true; break; }
       }
-      html += '<div class="pal-c' + (isSel ? ' sel' : '') + '" style="background:' + c.hex + '" title="' + c.name + ' ' + c.hex + '" onclick="togglePalColor(\'' + c.hex + '\',\'' + c.name.replace(/'/g, "\\'") + '\')"></div>';
+      html += '<div class="pal-c' + (isSel ? ' sel' : '') + '" style="background:' + c.hex + '" title="' + c.name + ' ' + c.hex + '" onclick="event.stopPropagation();togglePalColor(\'' + c.hex + '\',\'' + c.name.replace(/'/g, "\\'") + '\')"></div>';
     }
     html += '</div></div>';
   }
@@ -2896,6 +2895,38 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') backFromImmersive();
   if (e.key === ' ' || e.key === 'Tab') { e.preventDefault(); toggleMode(); }
 });
+function initTitleColorFlow() {
+  var title = document.querySelector('.cover h1 strong');
+  if (!title) return;
+  var stops = [];
+  var seen = {};
+  function addColor(hex) {
+    if (!hex || seen[hex]) return;
+    seen[hex] = true;
+    stops.push(hex);
+  }
+  var terms = Object.keys(SOLAR_16_COLORS || {});
+  for (var i = 0; i < terms.length; i++) {
+    var termColors = SOLAR_16_COLORS[terms[i]] || [];
+    for (var j = 0; j < termColors.length; j++) addColor(termColors[j].hex);
+  }
+  var scenes = Object.keys(SOLAR_SCENES || {});
+  for (var s = 0; s < scenes.length; s++) {
+    var scene = SOLAR_SCENES[scenes[s]] || {};
+    ['light', 'dark'].forEach(function(mode) {
+      var palette = scene[mode] && scene[mode].colors || [];
+      for (var c = 0; c < palette.length; c++) addColor(palette[c].hex);
+    });
+  }
+  if (stops.length < 2) return;
+  stops.push(stops[0]);
+  title.style.backgroundImage = 'linear-gradient(115deg,' + stops.map(function(hex, index) {
+    return hex + ' ' + ((index / (stops.length - 1)) * 100).toFixed(2) + '%';
+  }).join(',') + ')';
+  title.style.backgroundSize = '800% 100%';
+}
+
+initTitleColorFlow();
 renderSolarHome();
 renderSolarTermInfo();
 var _initSolar = getCurrentSolarTerm();
