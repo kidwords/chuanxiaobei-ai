@@ -78,10 +78,10 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 .cover h1 strong {
   font-weight: 700;
   background: linear-gradient(115deg, #fff799 0%, #f3a694 8%, #d12920 16%, #e18a3b 24%, #f7d154 32%, #c67915 40%, #4c8045 48%, #3d8e86 56%, #00a6a6 64%, #3271ae 72%, #9b8ea9 80%, #903754 88%, #a14fb5 94%, #fff799 100%);
-  background-size: 1400% 100%;
+  background-size: 3600% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
   text-shadow: 0 4px 18px rgba(84,82,120,0.12);
-  animation: title-lightflow 68s linear infinite;
+  animation: title-lightflow 300s linear infinite;
   will-change: background-position;
   backface-visibility: hidden;
 }
@@ -2959,7 +2959,7 @@ function initTitleColorFlow() {
   title.style.backgroundImage = 'linear-gradient(115deg,' + stops.map(function(hex, index) {
     return hex + ' ' + ((index / (stops.length - 1)) * 100).toFixed(2) + '%';
   }).join(',') + ')';
-  title.style.backgroundSize = '1400% 100%';
+  title.style.backgroundSize = '3600% 100%';
 }
 
 initTitleColorFlow();
