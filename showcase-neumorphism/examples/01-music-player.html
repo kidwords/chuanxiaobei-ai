@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>夜航星图 · 音乐播放器</title>
+
+  <!-- Google Fonts: Quicksand (UI) + Noto Sans SC (Chinese) + JetBrains Mono (numbers) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       NEUMORPHISM DESIGN SYSTEM — shared variables
+       ============================================================ */
+    :root {
+      --bg: #E3EDF5;
+      --bg-darker: #D1DEEC;
+
+      --sh-light: rgba(255, 255, 255, 0.9);
+      --sh-dark:  rgba(163, 177, 198, 0.55);
+
+      /* raised (cards, buttons) */
+      --shadow-out:    6px 6px 12px var(--sh-dark), -6px -6px 12px var(--sh-light);
+      --shadow-out-sm: 4px 4px 8px  var(--sh-dark), -4px -4px 8px  var(--sh-light);
+      /* pressed / inset (inputs, tracks, displays) */
+      --shadow-in:    inset 6px 6px 12px var(--sh-dark), inset -6px -6px 12px var(--sh-light);
+      --shadow-in-sm: inset 4px 4px 8px  var(--sh-dark), inset -4px -4px 8px  var(--sh-light);
+
+      --text-primary:   #4A5C73;
+      --text-secondary: #7C8BA0;
+      --accent:         #6C8EBF;
+      --accent-2:       #B98BD6; /* soft purple-pink for album */
+      --accent-3:       #E48FB0;
+
+      --radius-card: 24px;
+      --radius-md:   16px;
+      --radius-sm:   12px;
+
+      --t: 220ms cubic-bezier(.4, 0, .2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Quicksand', 'Noto Sans SC', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       PLAYER CARD
+       ============================================================ */
+    .player {
+      width: 380px;
+      max-width: 100%;
+      background: var(--bg);
+      border-radius: var(--radius-card);
+      padding: 28px 28px 26px;
+      box-shadow: var(--shadow-out);
+    }
+
+    /* ---------- Top bar ---------- */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      background: var(--bg);
+      color: var(--text-secondary);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-out-sm);
+      transition: var(--t);
+    }
+    .icon-btn:hover { color: var(--accent); }
+    .icon-btn:active { box-shadow: var(--shadow-in-sm); transform: scale(.96); }
+    .icon-btn svg { width: 18px; height: 18px; }
+
+    .now-label {
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    /* ---------- Album art ---------- */
+    .album-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 22px;
+    }
+    .album {
+      width: 180px;
+      height: 180px;
+      border-radius: var(--radius-md);
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,.45) 0%, transparent 45%),
+        linear-gradient(135deg, var(--accent-2) 0%, var(--accent-3) 55%, var(--accent) 100%);
+      box-shadow: var(--shadow-out);
+      position: relative;
+      overflow: hidden;
+    }
+    /* faint star dots inside the album */
+    .album::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,.9), transparent),
+        radial-gradient(1.5px 1.5px at 70% 60%, rgba(255,255,255,.8), transparent),
+        radial-gradient(2px 2px at 40% 75%, rgba(255,255,255,.7), transparent),
+        radial-gradient(1px 1px at 85% 25%, rgba(255,255,255,.85), transparent),
+        radial-gradient(1.5px 1.5px at 55% 40%, rgba(255,255,255,.6), transparent);
+    }
+
+    /* ---------- Song meta ---------- */
+    .meta { text-align: center; margin-bottom: 20px; }
+    .meta .title {
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: .02em;
+    }
+    .meta .artist {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* ---------- Equalizer ---------- */
+    .eq {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      justify-content: center;
+      height: 18px;
+      margin-top: 10px;
+    }
+    .eq span {
+      width: 3px;
+      height: 6px;
+      background: var(--accent);
+      border-radius: 2px;
+      opacity: .7;
+    }
+    .eq.playing span {
+      animation: eqBounce 900ms ease-in-out infinite;
+    }
+    .eq span:nth-child(1) { animation-delay: 0ms;   }
+    .eq span:nth-child(2) { animation-delay: 180ms; }
+    .eq span:nth-child(3) { animation-delay: 360ms; }
+    .eq span:nth-child(4) { animation-delay: 120ms; }
+    .eq span:nth-child(5) { animation-delay: 280ms; }
+
+    @keyframes eqBounce {
+      0%, 100% { height: 5px; }
+      50%      { height: 16px; }
+    }
+
+    /* ---------- Progress ---------- */
+    .progress {
+      position: relative;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--bg);
+      box-shadow: var(--shadow-in);
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    .progress .fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 36%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    }
+    .progress .thumb {
+      position: absolute;
+      top: 50%;
+      left: 36%;
+      transform: translate(-50%, -50%);
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: var(--shadow-out-sm);
+      transition: var(--t);
+    }
+    .progress:hover .thumb { transform: translate(-50%, -50%) scale(1.15); }
+
+    .times {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 500;
+      margin-bottom: 22px;
+    }
+
+    /* ---------- Controls ---------- */
+    .controls {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+    .ctrl {
+      width: 50px; height: 50px;
+      border: none;
+      border-radius: 50%;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-out-sm);
+      transition: var(--t);
+    }
+    .ctrl svg { width: 20px; height: 20px; }
+    .ctrl:hover { color: var(--accent); }
+    .ctrl:active { box-shadow: var(--shadow-in-sm); transform: scale(.94); }
+
+    .play {
+      width: 64px; height: 64px;
+      box-shadow: var(--shadow-out);
+      color: var(--accent);
+    }
+    .play svg { width: 26px; height: 26px; }
+    .play:active { box-shadow: var(--shadow-in); transform: scale(.94); }
+    .play.active { color: var(--accent-2); }
+
+    /* ---------- Volume ---------- */
+    .volume {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .volume .vol-ico { color: var(--text-secondary); flex-shrink: 0; }
+    .volume .vol-ico svg { width: 18px; height: 18px; display: block; }
+
+    .vol-track {
+      position: relative;
+      flex: 1;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--bg);
+      box-shadow: var(--shadow-in);
+      cursor: pointer;
+    }
+    .vol-track .fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 60%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+    }
+    .vol-track .thumb {
+      position: absolute;
+      top: 50%;
+      left: 60%;
+      transform: translate(-50%, -50%);
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: var(--shadow-out-sm);
+    }
+
+    /* ---------- A11y ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ====================== PLAYER ====================== -->
+  <main class="player" role="region" aria-label="音乐播放器">
+
+    <!-- top bar -->
+    <div class="topbar">
+      <button class="icon-btn" aria-label="返回">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="now-label">正在播放</span>
+      <button class="icon-btn" aria-label="更多">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </button>
+    </div>
+
+    <!-- album -->
+    <div class="album-wrap">
+      <div class="album" role="img" aria-label="夜航星图 专辑封面"></div>
+    </div>
+
+    <!-- meta + eq -->
+    <div class="meta">
+      <div class="title">夜航星图</div>
+      <div class="artist">银河漫游者 · 星海夜话</div>
+      <div class="eq playing" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <!-- progress -->
+    <div class="progress" id="progress" role="slider" aria-label="播放进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="36" tabindex="0">
+      <div class="fill" id="progFill"></div>
+      <div class="thumb" id="progThumb"></div>
+    </div>
+    <div class="times">
+      <span id="curTime">1:23</span>
+      <span id="totTime">3:47</span>
+    </div>
+
+    <!-- controls -->
+    <div class="controls">
+      <button class="ctrl" id="prevBtn" aria-label="上一首">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="19 20 9 12 19 4 19 20"/><rect x="5" y="4" width="2" height="16"/></svg>
+      </button>
+      <button class="ctrl play" id="playBtn" aria-label="播放或暂停">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+      </button>
+      <button class="ctrl" id="nextBtn" aria-label="下一首">
+        <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5 4 15 12 5 20 5 4"/><rect x="17" y="4" width="2" height="16"/></svg>
+      </button>
+    </div>
+
+    <!-- volume -->
+    <div class="volume">
+      <span class="vol-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      </span>
+      <div class="vol-track" id="volTrack" role="slider" aria-label="音量" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" tabindex="0">
+        <div class="fill" id="volFill"></div>
+        <div class="thumb" id="volThumb"></div>
+      </div>
+      <span class="vol-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+      </span>
+    </div>
+  </main>
+
+  <script>
+    /* ============================================================
+       Music player logic: play/pause toggle, advancing progress,
+       click-to-seek on both progress bar and volume slider.
+       ============================================================ */
+    (function () {
+      const TOTAL_SEC  = 3 * 60 + 47;          // 3:47
+      const START_SEC  = 1 * 60 + 23;          // 1:23
+      let   currentSec = START_SEC;
+      let   playing    = true;
+      let   volume     = 60;                   // 0..100
+      let   timer      = null;
+
+      const playBtn   = document.getElementById('playBtn');
+      const playIcon  = document.getElementById('playIcon');
+      const eq        = document.querySelector('.eq');
+      const prog      = document.getElementById('progress');
+      const progFill  = document.getElementById('progFill');
+      const progThumb = document.getElementById('progThumb');
+      const curTime   = document.getElementById('curTime');
+      const totTime   = document.getElementById('totTime');
+
+      const volTrack  = document.getElementById('volTrack');
+      const volFill   = document.getElementById('volFill');
+      const volThumb  = document.getElementById('volThumb');
+
+      const ICON_PLAY  = '<polygon points="6 4 20 12 6 20 6 4" />';
+      const ICON_PAUSE = '<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>';
+
+      const fmt = s => Math.floor(s / 60) + ':' + String(Math.floor(s % 60)).padStart(2, '0');
+
+      function renderProgress() {
+        const pct = (currentSec / TOTAL_SEC) * 100;
+        progFill.style.width  = pct + '%';
+        progThumb.style.left  = pct + '%';
+        curTime.textContent   = fmt(currentSec);
+        prog.setAttribute('aria-valuenow', Math.round(pct));
+      }
+
+      function renderVolume() {
+        volFill.style.width  = volume + '%';
+        volThumb.style.left  = volume + '%';
+        volTrack.setAttribute('aria-valuenow', volume);
+      }
+
+      totTime.textContent = fmt(TOTAL_SEC);
+      renderProgress();
+      renderVolume();
+
+      function start() {
+        playing = true;
+        eq.classList.add('playing');
+        playBtn.classList.add('active');
+        playIcon.innerHTML = ICON_PAUSE;
+        timer = setInterval(() => {
+          currentSec += 1;
+          if (currentSec >= TOTAL_SEC) {           // loop the demo track
+            currentSec = 0;
+          }
+          renderProgress();
+        }, 1000);
+      }
+
+      function pause() {
+        playing = false;
+        eq.classList.remove('playing');
+        playBtn.classList.remove('active');
+        playIcon.innerHTML = ICON_PLAY;
+        clearInterval(timer);
+        timer = null;
+      }
+
+      playBtn.addEventListener('click', () => playing ? pause() : start());
+      document.getElementById('prevBtn').addEventListener('click', () => {
+        currentSec = 0; renderProgress();
+      });
+      document.getElementById('nextBtn').addEventListener('click', () => {
+        currentSec = Math.floor(TOTAL_SEC * 0.6); renderProgress();
+      });
+
+      // click-to-seek helpers
+      function seekFromEvent(e, el, onPct) {
+        const rect = el.getBoundingClientRect();
+        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+        const pct = Math.min(1, Math.max(0, x / rect.width));
+        onPct(pct);
+      }
+      prog.addEventListener('click', e => {
+        seekFromEvent(e, prog, p => { currentSec = Math.round(p * TOTAL_SEC); renderProgress(); });
+      });
+      volTrack.addEventListener('click', e => {
+        seekFromEvent(e, volTrack, p => { volume = Math.round(p * 100); renderVolume(); });
+      });
+
+      // start in playing state (matches the design)
+      start();
+    })();
+  </script>
+</body>
+</html>

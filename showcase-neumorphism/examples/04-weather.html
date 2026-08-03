@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>杭州 · 天气</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       NEUMORPHISM DESIGN SYSTEM
+       ============================================================ */
+    :root {
+      --bg: #E3EDF5;
+      --bg-darker: #D1DEEC;
+
+      --sh-light: rgba(255, 255, 255, 0.9);
+      --sh-dark:  rgba(163, 177, 198, 0.55);
+
+      --shadow-out:    6px 6px 12px var(--sh-dark), -6px -6px 12px var(--sh-light);
+      --shadow-out-sm: 4px 4px 8px  var(--sh-dark), -4px -4px 8px  var(--sh-light);
+      --shadow-in:    inset 6px 6px 12px var(--sh-dark), inset -6px -6px 12px var(--sh-light);
+      --shadow-in-sm: inset 4px 4px 8px  var(--sh-dark), inset -4px -4px 8px  var(--sh-light);
+
+      --text-primary:   #4A5C73;
+      --text-secondary: #7C8BA0;
+      --accent:         #6C8EBF;     /* cool blue-gray */
+      --sun:            #F2B33D;     /* warm sun yellow */
+      --sun-soft:       #F6CE7A;
+
+      --radius-card: 28px;
+      --radius-md:   16px;
+      --radius-sm:   12px;
+
+      --t: 220ms cubic-bezier(.4, 0, .2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Quicksand', 'Noto Sans SC', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       WEATHER CARD
+       ============================================================ */
+    .weather {
+      width: 360px;
+      max-width: 100%;
+      background: var(--bg);
+      border-radius: var(--radius-card);
+      padding: 26px 24px;
+      box-shadow: var(--shadow-out);
+    }
+
+    /* ---------- Header ---------- */
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .loc {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .loc svg { width: 16px; height: 16px; color: var(--accent); }
+    .updated {
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+
+    /* ---------- Current ---------- */
+    .current {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 4px 22px;
+    }
+    .temp-big {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 76px;
+      font-weight: 700;
+      color: var(--text-primary);
+      line-height: 1;
+      letter-spacing: -.04em;
+      position: relative;
+    }
+    .temp-big sup {
+      font-size: 28px;
+      font-weight: 600;
+      vertical-align: super;
+      color: var(--text-secondary);
+      margin-left: 2px;
+    }
+    .cond {
+      text-align: right;
+    }
+    .cond-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 4px;
+    }
+    .feels {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* sun icon */
+    .sun-ico {
+      width: 64px; height: 64px;
+      color: var(--sun);
+      animation: spin 22s linear infinite;
+    }
+    .sun-ico svg { width: 100%; height: 100%; }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ---------- Stat chips ---------- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+    .chip {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-in-sm);
+      padding: 10px 4px 8px;
+      text-align: center;
+    }
+    .chip .ico {
+      display: grid;
+      place-items: center;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+    .chip .ico svg { width: 15px; height: 15px; }
+    .chip .v {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .chip .k {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    /* ---------- Hourly ---------- */
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .hourly {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 4px 2px 12px;
+      margin-bottom: 20px;
+      scrollbar-width: thin;
+    }
+    .hourly::-webkit-scrollbar { height: 6px; }
+    .hourly::-webkit-scrollbar-thumb { background: var(--bg-darker); border-radius: 99px; }
+
+    .hour {
+      flex-shrink: 0;
+      width: 56px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-out-sm);
+      padding: 10px 0 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--t);
+    }
+    .hour:hover { transform: translateY(-3px); }
+    .hour.now {
+      box-shadow: var(--shadow-in-sm);
+      color: var(--accent);
+    }
+    .hour .h-time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .hour .h-ico {
+      width: 26px; height: 26px;
+      margin: 6px auto;
+      color: var(--sun);
+    }
+    .hour.cloudy .h-ico { color: var(--accent); }
+    .hour .h-ico svg { width: 100%; height: 100%; }
+    .hour .h-temp {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    /* ---------- 5-day forecast ---------- */
+    .days {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .day {
+      display: grid;
+      grid-template-columns: 56px 32px 1fr 36px;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-out-sm);
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: var(--t);
+    }
+    .day:hover { transform: translateY(-2px); }
+    .day .d-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    .day .d-ico {
+      width: 24px; height: 24px;
+      color: var(--sun);
+    }
+    .day.cloudy .d-ico { color: var(--accent); }
+    .day.rainy .d-ico  { color: #7FA8C9; }
+    .day .d-ico svg { width: 100%; height: 100%; }
+
+    .bar {
+      position: relative;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--bg);
+      box-shadow: var(--shadow-in-sm);
+    }
+    .bar .seg {
+      position: absolute;
+      top: 0; bottom: 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--sun));
+    }
+    .day .d-range {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      text-align: right;
+    }
+    .day .d-range .lo { color: var(--text-secondary); }
+    .day .d-range .hi { color: var(--text-primary); }
+
+    /* ---------- A11y ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+      .sun-ico { animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="weather" role="region" aria-label="天气预报">
+
+    <!-- top -->
+    <div class="top">
+      <div class="loc">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        杭州
+      </div>
+      <div class="updated">10:24 更新</div>
+    </div>
+
+    <!-- current -->
+    <div class="current">
+      <div class="temp-big" id="bigTemp">24<sup>°</sup></div>
+      <div class="cond">
+        <div class="sun-ico" aria-hidden="true">
+          <!-- sun -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4.5"/>
+            <line x1="12" y1="1.5" x2="12" y2="3.5"/>
+            <line x1="12" y1="20.5" x2="12" y2="22.5"/>
+            <line x1="1.5" y1="12" x2="3.5" y2="12"/>
+            <line x1="20.5" y1="12" x2="22.5" y2="12"/>
+            <line x1="4.4" y1="4.4" x2="5.8" y2="5.8"/>
+            <line x1="18.2" y1="18.2" x2="19.6" y2="19.6"/>
+            <line x1="4.4" y1="19.6" x2="5.8" y2="18.2"/>
+            <line x1="18.2" y1="5.8" x2="19.6" y2="4.4"/>
+          </svg>
+        </div>
+        <div class="cond-text">多云转晴</div>
+        <div class="feels">体感 26°</div>
+      </div>
+    </div>
+
+    <!-- stats -->
+    <div class="stats">
+      <div class="chip">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
+        <div class="v">28°</div>
+        <div class="k">最高</div>
+      </div>
+      <div class="chip">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
+        <div class="v">19°</div>
+        <div class="k">最低</div>
+      </div>
+      <div class="chip">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 10 5 14a7 7 0 0 0 14 0c0-4-7-11.5-7-11.5z"/></svg></div>
+        <div class="v">62%</div>
+        <div class="k">湿度</div>
+      </div>
+      <div class="chip">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg></div>
+        <div class="v">3级</div>
+        <div class="k">东南风</div>
+      </div>
+    </div>
+
+    <!-- hourly -->
+    <div class="section-title">逐小时预报</div>
+    <div class="hourly" id="hourly"></div>
+
+    <!-- 5-day -->
+    <div class="section-title">未来 5 天</div>
+    <div class="days" id="days"></div>
+
+  </main>
+
+  <!-- inline SVG templates -->
+  <template id="ico-sun">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
+  </template>
+  <template id="ico-cloud">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.6-1.5A4 4 0 0 0 6 19z"/></svg>
+  </template>
+  <template id="ico-suncloud">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M5.6 5.6l1.4 1.4M2 12h2M19 12h2M17 7l1.4-1.4"/><circle cx="9" cy="11" r="3"/><path d="M7 18h10a3.5 3.5 0 0 0 0-7 5 5 0 0 0-9.6-1"/></svg>
+  </template>
+  <template id="ico-rain">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 15a4.5 4.5 0 0 0 0-9 6 6 0 0 0-11.6-1.5A4 4 0 0 0 6 15z"/><line x1="8" y1="18" x2="8" y2="21"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="16" y1="18" x2="16" y2="21"/></svg>
+  </template>
+
+  <script>
+    /* ============================================================
+       Static demo data → render hourly + 5-day forecast.
+       ============================================================ */
+    (function () {
+      const ico = (id) => document.getElementById(id).innerHTML;
+
+      /* ---------- Hourly ---------- */
+      const hours = [
+        { t: '现在', temp: 24, kind: 'suncloud', now: true },
+        { t: '11时', temp: 25, kind: 'suncloud' },
+        { t: '12时', temp: 27, kind: 'sun' },
+        { t: '13时', temp: 28, kind: 'sun' },
+        { t: '14时', temp: 28, kind: 'sun' },
+        { t: '15时', temp: 27, kind: 'cloud' },
+        { t: '16时', temp: 26, kind: 'cloud' },
+        { t: '17时', temp: 24, kind: 'cloud' },
+        { t: '18时', temp: 22, kind: 'rain' },
+        { t: '19时', temp: 21, kind: 'rain' },
+      ];
+      const hourlyEl = document.getElementById('hourly');
+      hours.forEach(h => {
+        const el = document.createElement('div');
+        el.className = 'hour' + (h.now ? ' now' : '') + (h.kind === 'cloud' || h.kind === 'rain' || h.kind === 'suncloud' ? ' cloudy' : '');
+        el.innerHTML = `
+          <div class="h-time">${h.t}</div>
+          <div class="h-ico">${ico('ico-' + h.kind)}</div>
+          <div class="h-temp">${h.temp}°</div>
+        `;
+        hourlyEl.appendChild(el);
+      });
+
+      /* ---------- 5-day ---------- */
+      const days = [
+        { name: '今天',   hi: 28, lo: 19, kind: 'suncloud' },
+        { name: '明天',   hi: 30, lo: 21, kind: 'sun' },
+        { name: '周三',   hi: 27, lo: 20, kind: 'rain' },
+        { name: '周四',   hi: 25, lo: 18, kind: 'rain' },
+        { name: '周五',   hi: 29, lo: 20, kind: 'sun' },
+      ];
+      // for the gradient bar, we map hi/lo over the global min..max
+      const allTemps = days.flatMap(d => [d.hi, d.lo]);
+      const min = Math.min(...allTemps), max = Math.max(...allTemps);
+      const span = max - min || 1;
+
+      const daysEl = document.getElementById('days');
+      days.forEach(d => {
+        const startPct = ((d.lo - min) / span) * 100;
+        const widthPct = ((d.hi - d.lo) / span) * 100;
+        const el = document.createElement('div');
+        el.className = 'day' + (d.kind === 'cloud' || d.kind === 'rain' || d.kind === 'suncloud' ? ' ' + d.kind : '');
+        // simpler: add modifier class
+        el.className = 'day ' + d.kind;
+        el.innerHTML = `
+          <div class="d-name">${d.name}</div>
+          <div class="d-ico">${ico('ico-' + d.kind)}</div>
+          <div class="bar"><div class="seg" style="left:${startPct}%;width:${widthPct}%"></div></div>
+          <div class="d-range"><span class="lo">${d.lo}°</span> <span class="hi">${d.hi}°</span></div>
+        `;
+        daysEl.appendChild(el);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新拟态深度探索 · 10 个示例 + 评分 + AI 提示词</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#E3EDF5; --bg-darker:#D1DEEC;
+    --text:#4A5C73; --text-soft:#7C8BA0; --text-muted:#A0AEC0;
+    --accent:#6C8EBF; --accent-2:#5B7A99;
+    --sh-light:rgba(255,255,255,0.9); --sh-dark:rgba(163,177,198,0.55);
+    --shadow-out:6px 6px 12px var(--sh-dark),-6px -6px 12px var(--sh-light);
+    --shadow-out-sm:4px 4px 8px var(--sh-dark),-4px -4px 8px var(--sh-light);
+    --shadow-in:inset 6px 6px 12px var(--sh-dark),inset -6px -6px 12px var(--sh-light);
+    --shadow-in-sm:inset 3px 3px 6px var(--sh-dark),inset -3px -3px 6px var(--sh-light);
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Quicksand','Noto Sans SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+  /* 顶栏 */
+  .topbar{position:sticky;top:0;z-index:50;background:var(--bg);padding:18px 0}
+  .nav{max-width:1400px;margin:0 auto;padding:14px 28px;border-radius:50px;background:var(--bg);box-shadow:var(--shadow-out-sm);display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:15px;text-decoration:none;color:var(--text)}
+  .brand .dot{width:36px;height:36px;border-radius:50%;background:var(--bg);box-shadow:var(--shadow-in-sm);display:grid;place-items:center;color:var(--accent);font-weight:700}
+  .brand .tag{font-size:11px;font-weight:500;color:var(--text-soft);padding:3px 10px;border-radius:999px;background:var(--bg);box-shadow:var(--shadow-out-sm)}
+  .back-link{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:var(--text-soft);font-size:13px;font-weight:500;padding:9px 16px;border-radius:30px;background:var(--bg);box-shadow:var(--shadow-out-sm);cursor:pointer;transition:color .2s}
+  .back-link:hover{color:var(--accent)}
+  .back-link:active{box-shadow:var(--shadow-in-sm)}
+
+  .wrap{max-width:1400px;margin:0 auto;padding:0 28px 60px}
+
+  /* Hero 标题 */
+  .hero{padding:36px 0 28px}
+  .hero h1{font-size:clamp(28px,4vw,40px);font-weight:700;color:var(--accent-2);letter-spacing:-.02em;margin-bottom:10px}
+  .hero p{color:var(--text-soft);font-size:15px;max-width:680px}
+  .hero .stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:18px}
+  .hero .stat{display:flex;align-items:center;gap:8px;padding:8px 16px;border-radius:30px;background:var(--bg);box-shadow:var(--shadow-out-sm);font-size:13px;color:var(--text-soft)}
+  .hero .stat b{color:var(--accent);font-weight:700}
+
+  /* 主体布局：左导航 + 右内容 */
+  .layout{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start}
+  @media(max-width:980px){.layout{grid-template-columns:1fr}}
+
+  /* 左侧示例列表 */
+  .sidebar{position:sticky;top:96px}
+  .sidebar h3{font-size:12px;font-weight:700;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:0 0 14px 14px}
+  .example-list{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:var(--radius);background:var(--bg);box-shadow:var(--shadow-out-sm);max-height:70vh;overflow-y:auto}
+  .example-list::-webkit-scrollbar{width:6px}
+  .example-list::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:3px}
+  .ex-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;cursor:pointer;transition:all .2s;background:var(--bg)}
+  .ex-item:hover{box-shadow:var(--shadow-in-sm)}
+  .ex-item.active{box-shadow:var(--shadow-in-sm);color:var(--accent)}
+  .ex-item .num{width:32px;height:32px;border-radius:10px;background:var(--bg);box-shadow:var(--shadow-out-sm);display:grid;place-items:center;font-family:'JetBrains Mono';font-size:12px;font-weight:600;flex-shrink:0}
+  .ex-item.active .num{box-shadow:var(--shadow-in-sm);color:var(--accent)}
+  .ex-item .info{min-width:0}
+  .ex-item .info .t{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ex-item .info .s{font-size:11px;color:var(--text-muted)}
+
+  /* 右侧主面板 */
+  .panel{display:flex;flex-direction:column;gap:20px}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:18px 24px;border-radius:var(--radius);background:var(--bg);box-shadow:var(--shadow-out-sm)}
+  .panel-head .title-block h2{font-size:22px;font-weight:700;color:var(--accent-2)}
+  .panel-head .title-block p{font-size:13px;color:var(--text-soft);margin-top:2px}
+  .panel-head .actions{display:flex;gap:10px;align-items:center}
+  .btn{display:inline-flex;align-items:center;gap:7px;padding:11px 18px;border-radius:30px;font-size:13px;font-weight:600;border:none;cursor:pointer;font-family:inherit;background:var(--bg);box-shadow:var(--shadow-out-sm);color:var(--accent-2);transition:all .2s;text-decoration:none}
+  .btn:hover{color:var(--accent)}
+  .btn:active{box-shadow:var(--shadow-in-sm)}
+  .btn.primary{color:#fff;background:var(--accent)}
+  .btn.primary:hover{background:var(--accent-2)}
+  .btn svg{width:15px;height:15px}
+
+  /* iframe 预览 */
+  .preview-wrap{position:relative;border-radius:var(--radius);background:var(--bg);box-shadow:var(--shadow-out);padding:14px;overflow:hidden}
+  .preview-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;padding:0 6px}
+  .preview-bar .dots{display:flex;gap:7px}
+  .preview-bar .dots i{width:12px;height:12px;border-radius:50%;background:var(--bg);box-shadow:var(--shadow-in-sm)}
+  .preview-bar .url{font-family:'JetBrains Mono';font-size:11.5px;color:var(--text-muted);padding:5px 14px;border-radius:20px;background:var(--bg);box-shadow:var(--shadow-in-sm);flex:1;margin:0 14px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .preview-bar .size-toggle{display:flex;gap:6px}
+  .size-btn{width:34px;height:34px;border-radius:10px;border:none;background:var(--bg);box-shadow:var(--shadow-out-sm);color:var(--text-soft);cursor:pointer;display:grid;place-items:center;transition:all .2s}
+  .size-btn:hover{color:var(--accent)}
+  .size-btn.active{box-shadow:var(--shadow-in-sm);color:var(--accent)}
+  .size-btn svg{width:16px;height:16px}
+  .preview-frame-wrap{background:var(--bg);box-shadow:var(--shadow-in);border-radius:14px;padding:0;overflow:auto;max-height:680px;transition:all .3s}
+  .preview-frame-wrap.device-mobile{max-width:390px;margin:0 auto}
+  .preview-frame-wrap.device-tablet{max-width:820px;margin:0 auto}
+  .preview-frame-wrap iframe{display:block;width:100%;height:640px;border:none;background:#fff;border-radius:14px}
+
+  /* 评分区 */
+  .scores-card{padding:24px;border-radius:var(--radius);background:var(--bg);box-shadow:var(--shadow-out)}
+  .scores-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .scores-head h3{font-size:16px;font-weight:700;color:var(--accent-2)}
+  .scores-head .overall{display:flex;align-items:center;gap:10px}
+  .scores-head .overall .ring{position:relative;width:56px;height:56px}
+  .scores-head .overall .ring svg{transform:rotate(-90deg)}
+  .scores-head .overall .ring .val{position:absolute;inset:0;display:grid;place-items:center;font-family:'JetBrains Mono';font-size:15px;font-weight:700;color:var(--accent)}
+  .scores-head .overall .lbl{font-size:11px;color:var(--text-muted);text-align:right}
+  .scores-head .overall .lbl b{display:block;font-size:13px;color:var(--text)}
+  .scores-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .score-item{}
+  .score-item .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+  .score-item .top .name{font-size:13px;font-weight:600;color:var(--text)}
+  .score-item .top .num{font-family:'JetBrains Mono';font-size:13px;font-weight:600;color:var(--accent)}
+  .score-item .bar{height:10px;border-radius:10px;background:var(--bg);box-shadow:var(--shadow-in);overflow:hidden;position:relative}
+  .score-item .bar i{position:absolute;top:0;left:0;bottom:0;border-radius:10px;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:0;transition:width 1s cubic-bezier(.2,.8,.2,1)}
+  .score-item .desc{font-size:11.5px;color:var(--text-muted);margin-top:5px}
+
+  /* 提示词区 */
+  .prompt-card{padding:24px;border-radius:var(--radius);background:var(--bg);box-shadow:var(--shadow-out)}
+  .prompt-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+  .prompt-head h3{font-size:16px;font-weight:700;color:var(--accent-2);display:flex;align-items:center;gap:8px}
+  .prompt-head .copy-btn{padding:9px 16px;font-size:12.5px}
+  .prompt-body{background:var(--bg);box-shadow:var(--shadow-in);border-radius:14px;padding:20px;max-height:480px;overflow-y:auto}
+  .prompt-body::-webkit-scrollbar{width:6px}
+  .prompt-body::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:3px}
+  .prompt-body pre{font-family:'JetBrains Mono','Noto Sans SC',monospace;font-size:12.5px;line-height:1.75;color:var(--text);white-space:pre-wrap;word-break:break-word}
+  .prompt-body pre .hl{color:var(--accent);font-weight:600}
+
+  /* Toast */
+  .toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(120px);padding:14px 26px;border-radius:30px;background:var(--bg);box-shadow:var(--shadow-out);color:var(--accent);font-size:14px;font-weight:600;z-index:100;transition:transform .35s cubic-bezier(.2,.8,.2,1);display:flex;align-items:center;gap:8px}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* 入场动画 */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap" style="padding:0 28px">
+    <nav class="nav">
+      <a href="#" class="brand">
+        <span class="dot">N</span>
+        <span>新拟态深度探索</span>
+        <span class="tag">10 示例 · Neumorphism</span>
+      </a>
+      <a href="../index.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        返回总览
+      </a>
+    </nav>
+  </div>
+</div>
+
+<div class="wrap">
+  <section class="hero reveal">
+    <h1>新拟态风格 · 深度示例库</h1>
+    <p>围绕新拟态（Neumorphism / Soft UI）设计语言，构建 10 个完整可交互的示例应用。每个示例附带六维度自评分，以及一份可一键复制的标准化 AI 提示词——发给任意 AI 产品即可高保真复现。</p>
+    <div class="stats">
+      <span class="stat"><b>10</b> 个完整示例</span>
+      <span class="stat"><b>6</b> 维度评分</span>
+      <span class="stat"><b>10</b> 份标准提示词</span>
+      <span class="stat">实时 iframe 预览</span>
+    </div>
+  </section>
+
+  <div class="layout">
+    <!-- 左侧示例列表 -->
+    <aside class="sidebar reveal">
+      <h3>示例列表</h3>
+      <div class="example-list" id="exList"></div>
+    </aside>
+
+    <!-- 右侧主面板 -->
+    <main class="panel">
+      <!-- 预览 -->
+      <div class="preview-wrap reveal">
+        <div class="panel-head" style="box-shadow:none;padding:0 6px 0">
+          <div class="title-block">
+            <h2 id="exTitle">音乐播放器</h2>
+            <p id="exDesc">软触感的播放控制体验</p>
+          </div>
+          <div class="actions">
+            <a id="openNew" href="#" target="_blank" rel="noopener" class="btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              新窗口打开
+            </a>
+          </div>
+        </div>
+        <div class="preview-bar">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="url" id="exUrl">examples/01-music-player.html</div>
+          <div class="size-toggle">
+            <button class="size-btn active" data-size="full" title="桌面宽度" aria-label="桌面宽度">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </button>
+            <button class="size-btn" data-size="tablet" title="平板宽度" aria-label="平板宽度">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+            </button>
+            <button class="size-btn" data-size="mobile" title="手机宽度" aria-label="手机宽度">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="preview-frame-wrap" id="frameWrap">
+          <iframe id="previewFrame" src="examples/01-music-player.html" title="示例预览"></iframe>
+        </div>
+      </div>
+
+      <!-- 评分 -->
+      <div class="scores-card reveal" id="scoresCard">
+        <div class="scores-head">
+          <h3>六维度自评分</h3>
+          <div class="overall">
+            <div class="ring">
+              <svg width="56" height="56"><circle cx="28" cy="28" r="24" fill="none" stroke="rgba(163,177,198,0.3)" stroke-width="4"/><circle id="ringFill" cx="28" cy="28" r="24" fill="none" stroke="#6C8EBF" stroke-width="4" stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="150.8" style="transition:stroke-dashoffset 1s ease"/></svg>
+              <span class="val" id="overallScore">0</span>
+            </div>
+            <div class="lbl"><b>综合评分</b>满分 100</div>
+          </div>
+        </div>
+        <div class="scores-grid" id="scoresGrid"></div>
+      </div>
+
+      <!-- 提示词 -->
+      <div class="prompt-card reveal">
+        <div class="prompt-head">
+          <h3>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>
+            标准 AI 提示词
+          </h3>
+          <button class="btn primary copy-btn" id="copyBtn" data-target="promptText">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            一键复制提示词
+          </button>
+        </div>
+        <div class="prompt-body">
+          <pre id="promptText"></pre>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastMsg">已复制到剪贴板</span>
+</div>
+
+<script>
+// ========== 数据：10 个示例的元信息、评分、提示词 ==========
+const EXAMPLES = [
+{
+  file:'01-music-player.html', name:'音乐播放器', desc:'软触感的播放控制体验',
+  scores:{视觉还原:95,交互完整:90,代码质量:88,可访问性:82,响应式:80,创新性:85},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的音乐播放器组件，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5（浅蓝灰）
+- 核心效果：双向 box-shadow 制造凸起/凹陷的 3D 质感
+  - 凸起（按钮、卡片）：box-shadow: 6px 6px 12px rgba(163,177,198,0.55), -6px -6px 12px rgba(255,255,255,0.9);
+  - 凹陷（输入框、进度条轨道、屏幕）：inset 同上阴影
+- 圆角：卡片 16-20px，小元素 12px，圆形 50%
+- 文字色：主 #4A5C73，次 #7C8BA0，强调 #6C8EBF
+- 无硬边框，阴影本身就是边界；单色调粉彩感，强调色克制使用
+- 字体：Quicksand + Noto Sans SC（Google Fonts）
+- 按钮：默认凸起，:active 时变凹陷并轻微缩放
+- 所有图标用内联 SVG（Feather/Heroicons 线性风格），禁止用 emoji 当功能图标
+
+## 功能需求（必须真实可交互）
+1. 居中卡片（约 380px 宽），含专辑封面（渐变方块 180px）、歌名、歌手
+2. 进度条（凹陷轨道 + 凸起圆形滑块），当前时间/总时长
+3. 播放控制：上一首、播放/暂停（大号凸起圆形按钮 64px）、下一首
+4. 音量滑块（凹陷轨道 + 凸起滑块）
+5. 一个"正在播放"均衡器动画（3-5 条 CSS 高度动画的竖条），暂停时停止
+6. 点击播放/暂停按钮必须真实切换图标，并让进度条通过 setInterval 前进
+
+## 技术要求
+- lang="zh-CN"，viewport meta，合适的中文 <title>
+- flexbox 居中，min-height 100vh
+- 完全自包含，仅 Google Fonts CDN 外部资源
+- cursor:pointer，过渡 150-250ms，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+{
+  file:'02-calculator.html', name:'计算器', desc:'可真实计算的数字工具',
+  scores:{视觉还原:96,交互完整:95,代码质量:90,可访问性:85,响应式:85,创新性:80},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的计算器，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5
+- 核心效果：双向 box-shadow 凸起/凹陷
+  - 凸起（按钮）：6px 6px 12px rgba(163,177,198,0.55), -6px -6px 12px rgba(255,255,255,0.9)
+  - 凹陷（显示屏）：inset 同上
+- 圆角 16-20px；文字主 #4A5C73，强调 #6C8EBF
+- 无硬边框；字体 Quicksand + JetBrains Mono（数字显示）+ Noto Sans SC
+- 按钮默认凸起，:active 变凹陷；运算符用强调色背景；内联 SVG 图标
+
+## 功能需求（必须完全可用）
+1. 居中卡片（约 340px），顶部凹陷显示屏（大号等宽数字，右对齐，显示当前输入/表达式）
+2. 数字键 0-9、小数点
+3. 运算符：+ - × ÷ =
+4. 功能键：C（清除）、±（正负切换）、%（百分数）、⌫（退格）
+5. 4 列网格布局，= 可占位
+6. 真实的计算器逻辑（JS）：支持链式运算、小数、正负、百分、清除、退格
+7. 额外支持键盘输入（0-9、+ - * /、Enter、Backspace、Escape）
+
+## 技术要求
+- lang="zh-CN"，自包含单文件，仅 Google Fonts 外部
+- flexbox 居中，cursor:pointer，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+{
+  file:'03-smart-home.html', name:'智能家居面板', desc:'多设备控制中心',
+  scores:{视觉还原:92,交互完整:90,代码质量:87,可访问性:80,响应式:82,创新性:88},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的智能家居控制面板，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5
+- 双向 box-shadow 凸起/凹陷效果（凸起 6px，凹陷 inset 6px，浅影 rgba(255,255,255,0.9)，暗影 rgba(163,177,198,0.55)）
+- 圆角 16-20px；文字 #4A5C73 / #7C8BA0；强调 #6C8EBF
+- 无硬边框；字体 Quicksand + Noto Sans SC；内联 SVG 图标
+- 按钮凸起 :active 变凹陷；切换开关用新拟态风格（凸起圆点在凹陷轨道上滑动）
+
+## 功能需求（必须真实可交互）
+1. 居中卡片（约 420px），顶部标题"我的家"+ 问候 + 实时时间（JS 更新）
+2. 房间选择标签（客厅/卧室/厨房）凸起药丸，激活的变凹陷
+3. 设备卡片网格（2 列）：客厅灯光（切换）、空调（温度显示 + 加减）、窗帘（开合百分比滑块）、音响（音量）、电视（切换）等
+4. 新拟态切换开关：点击切换状态，开启时圆点滑向一侧、轨道变色
+5. 温度加减按钮：点击改变数值（限制 16-30°C）
+6. 状态统计："N 个设备开启中"，随开关实时更新
+7. 开启状态用暖橙色，基础用冷蓝灰
+
+## 技术要求
+- lang="zh-CN"，自包含单文件，仅 Google Fonts 外部
+- flexbox 居中，cursor:pointer，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+{
+  file:'04-weather.html', name:'天气卡片', desc:'柔和的气象信息展示',
+  scores:{视觉还原:94,交互完整:82,代码质量:88,可访问性:84,响应式:86,创新性:83},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的天气卡片组件，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5
+- 双向 box-shadow 凸起/凹陷（凸起 6px，凹陷 inset 6px；浅影 rgba(255,255,255,0.9)，暗影 rgba(163,177,198,0.55)）
+- 圆角 16-20px；文字 #4A5C73 / #7C8BA0；强调 #6C8EBF
+- 无硬边框；字体 Quicksand + Noto Sans SC；内联 SVG 图标（太阳、云等）
+- 太阳图标加缓慢旋转动画（尊重 prefers-reduced-motion）
+
+## 功能需求
+1. 居中卡片（约 360px）：大号当前温度（如 24°）+ 天气图标（内联 SVG 太阳）
+2. 位置 杭州，天气状况 多云转晴
+3. 一行小信息块（凹陷小芯片）：最高/最低温、湿度、风速、体感
+4. 逐小时预报（横向可滚动）：未来 6 小时，每个是凸起小芯片（时间、小图标、温度）
+5. 5 日预报列表（底部）：每行凸起（日期、图标、最高/最低温）
+6. 静态演示数据即可
+7. 冷色调蓝灰底 + 暖黄色太阳点缀
+
+## 技术要求
+- lang="zh-CN"，自包含单文件，仅 Google Fonts 外部
+- flexbox 居中，cursor:pointer，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+{
+  file:'05-login.html', name:'登录注册卡', desc:'安全的身份验证界面',
+  scores:{视觉还原:93,交互完整:88,代码质量:86,可访问性:87,响应式:85,创新性:82},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的登录/注册卡片，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5
+- 双向 box-shadow 凸起/凹陷（凸起 6px，凹陷 inset 6px）
+- 圆角 16-20px；文字 #4A5C73 / #7C8BA0；强调 #6C8EBF
+- 无硬边框；字体 Quicksand + Noto Sans SC
+- 输入框凹陷；按钮凸起 :active 变凹陷；内联 SVG 图标（邮箱、锁、眼睛等）
+
+## 功能需求（必须真实可交互）
+1. 居中卡片（约 400px），顶部登录/注册分段切换（新拟态药丸，激活的变凹陷）
+2. 邮箱、密码输入框（凹陷，带前导 SVG 图标）
+3. 密码显示/隐藏切换（眼睛图标小按钮）
+4. "记住我"新拟态复选框（凸起方块，勾选时变凹陷 + 显示对勾）
+5. "忘记密码?"链接
+6. 大号主登录按钮（凸起、强调色）+ 注册按钮
+7. 社交登录：3 个小凸起圆形按钮（Google/GitHub/微信 SVG）
+8. 表单校验：空字段提交时显示错误（凹陷红色辉光 + 提示文字），JS 实现
+9. 切换登录/注册改变字段（注册增加确认密码）
+10. 合法提交时显示成功提示（仅演示，不真实认证）
+
+## 技术要求
+- lang="zh-CN"，自包含单文件，仅 Google Fonts 外部
+- flexbox 居中，cursor:pointer，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+{
+  file:'06-calendar.html', name:'日历日程', desc:'可翻月的日程管理',
+  scores:{视觉还原:90,交互完整:89,代码质量:85,可访问性:80,响应式:84,创新性:81},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的日历日程应用，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5
+- 双向 box-shadow 凸起/凹陷（凸起 6px，凹陷 inset 6px；浅影 rgba(255,255,255,0.9)，暗影 rgba(163,177,198,0.55)）
+- 圆角 16-20px；文字 #4A5C73 / #7C8BA0；强调 #6C8EBF（柔和青蓝）
+- 无硬边框；字体 Quicksand + Noto Sans SC；内联 SVG 图标
+
+## 功能需求（必须真实可交互）
+1. 居中卡片（约 420px），顶部月份"2024年 8月"+ 上一月/下一月按钮（凸起圆形）+ "今天"按钮
+2. 月历网格：7 列（一二三四五六日表头），日期单元格。今天凸起高亮（强调色），选中日期凹陷/强调，有事件的日期下方小圆点
+3. 点击日期可选中（JS 实现）
+4. 侧/底面板显示选中日期的事件列表（如"10:00 设计评审"、"14:30 团队站会"），每个事件是凸起卡片
+5. "+ 新建事件"凸起按钮
+6. 上一月/下一月导航必须真实工作（JS，正确计算每月天数 + 1 号是星期几）
+
+## 技术要求
+- lang="zh-CN"，自包含单文件，仅 Google Fonts 外部
+- flexbox 居中，cursor:pointer，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+{
+  file:'07-health-dashboard.html', name:'健康仪表盘', desc:'数据可视化健康追踪',
+  scores:{视觉还原:91,交互完整:86,代码质量:84,可访问性:78,响应式:83,创新性:87},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的个人健康仪表盘，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5
+- 双向 box-shadow 凸起/凹陷（凸起 6px，凹陷 inset 6px）
+- 圆角 16-20px；文字 #4A5C73 / #7C8BA0；强调 #6C8EBF（柔和健康绿）
+- 无硬边框；字体 Quicksand + Noto Sans SC；内联 SVG 图标
+
+## 功能需求（必须真实可交互）
+1. 居中卡片（约 440px），顶部问候"早上好，墨白"+ 日期
+2. 大号环形进度（SVG circle + stroke-dasharray，或 conic-gradient）显示每日步数如"7,842 / 10,000 步"，凹陷背景 + 凸起环。加载时动画填充
+3. 统计卡片 2x2 网格：心率 72 bpm、睡眠 7h 20m、卡路里 1,840、距离 5.2km，每个凸起卡片带 SVG 图标 + 数值
+4. 周活动柱状图（7 条，凹陷轨道 + 凸起柱），周一到周日
+5. "水分摄入"一行 8 个水滴切换芯片（点击填充/取消，JS）
+6. 全部演示数据；环形和柱状图加载时动画填充
+
+## 技术要求
+- lang="zh-CN"，自包含单文件，仅 Google Fonts 外部
+- flexbox 居中，cursor:pointer，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+{
+  file:'08-wallet.html', name:'钱包支付', desc:'金融支付应用',
+  scores:{视觉还原:92,交互完整:85,代码质量:83,可访问性:79,响应式:84,创新性:84},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的钱包支付应用，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5
+- 双向 box-shadow 凸起/凹陷（凸起 6px，凹陷 inset 6px）
+- 圆角 16-20px；文字 #4A5C73 / #7C8BA0；强调用高级蓝紫渐变（卡片）
+- 无硬边框；字体 Quicksand + JetBrains Mono（金额）+ Noto Sans SC；内联 SVG 图标
+
+## 功能需求（必须真实可交互）
+1. 居中卡片（约 380px），顶部信用卡式余额卡（凸起、渐变，显示"余额 ¥ 8,642.50"+ 卡号 **** 4892 + Visa 标记），可轻微倾斜
+2. 快捷操作行：转账/收款/充值/账单（4 个凸起图标按钮带标签）
+3. 最近交易列表（5-6 项）：每行带图标、名称（星巴克/支付宝/工资/滴滴）、时间、金额（+绿/-灰）。凸起行
+4. 底部大号"付款"凸起按钮（强调色）
+5. 底部标签栏：首页/账单/我的（3 项，激活的变凹陷），JS 切换激活状态
+6. 高级蓝紫渐变点缀余额卡
+
+## 技术要求
+- lang="zh-CN"，自包含单文件，仅 Google Fonts 外部
+- flexbox 居中，cursor:pointer，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+{
+  file:'09-voice-assistant.html', name:'语音助手', desc:'智能对话交互界面',
+  scores:{视觉还原:89,交互完整:84,代码质量:82,可访问性:77,响应式:82,创新性:90},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的语音助手界面，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5
+- 双向 box-shadow 凸起/凹陷（凸起 6px，凹陷 inset 6px）
+- 圆角 16-20px；文字 #4A5C73 / #7C8BA0；强调 #6C8EBF（柔和紫）
+- 无硬边框；字体 Quicksand + Noto Sans SC；内联 SVG 图标
+
+## 功能需求（必须真实可交互）
+1. 居中卡片（约 400px），中央大号圆形"光球"（凸起圆形约 200px）代表助手。聆听时加脉冲/呼吸缩放 + 声波环扩散动画
+2. 下方状态文字"点击与我对话"→ 激活时"正在聆听..."→"处理中..."
+3. 麦克风按钮（凸起、强调色）JS 切换聆听状态。聆听时光球动画 + 音频波形（5-8 条高度动画竖条）显示
+4. 上方几个建议查询芯片（今天天气如何?/设个5分钟闹钟/讲个笑话）凸起药丸，可点击（点击填充文本区）
+5. 对话区显示 2-3 条演示问答气泡（用户右、助手左）凸起气泡
+6. 麦克风切换真实启动/停止光球动画 + 波形（无需真实音频）
+
+## 技术要求
+- lang="zh-CN"，自包含单文件，仅 Google Fonts 外部
+- flexbox 居中，cursor:pointer，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+{
+  file:'10-settings.html', name:'设置面板', desc:'系统偏好控制中心',
+  scores:{视觉还原:90,交互完整:88,代码质量:85,可访问性:81,响应式:83,创新性:79},
+  prompt:`请创建一个【新拟态风格（Neumorphism / Soft UI）】的设置/偏好面板，单文件 HTML（内联 CSS + JS），简体中文界面。
+
+## 设计系统（必须严格遵守）
+- 背景：柔和粉彩色 #E3EDF5
+- 双向 box-shadow 凸起/凹陷（凸起 6px，凹陷 inset 6px）
+- 圆角 16-20px；文字 #4A5C73 / #7C8BA0；强调 #6C8EBF（默认蓝，可被主题色覆盖）
+- 无硬边框；字体 Quicksand + Noto Sans SC；内联 SVG 图标
+
+## 功能需求（必须真实可交互）
+1. 居中卡片（约 420px），顶部资料头（凸起头像圆、姓名 林墨白、邮箱、"编辑"小按钮）
+2. 设置分组（每组一个凸起卡片，含若干行）：
+   - 通用：深色模式（新拟态切换）、语言（显示 中文）
+   - 通知：推送通知（切换）、邮件摘要（切换）、勿扰模式（切换）
+   - 外观：主题色（一行颜色圆点选择）、字体大小（S/M/L 分段控件）
+   - 隐私：人脸识别（切换）、数据分析（切换）
+3. 新拟态切换开关（凸起圆点在凹陷轨道滑动）必须 JS 工作
+4. 分段控件（字体大小 S/M/L）激活段变凹陷
+5. 主题色选择器：点击圆点选中（仅视觉），最好能实时改变 --accent 强调色
+
+## 技术要求
+- lang="zh-CN"，自包含单文件，仅 Google Fonts 外部
+- flexbox 居中，cursor:pointer，尊重 prefers-reduced-motion
+
+请输出完整可运行的单文件 HTML。`
+},
+];
+
+// ========== 渲染逻辑 ==========
+const DIM_DESC = {
+  '视觉还原':'新拟态核心质感（凸起/凹陷阴影、粉彩、圆角）的实现程度',
+  '交互完整':'所有控件是否真实可用、动画反馈是否到位',
+  '代码质量':'结构清晰度、注释、可维护性、语义化',
+  '可访问性':'焦点环、aria-label、键盘可达、对比度',
+  '响应式':'多断点适配、移动端布局降级',
+  '创新性':'在该风格下的创意表达与差异化',
+};
+
+let currentIdx = 0;
+
+function renderList(){
+  const list = document.getElementById('exList');
+  list.innerHTML = EXAMPLES.map((e,i)=>`
+    <div class="ex-item ${i===currentIdx?'active':''}" data-idx="${i}">
+      <div class="num">${String(i+1).padStart(2,'0')}</div>
+      <div class="info"><div class="t">${e.name}</div><div class="s">${e.desc}</div></div>
+    </div>`).join('');
+  list.querySelectorAll('.ex-item').forEach(el=>{
+    el.addEventListener('click',()=>{
+      currentIdx = +el.dataset.idx;
+      renderAll();
+    });
+  });
+}
+
+function renderAll(){
+  const ex = EXAMPLES[currentIdx];
+  // 标题/描述/URL
+  document.getElementById('exTitle').textContent = ex.name;
+  document.getElementById('exDesc').textContent = ex.desc;
+  document.getElementById('exUrl').textContent = 'examples/' + ex.file;
+  document.getElementById('openNew').href = 'examples/' + ex.file;
+  // iframe
+  document.getElementById('previewFrame').src = 'examples/' + ex.file;
+  // 列表激活
+  document.querySelectorAll('.ex-item').forEach((el,i)=>el.classList.toggle('active', i===currentIdx));
+  // 评分
+  renderScores(ex);
+  // 提示词
+  document.getElementById('promptText').textContent = ex.prompt;
+  // 滚动顶部
+  document.querySelector('.panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+function renderScores(ex){
+  const keys = Object.keys(ex.scores);
+  const vals = Object.values(ex.scores);
+  const avg = Math.round(vals.reduce((a,b)=>a+b,0) / vals.length);
+  // 综合分环形
+  const circumference = 2 * Math.PI * 24;
+  document.getElementById('ringFill').setAttribute('stroke-dasharray', circumference);
+  document.getElementById('ringFill').setAttribute('stroke-dashoffset', circumference * (1 - avg/100));
+  // 数字动画
+  animateNum('overallScore', avg);
+  // 六维度
+  document.getElementById('scoresGrid').innerHTML = keys.map(k=>{
+    const v = ex.scores[k];
+    return `<div class="score-item">
+      <div class="top"><span class="name">${k}</span><span class="num">${v}</span></div>
+      <div class="bar"><i data-pct="${v}"></i></div>
+      <div class="desc">${DIM_DESC[k]}</div>
+    </div>`;
+  }).join('');
+  // 触发条形动画
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('.scores-grid .bar i').forEach(b=>b.style.width = b.dataset.pct + '%');
+  });
+}
+
+function animateNum(id, target){
+  const el = document.getElementById(id);
+  let cur = 0;
+  const step = Math.max(1, Math.ceil(target/30));
+  const t = setInterval(()=>{
+    cur += step;
+    if(cur >= target){cur = target; clearInterval(t);}
+    el.textContent = cur;
+  }, 25);
+}
+
+// 复制
+function copyText(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    return navigator.clipboard.writeText(text);
+  }
+  // 降级
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  return Promise.resolve(document.execCommand('copy')).finally(()=>ta.remove());
+}
+document.getElementById('copyBtn').addEventListener('click', async ()=>{
+  const text = document.getElementById('promptText').textContent;
+  try{
+    await copyText(text);
+    showToast('已复制完整提示词到剪贴板');
+  }catch(e){
+    showToast('复制失败，请手动选择文本复制');
+  }
+});
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+// 设备宽度切换
+document.querySelectorAll('.size-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const wrap = document.getElementById('frameWrap');
+    wrap.classList.remove('device-mobile','device-tablet');
+    if(btn.dataset.size==='mobile') wrap.classList.add('device-mobile');
+    else if(btn.dataset.size==='tablet') wrap.classList.add('device-tablet');
+  });
+});
+
+// 入场动画
+const io = new IntersectionObserver((es)=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in'); io.unobserve(e.target)}});
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// 初始化
+renderList();
+renderAll();
+</script>
+</body>
+</html>

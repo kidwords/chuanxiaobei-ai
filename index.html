@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="kidwords 的 AI 项目与产品实践。">
+  <title>kidwords | AI 项目与产品实践</title>
+  <style>
+    :root { color-scheme: light; --page:#fafafa; --surface:#fff; --surface-soft:#f4f4f5; --text:#18181b; --muted:#52525b; --line:#e4e4e7; --primary:#2563eb; --primary-hover:#1d4ed8; --wash-a:rgba(191,219,254,.62); --wash-b:rgba(254,215,170,.42); }
+    :root[data-theme="dark"] { color-scheme:dark; --page:#09090b; --surface:#18181b; --surface-soft:#111113; --text:#fafafa; --muted:#c4c4cc; --line:rgba(255,255,255,.11); --primary:#60a5fa; --primary-hover:#93c5fd; --wash-a:rgba(30,64,175,.26); --wash-b:rgba(120,53,15,.22); }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { min-width:320px; margin:0; background:var(--page); color:var(--text); font:400 16px/1.6 Inter,"PingFang SC","Microsoft YaHei",system-ui,sans-serif; transition:background-color .25s,color .25s; }
+    a { color:inherit; }
+    button { font:inherit; }
+    .skip-link { position:absolute; z-index:100; left:16px; top:-48px; border-radius:10px; background:var(--primary); padding:8px 16px; color:#fff; transition:top .25s; }
+    .skip-link:focus { top:8px; }
+    .site-header { position:sticky; top:0; z-index:20; border-bottom:1px solid var(--line); background:color-mix(in srgb,var(--page) 88%,transparent); backdrop-filter:blur(18px); }
+    .container { width:min(100% - 32px,1152px); margin:0 auto; }
+    .nav-row { display:flex; min-height:80px; align-items:center; justify-content:space-between; gap:16px; }
+    .brand { display:inline-flex; align-items:center; gap:12px; text-decoration:none; font-size:18px; font-weight:600; letter-spacing:.04em; }
+    .brand-mark { display:grid; width:40px; height:40px; place-items:center; border-radius:14px; background:var(--text); color:var(--page); font-size:14px; box-shadow:0 1px 2px rgba(0,0,0,.12); transition:transform .25s; }
+    .brand:hover .brand-mark { transform:scale(1.02); }
+    .nav { display:flex; align-items:center; gap:4px; }
+    .nav a, .icon-button, .button { display:inline-flex; align-items:center; justify-content:center; border-radius:10px; font-size:14px; font-weight:500; text-decoration:none; transition:all .25s; }
+    .nav a { padding:8px 12px; color:var(--muted); }
+    .nav a:hover { background:var(--surface-soft); color:var(--text); }
+    .controls { display:flex; align-items:center; gap:8px; }
+    .icon-button { width:40px; height:40px; cursor:pointer; border:1px solid var(--line); background:var(--surface); color:var(--muted); box-shadow:0 1px 2px rgba(0,0,0,.05); }
+    .icon-button:hover, .button:hover { transform:translateY(-2px); box-shadow:0 8px 16px rgba(24,24,27,.11); }
+    .icon-button svg { width:17px; height:17px; }
+    .button { min-height:40px; gap:8px; border:1px solid var(--line); padding:8px 16px; background:var(--surface); color:var(--text); }
+    .button-primary { border-color:var(--primary); background:var(--primary); color:#fff; box-shadow:0 5px 12px color-mix(in srgb,var(--primary) 22%,transparent); }
+    .button-primary:hover { background:var(--primary-hover); }
+    .button-dark { border-color:var(--text); background:var(--text); color:var(--page); }
+    .menu-button { display:none; }
+    .mobile-nav { display:none; border-top:1px solid var(--line); padding:8px 0 16px; }
+    .mobile-nav[data-open="true"] { display:grid; gap:4px; }
+    .mobile-nav a { padding:10px 12px; border-radius:10px; color:var(--muted); text-decoration:none; }
+    .mobile-nav a:hover { background:var(--surface-soft); color:var(--text); }
+    .hero-wrap { position:relative; isolation:isolate; overflow:hidden; }
+    .ambient-wash { position:absolute; z-index:-1; inset:-160px -10% auto; height:520px; background:radial-gradient(circle at 18% 38%,var(--wash-a),transparent 33%),radial-gradient(circle at 77% 20%,var(--wash-b),transparent 30%); filter:blur(22px); pointer-events:none; }
+    .hero { display:grid; grid-template-columns:minmax(0,1fr) 320px; align-items:end; gap:48px; padding:112px 0; }
+    .eyebrow, .section-kicker { margin:0; font-size:14px; font-weight:500; }
+    .eyebrow { display:inline-flex; gap:8px; border:1px solid var(--line); border-radius:10px; padding:8px 12px; background:color-mix(in srgb,var(--surface) 82%,transparent); color:var(--muted); box-shadow:0 1px 2px rgba(0,0,0,.05); }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { max-width:780px; margin:24px 0 0; font-size:clamp(42px,6vw,64px); font-weight:600; line-height:1.2; letter-spacing:.01em; }
+    .hero-copy { max-width:680px; margin:24px 0 0; color:var(--muted); font-size:clamp(16px,2vw,18px); line-height:1.7; }
+    .hero-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:32px; }
+    .hero-actions .button { min-height:44px; padding-inline:20px; }
+    .stats { border-left:1px solid var(--line); padding-left:24px; }
+    .stats-label { margin:0; color:var(--muted); font-size:14px; font-weight:500; }
+    .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:20px 0 0; }
+    .stat-grid div { min-width:0; }
+    .stat-grid dt { font-size:24px; font-weight:600; }
+    .stat-grid dd { margin:4px 0 0; color:var(--muted); font-size:12px; line-height:1.5; }
+    .projects-section { border-block:1px solid var(--line); background:color-mix(in srgb,var(--surface) 84%,transparent); padding:80px 0; }
+    .section-head { display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:16px; margin-bottom:32px; }
+    .section-kicker { color:var(--primary); }
+    h2 { margin:8px 0 0; font-size:32px; font-weight:600; line-height:1.3; }
+    .section-date { color:var(--muted); font-size:14px; }
+    .section-copy { max-width:680px; margin-bottom:32px; color:var(--muted); font-size:14px; line-height:1.7; }
+    .project-grid { display:grid; gap:20px; }
+    .project-card { display:grid; grid-template-columns:.9fr 1.1fr; overflow:hidden; border:1px solid var(--line); border-radius:14px; background:var(--surface); box-shadow:0 1px 2px rgba(0,0,0,.06); transition:all .25s; }
+    .project-card:hover { transform:translateY(-4px); border-color:color-mix(in srgb,var(--text) 22%,var(--line)); box-shadow:0 16px 28px rgba(24,24,27,.12); }
+    .project-cover { position:relative; display:flex; min-height:320px; align-items:center; justify-content:center; overflow:hidden; background:#b58a6d center/cover no-repeat; }
+    .project-cover::before { position:absolute; inset:0; background:linear-gradient(135deg,rgba(159,45,45,.22),rgba(180,111,24,.18),rgba(26,91,82,.18)); content:""; }
+    .project-cover img { position:relative; width:100%; height:100%; object-fit:contain; }
+    .project-content { display:flex; flex-direction:column; padding:32px; }
+    .project-meta { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; color:var(--muted); font-size:12px; font-weight:500; }
+    .repo { border-radius:10px; background:var(--surface-soft); padding:6px 10px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+    .project-content h3 { margin:20px 0 0; font-size:24px; font-weight:600; line-height:1.3; }
+    .project-content h3 a { text-decoration:none; }
+    .project-content h3 a:hover { color:var(--primary); }
+    .project-summary { margin:16px 0 0; color:var(--muted); font-size:14px; line-height:1.8; }
+    .tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:24px; }
+    .tag { border-radius:10px; background:var(--surface-soft); padding:4px 10px; color:var(--muted); font-size:12px; font-weight:500; }
+    .project-actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:32px; }
+    .project-actions .button { min-height:40px; }
+    .contact { position:relative; isolation:isolate; overflow:hidden; border-top:1px solid var(--line); background:var(--surface-soft); padding:64px 0; }
+    .contact .ambient-wash { inset:-220px 0 auto; background:radial-gradient(circle at 80% 45%,var(--wash-a),transparent 34%),radial-gradient(circle at 35% 35%,var(--wash-b),transparent 32%); }
+    .contact-row { position:relative; display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:32px; }
+    .contact p { margin:0; color:var(--muted); font-size:14px; font-weight:500; }
+    .contact h2 { max-width:650px; margin-top:12px; font-size:clamp(30px,4vw,40px); }
+    .contact-actions { display:flex; flex-wrap:wrap; gap:12px; }
+    footer { border-top:1px solid var(--line); padding:24px 0; color:var(--muted); font-size:14px; }
+    .footer-row { display:flex; flex-wrap:wrap; justify-content:space-between; gap:8px; }
+    :focus-visible { outline:3px solid color-mix(in srgb,var(--primary) 60%,transparent); outline-offset:3px; }
+    @media (max-width:760px) { .container { width:min(100% - 32px,1152px); } .nav { display:none; } .header-contact { display:none; } .menu-button { display:inline-flex; } .hero { grid-template-columns:1fr; gap:40px; padding:72px 0 80px; } .stats { max-width:440px; } .projects-section { padding:64px 0; } .project-card { grid-template-columns:1fr; } .project-cover { min-height:240px; } .project-content { padding:24px; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; } }
+  </style>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-header">
+    <div class="container nav-row">
+      <a class="brand" href="#top" aria-label="kidwords AI 项目与产品实践"><span class="brand-mark">K</span><span>kidwords AI</span></a>
+      <nav class="nav" aria-label="主导航"><a href="#projects">项目</a><a href="#about">关于</a><a href="#contact">联系</a></nav>
+      <div class="controls">
+        <button class="icon-button" id="theme-toggle" type="button" role="switch" aria-label="切换深色主题" aria-checked="false"><svg id="theme-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path></svg></button>
+        <a class="button button-dark header-contact" href="#contact">发起联系</a>
+        <button class="icon-button menu-button" id="menu-toggle" type="button" aria-label="打开导航菜单" aria-expanded="false" aria-controls="mobile-nav"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 12h16M4 19h16"></path></svg></button>
+      </div>
+    </div>
+    <nav class="container mobile-nav" id="mobile-nav" data-open="false" aria-label="移动端导航"><a href="#projects">项目</a><a href="#about">关于</a><a href="#contact">联系</a></nav>
+  </header>
+  <main id="main">
+    <div class="hero-wrap" id="about">
+      <div class="ambient-wash" aria-hidden="true"></div>
+      <section class="container hero">
+        <div>
+          <p class="eyebrow">独立开发者 · AI 产品实践 · 持续构建中</p>
+          <h1>用 AI 把想法做成可被体验的产品。</h1>
+          <p class="hero-copy">这里记录 kidwords 的 AI 项目与产品实践：从概念、设计到可运行的静态成品，尽量让每一次探索都能直接被打开、体验和复用。</p>
+          <div class="hero-actions"><a class="button button-primary" href="chinese-traditional-colors/index.html">体验中国传统色</a><a class="button" href="#projects">查看项目</a></div>
+        </div>
+        <aside class="stats" aria-label="项目统计"><p class="stats-label">当前进度</p><dl class="stat-grid"><div><dt>02</dt><dd>已收录项目</dd></div><div><dt>04</dt><dd>实践方向</dd></div><div><dt>2026</dt><dd>持续更新</dd></div></dl></aside>
+      </section>
+    </div>
+    <section class="projects-section" id="projects">
+      <div class="container">
+        <div class="section-head"><div><p class="section-kicker">项目实践</p><h2>可直接打开的作品与实验</h2></div><span class="section-date">2026 / 持续更新</span></div>
+        <p class="section-copy">每个项目都是独立可运行的静态页面。后续只要把项目放入 <code>projects</code> 目录并运行生成命令，首页会自动更新。</p>
+        <div class="project-grid" id="project-grid">
+<!-- PROJECTS:START -->
+<article class="project-card">
+  <a class="project-cover" href="chinese-traditional-colors/index.html" aria-label="打开中国传统色"><img src="chinese-traditional-colors/cover.png" alt="中国传统色项目预览" loading="lazy"></a>
+  <div class="project-content">
+    <div class="project-meta"><span class="repo">kidwords/chinese-traditional-colors</span><span>Apache-2.0</span></div>
+    <h3><a href="chinese-traditional-colors/index.html">中国传统色</a></h3>
+    <p class="project-summary">整理《中华传统色：故宫里的色彩美学》完整 384 色，按 24 节气与 72 物候编排，附标准 Hex 色值与 AI 配色使用建议。</p>
+    <div class="tags"><span class="tag">HTML</span><span class="tag">384 色</span><span class="tag">东方美学</span><span class="tag">Apache-2.0</span></div>
+    <div class="project-actions"><a class="button button-primary" href="chinese-traditional-colors/index.html">立即体验</a><a class="button" href="https://github.com/kidwords/chinese-traditional-colors" target="_blank" rel="noreferrer">查看源代码</a></div>
+  </div>
+</article>
+<article class="project-card">
+  <a class="project-cover" href="showcase-neumorphism/index.html" aria-label="打开新拟态深度探索"><img src="showcase-neumorphism/cover.png" alt="新拟态深度探索项目预览" loading="lazy"></a>
+  <div class="project-content">
+    <div class="project-meta"><span class="repo">本地静态示例</span><span>未声明</span></div>
+    <h3><a href="showcase-neumorphism/index.html">新拟态深度探索</a></h3>
+    <p class="project-summary">以柔和阴影、内外凹凸层次与可交互评分为核心的 10 个新拟态界面示例。</p>
+    <div class="tags"><span class="tag">HTML</span><span class="tag">新拟态</span><span class="tag">10 个示例</span><span class="tag">AI 提示词</span></div>
+    <div class="project-actions"><a class="button button-primary" href="showcase-neumorphism/index.html">立即体验</a></div>
+  </div>
+</article>
+<!-- PROJECTS:END -->
+        </div>
+      </div>
+    </section>
+    <section class="contact" id="contact"><div class="ambient-wash" aria-hidden="true"></div><div class="container contact-row"><div><p>联系</p><h2>欢迎通过 GitHub 或邮件交流想法与合作。</h2></div><div class="contact-actions"><a class="button button-dark" href="https://github.com/kidwords" target="_blank" rel="noreferrer">GitHub 主页</a><a class="button" href="mailto:954563114@qq.com">954563114@qq.com</a></div></div></section>
+  </main>
+  <footer><div class="container footer-row"><span>© 2026 kidwords</span><span>Built for static deployment</span></div></footer>
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const theme = document.querySelector('#theme-toggle');
+      const icon = document.querySelector('#theme-icon');
+      const menu = document.querySelector('#menu-toggle');
+      const mobileNav = document.querySelector('#mobile-nav');
+      const setTheme = (value) => { const dark = value === 'dark'; root.dataset.theme = dark ? 'dark' : 'light'; theme.setAttribute('aria-checked', String(dark)); theme.setAttribute('aria-label', dark ? '切换浅色主题' : '切换深色主题'); icon.innerHTML = dark ? '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>' : '<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"></path>'; localStorage.setItem('kidwords-theme', value); };
+      setTheme(localStorage.getItem('kidwords-theme') || 'light');
+      theme.addEventListener('click', () => setTheme(root.dataset.theme === 'dark' ? 'light' : 'dark'));
+      menu.addEventListener('click', () => { const open = mobileNav.dataset.open !== 'true'; mobileNav.dataset.open = String(open); menu.setAttribute('aria-expanded', String(open)); menu.setAttribute('aria-label', open ? '关闭导航菜单' : '打开导航菜单'); });
+      mobileNav.addEventListener('click', () => { mobileNav.dataset.open = 'false'; menu.setAttribute('aria-expanded', 'false'); menu.setAttribute('aria-label', '打开导航菜单'); });
+    })();
+  </script>
+</body>
+</html>

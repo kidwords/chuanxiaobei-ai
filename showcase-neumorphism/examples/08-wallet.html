@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>钱包支付 · Neumorphism</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============ 新拟态设计系统 ============ */
+  :root{
+    --bg:#E3EDF5;
+    --bg-darker:#D1DEEC;
+    --sh-light:rgba(255,255,255,0.9);
+    --sh-dark:rgba(163,177,198,0.55);
+
+    --shadow-out: 6px 6px 12px var(--sh-dark), -6px -6px 12px var(--sh-light);
+    --shadow-in:  inset 6px 6px 12px var(--sh-dark), inset -6px -6px 12px var(--sh-light);
+    --shadow-out-sm: 4px 4px 8px var(--sh-dark), -4px -4px 8px var(--sh-light);
+    --shadow-in-sm:  inset 4px 4px 8px var(--sh-dark), inset -4px -4px 8px var(--sh-light);
+
+    --text-primary:#4A5C73;
+    --text-secondary:#7C8BA0;
+    --accent:#6C5BBF;             /* 钱包：高级蓝紫 */
+    --accent-2:#8A7BD6;
+    --card-grad:linear-gradient(135deg,#6C5BBF 0%,#8A7BD6 55%,#5E89B0 100%);
+
+    --radius-card:20px;
+    --radius-mid:16px;
+    --radius-small:12px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html,body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text-primary);
+    font-family:'Quicksand','Noto Sans SC',-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+  }
+
+  .app{
+    width:100%;
+    max-width:380px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    padding-bottom:8px;
+  }
+
+  /* ============ 顶部标题 ============ */
+  .topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 4px;
+  }
+  .topbar h1{
+    font-size:20px;font-weight:700;
+  }
+  .icon-btn{
+    width:42px;height:42px;
+    border-radius:50%;
+    background:var(--bg);
+    box-shadow:var(--shadow-out-sm);
+    border:none;
+    color:var(--text-primary);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    transition:box-shadow .2s ease, color .2s ease;
+  }
+  .icon-btn:hover{color:var(--accent);}
+  .icon-btn:active{box-shadow:var(--shadow-in-sm);}
+
+  /* ============ 余额卡（信用卡风） ============ */
+  .balance-card{
+    border-radius:24px;
+    background:var(--card-grad);
+    padding:24px;
+    color:#fff;
+    box-shadow:var(--shadow-out), 0 10px 24px rgba(108,91,191,.25);
+    position:relative;
+    overflow:hidden;
+    transform:rotate(-2deg);
+    transition:transform .3s ease;
+  }
+  .balance-card:hover{transform:rotate(0deg) translateY(-2px);}
+  /* 装饰圆 */
+  .balance-card::before{
+    content:"";
+    position:absolute;
+    width:160px;height:160px;
+    border-radius:50%;
+    background:rgba(255,255,255,.12);
+    top:-60px;right:-40px;
+  }
+  .balance-card::after{
+    content:"";
+    position:absolute;
+    width:110px;height:110px;
+    border-radius:50%;
+    background:rgba(255,255,255,.08);
+    bottom:-50px;left:-30px;
+  }
+  .bc-top{
+    display:flex;justify-content:space-between;align-items:center;
+    position:relative;z-index:1;
+  }
+  .bc-label{
+    font-size:12px;opacity:.85;letter-spacing:.5px;
+  }
+  .bc-chip{
+    width:38px;height:28px;
+    border-radius:6px;
+    background:linear-gradient(135deg,#F7E7B4,#D4AF6A);
+    box-shadow:inset 0 0 4px rgba(0,0,0,.2);
+  }
+  .bc-amount{
+    font-family:'JetBrains Mono',monospace;
+    font-size:30px;
+    font-weight:700;
+    margin-top:18px;
+    letter-spacing:.5px;
+    position:relative;z-index:1;
+  }
+  .bc-amount .currency{font-size:18px;font-weight:500;margin-right:4px;opacity:.9;}
+  .bc-bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-top:22px;
+    position:relative;z-index:1;
+  }
+  .bc-number{
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+    letter-spacing:2px;
+    opacity:.92;
+  }
+  .bc-brand{
+    font-size:18px;
+    font-weight:700;
+    font-style:italic;
+    letter-spacing:1px;
+    text-shadow:0 1px 2px rgba(0,0,0,.2);
+  }
+
+  /* ============ 快捷操作 ============ */
+  .quick-actions{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+  }
+  .qa{
+    background:var(--bg);
+    border-radius:var(--radius-mid);
+    padding:14px 6px;
+    box-shadow:var(--shadow-out-sm);
+    border:none;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    color:var(--text-primary);
+    font-family:inherit;
+    font-size:11px;
+    font-weight:500;
+    transition:box-shadow .2s ease, transform .12s ease, color .2s ease;
+  }
+  .qa:hover{color:var(--accent);transform:translateY(-2px);}
+  .qa:active{box-shadow:var(--shadow-in-sm);transform:none;}
+  .qa-icon{
+    width:34px;height:34px;
+    border-radius:50%;
+    box-shadow:var(--shadow-in-sm);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);
+  }
+
+  /* ============ 交易列表 ============ */
+  .tx-card{
+    background:var(--bg);
+    border-radius:var(--radius-card);
+    padding:18px 20px;
+    box-shadow:var(--shadow-out);
+  }
+  .card-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .card-title{font-size:15px;font-weight:700;}
+  .card-sub{font-size:11px;color:var(--text-secondary);cursor:pointer;}
+  .tx-list{display:flex;flex-direction:column;gap:10px;}
+  .tx{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:10px;
+    border-radius:var(--radius-small);
+    box-shadow:var(--shadow-out-sm);
+    background:var(--bg);
+    transition:box-shadow .2s ease, transform .12s ease;
+  }
+  .tx:hover{transform:translateY(-1px);}
+  .tx:active{box-shadow:var(--shadow-in-sm);}
+  .tx-icon{
+    width:40px;height:40px;
+    border-radius:12px;
+    box-shadow:var(--shadow-in-sm);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);
+    flex-shrink:0;
+  }
+  .tx-body{flex:1;min-width:0;}
+  .tx-name{font-size:14px;font-weight:600;margin-bottom:2px;}
+  .tx-time{font-size:11px;color:var(--text-secondary);}
+  .tx-amount{
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;
+    font-weight:700;
+  }
+  .tx-amount.plus{color:#5BA88A;}
+  .tx-amount.minus{color:var(--text-secondary);}
+
+  /* ============ 付款按钮 ============ */
+  .pay-btn{
+    height:54px;
+    border:none;
+    border-radius:var(--radius-mid);
+    background:var(--card-grad);
+    color:#fff;
+    font-family:inherit;
+    font-size:16px;
+    font-weight:600;
+    letter-spacing:1px;
+    cursor:pointer;
+    box-shadow:var(--shadow-out), 0 8px 18px rgba(108,91,191,.28);
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    transition:box-shadow .2s ease, transform .12s ease;
+  }
+  .pay-btn:hover{transform:translateY(-2px);}
+  .pay-btn:active{box-shadow:var(--shadow-in);transform:none;}
+
+  /* ============ 底部 Tab ============ */
+  .tabbar{
+    display:flex;
+    background:var(--bg);
+    border-radius:var(--radius-card);
+    padding:8px;
+    box-shadow:var(--shadow-out-sm);
+    gap:6px;
+  }
+  .tab{
+    flex:1;
+    height:48px;
+    border:none;
+    background:transparent;
+    border-radius:var(--radius-small);
+    color:var(--text-secondary);
+    font-family:inherit;
+    font-size:12px;
+    font-weight:500;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    transition:all .2s ease;
+  }
+  .tab.active{
+    color:var(--accent);
+    box-shadow:var(--shadow-in-sm);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;animation:none !important;}
+    .balance-card{transform:none;}
+  }
+</style>
+</head>
+<body>
+<main class="app" aria-label="钱包应用">
+
+  <!-- 顶部 -->
+  <div class="topbar">
+    <h1>我的钱包</h1>
+    <button class="icon-btn" aria-label="扫一扫">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+    </button>
+  </div>
+
+  <!-- 余额卡 -->
+  <section class="balance-card">
+    <div class="bc-top">
+      <span class="bc-label">可用余额</span>
+      <div class="bc-chip"></div>
+    </div>
+    <div class="bc-amount"><span class="currency">¥</span>8,642.50</div>
+    <div class="bc-bottom">
+      <div class="bc-number">**** **** **** 4892</div>
+      <div class="bc-brand">VISA</div>
+    </div>
+  </section>
+
+  <!-- 快捷操作 -->
+  <section class="quick-actions">
+    <button class="qa">
+      <span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></span>
+      转账
+    </button>
+    <button class="qa">
+      <span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></span>
+      收款
+    </button>
+    <button class="qa">
+      <span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></span>
+      充值
+    </button>
+    <button class="qa">
+      <span class="qa-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/></svg></span>
+      账单
+    </button>
+  </section>
+
+  <!-- 交易列表 -->
+  <section class="tx-card">
+    <div class="card-head">
+      <div class="card-title">最近交易</div>
+      <span class="card-sub">查看全部 ›</span>
+    </div>
+    <div class="tx-list">
+      <div class="tx">
+        <div class="tx-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg></div>
+        <div class="tx-body">
+          <div class="tx-name">星巴克</div>
+          <div class="tx-time">今天 09:24 · 餐饮</div>
+        </div>
+        <div class="tx-amount minus">-¥ 38.00</div>
+      </div>
+      <div class="tx">
+        <div class="tx-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+        <div class="tx-body">
+          <div class="tx-name">工资</div>
+          <div class="tx-time">今天 08:00 · 公司入账</div>
+        </div>
+        <div class="tx-amount plus">+¥ 12,800.00</div>
+      </div>
+      <div class="tx">
+        <div class="tx-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
+        <div class="tx-body">
+          <div class="tx-name">滴滴出行</div>
+          <div class="tx-time">昨天 19:10 · 交通</div>
+        </div>
+        <div class="tx-amount minus">-¥ 24.50</div>
+      </div>
+      <div class="tx">
+        <div class="tx-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg></div>
+        <div class="tx-body">
+          <div class="tx-name">支付宝退款</div>
+          <div class="tx-time">昨天 14:32 · 退款</div>
+        </div>
+        <div class="tx-amount plus">+¥ 156.00</div>
+      </div>
+      <div class="tx">
+        <div class="tx-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+        <div class="tx-body">
+          <div class="tx-name">美团外卖</div>
+          <div class="tx-time">前天 12:05 · 餐饮</div>
+        </div>
+        <div class="tx-amount minus">-¥ 45.80</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 付款 -->
+  <button class="pay-btn">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    付 款
+  </button>
+
+  <!-- Tab -->
+  <nav class="tabbar" aria-label="底部导航">
+    <button class="tab active" data-tab="home">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      首页
+    </button>
+    <button class="tab" data-tab="bills">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+      账单
+    </button>
+    <button class="tab" data-tab="me">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      我的
+    </button>
+  </nav>
+</main>
+
+<script>
+  /* Tab 切换 */
+  document.querySelectorAll(".tab").forEach(tab=>{
+    tab.addEventListener("click", ()=>{
+      document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+      tab.classList.add("active");
+    });
+  });
+
+  /* 付款按钮提示 */
+  document.querySelector(".pay-btn").addEventListener("click", ()=>{
+    alert("正在打开付款码（演示）");
+  });
+  document.querySelectorAll(".qa").forEach(b=>{
+    b.addEventListener("click", ()=>{ alert(b.textContent.trim() + "（演示）"); });
+  });
+</script>
+</body>
+</html>

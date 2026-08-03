@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>语音助手 · Neumorphism</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============ 新拟态设计系统 ============ */
+  :root{
+    --bg:#E3EDF5;
+    --bg-darker:#D1DEEC;
+    --sh-light:rgba(255,255,255,0.9);
+    --sh-dark:rgba(163,177,198,0.55);
+
+    --shadow-out: 6px 6px 12px var(--sh-dark), -6px -6px 12px var(--sh-light);
+    --shadow-in:  inset 6px 6px 12px var(--sh-dark), inset -6px -6px 12px var(--sh-light);
+    --shadow-out-sm: 4px 4px 8px var(--sh-dark), -4px -4px 8px var(--sh-light);
+    --shadow-in-sm:  inset 4px 4px 8px var(--sh-dark), inset -4px -4px 8px var(--sh-light);
+
+    --text-primary:#4A5C73;
+    --text-secondary:#7C8BA0;
+    --accent:#8A6FBF;            /* 助手：柔和紫 */
+    --accent-2:#A88FD6;
+    --orb-grad:radial-gradient(circle at 35% 30%, #C4B0E8 0%, #8A6FBF 55%, #6B4FA8 100%);
+
+    --radius-card:20px;
+    --radius-mid:16px;
+    --radius-small:12px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html,body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text-primary);
+    font-family:'Quicksand','Noto Sans SC',-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+  }
+
+  .app{
+    width:100%;
+    max-width:400px;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+  }
+
+  /* ============ 顶部标题 ============ */
+  .topbar{
+    text-align:center;
+    padding:4px 0 0;
+  }
+  .topbar h1{font-size:18px;font-weight:700;}
+  .topbar p{font-size:12px;color:var(--text-secondary);margin-top:4px;}
+
+  /* ============ ORB 助手球 ============ */
+  .orb-stage{
+    position:relative;
+    width:240px;height:240px;
+    margin:8px auto 0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  /* 外层凹陷舞台 */
+  .orb-base{
+    position:absolute;inset:0;
+    border-radius:50%;
+    box-shadow:var(--shadow-in);
+  }
+  /* 声波环 */
+  .wave-ring{
+    position:absolute;
+    border-radius:50%;
+    border:2px solid var(--accent-2);
+    opacity:0;
+    pointer-events:none;
+  }
+  .orb-stage.listening .wave-ring{
+    animation:wave 2s ease-out infinite;
+  }
+  .wave-ring.r2{animation-delay:.7s !important;}
+  .wave-ring.r3{animation-delay:1.4s !important;}
+  @keyframes wave{
+    0%{width:140px;height:140px;opacity:.6;}
+    100%{width:230px;height:230px;opacity:0;}
+  }
+
+  /* ORB 本体 */
+  .orb{
+    position:relative;
+    width:150px;height:150px;
+    border-radius:50%;
+    background:var(--orb-grad);
+    box-shadow:
+      inset -8px -8px 18px rgba(0,0,0,.25),
+      inset 8px 8px 18px rgba(255,255,255,.35),
+      var(--shadow-out);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    transition:transform .4s ease;
+  }
+  .orb-stage.listening .orb{
+    animation:breathe 2s ease-in-out infinite;
+  }
+  .orb-stage.thinking .orb{
+    animation:think 1.4s ease-in-out infinite;
+  }
+  @keyframes breathe{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.07);}
+  }
+  @keyframes think{
+    0%,100%{transform:scale(1) rotate(0);}
+    50%{transform:scale(1.04) rotate(3deg);}
+  }
+
+  /* orb 内部图标（声波） */
+  .orb-icon{
+    width:48px;height:48px;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,.25));
+  }
+
+  /* 状态文字 */
+  .status{
+    text-align:center;
+    margin-top:6px;
+  }
+  .status-text{
+    font-size:15px;
+    font-weight:600;
+    color:var(--text-primary);
+    transition:color .2s ease;
+  }
+  .status-text.active{color:var(--accent);}
+  .status-sub{
+    font-size:11px;color:var(--text-secondary);margin-top:4px;
+  }
+
+  /* ============ 波形（聆听时显示） ============ */
+  .waveform{
+    height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    padding:0 30px;
+    visibility:hidden;
+    opacity:0;
+    transition:opacity .25s ease;
+  }
+  .waveform.show{visibility:visible;opacity:1;}
+  .wave-bar{
+    width:5px;
+    height:6px;
+    border-radius:3px;
+    background:linear-gradient(180deg,var(--accent-2),var(--accent));
+    box-shadow:var(--shadow-out-sm);
+  }
+  .waveform.show .wave-bar{
+    animation:bounce 1s ease-in-out infinite;
+  }
+  .waveform.show .wave-bar:nth-child(1){animation-delay:0s;}
+  .waveform.show .wave-bar:nth-child(2){animation-delay:.12s;}
+  .waveform.show .wave-bar:nth-child(3){animation-delay:.24s;}
+  .waveform.show .wave-bar:nth-child(4){animation-delay:.36s;}
+  .waveform.show .wave-bar:nth-child(5){animation-delay:.48s;}
+  .waveform.show .wave-bar:nth-child(6){animation-delay:.36s;}
+  .waveform.show .wave-bar:nth-child(7){animation-delay:.24s;}
+  .waveform.show .wave-bar:nth-child(8){animation-delay:.12s;}
+  @keyframes bounce{
+    0%,100%{height:6px;}
+    50%{height:38px;}
+  }
+
+  /* ============ 建议查询 chips ============ */
+  .chips{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  .chip{
+    background:var(--bg);
+    border:none;
+    border-radius:50px;
+    padding:10px 16px;
+    box-shadow:var(--shadow-out-sm);
+    color:var(--text-primary);
+    font-family:inherit;
+    font-size:13px;
+    font-weight:500;
+    cursor:pointer;
+    transition:box-shadow .2s ease, color .2s ease, transform .12s ease;
+  }
+  .chip:hover{color:var(--accent);transform:translateY(-1px);}
+  .chip:active{box-shadow:var(--shadow-in-sm);}
+
+  /* ============ 麦克风按钮 ============ */
+  .mic-wrap{
+    display:flex;
+    justify-content:center;
+    margin-top:2px;
+  }
+  .mic-btn{
+    width:72px;height:72px;
+    border-radius:50%;
+    border:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;
+    cursor:pointer;
+    box-shadow:
+      var(--shadow-out),
+      0 8px 18px rgba(138,111,191,.35);
+    display:flex;align-items:center;justify-content:center;
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .mic-btn:hover{transform:scale(1.04);}
+  .mic-btn:active{transform:scale(.96);}
+  .mic-btn.recording{
+    background:linear-gradient(135deg,#C0657E,#D88A9D);
+    box-shadow:var(--shadow-in), 0 0 0 4px rgba(192,101,126,.25);
+    animation:pulseMic 1.6s ease-in-out infinite;
+  }
+  @keyframes pulseMic{
+    0%,100%{box-shadow:var(--shadow-in), 0 0 0 4px rgba(192,101,126,.25);}
+    50%{box-shadow:var(--shadow-in), 0 0 0 10px rgba(192,101,126,.08);}
+  }
+
+  /* ============ 对话区 ============ */
+  .chat-card{
+    background:var(--bg);
+    border-radius:var(--radius-card);
+    padding:18px 18px;
+    box-shadow:var(--shadow-out);
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    max-height:280px;
+    overflow-y:auto;
+  }
+  .chat-card::-webkit-scrollbar{width:6px;}
+  .chat-card::-webkit-scrollbar-thumb{background:var(--bg-darker);border-radius:3px;}
+
+  .msg{display:flex;gap:10px;align-items:flex-end;}
+  .msg.user{flex-direction:row-reverse;}
+  .msg-avatar{
+    width:32px;height:32px;border-radius:50%;
+    flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:12px;font-weight:700;
+    box-shadow:var(--shadow-out-sm);
+  }
+  .msg-avatar.ai{background:var(--orb-grad);}
+  .msg-avatar.me{background:linear-gradient(135deg,#7BA6C7,#5E89B0);}
+  .bubble{
+    max-width:75%;
+    padding:11px 15px;
+    border-radius:14px;
+    font-size:13px;
+    line-height:1.55;
+    box-shadow:var(--shadow-out-sm);
+  }
+  .msg.ai .bubble{
+    background:var(--bg);
+    border-bottom-left-radius:4px;
+    color:var(--text-primary);
+  }
+  .msg.user .bubble{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;
+    border-bottom-right-radius:4px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+    .orb,.wave-ring,.wave-bar,.mic-btn.recording{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+<main class="app" aria-label="语音助手">
+
+  <!-- 顶部 -->
+  <div class="topbar">
+    <h1>智能助手 · 小紫</h1>
+    <p>随时为你服务</p>
+  </div>
+
+  <!-- ORB 舞台 -->
+  <div class="orb-stage" id="orbStage">
+    <div class="orb-base"></div>
+    <div class="wave-ring r1"></div>
+    <div class="wave-ring r2"></div>
+    <div class="wave-ring r3"></div>
+    <div class="orb">
+      <svg class="orb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        <line x1="12" y1="19" x2="12" y2="23"/>
+        <line x1="8" y1="23" x2="16" y2="23"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- 状态文字 -->
+  <div class="status">
+    <div class="status-text" id="statusText">点击与我对话</div>
+    <div class="status-sub" id="statusSub">轻触下方麦克风开始</div>
+  </div>
+
+  <!-- 波形 -->
+  <div class="waveform" id="waveform">
+    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+    <div class="wave-bar"></div><div class="wave-bar"></div>
+  </div>
+
+  <!-- 建议 chips -->
+  <div class="chips">
+    <button class="chip" data-q="今天天气如何？">今天天气如何？</button>
+    <button class="chip" data-q="设个5分钟闹钟">设个5分钟闹钟</button>
+    <button class="chip" data-q="讲个笑话">讲个笑话</button>
+  </div>
+
+  <!-- 麦克风按钮 -->
+  <div class="mic-wrap">
+    <button class="mic-btn" id="micBtn" aria-label="开始或停止录音">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+        <line x1="12" y1="19" x2="12" y2="23"/>
+        <line x1="8" y1="23" x2="16" y2="23"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- 对话区 -->
+  <section class="chat-card" id="chatCard" aria-live="polite">
+    <div class="msg ai">
+      <div class="msg-avatar ai">AI</div>
+      <div class="bubble">你好，我是小紫，有什么可以帮你的吗？你可以问我天气、设置闹钟，或者让我讲个笑话。</div>
+    </div>
+    <div class="msg user">
+      <div class="msg-avatar me">我</div>
+      <div class="bubble">今天适合运动吗？</div>
+    </div>
+    <div class="msg ai">
+      <div class="msg-avatar ai">AI</div>
+      <div class="bubble">今天空气清新、气温 24°C，非常适合户外运动。建议傍晚 6 点出门慢跑 30 分钟。</div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const orbStage = document.getElementById("orbStage");
+  const statusText = document.getElementById("statusText");
+  const statusSub = document.getElementById("statusSub");
+  const waveform = document.getElementById("waveform");
+  const micBtn = document.getElementById("micBtn");
+  const chatCard = document.getElementById("chatCard");
+
+  let state = "idle"; // idle | listening | thinking
+
+  function setState(s){
+    state = s;
+    orbStage.classList.remove("listening","thinking");
+    micBtn.classList.remove("recording");
+    waveform.classList.remove("show");
+
+    if(s === "listening"){
+      orbStage.classList.add("listening");
+      micBtn.classList.add("recording");
+      waveform.classList.add("show");
+      statusText.textContent = "正在聆听...";
+      statusText.classList.add("active");
+      statusSub.textContent = "说完后再次点击结束";
+    } else if(s === "thinking"){
+      orbStage.classList.add("thinking");
+      statusText.textContent = "处理中...";
+      statusText.classList.add("active");
+      statusSub.textContent = "正在理解你的话";
+    } else {
+      statusText.textContent = "点击与我对话";
+      statusText.classList.remove("active");
+      statusSub.textContent = "轻触下方麦克风开始";
+    }
+  }
+
+  /* 麦克风切换 */
+  micBtn.addEventListener("click", ()=>{
+    if(state === "idle"){
+      setState("listening");
+    } else if(state === "listening"){
+      // 结束聆听 -> 思考 -> 回到 idle
+      setState("thinking");
+      setTimeout(()=> setState("idle"), 1600);
+    } else {
+      setState("idle");
+    }
+  });
+
+  /* chip 点击：填入对话 */
+  const answers = {
+    "今天天气如何？":"今天多云转晴，气温 22~28°C，体感舒适，外出记得防晒哦。",
+    "设个5分钟闹钟":"好的，已为你设置 5 分钟后的闹钟，到点会提醒你。",
+    "讲个笑话":"程序员去面包店，对老板说：给我来 3 个面包。老板问：要不要袋子？程序员：好，那来 2 个。",
+  };
+  document.querySelectorAll(".chip").forEach(chip=>{
+    chip.addEventListener("click", ()=>{
+      const q = chip.dataset.q;
+      addMessage("user", q);
+      // 模拟思考 + 回复
+      setState("thinking");
+      setTimeout(()=>{
+        addMessage("ai", answers[q] || "好的，我记下了。");
+        setState("idle");
+      }, 1200);
+    });
+  });
+
+  function addMessage(role, text){
+    const wrap = document.createElement("div");
+    wrap.className = "msg " + role;
+    wrap.innerHTML = `
+      <div class="msg-avatar ${role==='ai'?'ai':'me'}">${role==='ai'?'AI':'我'}</div>
+      <div class="bubble"></div>
+    `;
+    wrap.querySelector(".bubble").textContent = text;
+    chatCard.appendChild(wrap);
+    chatCard.scrollTop = chatCard.scrollHeight;
+  }
+</script>
+</body>
+</html>

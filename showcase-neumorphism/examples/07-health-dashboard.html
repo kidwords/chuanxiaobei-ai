@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>个人健康仪表盘 · Neumorphism</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============ 新拟态设计系统 ============ */
+  :root{
+    --bg:#E3EDF5;
+    --bg-darker:#D1DEEC;
+    --sh-light:rgba(255,255,255,0.9);
+    --sh-dark:rgba(163,177,198,0.55);
+
+    --shadow-out: 6px 6px 12px var(--sh-dark), -6px -6px 12px var(--sh-light);
+    --shadow-in:  inset 6px 6px 12px var(--sh-dark), inset -6px -6px 12px var(--sh-light);
+    --shadow-out-sm: 4px 4px 8px var(--sh-dark), -4px -4px 8px var(--sh-light);
+    --shadow-in-sm:  inset 4px 4px 8px var(--sh-dark), inset -4px -4px 8px var(--sh-light);
+
+    --text-primary:#4A5C73;
+    --text-secondary:#7C8BA0;
+    --accent:#5BA88A;          /* 健康主题：柔和绿 */
+    --accent-soft:#A9D4C1;
+    --accent-grad:linear-gradient(135deg,#5BA88A,#7FC0A0);
+
+    --radius-card:20px;
+    --radius-mid:16px;
+    --radius-small:12px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html,body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text-primary);
+    font-family:'Quicksand','Noto Sans SC',-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+  }
+
+  .app{
+    width:100%;
+    max-width:440px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+
+  /* ============ 头部 ============ */
+  .header{
+    background:var(--bg);
+    border-radius:var(--radius-card);
+    padding:20px 24px;
+    box-shadow:var(--shadow-out);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .greet-main{
+    font-size:20px;
+    font-weight:700;
+    letter-spacing:.3px;
+  }
+  .greet-sub{
+    font-size:12px;
+    color:var(--text-secondary);
+    margin-top:4px;
+  }
+  .header-avatar{
+    width:48px;height:48px;
+    border-radius:50%;
+    background:var(--accent-grad);
+    box-shadow:var(--shadow-out-sm);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:700;font-size:18px;
+  }
+
+  /* ============ 步数圆环 ============ */
+  .ring-card{
+    background:var(--bg);
+    border-radius:var(--radius-card);
+    padding:28px;
+    box-shadow:var(--shadow-out);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .ring-title{
+    font-size:13px;
+    color:var(--text-secondary);
+    margin-bottom:18px;
+    letter-spacing:.5px;
+  }
+  .ring-wrap{
+    position:relative;
+    width:200px;height:200px;
+    /* 凹陷底，环凸起 */
+    border-radius:50%;
+    box-shadow:var(--shadow-in);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ring-wrap svg{
+    position:absolute;
+    transform:rotate(-90deg);
+  }
+  .ring-track{
+    fill:none;
+    stroke:var(--bg-darker);
+    stroke-width:14;
+  }
+  .ring-progress{
+    fill:none;
+    stroke:url(#ringGrad);
+    stroke-width:14;
+    stroke-linecap:round;
+    stroke-dasharray:565.48; /* 2*PI*90 */
+    stroke-dashoffset:565.48;
+    transition:stroke-dashoffset 1.6s cubic-bezier(.22,1,.36,1);
+  }
+  .ring-center{
+    position:relative;
+    text-align:center;
+    z-index:1;
+  }
+  .ring-value{
+    font-family:'JetBrains Mono',monospace;
+    font-size:30px;
+    font-weight:700;
+    color:var(--text-primary);
+    line-height:1;
+  }
+  .ring-unit{
+    font-size:12px;
+    color:var(--text-secondary);
+    margin-top:6px;
+  }
+  .ring-percent{
+    font-size:12px;
+    color:var(--accent);
+    font-weight:600;
+    margin-top:4px;
+  }
+
+  /* ============ 统计卡片 2x2 ============ */
+  .stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+  }
+  .stat{
+    background:var(--bg);
+    border-radius:var(--radius-mid);
+    padding:18px 16px;
+    box-shadow:var(--shadow-out-sm);
+    transition:transform .15s ease, box-shadow .2s ease;
+  }
+  .stat:hover{transform:translateY(-2px);}
+  .stat-icon{
+    width:38px;height:38px;
+    border-radius:12px;
+    box-shadow:var(--shadow-in-sm);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+  .stat-label{
+    font-size:12px;
+    color:var(--text-secondary);
+    margin-bottom:4px;
+  }
+  .stat-value{
+    font-family:'JetBrains Mono',monospace;
+    font-size:20px;
+    font-weight:700;
+    color:var(--text-primary);
+  }
+  .stat-value .u{
+    font-size:12px;
+    font-weight:500;
+    color:var(--text-secondary);
+    margin-left:2px;
+  }
+
+  /* ============ 周活动柱状图 ============ */
+  .chart-card{
+    background:var(--bg);
+    border-radius:var(--radius-card);
+    padding:20px 22px;
+    box-shadow:var(--shadow-out);
+  }
+  .card-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:18px;
+  }
+  .card-title{font-size:15px;font-weight:700;}
+  .card-sub{font-size:11px;color:var(--text-secondary);}
+
+  .chart{
+    height:130px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:8px;
+    padding:8px 4px 0;
+    /* 凹陷轨道 */
+    border-radius:12px;
+    box-shadow:var(--shadow-in-sm);
+    padding:14px 10px 8px;
+  }
+  .bar-col{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    height:100%;
+    justify-content:flex-end;
+  }
+  .bar{
+    width:100%;
+    max-width:22px;
+    background:var(--accent-grad);
+    border-radius:6px 6px 2px 2px;
+    box-shadow:var(--shadow-out-sm);
+    height:0;
+    transition:height 1.1s cubic-bezier(.22,1,.36,1);
+  }
+  .bar.today-bar{
+    background:linear-gradient(180deg,#7BA6C7,#5E89B0);
+  }
+  .bar-label{
+    font-size:10px;
+    color:var(--text-secondary);
+    font-weight:500;
+  }
+
+  /* ============ 水分摄入 ============ */
+  .water-card{
+    background:var(--bg);
+    border-radius:var(--radius-card);
+    padding:20px 22px;
+    box-shadow:var(--shadow-out);
+  }
+  .water-row{
+    display:flex;
+    gap:10px;
+    margin-top:14px;
+    flex-wrap:wrap;
+  }
+  .water-chip{
+    flex:1;
+    min-width:34px;
+    height:44px;
+    border-radius:12px;
+    background:var(--bg);
+    box-shadow:var(--shadow-out-sm);
+    border:none;
+    cursor:pointer;
+    color:var(--text-secondary);
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s ease;
+  }
+  .water-chip:active{box-shadow:var(--shadow-in-sm);}
+  .water-chip.filled{
+    color:var(--accent);
+    box-shadow:var(--shadow-in-sm);
+    background:linear-gradient(135deg,rgba(91,168,138,.18),rgba(127,192,160,.12));
+  }
+  .water-summary{
+    font-size:12px;
+    color:var(--text-secondary);
+    margin-top:12px;
+    display:flex;
+    justify-content:space-between;
+  }
+  .water-summary b{color:var(--accent);font-family:'JetBrains Mono',monospace;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;animation:none !important;}
+    .ring-progress{transition:none !important;}
+    .bar{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<main class="app" aria-label="健康仪表盘">
+
+  <!-- ========== 头部 ========== -->
+  <header class="header">
+    <div>
+      <div class="greet-main">早上好，墨白</div>
+      <div class="greet-sub">2024年8月15日 · 周四</div>
+    </div>
+    <div class="header-avatar">墨</div>
+  </header>
+
+  <!-- ========== 步数圆环 ========== -->
+  <section class="ring-card">
+    <div class="ring-title">今日步数</div>
+    <div class="ring-wrap">
+      <svg width="200" height="200" viewBox="0 0 200 200">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#5BA88A"/>
+            <stop offset="100%" stop-color="#7FC0A0"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-track" cx="100" cy="100" r="90"/>
+        <circle class="ring-progress" id="ringProgress" cx="100" cy="100" r="90"/>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-value" id="ringValue">0</div>
+        <div class="ring-unit">/ 10,000 步</div>
+        <div class="ring-percent" id="ringPercent">0%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 统计卡片 ========== -->
+  <section class="stats">
+    <div class="stat">
+      <div class="stat-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </div>
+      <div class="stat-label">心率</div>
+      <div class="stat-value">72<span class="u">bpm</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </div>
+      <div class="stat-label">睡眠</div>
+      <div class="stat-value">7<span class="u">h</span> 20<span class="u">m</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+      </div>
+      <div class="stat-label">卡路里</div>
+      <div class="stat-value">1,840<span class="u">kcal</span></div>
+    </div>
+    <div class="stat">
+      <div class="stat-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div class="stat-label">距离</div>
+      <div class="stat-value">5.2<span class="u">km</span></div>
+    </div>
+  </section>
+
+  <!-- ========== 周活动 ========== -->
+  <section class="chart-card">
+    <div class="card-head">
+      <div class="card-title">本周活动</div>
+      <div class="card-sub">日均 7,420 步</div>
+    </div>
+    <div class="chart" id="chart">
+      <!-- bars 由 JS 注入 -->
+    </div>
+  </section>
+
+  <!-- ========== 水分摄入 ========== -->
+  <section class="water-card">
+    <div class="card-head" style="margin-bottom:4px;">
+      <div class="card-title">水分摄入</div>
+      <div class="card-sub">点击记录每一杯</div>
+    </div>
+    <div class="water-row" id="waterRow"></div>
+    <div class="water-summary">
+      <span>今日已喝 <b id="waterCount">5</b> / 8 杯</span>
+      <span>目标 2000ml</span>
+    </div>
+  </section>
+</main>
+
+<script>
+  const STEPS = 7842;
+  const GOAL = 10000;
+
+  /* ===== 圆环动画 ===== */
+  function animateRing(){
+    const circ = 2 * Math.PI * 90; // 565.48
+    const ratio = Math.min(STEPS / GOAL, 1);
+    const target = circ * (1 - ratio);
+    const prog = document.getElementById("ringProgress");
+    const valEl = document.getElementById("ringValue");
+    const pctEl = document.getElementById("ringPercent");
+
+    // 数值递增
+    let cur = 0;
+    const dur = 1600, t0 = performance.now();
+    function step(t){
+      const k = Math.min((t - t0)/dur, 1);
+      const ease = 1 - Math.pow(1 - k, 3);
+      cur = Math.round(STEPS * ease);
+      valEl.textContent = cur.toLocaleString();
+      if(k < 1) requestAnimationFrame(step);
+      else {
+        valEl.textContent = STEPS.toLocaleString();
+        pctEl.textContent = Math.round(ratio*100) + "%";
+      }
+    }
+    requestAnimationFrame(step);
+    prog.style.strokeDashoffset = target;
+  }
+
+  /* ===== 柱状图 ===== */
+  const weekData = [
+    {d:"一",v:6200},{d:"二",v:8400},{d:"三",v:5100},
+    {d:"四",v:7842,today:true},{d:"五",v:9100},
+    {d:"六",v:4200},{d:"日",v:6800},
+  ];
+  function renderChart(){
+    const chart = document.getElementById("chart");
+    const max = Math.max(...weekData.map(x=>x.v));
+    chart.innerHTML = weekData.map(x => `
+      <div class="bar-col">
+        <div class="bar ${x.today?'today-bar':''}" data-h="${(x.v/max*100).toFixed(0)}"></div>
+        <div class="bar-label">${x.d}</div>
+      </div>
+    `).join("");
+    // 触发高度动画
+    requestAnimationFrame(()=>{
+      chart.querySelectorAll(".bar").forEach((b,i)=>{
+        setTimeout(()=>{ b.style.height = b.dataset.h + "%"; }, i*80);
+      });
+    });
+  }
+
+  /* ===== 水分芯片 ===== */
+  let waterFilled = 5;
+  function renderWater(){
+    const row = document.getElementById("waterRow");
+    row.innerHTML = "";
+    for(let i=0;i<8;i++){
+      const chip = document.createElement("button");
+      chip.className = "water-chip" + (i < waterFilled ? " filled" : "");
+      chip.setAttribute("aria-label", `第${i+1}杯水`);
+      chip.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.32 0z"/></svg>`;
+      chip.addEventListener("click", ()=>{
+        // 点第 i 个：填充到 i+1
+        waterFilled = (i < waterFilled) ? i : i + 1;
+        renderWater();
+        document.getElementById("waterCount").textContent = waterFilled;
+      });
+      row.appendChild(chip);
+    }
+  }
+
+  document.getElementById("waterCount").textContent = waterFilled;
+
+  /* ===== 启动 ===== */
+  window.addEventListener("DOMContentLoaded", ()=>{
+    renderChart();
+    setTimeout(animateRing, 250);
+    renderWater();
+  });
+</script>
+</body>
+</html>

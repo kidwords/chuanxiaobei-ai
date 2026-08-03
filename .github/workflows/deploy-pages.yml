@@ -1,4 +1,4 @@
-name: 发布到 GitHub Pages
+name: 发布静态项目页
 
 on:
   push:
@@ -23,18 +23,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-        id: pages
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - name: 构建静态站
-        run: npm run build
-        env:
-          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+      - name: 准备静态文件
+        run: |
+          mkdir _site
+          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github ! -name _site -exec cp -R {} _site/ \;
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: ./out
+          path: _site
       - uses: actions/deploy-pages@v4
         id: deployment

@@ -1,67 +1,22 @@
-# 川小北AI 展示站
+# 静态项目导航仓
 
-GitHub Pages 静态部署：https://kidwords.github.io/chuanxiaobei-ai/
+双击 `index.html` 即可打开导航首页，无需启动 Node.js。首页默认浅色主题，右上角可切换深色主题；每个项目卡片应维护：名称、类型、状态、更新时间、摘要、封面资源和链接。
 
-## 目录结构
+## 新增项目
 
-```
-content/
-  projects/<slug>.mdx     # 单个项目档案的 frontmatter + 正文
-public/
-  projects/<slug>/cover.svg # 项目封面（可替换成 PNG / WebP / AVIF）
-src/
-  app/
-    layout.tsx           # 全局外壳、head JSON-LD Person、主题预同步脚本
-    page.tsx             # 首页
-    projects/page.tsx    # 项目档案列表
-    projects/[slug]/page.tsx # 单个项目
-    about/page.tsx       # 关于
-    sitemap.ts           # 自动汇总页面与项目
-    feed.xml/route.ts    # RSS
-    not-found.tsx        # 404
-    global-error.tsx     # 全局错误兜底
-  components/            # 共享部件：SiteHeader、Footer、Hero、ProjectGrid、Icon、ThemeSwitch 等
-lib/                     # 数据访问 (projects.data.ts) 与 SEO 工具
-.eslint.config.mjs       # flat config：@eslint/js recommended + @next/eslint-plugin-next core-web-vitals
+1. 将可直接运行的静态成品放到 `<项目名>/`，与首页 `index.html` 同级。
+2. 运行 `node static-project-hub/scripts/generate-projects.mjs` 自动更新首页卡片。
+3. Next.js 项目先执行静态导出，再复制其 `out/` 内容到对应项目目录；项目内返回首页统一使用 `../index.html`。
+
+每个项目应提供 `meta.json` 与 `cover.png`。封面使用项目首页截图即可；本仓库不再依赖浏览器自动截图，确保双击 `index.html` 与项目管理脚本均无需安装依赖。
+
+## 检查与更新
+
+```powershell
+node scripts/capture-covers.mjs
+node scripts/generate-projects.mjs
 ```
 
-## 新增一个项目
+前一条检查项目封面是否齐全，后一条自动更新首页项目卡片。
 
-1. 在 `content/projects/<slug>.mdx` 创建文件，frontmatter 至少包含：
-
-   ```yaml
-   ---
-   title: "项目名"
-   summary: "一段话简介"
-   repository: "owner/repo"
-   tags: ["HTML", "Apache-2.0"]
-   license: "Apache-2.0"
-   status: "stable"
-   createdAt: "2025-12-01"
-   updatedAt: "2026-07-24"
-   github: "https://github.com/owner/repo"
-   demo: "https://example.com/"
-   artwork: "/projects/<slug>/cover.svg"
-   ---
-
-   # 用 Markdown 写正文
-   ```
-
-2. 把封面资源放到 `public/projects/<slug>/cover.svg`（任意浏览器可加载的图片格式均可）。
-
-3. 提交后推 `main`，GitHub Actions 会自动发布。
-
-4. `sitemap.xml` 与 `feed.xml` 会在构建时自动把新增项目写入。
-
-## 本地开发
-
-```
-npm install
-NEXT_PUBLIC_BASE_PATH=/chuanxiaobei-ai npm run dev
-NEXT_PUBLIC_BASE_PATH=/chuanxiaobei-ai npm run build && npm start
-NEXT_PUBLIC_BASE_PATH=/chuanxiaobei-ai npm run lint
-npm run typecheck
-npm run verify   # lint + typecheck
-```
-
-如果本地没有 `BASE_PATH`，构建仍能完成，但相对资源路径会回到站点根。
+当前仅链接到仓库中已有的中国传统色成品，未复制、删除或修改该项目。

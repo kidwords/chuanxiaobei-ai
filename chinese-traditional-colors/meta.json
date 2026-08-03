@@ -1,0 +1,8 @@
+{
+  "title": "中国传统色",
+  "summary": "整理《中华传统色：故宫里的色彩美学》完整 384 色，按 24 节气与 72 物候编排，附标准 Hex 色值与 AI 配色使用建议。",
+  "repository": "kidwords/chinese-traditional-colors",
+  "license": "Apache-2.0",
+  "tags": ["HTML", "384 色", "东方美学", "Apache-2.0"],
+  "github": "https://github.com/kidwords/chinese-traditional-colors"
+}

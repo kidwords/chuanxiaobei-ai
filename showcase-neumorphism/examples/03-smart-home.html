@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>我的家 · 智能家居控制面板</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       NEUMORPHISM DESIGN SYSTEM
+       ============================================================ */
+    :root {
+      --bg: #E3EDF5;
+      --bg-darker: #D1DEEC;
+
+      --sh-light: rgba(255, 255, 255, 0.9);
+      --sh-dark:  rgba(163, 177, 198, 0.55);
+
+      --shadow-out:    6px 6px 12px var(--sh-dark), -6px -6px 12px var(--sh-light);
+      --shadow-out-sm: 4px 4px 8px  var(--sh-dark), -4px -4px 8px  var(--sh-light);
+      --shadow-in:    inset 6px 6px 12px var(--sh-dark), inset -6px -6px 12px var(--sh-light);
+      --shadow-in-sm: inset 4px 4px 8px  var(--sh-dark), inset -4px -4px 8px  var(--sh-light);
+
+      --text-primary:   #4A5C73;
+      --text-secondary: #7C8BA0;
+      --accent:         #6C8EBF;     /* cool blue-gray accent */
+      --warm:           #E8945A;     /* warm orange for "on" */
+      --warm-soft:      #F0B68A;
+
+      --radius-card: 28px;
+      --radius-md:   16px;
+      --radius-sm:   12px;
+
+      --t: 220ms cubic-bezier(.4, 0, .2, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Quicksand', 'Noto Sans SC', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       DASHBOARD
+       ============================================================ */
+    .panel {
+      width: 420px;
+      max-width: 100%;
+      background: var(--bg);
+      border-radius: var(--radius-card);
+      padding: 26px 24px;
+      box-shadow: var(--shadow-out);
+    }
+
+    /* ---------- Header ---------- */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .header .greet { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+    .header .title { font-size: 22px; font-weight: 700; margin-top: 2px; }
+    .clock {
+      text-align: right;
+    }
+    .clock .time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .clock .date {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* ---------- Room tabs ---------- */
+    .rooms {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .room {
+      flex: 1;
+      height: 44px;
+      border: none;
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-out-sm);
+      transition: var(--t);
+    }
+    .room:hover { color: var(--accent); }
+    .room.active {
+      color: var(--accent);
+      box-shadow: var(--shadow-in-sm);
+    }
+
+    /* ---------- Status bar ---------- */
+    .status {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .status .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--warm);
+      box-shadow: 0 0 0 4px rgba(232,148,90,.18);
+    }
+    .status b { color: var(--warm); font-weight: 700; }
+
+    /* ---------- Device grid ---------- */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--bg);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: var(--shadow-out-sm);
+      transition: var(--t);
+      display: flex;
+      flex-direction: column;
+      min-height: 130px;
+    }
+    .card:hover { transform: translateY(-2px); }
+
+    .card-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .card-ico {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: var(--bg);
+      box-shadow: var(--shadow-in-sm);
+      display: grid;
+      place-items: center;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .card-ico svg { width: 18px; height: 18px; }
+    .card.on .card-ico { color: var(--warm); }
+    .card-meta { display: flex; flex-direction: column; line-height: 1.2; }
+    .card-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .card-sub  { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+    /* ---------- Toggle switch ---------- */
+    .toggle-row {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .state-label {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .card.on .state-label { color: var(--warm); font-weight: 700; }
+
+    .toggle {
+      width: 52px;
+      height: 28px;
+      border-radius: 999px;
+      background: var(--bg);
+      box-shadow: var(--shadow-in-sm);
+      position: relative;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: var(--t);
+    }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 4px;
+      transform: translateY(-50%);
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: var(--shadow-out-sm);
+      transition: var(--t);
+    }
+    .toggle.on::after {
+      left: 28px;
+      background: var(--warm);
+    }
+
+    /* ---------- Temperature stepper ---------- */
+    .temp-row {
+      margin-top: auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .stepper {
+      width: 28px; height: 28px;
+      border: none;
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--text-secondary);
+      cursor: pointer;
+      box-shadow: var(--shadow-out-sm);
+      display: grid;
+      place-items: center;
+      transition: var(--t);
+    }
+    .stepper:hover { color: var(--accent); }
+    .stepper:active { box-shadow: var(--shadow-in-sm); transform: scale(.9); }
+    .stepper svg { width: 14px; height: 14px; }
+    .temp-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .temp-val small { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+
+    /* ---------- Slider (curtains / volume) ---------- */
+    .slider {
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--bg);
+      box-shadow: var(--shadow-in);
+      cursor: pointer;
+      margin-top: auto;
+    }
+    .slider .fill {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 60%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--warm-soft));
+    }
+    .slider .thumb {
+      position: absolute;
+      top: 50%;
+      left: 60%;
+      transform: translate(-50%, -50%);
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--bg);
+      box-shadow: var(--shadow-out-sm);
+    }
+    .slider-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      align-self: flex-end;
+      margin-bottom: 8px;
+    }
+
+    /* ---------- A11y ---------- */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="panel" role="region" aria-label="智能家居控制面板">
+
+    <!-- header -->
+    <div class="header">
+      <div>
+        <div class="greet" id="greet">下午好</div>
+        <div class="title">我的家</div>
+      </div>
+      <div class="clock">
+        <div class="time" id="clock">--:--</div>
+        <div class="date" id="date">--</div>
+      </div>
+    </div>
+
+    <!-- room tabs -->
+    <div class="rooms" role="tablist">
+      <button class="room active" data-room="客厅">客厅</button>
+      <button class="room"        data-room="卧室">卧室</button>
+      <button class="room"        data-room="厨房">厨房</button>
+    </div>
+
+    <!-- status -->
+    <div class="status">
+      <span class="dot"></span>
+      <span><b id="onCount">3</b> 个设备开启中 · 室温舒适</span>
+    </div>
+
+    <!-- device grid -->
+    <div class="grid">
+
+      <!-- 灯光 -->
+      <div class="card on" id="card-light" data-device="light">
+        <div class="card-head">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.2 1 2V17h6v-.3c0-.8.4-1.5 1-2A7 7 0 0 0 12 2z"/></svg>
+          </div>
+          <div class="card-meta">
+            <span class="card-name">客厅灯光</span>
+            <span class="card-sub">暖白 · 主灯</span>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <span class="state-label">已开启</span>
+          <div class="toggle on" id="t-light" role="switch" aria-checked="true" tabindex="0"></div>
+        </div>
+      </div>
+
+      <!-- 空调 -->
+      <div class="card on" id="card-ac" data-device="ac">
+        <div class="card-head">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9 4.9 19.1"/></svg>
+          </div>
+          <div class="card-meta">
+            <span class="card-name">空调</span>
+            <span class="card-sub">制冷模式</span>
+          </div>
+        </div>
+        <div class="temp-row">
+          <button class="stepper" id="acMinus" aria-label="降低温度">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <div class="temp-val"><span id="acTemp">24</span><small>°C</small></div>
+          <button class="stepper" id="acPlus" aria-label="升高温度">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- 窗帘 -->
+      <div class="card" id="card-curtain" data-device="curtain">
+        <div class="card-head">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 8h18M9 3v18M15 3v18"/></svg>
+          </div>
+          <div class="card-meta">
+            <span class="card-name">智能窗帘</span>
+            <span class="card-sub">南向窗户</span>
+          </div>
+        </div>
+        <div class="slider-val"><span id="curtainVal">60</span>%</div>
+        <div class="slider" id="curtainSlider" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="60" tabindex="0">
+          <div class="fill" id="curtainFill"></div>
+          <div class="thumb" id="curtainThumb"></div>
+        </div>
+      </div>
+
+      <!-- 音响 -->
+      <div class="card on" id="card-speaker" data-device="speaker">
+        <div class="card-head">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3" width="12" height="18" rx="3"/><circle cx="12" cy="14" r="3"/><circle cx="12" cy="7" r="1"/></svg>
+          </div>
+          <div class="card-meta">
+            <span class="card-name">智能音响</span>
+            <span class="card-sub">夜航星图</span>
+          </div>
+        </div>
+        <div class="slider-val"><span id="volVal">40</span></div>
+        <div class="slider" id="volSlider" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40" tabindex="0">
+          <div class="fill" id="volFill"></div>
+          <div class="thumb" id="volThumb"></div>
+        </div>
+      </div>
+
+      <!-- 电视 -->
+      <div class="card" id="card-tv" data-device="tv">
+        <div class="card-head">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="13" rx="2"/><polyline points="8 3 12 6 16 3"/></svg>
+          </div>
+          <div class="card-meta">
+            <span class="card-name">电视</span>
+            <span class="card-sub">客厅 · 65寸</span>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <span class="state-label">已关闭</span>
+          <div class="toggle" id="t-tv" role="switch" aria-checked="false" tabindex="0"></div>
+        </div>
+      </div>
+
+      <!-- 加湿器 -->
+      <div class="card" id="card-humid" data-device="humid">
+        <div class="card-head">
+          <div class="card-ico" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S5 10 5 14a7 7 0 0 0 14 0c0-4-7-11.5-7-11.5z"/></svg>
+          </div>
+          <div class="card-meta">
+            <span class="card-name">加湿器</span>
+            <span class="card-sub">湿度 52%</span>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <span class="state-label">已关闭</span>
+          <div class="toggle" id="t-humid" role="switch" aria-checked="false" tabindex="0"></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    /* ============================================================
+       Dashboard logic: live clock, room tabs, toggles, temp
+       stepper, two sliders, and "on" device counter.
+       ============================================================ */
+    (function () {
+
+      /* ---------- Clock ---------- */
+      const clockEl = document.getElementById('clock');
+      const dateEl  = document.getElementById('date');
+      const greetEl = document.getElementById('greet');
+      const WEEK = ['日','一','二','三','四','五','六'];
+
+      function tick() {
+        const d = new Date();
+        const hh = String(d.getHours()).padStart(2,'0');
+        const mm = String(d.getMinutes()).padStart(2,'0');
+        clockEl.textContent = hh + ':' + mm;
+        dateEl.textContent  = `${d.getMonth()+1}月${d.getDate()}日 · 周${WEEK[d.getDay()]}`;
+        const h = d.getHours();
+        greetEl.textContent = h < 6 ? '凌晨好' : h < 11 ? '早上好' : h < 13 ? '中午好' : h < 18 ? '下午好' : h < 22 ? '晚上好' : '夜深了';
+      }
+      tick();
+      setInterval(tick, 1000 * 30);
+
+      /* ---------- Room tabs ---------- */
+      document.querySelectorAll('.room').forEach(r => {
+        r.addEventListener('click', () => {
+          document.querySelectorAll('.room').forEach(x => x.classList.remove('active'));
+          r.classList.add('active');
+        });
+      });
+
+      /* ---------- Toggle switches ---------- */
+      // map toggle id -> card element + state label
+      const toggleConfig = {
+        't-light':  { card: 'card-light',  on: '已开启', off: '已关闭' },
+        't-tv':     { card: 'card-tv',     on: '已开启', off: '已关闭' },
+        't-humid':  { card: 'card-humid',  on: '已开启', off: '已关闭' },
+      };
+
+      function bindToggle(id) {
+        const t = document.getElementById(id);
+        const cfg = toggleConfig[id];
+        const card = document.getElementById(cfg.card);
+        const label = card.querySelector('.state-label');
+        function flip() {
+          const on = !t.classList.contains('on');
+          t.classList.toggle('on', on);
+          t.setAttribute('aria-checked', on);
+          card.classList.toggle('on', on);
+          label.textContent = on ? cfg.on : cfg.off;
+          recount();
+        }
+        t.addEventListener('click', flip);
+        t.addEventListener('keydown', e => {
+          if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); }
+        });
+      }
+      Object.keys(toggleConfig).forEach(bindToggle);
+
+      /* ---------- Temperature stepper ---------- */
+      const acTemp = document.getElementById('acTemp');
+      let acValue = 24;
+      function setAc(v) {
+        acValue = Math.min(30, Math.max(16, v));
+        acTemp.textContent = acValue;
+      }
+      document.getElementById('acPlus').addEventListener('click',  () => setAc(acValue + 1));
+      document.getElementById('acMinus').addEventListener('click', () => setAc(acValue - 1));
+
+      /* ---------- Sliders ---------- */
+      function bindSlider(trackId, fillId, thumbId, valId, init) {
+        const track = document.getElementById(trackId);
+        const fill  = document.getElementById(fillId);
+        const thumb = document.getElementById(thumbId);
+        const val   = valId ? document.getElementById(valId) : null;
+        let value = init;
+
+        function render() {
+          fill.style.width = value + '%';
+          thumb.style.left = value + '%';
+          track.setAttribute('aria-valuenow', value);
+          if (val) val.textContent = value;
+        }
+        function setFromEvent(e) {
+          const rect = track.getBoundingClientRect();
+          const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+          value = Math.round(Math.min(1, Math.max(0, x / rect.width)) * 100);
+          render();
+        }
+
+        track.addEventListener('click', setFromEvent);
+        track.addEventListener('keydown', e => {
+          if (e.key === 'ArrowRight') { value = Math.min(100, value + 5); render(); }
+          if (e.key === 'ArrowLeft')  { value = Math.max(0, value - 5); render(); }
+        });
+
+        render();
+        return { get: () => value };
+      }
+
+      bindSlider('curtainSlider', 'curtainFill', 'curtainThumb', 'curtainVal', 60);
+      bindSlider('volSlider',     'volFill',     'volThumb',     'volVal',     40);
+
+      /* ---------- Recount "on" devices ---------- */
+      const onCountEl = document.getElementById('onCount');
+      function recount() {
+        // count cards with .on class
+        const n = document.querySelectorAll('.card.on').length;
+        onCountEl.textContent = n;
+      }
+      recount();
+    })();
+  </script>
+</body>
+</html>

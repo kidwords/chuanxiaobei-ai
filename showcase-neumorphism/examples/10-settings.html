@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>设置面板 · Neumorphism</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============ 新拟态设计系统 ============
+     注意：--accent 会被 JS 改写以实现主题色切换 */
+  :root{
+    --bg:#E3EDF5;
+    --bg-darker:#D1DEEC;
+    --sh-light:rgba(255,255,255,0.9);
+    --sh-dark:rgba(163,177,198,0.55);
+
+    --shadow-out: 6px 6px 12px var(--sh-dark), -6px -6px 12px var(--sh-light);
+    --shadow-in:  inset 6px 6px 12px var(--sh-dark), inset -6px -6px 12px var(--sh-light);
+    --shadow-out-sm: 4px 4px 8px var(--sh-dark), -4px -4px 8px var(--sh-light);
+    --shadow-in-sm:  inset 4px 4px 8px var(--sh-dark), inset -4px -4px 8px var(--sh-light);
+
+    --text-primary:#4A5C73;
+    --text-secondary:#7C8BA0;
+    --accent:#6C8EBF;          /* 默认主题色：蓝 */
+    --accent-soft:#A8BDD6;
+
+    --radius-card:20px;
+    --radius-mid:16px;
+    --radius-small:12px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html,body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text-primary);
+    font-family:'Quicksand','Noto Sans SC',-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px 16px;
+  }
+
+  .app{
+    width:100%;
+    max-width:420px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  .page-title{
+    font-size:22px;
+    font-weight:700;
+    padding:0 4px 2px;
+  }
+
+  /* ============ 个人资料头 ============ */
+  .profile{
+    background:var(--bg);
+    border-radius:var(--radius-card);
+    padding:22px;
+    box-shadow:var(--shadow-out);
+    display:flex;
+    align-items:center;
+    gap:16px;
+  }
+  .avatar{
+    width:62px;height:62px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent-soft));
+    box-shadow:var(--shadow-out-sm);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-weight:700;font-size:22px;
+    flex-shrink:0;
+    transition:background .3s ease;
+  }
+  .profile-info{flex:1;min-width:0;}
+  .profile-name{font-size:17px;font-weight:700;}
+  .profile-email{
+    font-size:12px;color:var(--text-secondary);
+    margin-top:3px;overflow:hidden;text-overflow:ellipsis;
+  }
+  .edit-btn{
+    height:34px;padding:0 14px;
+    border-radius:10px;
+    background:var(--bg);
+    box-shadow:var(--shadow-out-sm);
+    border:none;color:var(--text-primary);
+    font-family:inherit;font-size:12px;font-weight:600;
+    cursor:pointer;
+    transition:box-shadow .2s ease, color .2s ease;
+  }
+  .edit-btn:hover{color:var(--accent);}
+  .edit-btn:active{box-shadow:var(--shadow-in-sm);}
+
+  /* ============ 设置分组卡片 ============ */
+  .group{
+    background:var(--bg);
+    border-radius:var(--radius-card);
+    padding:8px 18px;
+    box-shadow:var(--shadow-out);
+  }
+  .group-title{
+    font-size:12px;
+    font-weight:600;
+    color:var(--text-secondary);
+    letter-spacing:1px;
+    padding:14px 4px 8px;
+    text-transform:uppercase;
+  }
+  .row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:13px 4px;
+    border-bottom:1px solid rgba(163,177,198,.18);
+  }
+  .row:last-child{border-bottom:none;}
+  .row-icon{
+    width:36px;height:36px;
+    border-radius:10px;
+    box-shadow:var(--shadow-in-sm);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--accent);
+    flex-shrink:0;
+  }
+  .row-label{
+    flex:1;
+    font-size:14px;
+    font-weight:500;
+  }
+  .row-value{
+    font-size:13px;
+    color:var(--text-secondary);
+    display:flex;align-items:center;gap:6px;
+  }
+  .chev{color:var(--text-secondary);}
+
+  /* ============ 新拟态开关 ============ */
+  .toggle{
+    width:52px;height:30px;
+    border-radius:50px;
+    background:var(--bg);
+    box-shadow:var(--shadow-in-sm);
+    border:none;
+    position:relative;
+    cursor:pointer;
+    flex-shrink:0;
+    padding:0;
+    transition:background .25s ease;
+  }
+  .toggle .thumb{
+    position:absolute;
+    top:4px;left:4px;
+    width:22px;height:22px;
+    border-radius:50%;
+    background:var(--bg);
+    box-shadow:var(--shadow-out-sm);
+    transition:left .25s cubic-bezier(.4,1.4,.6,1), background .25s ease;
+  }
+  .toggle.on{
+    background:linear-gradient(135deg,var(--accent),var(--accent-soft));
+  }
+  .toggle.on .thumb{
+    left:26px;
+    background:#fff;
+  }
+
+  /* ============ 主题色选择 ============ */
+  .colors{
+    display:flex;
+    gap:12px;
+    padding:4px 0;
+  }
+  .color-dot{
+    width:30px;height:30px;
+    border-radius:50%;
+    border:none;
+    cursor:pointer;
+    box-shadow:var(--shadow-out-sm);
+    position:relative;
+    transition:transform .15s ease;
+  }
+  .color-dot:hover{transform:scale(1.1);}
+  .color-dot.active::after{
+    content:"";
+    position:absolute;
+    inset:-5px;
+    border-radius:50%;
+    border:2px solid currentColor;
+  }
+  .color-dot.active{
+    box-shadow:var(--shadow-in-sm);
+  }
+
+  /* ============ 分段控件 ============ */
+  .segmented{
+    display:flex;
+    background:var(--bg);
+    box-shadow:var(--shadow-in-sm);
+    border-radius:10px;
+    padding:4px;
+    gap:4px;
+  }
+  .seg{
+    border:none;
+    background:transparent;
+    border-radius:7px;
+    padding:7px 14px;
+    font-family:inherit;
+    font-size:13px;
+    font-weight:600;
+    color:var(--text-secondary);
+    cursor:pointer;
+    transition:all .2s ease;
+    min-width:38px;
+  }
+  .seg.active{
+    color:var(--text-primary);
+    background:var(--bg);
+    box-shadow:var(--shadow-out-sm);
+  }
+
+  /* ============ 时间行 ============ */
+  .time-pill{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    background:var(--bg);
+    box-shadow:var(--shadow-in-sm);
+    padding:5px 10px;
+    border-radius:8px;
+    color:var(--text-secondary);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;animation:none !important;}
+  }
+</style>
+</head>
+<body>
+<main class="app" aria-label="设置面板">
+
+  <h1 class="page-title">设置</h1>
+
+  <!-- 个人资料 -->
+  <section class="profile">
+    <div class="avatar" id="avatar">墨</div>
+    <div class="profile-info">
+      <div class="profile-name">林墨白</div>
+      <div class="profile-email">linmobai@example.com</div>
+    </div>
+    <button class="edit-btn">编辑</button>
+  </section>
+
+  <!-- 通用 -->
+  <section class="group">
+    <div class="group-title">通用</div>
+    <div class="row">
+      <div class="row-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </div>
+      <div class="row-label">深色模式</div>
+      <button class="toggle" data-toggle aria-label="深色模式"><span class="thumb"></span></button>
+    </div>
+    <div class="row" style="cursor:pointer;">
+      <div class="row-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      </div>
+      <div class="row-label">语言</div>
+      <div class="row-value">
+        <span>中文</span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 通知 -->
+  <section class="group">
+    <div class="group-title">通知</div>
+    <div class="row">
+      <div class="row-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </div>
+      <div class="row-label">推送通知</div>
+      <button class="toggle on" data-toggle aria-label="推送通知"><span class="thumb"></span></button>
+    </div>
+    <div class="row">
+      <div class="row-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      </div>
+      <div class="row-label">邮件摘要</div>
+      <button class="toggle" data-toggle aria-label="邮件摘要"><span class="thumb"></span></button>
+    </div>
+    <div class="row">
+      <div class="row-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><circle cx="12" cy="16" r=".5" fill="currentColor"/></svg>
+      </div>
+      <div class="row-label">勿扰模式</div>
+      <span class="time-pill">22:00 — 07:00</span>
+      <button class="toggle on" data-toggle aria-label="勿扰模式"><span class="thumb"></span></button>
+    </div>
+  </section>
+
+  <!-- 外观 -->
+  <section class="group">
+    <div class="group-title">外观</div>
+    <div class="row">
+      <div class="row-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>
+      </div>
+      <div class="row-label" style="flex:0 0 auto;width:64px;">主题色</div>
+      <div class="colors" id="colors">
+        <button class="color-dot active" style="background:#6C8EBF;color:#6C8EBF" data-color="#6C8EBF" data-soft="#A8BDD6" aria-label="蓝色"></button>
+        <button class="color-dot" style="background:#5BA88A;color:#5BA88A" data-color="#5BA88A" data-soft="#A9D4C1" aria-label="绿色"></button>
+        <button class="color-dot" style="background:#8A6FBF;color:#8A6FBF" data-color="#8A6FBF" data-soft="#C4B0E8" aria-label="紫色"></button>
+        <button class="color-dot" style="background:#C0825B;color:#C0825B" data-color="#C0825B" data-soft="#E0B89A" aria-label="橙色"></button>
+        <button class="color-dot" style="background:#C0657E;color:#C0657E" data-color="#C0657E" data-soft="#E0A8B6" aria-label="粉色"></button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg>
+      </div>
+      <div class="row-label" style="flex:0 0 auto;width:64px;">字体大小</div>
+      <div class="segmented" id="fontSeg" style="margin-left:auto;">
+        <button class="seg" data-size="S" style="font-size:11px;">S</button>
+        <button class="seg active" data-size="M" style="font-size:13px;">M</button>
+        <button class="seg" data-size="L" style="font-size:15px;">L</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 隐私 -->
+  <section class="group">
+    <div class="group-title">隐私</div>
+    <div class="row">
+      <div class="row-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+      </div>
+      <div class="row-label">人脸识别</div>
+      <button class="toggle on" data-toggle aria-label="人脸识别"><span class="thumb"></span></button>
+    </div>
+    <div class="row">
+      <div class="row-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="row-label">数据分析</div>
+      <button class="toggle" data-toggle aria-label="数据分析"><span class="thumb"></span></button>
+    </div>
+  </section>
+</main>
+
+<script>
+  /* ===== 新拟态开关 ===== */
+  document.querySelectorAll("[data-toggle]").forEach(t=>{
+    t.addEventListener("click", ()=>{
+      t.classList.toggle("on");
+    });
+  });
+
+  /* ===== 主题色选择（修改 --accent）===== */
+  const root = document.documentElement;
+  const avatar = document.getElementById("avatar");
+  document.querySelectorAll(".color-dot").forEach(dot=>{
+    dot.addEventListener("click", ()=>{
+      document.querySelectorAll(".color-dot").forEach(d=>d.classList.remove("active"));
+      dot.classList.add("active");
+      root.style.setProperty("--accent", dot.dataset.color);
+      root.style.setProperty("--accent-soft", dot.dataset.soft);
+    });
+  });
+
+  /* ===== 字体大小分段控件 ===== */
+  document.querySelectorAll("#fontSeg .seg").forEach(seg=>{
+    seg.addEventListener("click", ()=>{
+      document.querySelectorAll("#fontSeg .seg").forEach(s=>s.classList.remove("active"));
+      seg.classList.add("active");
+    });
+  });
+
+  /* ===== 编辑按钮 ===== */
+  document.querySelector(".edit-btn").addEventListener("click", ()=>{
+    alert("编辑个人资料（演示）");
+  });
+</script>
+</body>
+</html>
