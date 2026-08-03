@@ -78,10 +78,10 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 .cover h1 strong {
   font-weight: 700;
   background: linear-gradient(115deg, #fff799 0%, #f3a694 8%, #d12920 16%, #e18a3b 24%, #f7d154 32%, #c67915 40%, #4c8045 48%, #3d8e86 56%, #00a6a6 64%, #3271ae 72%, #9b8ea9 80%, #903754 88%, #a14fb5 94%, #fff799 100%);
-  background-size: 800% 100%;
+  background-size: 1400% 100%;
   -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent;
   text-shadow: 0 4px 18px rgba(84,82,120,0.12);
-  animation: title-lightflow 30s linear infinite;
+  animation: title-lightflow 68s linear infinite;
   will-change: background-position;
   backface-visibility: hidden;
 }
@@ -744,6 +744,35 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 .pal-count-label { font-size: 0.88rem; font-weight: 600; color: rgba(255,255,255,0.78); white-space: nowrap; }
 .pal-toolbar-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-start; }
 .palette-folded .imm-nav-right { display: none; }
+.palette-folded .imm-nav-left { display: none; }
+.palette-active .imm-nav-right .imm-btn,
+.palette-active .imm-nav-right .nav-project-link {
+  color: #2f3035;
+  background: rgba(255,255,255,0.78);
+  border-color: rgba(47,48,53,0.16);
+  text-shadow: none;
+}
+.palette-active .imm-nav-right .imm-btn:hover,
+.palette-active .imm-nav-right .nav-project-link:hover {
+  background: rgba(255,255,255,0.94);
+  color: #15161a;
+}
+.palette-active #modeBtn {
+  opacity: 0.46;
+  filter: grayscale(1);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+#palToolbar .imm-btn {
+  color: #2f3035;
+  background: rgba(255,255,255,0.78);
+  border-color: rgba(47,48,53,0.16);
+  text-shadow: none;
+}
+#palToolbar .imm-btn:hover {
+  color: #15161a;
+  background: rgba(255,255,255,0.94);
+}
 @media (max-width: 768px) {
   .gallery-header { padding-right: 1rem; }
   .imm-nav { padding: 10px 12px; }
@@ -2427,6 +2456,13 @@ function togglePalFold() {
 function switchImmTab(tab) {
   if (isAutoPlaying) stopAutoPlay();
   immCurrentTab = tab;
+  var immersiveRoot = document.getElementById('immersive');
+  if (immersiveRoot) immersiveRoot.classList.toggle('palette-active', tab === 'palette');
+  var modeButton = document.getElementById('modeBtn');
+  if (modeButton) {
+    modeButton.disabled = tab === 'palette';
+    modeButton.setAttribute('aria-disabled', tab === 'palette' ? 'true' : 'false');
+  }
   var tabScheme = document.getElementById('tabScheme');
   var tabPalette = document.getElementById('tabPalette');
   var immLeft = document.getElementById('immLeft');
@@ -2923,7 +2959,7 @@ function initTitleColorFlow() {
   title.style.backgroundImage = 'linear-gradient(115deg,' + stops.map(function(hex, index) {
     return hex + ' ' + ((index / (stops.length - 1)) * 100).toFixed(2) + '%';
   }).join(',') + ')';
-  title.style.backgroundSize = '800% 100%';
+  title.style.backgroundSize = '1400% 100%';
 }
 
 initTitleColorFlow();
