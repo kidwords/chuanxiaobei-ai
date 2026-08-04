@@ -70,6 +70,8 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
   transition: background 0.8s ease;
 }
 .home-reference-leaf-layer { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+body[data-home-motion="off"] .home-reference-leaf-layer { display: none; }
+body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
 .home-reference-leaf {
   position: absolute; top: -40px; left: var(--reference-leaf-x); color: var(--reference-leaf-color);
   font-size: var(--reference-leaf-size); line-height: 1; opacity: var(--reference-leaf-opacity);
@@ -86,10 +88,16 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
   filter: drop-shadow(0 2px 4px rgba(55,48,40,0.08));
 }
 .home-reference-fall-item.is-rain {
-  width: var(--reference-rain-width, 2px); height: var(--reference-rain-size); font-size: 0;
-  background: linear-gradient(to bottom, transparent 0%, color-mix(in srgb, var(--reference-leaf-color) 50%, transparent) 30%, color-mix(in srgb, var(--reference-leaf-color) 90%, transparent) 100%);
-  border-radius: 2px; filter: blur(.3px) drop-shadow(0 0 2px color-mix(in srgb, var(--reference-leaf-color) 55%, transparent));
+  position: relative; width: var(--reference-rain-width, 2px); height: var(--reference-rain-size); font-size: 0;
+  background: linear-gradient(to bottom, transparent 0%, color-mix(in srgb, var(--reference-leaf-color) 42%, transparent) 26%, color-mix(in srgb, var(--reference-leaf-color) 92%, transparent) 100%);
+  border-radius: 999px; transform-origin: 50% 0;
+  filter: blur(var(--reference-rain-blur, .3px)) drop-shadow(0 0 2px color-mix(in srgb, var(--reference-leaf-color) 55%, transparent));
   animation-name: home-reference-rain-down;
+}
+.home-reference-fall-item.is-rain::after {
+  content: ''; position: absolute; left: 50%; bottom: -3px; width: var(--reference-rain-splash-size, 5px); height: calc(var(--reference-rain-splash-size, 5px) * .46);
+  border: 1px solid color-mix(in srgb, var(--reference-leaf-color) 62%, transparent); border-top: 0; border-radius: 50%; opacity: 0;
+  transform: translate(-50%, -1px) scale(.2); animation: home-reference-rain-splash var(--reference-leaf-duration) ease-out var(--reference-leaf-delay) both;
 }
 .home-reference-fall-item.is-dew {
   width: 10px; height: 14px; font-size: 0; border-radius: 50% 50% 50% 50% / 62% 62% 42% 42%;
@@ -118,8 +126,15 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 @keyframes home-reference-rain-down {
   0% { transform: translate3d(0, -12vh, 0); opacity: 0; }
   8% { opacity: var(--reference-leaf-opacity); }
-  92% { opacity: var(--reference-leaf-opacity); }
-  100% { transform: translate3d(var(--reference-rain-drift, 8px), 115vh, 0); opacity: 0; }
+  52% { transform: translate3d(calc(var(--reference-rain-drift, 24px) * .46), 52vh, 0) rotate(var(--reference-rain-angle, 5deg)); opacity: var(--reference-leaf-opacity); }
+  92% { transform: translate3d(calc(var(--reference-rain-drift, 24px) * .86), 102vh, 0) rotate(var(--reference-rain-angle, 5deg)); opacity: var(--reference-leaf-opacity); }
+  100% { transform: translate3d(var(--reference-rain-drift, 24px), 115vh, 0) rotate(var(--reference-rain-angle, 5deg)); opacity: 0; }
+}
+@keyframes home-reference-rain-splash {
+  0%, 84% { opacity: 0; transform: translate(-50%, -1px) scale(.2); }
+  92% { opacity: .52; transform: translate(-50%, -1px) scale(.72); }
+  97% { opacity: .28; transform: translate(-50%, -1px) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -1px) scale(1.18); }
 }
 @keyframes home-reference-dew-down {
   0% { transform: translate3d(0, -8vh, 0) scale(.5); opacity: 0; }
@@ -285,6 +300,7 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
   display: flex; align-items: center; gap: 8px;
 }
 .entry-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-color: #ccc; }
+.entry-btn.motion-toggle[aria-pressed="false"] { background: rgba(248,247,244,0.82); border-color: rgba(143,107,85,0.38); color: #6d5547; }
 .entry-btn .icon { font-size: 1.2rem; }
 .entry-btn-disabled { opacity: 0.45; cursor: not-allowed; }
 .entry-btn-disabled:hover { transform: none; box-shadow: none; border-color: #ddd; }
@@ -1154,6 +1170,7 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
     <div class="entry-row">
       <button class="entry-btn" onclick="startTour(0)">逐步览色</button>
       <button class="entry-btn" onclick="showGallery()">全部浏览</button>
+      <button class="entry-btn motion-toggle" id="homeMotionToggle" type="button" onclick="toggleHomeMotion()" aria-pressed="true" aria-label="关闭首页动效">关闭动效</button>
       <button class="entry-btn" onclick="saveHomeBg()">保存背景</button>
     </div>
     <div id="solarHomeContainer"></div>
@@ -2020,6 +2037,15 @@ var HOME_TERM_EFFECT_COLORS = {
   '雨水': ['#A4C4B8', '#5A8A7A', '#3D6B5C'],
   '谷雨': ['#B4D08A', '#7A9A4A', '#5A7A38']
 };
+var HOME_MOTION_STORAGE_KEY = 'chinese-traditional-colors.home-motion-enabled';
+function readHomeMotionPreference() {
+  try {
+    return window.localStorage.getItem(HOME_MOTION_STORAGE_KEY) !== 'false';
+  } catch (error) {
+    return true;
+  }
+}
+var homeMotionEnabled = readHomeMotionPreference();
 var homeSolarEffectActive = false;
 var homeSolarActiveName = null;
 var homeReferenceLeafTimer = null;
@@ -2037,7 +2063,7 @@ function clearHomeReferenceLeaves() {
 }
 
 function spawnHomeReferenceLeaves(colors, termName) {
-  if (prefersReducedMotion()) return;
+  if (prefersReducedMotion() || !homeMotionEnabled) return;
   var layer = document.getElementById('homeReferenceLeafLayer');
   if (!layer) return;
   var config = HOME_TERM_FALLING[termName] || HOME_TERM_FALLING['立春'];
@@ -2062,23 +2088,27 @@ function spawnHomeReferenceLeaves(colors, termName) {
     leaf.textContent = config.type === 'rain' || config.type === 'dew' ? '' : config.emoji[index % config.emoji.length];
     // 先按屏幕宽度分区，再在当前分区内抖动，避免完全随机造成空带和聚团。
     var lane = amount > 1 ? (index + 0.5) / amount : 0.5;
-    var jitter = (Math.random() - 0.5) * (0.9 / Math.max(1, amount));
+    var jitter = (Math.random() - 0.5) * ((config.type === 'rain' ? 2.2 : 0.9) / Math.max(1, amount));
     var xPercent = Math.max(1.5, Math.min(98.5, (lane + jitter) * 100));
     leaf.style.setProperty('--reference-leaf-x', xPercent.toFixed(2) + '%');
+    var rainDepth = config.type === 'rain' ? Math.random() : 0;
     leaf.style.setProperty('--reference-leaf-size', ((16 + Math.random() * 22) * profile.size) + 'px');
     leaf.style.setProperty('--reference-leaf-color', colors[index % colors.length]);
-    var opacityBase = config.type === 'rain' ? 0.72 + Math.random() * 0.2 : 0.52 + Math.random() * 0.34;
+    var opacityBase = config.type === 'rain' ? 0.42 + rainDepth * 0.34 + Math.random() * 0.16 : 0.52 + Math.random() * 0.34;
     leaf.style.setProperty('--reference-leaf-opacity', Math.min(0.95, opacityBase * profile.opacity).toFixed(2));
-    leaf.style.setProperty('--reference-leaf-duration', (speed * (0.7 + Math.random() * 0.6)) + 's');
+    leaf.style.setProperty('--reference-leaf-duration', (speed * (config.type === 'rain' ? (1.12 - rainDepth * 0.32) : (0.7 + Math.random() * 0.6))) + 's');
     // 不使用负延迟：负延迟会让元素从半程直接出现，造成“瞬间出现/消失”。
     // 仅做短暂正向错峰，让每个元素都从顶部完整走完一次下落过程。
     leaf.style.setProperty('--reference-leaf-delay', (Math.random() * Math.min(speed * 0.18, 1.6)).toFixed(2) + 's');
     leaf.style.setProperty('--reference-leaf-drift', ((-120 + Math.round(Math.random() * 240)) * profile.sway) + 'px');
     leaf.style.setProperty('--reference-leaf-rotate', (180 + Math.random() * 540) + 'deg');
-    leaf.style.setProperty('--reference-rain-size', ((28 + Math.random() * 20) * profile.size) + 'px');
+    leaf.style.setProperty('--reference-rain-size', ((22 + rainDepth * 42) * profile.size) + 'px');
     if (config.type === 'rain') {
-      leaf.style.setProperty('--reference-rain-width', (1.4 + Math.random() * 1.1).toFixed(2) + 'px');
-      leaf.style.setProperty('--reference-rain-drift', (-14 + Math.random() * 28).toFixed(1) + 'px');
+      leaf.style.setProperty('--reference-rain-width', (1.1 + rainDepth * 1.5 + Math.random() * 0.25).toFixed(2) + 'px');
+      leaf.style.setProperty('--reference-rain-drift', (10 + Math.random() * 22).toFixed(1) + 'px');
+      leaf.style.setProperty('--reference-rain-angle', (4 + Math.random() * 2).toFixed(1) + 'deg');
+      leaf.style.setProperty('--reference-rain-blur', (0.58 - rainDepth * 0.32).toFixed(2) + 'px');
+      leaf.style.setProperty('--reference-rain-splash-size', (4 + rainDepth * 7).toFixed(1) + 'px');
     }
     leaf.addEventListener('animationend', function(event) { event.currentTarget.remove(); }, { once: true });
     layer.appendChild(leaf);
@@ -2086,14 +2116,14 @@ function spawnHomeReferenceLeaves(colors, termName) {
 }
 
 function runHomeReferenceLeaves() {
-  if (!homeSolarEffectActive || currentView !== 'home') return;
+  if (!homeSolarEffectActive || currentView !== 'home' || !homeMotionEnabled || prefersReducedMotion()) return;
   spawnHomeReferenceLeaves(homeReferenceLeafColors, homeSolarActiveName || getActiveHomeSolarName());
   homeReferenceLeafTimer = window.setTimeout(runHomeReferenceLeaves, 1800);
 }
 
 function startHomeReferenceLeaves(colors, termName) {
   homeReferenceLeafColors = colors;
-  if (prefersReducedMotion()) return;
+  if (prefersReducedMotion() || !homeMotionEnabled) return;
   clearHomeReferenceLeaves();
   spawnHomeReferenceLeaves(colors, termName);
   if (homeReferenceLeafTimer) window.clearTimeout(homeReferenceLeafTimer);
@@ -2133,17 +2163,43 @@ function applyHomeSolarEffect(name) {
 }
 
 function startHomeSolarEffect() {
-  if (homeSolarEffectActive || currentView !== 'home') return;
+  if (homeSolarEffectActive || currentView !== 'home' || !homeMotionEnabled || prefersReducedMotion()) return;
   homeSolarEffectActive = true;
   applyHomeSolarEffect(homeSolarActiveName || getActiveHomeSolarName());
 }
 
-function stopHomeSolarEffect() {
+function stopHomeSolarEffect(preserveName) {
   homeSolarEffectActive = false;
-  homeSolarActiveName = null;
+  if (!preserveName) homeSolarActiveName = null;
   if (homeReferenceLeafTimer) window.clearTimeout(homeReferenceLeafTimer);
   homeReferenceLeafTimer = null;
   clearHomeReferenceLeaves();
+}
+
+function updateHomeMotionUi() {
+  var enabled = !!homeMotionEnabled;
+  document.body.dataset.homeMotion = enabled && !prefersReducedMotion() ? 'on' : 'off';
+  var button = document.getElementById('homeMotionToggle');
+  if (!button) return;
+  button.textContent = enabled ? '关闭动效' : '开启动效';
+  button.setAttribute('aria-pressed', enabled ? 'true' : 'false');
+  button.setAttribute('aria-label', enabled ? '关闭首页动效' : '开启首页动效');
+  button.title = enabled ? '关闭首页飘落动效' : '开启首页飘落动效';
+}
+
+function persistHomeMotionPreference() {
+  try { window.localStorage.setItem(HOME_MOTION_STORAGE_KEY, homeMotionEnabled ? 'true' : 'false'); } catch (error) {}
+}
+
+function toggleHomeMotion() {
+  homeMotionEnabled = !homeMotionEnabled;
+  persistHomeMotionPreference();
+  updateHomeMotionUi();
+  if (homeMotionEnabled && currentView === 'home' && !prefersReducedMotion()) {
+    startHomeSolarEffect();
+  } else {
+    stopHomeSolarEffect(true);
+  }
 }
 
 function showView(name) {
@@ -2161,7 +2217,7 @@ function showView(name) {
     document.body.style.background = defaultSolarBg;
     document.body.style.backgroundSize = 'cover';
   }
-  if (name === 'home') window.setTimeout(startHomeSolarEffect, 0);
+  if (name === 'home') { updateHomeMotionUi(); window.setTimeout(startHomeSolarEffect, 0); }
 }
 
 function goHome() { if (isAutoPlaying) stopAutoPlay(); renderSolarHome(); renderSolarTermInfo(); showView('home'); isTourMode = false; var hb = document.getElementById('homeBg'); if (hb) { hb.style.background = defaultSolarBg; hb.style.backgroundSize = 'cover'; } var ic = getCurrentSolarTerm(); var cc = SOLAR_16_COLORS[ic.current]; updateHomeTextColors(cc[0].hex); }
@@ -3562,6 +3618,7 @@ document.body.style.backgroundSize = 'cover';
 var hb0 = document.getElementById('homeBg');
 if (hb0) { hb0.style.background = defaultSolarBg; hb0.style.backgroundSize = 'cover'; }
 updateHomeTextColors(_initColors[0].hex);
+updateHomeMotionUi();
 startHomeSolarEffect();
 </script>
 </body>

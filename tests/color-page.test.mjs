@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 
 const pagePath = new URL('../chinese-traditional-colors/index.html', import.meta.url);
-const page = await readFile(pagePath, 'utf8');
+const page = (await readFile(pagePath, 'utf8')).replace(/\r\n/g, '\n');
 const inlineScript = /<script>([\s\S]*?)<\/script>\s*<\/body>/.exec(page)?.[1] ?? '';
 const utils = inlineScript;
 const solarData = inlineScript;
@@ -34,6 +34,19 @@ test('动态选色控件提供按钮语义和可读文字计算', () => {
 test('减少动态效果偏好覆盖全部页面动效', () => {
   assert.match(page, /@media \(prefers-reduced-motion: reduce\)/);
   assert.match(page, /animation-duration: 0\.01ms !important/);
+});
+
+test('首页动效可由用户关闭并记住选择', () => {
+  assert.match(page, /id="homeMotionToggle"[^>]*onclick="toggleHomeMotion\(\)"/);
+  assert.match(page, /body\[data-home-motion="off"\] \.home-reference-leaf-layer \{ display: none; \}/);
+  assert.match(inlineScript, /var HOME_MOTION_STORAGE_KEY = 'chinese-traditional-colors\.home-motion-enabled';/);
+  assert.match(inlineScript, /function readHomeMotionPreference\(\)/);
+  assert.match(inlineScript, /window\.localStorage\.getItem\(HOME_MOTION_STORAGE_KEY\)/);
+  assert.match(inlineScript, /function updateHomeMotionUi\(\)/);
+  assert.match(inlineScript, /function toggleHomeMotion\(\)/);
+  assert.match(inlineScript, /window\.localStorage\.setItem\(HOME_MOTION_STORAGE_KEY, homeMotionEnabled \? 'true' : 'false'\)/);
+  assert.match(inlineScript, /homeSolarEffectActive \|\| currentView !== 'home' \|\| !homeMotionEnabled \|\| prefersReducedMotion\(\)/);
+  assert.match(inlineScript, /stopHomeSolarEffect\(true\)/);
 });
 
 test('移动端不使用 fixed 背景，并为安全区域和触控尺寸留出空间', () => {
@@ -190,10 +203,10 @@ test('首页按二十四节气匹配独立下落动效，并由混色按钮切�
   assert.match(inlineScript, /solar-card-blend[\s\S]*?applyHomeSolarEffect/);
   assert.doesNotMatch(inlineScript, /function spawnHomeSeasonFall\(/);
   assert.match(inlineScript, /function startHomeSolarEffect\(\)/);
-  assert.match(page, /updateHomeTextColors\(_initColors\[0\]\.hex\);\s*startHomeSolarEffect\(\);\s*<\/script>/);
+  assert.match(page, /updateHomeTextColors\(_initColors\[0\]\.hex\);\s*updateHomeMotionUi\(\);\s*startHomeSolarEffect\(\);\s*<\/script>/);
   assert.match(inlineScript, /if \(name !== 'home'\) stopHomeSolarEffect\(\);/);
   assert.doesNotMatch(inlineScript, /function updateHomeSolarEffectUi\(/);
-  assert.match(inlineScript, /if \(prefersReducedMotion\(\)\) return;/);
+  assert.match(inlineScript, /if \(prefersReducedMotion\(\) \|\| !homeMotionEnabled\) return;/);
   assert.match(page, /\.home-reference-leaf-layer \{ display: none; \}/);
 });
 
@@ -201,8 +214,13 @@ test('雨水雨幕使用青绿色、完整下落和均匀分区生成', () => {
   assert.match(inlineScript, /'雨水': \{ type: 'rain', emoji: \['💧'\], count: 150, speed: 8\.8, intensity: 'medium' \}/);
   assert.match(inlineScript, /'雨水': \['#A4C4B8', '#5A8A7A', '#3D6B5C'\]/);
   assert.match(inlineScript, /'谷雨': \{ type: 'rain', emoji: \['💧'\], count: 132, speed: 8\.2, intensity: 'heavy' \}/);
-  assert.match(inlineScript, /--reference-rain-drift', \(-14 \+ Math\.random\(\) \* 28\)/);
-  assert.match(page, /100% \{ transform: translate3d\(var\(--reference-rain-drift, 8px\), 115vh, 0\); opacity: 0; \}/);
+  assert.match(inlineScript, /var rainDepth = config\.type === 'rain' \? Math\.random\(\) : 0/);
+  assert.match(inlineScript, /--reference-rain-drift', \(10 \+ Math\.random\(\) \* 22\)/);
+  assert.match(inlineScript, /--reference-rain-angle', \(4 \+ Math\.random\(\) \* 2\)/);
+  assert.match(inlineScript, /--reference-rain-splash-size', \(4 \+ rainDepth \* 7\)/);
+  assert.match(page, /home-reference-fall-item\.is-rain::after/);
+  assert.match(page, /@keyframes home-reference-rain-splash/);
+  assert.match(page, /rotate\(var\(--reference-rain-angle, 5deg\)\)/);
 });
 
 test('首页不展示冗余节气摘要，动效仍由同色系背景承载', () => {
