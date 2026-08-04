@@ -13,6 +13,7 @@ body {
   font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
   color: #1a1a1a;
   background: #f5f5f5;
+  transition: background 0.8s ease, background-color 0.8s ease;
   overflow-x: hidden;
   min-height: 100vh;
 }
@@ -80,11 +81,12 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
   position: absolute; top: -8vh; left: var(--reference-leaf-x);
   color: var(--reference-leaf-color); font-size: var(--reference-leaf-size); line-height: 1;
   user-select: none; will-change: transform, opacity;
-  animation: home-reference-fall-down var(--reference-leaf-duration) linear var(--reference-leaf-delay) forwards;
+  /* 延迟阶段也保持 0% 状态，避免元素在动画开始前突然显现 */
+  animation: home-reference-fall-down var(--reference-leaf-duration) linear var(--reference-leaf-delay) both;
   filter: drop-shadow(0 2px 4px rgba(55,48,40,0.08));
 }
 .home-reference-fall-item.is-rain {
-  width: 2px; height: var(--reference-rain-size); font-size: 0;
+  width: var(--reference-rain-width, 2px); height: var(--reference-rain-size); font-size: 0;
   background: linear-gradient(to bottom, transparent 0%, color-mix(in srgb, var(--reference-leaf-color) 50%, transparent) 30%, color-mix(in srgb, var(--reference-leaf-color) 90%, transparent) 100%);
   border-radius: 2px; filter: blur(.3px) drop-shadow(0 0 2px color-mix(in srgb, var(--reference-leaf-color) 55%, transparent));
   animation-name: home-reference-rain-down;
@@ -117,7 +119,7 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
   0% { transform: translate3d(0, -12vh, 0); opacity: 0; }
   8% { opacity: var(--reference-leaf-opacity); }
   92% { opacity: var(--reference-leaf-opacity); }
-  100% { transform: translate3d(20px, 115vh, 0); opacity: 0; }
+  100% { transform: translate3d(var(--reference-rain-drift, 8px), 115vh, 0); opacity: 0; }
 }
 @keyframes home-reference-dew-down {
   0% { transform: translate3d(0, -8vh, 0) scale(.5); opacity: 0; }
@@ -523,6 +525,7 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 /* VIEW 3: IMMERSIVE               */
 /* ============================== */
 #immersive { transition: background 0.5s ease; position: relative; }
+#palBgLayer { transition: background 0.8s ease, opacity 0.8s ease; }
 .imm-layout {
   display: flex; min-height: 100vh; position: relative; z-index: 1;
 }
@@ -1930,9 +1933,13 @@ function getCurrentSolarTerm() {
   }
   return {current: cur.name, next: nxt.name, nextDate: nxt.m + '月' + nxt.d + '日'};
 }
-function getHomeBlend(name) {
-  var scheme = SOLAR_SCENES[name] && SOLAR_SCENES[name].light;
+function getSolarBlend(name, mode) {
+  var scheme = SOLAR_SCENES[name] && SOLAR_SCENES[name][mode || 'light'];
   return scheme ? getBlendSpec(scheme.colors) : null;
+}
+
+function getHomeBlend(name) {
+  return getSolarBlend(name, 'light');
 }
 
 function getSolarTermGradient(name) {
@@ -1979,11 +1986,11 @@ var HOME_SOLAR_EFFECTS = {
 };
 var HOME_TERM_FALLING = {
   '立春': { type: 'bud', emoji: ['🌿', '🌱', '🍃'], count: 14, speed: 10, intensity: 'light' },
-  '雨水': { type: 'rain', emoji: ['💧'], count: 110, speed: 3.2, intensity: 'light' },
+  '雨水': { type: 'rain', emoji: ['💧'], count: 150, speed: 8.8, intensity: 'medium' },
   '惊蛰': { type: 'petal', emoji: ['🌸'], count: 18, speed: 9, intensity: 'medium' },
   '春分': { type: 'petal', emoji: ['🌸', '🌼', '🌿'], count: 16, speed: 9, intensity: 'light' },
   '清明': { type: 'leaf', emoji: ['🍃', '🌿'], count: 16, speed: 10, intensity: 'medium' },
-  '谷雨': { type: 'rain', emoji: ['💧'], count: 95, speed: 3.5, intensity: 'heavy' },
+  '谷雨': { type: 'rain', emoji: ['💧'], count: 132, speed: 8.2, intensity: 'heavy' },
   '立夏': { type: 'leaf', emoji: ['🍃'], count: 14, speed: 8, intensity: 'medium' },
   '小满': { type: 'wheat', emoji: ['🌾'], count: 16, speed: 9, intensity: 'medium' },
   '芒种': { type: 'wheat', emoji: ['🌾'], count: 18, speed: 8, intensity: 'heavy' },
@@ -2007,6 +2014,11 @@ var HOME_FALLING_INTENSITY = {
   light: { density: 0.96, size: 0.9, opacity: 0.82, speed: 1.1, sway: 0.82 },
   medium: { density: 1.08, size: 1, opacity: 0.92, speed: 1, sway: 1 },
   heavy: { density: 1.38, size: 1.1, opacity: 1, speed: 0.88, sway: 1.12 }
+};
+var HOME_TERM_EFFECT_COLORS = {
+  // 参考 seasons_change/seasons/yushui.html：雨幕使用青绿层次，避免粉色花色混入雨滴。
+  '雨水': ['#A4C4B8', '#5A8A7A', '#3D6B5C'],
+  '谷雨': ['#B4D08A', '#7A9A4A', '#5A7A38']
 };
 var homeSolarEffectActive = false;
 var homeSolarActiveName = null;
@@ -2048,15 +2060,26 @@ function spawnHomeReferenceLeaves(colors, termName) {
     var typeClass = config.type === 'rain' ? ' is-rain' : config.type === 'dew' ? ' is-dew' : config.type === 'snow' ? ' is-snow' : config.type === 'firefly' ? ' is-firefly' : '';
     leaf.className = 'home-reference-fall-item' + typeClass;
     leaf.textContent = config.type === 'rain' || config.type === 'dew' ? '' : config.emoji[index % config.emoji.length];
-    leaf.style.setProperty('--reference-leaf-x', (Math.random() * 100) + '%');
+    // 先按屏幕宽度分区，再在当前分区内抖动，避免完全随机造成空带和聚团。
+    var lane = amount > 1 ? (index + 0.5) / amount : 0.5;
+    var jitter = (Math.random() - 0.5) * (0.9 / Math.max(1, amount));
+    var xPercent = Math.max(1.5, Math.min(98.5, (lane + jitter) * 100));
+    leaf.style.setProperty('--reference-leaf-x', xPercent.toFixed(2) + '%');
     leaf.style.setProperty('--reference-leaf-size', ((16 + Math.random() * 22) * profile.size) + 'px');
     leaf.style.setProperty('--reference-leaf-color', colors[index % colors.length]);
-    leaf.style.setProperty('--reference-leaf-opacity', Math.min(0.95, (0.52 + Math.random() * 0.34) * profile.opacity).toFixed(2));
+    var opacityBase = config.type === 'rain' ? 0.72 + Math.random() * 0.2 : 0.52 + Math.random() * 0.34;
+    leaf.style.setProperty('--reference-leaf-opacity', Math.min(0.95, opacityBase * profile.opacity).toFixed(2));
     leaf.style.setProperty('--reference-leaf-duration', (speed * (0.7 + Math.random() * 0.6)) + 's');
-    leaf.style.setProperty('--reference-leaf-delay', (-Math.random() * speed) + 's');
+    // 不使用负延迟：负延迟会让元素从半程直接出现，造成“瞬间出现/消失”。
+    // 仅做短暂正向错峰，让每个元素都从顶部完整走完一次下落过程。
+    leaf.style.setProperty('--reference-leaf-delay', (Math.random() * Math.min(speed * 0.18, 1.6)).toFixed(2) + 's');
     leaf.style.setProperty('--reference-leaf-drift', ((-120 + Math.round(Math.random() * 240)) * profile.sway) + 'px');
     leaf.style.setProperty('--reference-leaf-rotate', (180 + Math.random() * 540) + 'deg');
     leaf.style.setProperty('--reference-rain-size', ((28 + Math.random() * 20) * profile.size) + 'px');
+    if (config.type === 'rain') {
+      leaf.style.setProperty('--reference-rain-width', (1.4 + Math.random() * 1.1).toFixed(2) + 'px');
+      leaf.style.setProperty('--reference-rain-drift', (-14 + Math.random() * 28).toFixed(1) + 'px');
+    }
     leaf.addEventListener('animationend', function(event) { event.currentTarget.remove(); }, { once: true });
     layer.appendChild(leaf);
   }
@@ -2092,7 +2115,8 @@ function getHomeSolarBackground(colors, shape) {
   var accent = colors[2].hex;
   var accent2 = colors[3].hex;
   var background = 'radial-gradient(ellipse at 14% 18%,' + hexToRgba(surface, 0.42) + ' 0%,transparent 42%),radial-gradient(ellipse at 86% 76%,' + hexToRgba(accent2, 0.28) + ' 0%,transparent 46%),linear-gradient(135deg,' + bg + ' 0%,' + hexToRgba(surface, 0.72) + ' 54%,' + hexToRgba(accent2, 0.55) + ' 100%)';
-  if (shape === 'solar-effect-rain' || shape === 'solar-effect-mist') return 'repeating-linear-gradient(104deg,transparent 0 42px,' + hexToRgba(surface, 0.12) + ' 43px 44px,transparent 45px 74px),' + background;
+  if (shape === 'solar-effect-rain') return 'repeating-linear-gradient(104deg,transparent 0 42px,' + hexToRgba(accent2, 0.1) + ' 43px 44px,transparent 45px 74px),' + background;
+  if (shape === 'solar-effect-mist') return 'repeating-linear-gradient(104deg,transparent 0 42px,' + hexToRgba(surface, 0.12) + ' 43px 44px,transparent 45px 74px),' + background;
   if (shape === 'solar-effect-sun') return 'radial-gradient(circle at 50% 8%,' + hexToRgba(accent, 0.34) + ' 0%,transparent 30%),' + background;
   if (shape === 'solar-effect-snow' || shape === 'solar-effect-frost') return 'radial-gradient(circle at 28% 22%,' + hexToRgba('#FFFFFF', 0.56) + ' 0 2px,transparent 3px),radial-gradient(circle at 74% 34%,' + hexToRgba('#FFFFFF', 0.4) + ' 0 2px,transparent 3px),' + background;
   return background;
@@ -2104,7 +2128,7 @@ function applyHomeSolarEffect(name) {
   var colors = scheme.colors;
   homeSolarActiveName = name;
   setHomeBackground(getHomeSolarBackground(colors, effect.shape), colors[4].hex);
-  homeReferenceLeafColors = colors.slice(1, 4).map(function(color) { return color.hex; });
+  homeReferenceLeafColors = (HOME_TERM_EFFECT_COLORS[name] || colors.slice(1, 4).map(function(color) { return color.hex; })).slice();
   if (homeSolarEffectActive) startHomeReferenceLeaves(homeReferenceLeafColors, name);
 }
 
@@ -2766,10 +2790,12 @@ function renderSolarSectionsInGallery() {
       var mode = solarCardModes[idx];
       var scheme = SOLAR_SCENES[name][mode];
       var colors = scheme.colors;
-      var gradient = getBlendSpec(colors).gradient;
+      var blend = getSolarBlend(name, mode);
+      if (!blend) continue;
+      var gradient = blend.gradient;
       var colorSq = '';
       for (var c = 0; c < colors.length; c++) {
-        colorSq += paletteRowMarkup(colors[c], 'document.body.style.background=\'' + colors[c].hex + '\'');
+        colorSq += paletteRowMarkup(colors[c], 'setPageBackground(\'' + colors[c].hex + '\')');
       }
       html += '<article class="solar-gallery-card">' +
         '<div class="solar-card-top" style="background:' + gradient + '">' +
@@ -2881,6 +2907,105 @@ document.getElementById('exportDialog').addEventListener('click', function(e) {
   if (e.target === this) closeExportDialog();
 });
 
+function getExportBackgroundSource() {
+  if (currentView === 'home') {
+    var homeBackground = document.getElementById('homeBg');
+    if (homeBackground) return homeBackground;
+  }
+  if (currentView === 'immersive' && immCurrentTab === 'palette') {
+    var paletteBackground = document.getElementById('palBgLayer');
+    if (paletteBackground && window.getComputedStyle(paletteBackground).display !== 'none') return paletteBackground;
+  }
+  return document.body;
+}
+
+function splitCssLayers(value) {
+  var layers = [], depth = 0, start = 0;
+  for (var i = 0; i < value.length; i++) {
+    if (value[i] === '(') depth++;
+    else if (value[i] === ')') depth--;
+    else if (value[i] === ',' && depth === 0) {
+      layers.push(value.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+  if (value.slice(start).trim()) layers.push(value.slice(start).trim());
+  return layers;
+}
+
+function getCssColors(value) {
+  return value.match(/rgba?\([^)]*\)|hsla?\([^)]*\)|#[0-9a-fA-F]{3,8}/g) || [];
+}
+
+function getLinearGradientAngle(token) {
+  if (!token) return 180;
+  var value = token.trim().toLowerCase();
+  if (value.indexOf('to top right') !== -1) return 45;
+  if (value.indexOf('to top left') !== -1) return 315;
+  if (value.indexOf('to bottom right') !== -1) return 135;
+  if (value.indexOf('to bottom left') !== -1) return 225;
+  if (value.indexOf('to right') !== -1) return 90;
+  if (value.indexOf('to left') !== -1) return 270;
+  if (value.indexOf('to top') !== -1) return 0;
+  if (value.indexOf('to bottom') !== -1) return 180;
+  var angle = parseFloat(value);
+  return isNaN(angle) ? 180 : angle;
+}
+
+function paintCssGradient(ctx, layer, width, height) {
+  var match = layer.match(/^(repeating-)?(linear|radial)-gradient\((.*)\)$/i);
+  if (!match) return false;
+  var colors = getCssColors(match[3]);
+  if (!colors.length) return false;
+  var gradient;
+  if (match[2].toLowerCase() === 'linear') {
+    var firstComma = match[3].indexOf(',');
+    var direction = firstComma === -1 ? '' : match[3].slice(0, firstComma);
+    var angle = getLinearGradientAngle(direction);
+    var radians = angle * Math.PI / 180;
+    var dx = Math.sin(radians), dy = -Math.cos(radians);
+    var length = Math.abs(width * dx) + Math.abs(height * dy);
+    var centerX = width / 2, centerY = height / 2;
+    gradient = ctx.createLinearGradient(centerX - dx * length / 2, centerY - dy * length / 2, centerX + dx * length / 2, centerY + dy * length / 2);
+  } else {
+    var percentagePosition = match[3].match(/at\s+([0-9.]+)%\s+([0-9.]+)%/i);
+    var keywordPosition = match[3].match(/at\s+(left|center|right)\s+(top|center|bottom)/i);
+    var positionX = {left: 0, center: 0.5, right: 1};
+    var positionY = {top: 0, center: 0.5, bottom: 1};
+    var centerX = percentagePosition ? width * parseFloat(percentagePosition[1]) / 100 : keywordPosition ? width * positionX[keywordPosition[1].toLowerCase()] : width / 2;
+    var centerY = percentagePosition ? height * parseFloat(percentagePosition[2]) / 100 : keywordPosition ? height * positionY[keywordPosition[2].toLowerCase()] : height / 2;
+    var radius = Math.sqrt(width * width + height * height) * 0.72;
+    gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+  }
+  for (var i = 0; i < colors.length; i++) {
+    gradient.addColorStop(i / Math.max(1, colors.length - 1), colors[i]);
+  }
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+  return true;
+}
+
+function paintExportBackground(ctx, width, height, source) {
+  var styles = window.getComputedStyle(source);
+  var backgroundColor = styles.backgroundColor;
+  var fallback = backgroundColor && backgroundColor !== 'transparent' && backgroundColor !== 'rgba(0, 0, 0, 0)' ? backgroundColor : '#f5f5f5';
+  ctx.fillStyle = fallback;
+  ctx.fillRect(0, 0, width, height);
+  var backgroundImage = styles.backgroundImage;
+  if (!backgroundImage || backgroundImage === 'none') return;
+  var layers = splitCssLayers(backgroundImage);
+  // CSS 的第一层在最上方，画布需要从底层开始绘制。
+  for (var i = layers.length - 1; i >= 0; i--) {
+    if (!paintCssGradient(ctx, layers[i], width, height)) {
+      var colors = getCssColors(layers[i]);
+      if (colors.length) {
+        ctx.fillStyle = colors[0];
+        ctx.fillRect(0, 0, width, height);
+      }
+    }
+  }
+}
+
 function saveBackgroundAsImage(mode) {
   if (!mode) {
     openExportDialog();
@@ -2892,28 +3017,7 @@ function saveBackgroundAsImage(mode) {
     canvas.width = dimensions.width;
     canvas.height = dimensions.height;
     var ctx = canvas.getContext('2d');
-    // 收集所有可能的背景源
-    var cs = window.getComputedStyle(document.body);
-    var bgImg = cs.backgroundImage;
-    var bgCol = cs.backgroundColor;
-    var isGradient = bgImg && bgImg !== 'none' && bgImg.indexOf('linear-gradient') !== -1;
-    if (isGradient) {
-      // 从标准化值提取 rgb/rgba/#hex 颜色（忽略 size/position 后缀）
-      var colorRegex = /(rgba?\([^)]+\)|#[0-9a-fA-F]{3,8})/g;
-      var foundColors = bgImg.match(colorRegex) || [];
-      if (foundColors.length >= 2) {
-        var grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        for (var i = 0; i < foundColors.length; i++) {
-          grad.addColorStop(i / Math.max(1, foundColors.length - 1), foundColors[i]);
-        }
-        ctx.fillStyle = grad;
-      } else {
-        ctx.fillStyle = foundColors[0] || bgCol || '#f5f5f5';
-      }
-    } else {
-      ctx.fillStyle = bgCol && bgCol !== 'transparent' ? bgCol : '#f5f5f5';
-    }
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    paintExportBackground(ctx, canvas.width, canvas.height, getExportBackgroundSource());
     canvas.toBlob(function(blob) {
       if (!blob) { alert('生成图片失败，请重试'); return; }
       var url = URL.createObjectURL(blob);
@@ -3066,6 +3170,9 @@ function switchImmTab(tab) {
 
 function resetPalette() {
   selectedPaletteColors = [];
+  palDirectionIdx = 3;
+  var dirBtn = document.getElementById('palDirBtn');
+  if (dirBtn) dirBtn.textContent = PAL_GRADIENTS[palDirectionIdx].label;
   palFoldState = 0;
   var immersiveRoot = document.getElementById('immersive');
   if (immersiveRoot) immersiveRoot.classList.remove('palette-folded');

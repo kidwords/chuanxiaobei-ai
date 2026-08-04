@@ -60,12 +60,30 @@ test('背景预览通过公共方法更新，避免各页面状态分叉', () =>
   assert.match(paletteRenderer, /setPaletteBackground\('linear-gradient/);
   assert.match(page, /onclick="applyHomeSolarEffect/);
   assert.match(page, /function previewScene[\s\S]*?setPageBackground\(gradient\)/);
+  assert.match(page, /body \{[\s\S]*?transition: background 0\.8s ease, background-color 0\.8s ease;/);
+  assert.match(page, /#palBgLayer \{ transition: background 0\.8s ease, opacity 0\.8s ease; \}/);
+});
+
+test('背景导出跟随当前视图，并保留渐变方向和辐射中心', () => {
+  assert.match(page, /function getExportBackgroundSource\(\)/);
+  assert.match(page, /currentView === 'home'[\s\S]*?getElementById\('homeBg'\)/);
+  assert.match(page, /currentView === 'immersive' && immCurrentTab === 'palette'[\s\S]*?getElementById\('palBgLayer'\)/);
+  assert.match(page, /to top right[\s\S]*?return 45/);
+  assert.match(page, /to top left[\s\S]*?return 315/);
+  assert.match(page, /keywordPosition = match\[3\]\.match/);
+  assert.match(page, /function saveBackgroundAsImage\(mode\)[\s\S]*?paintExportBackground\(ctx, canvas\.width, canvas\.height, getExportBackgroundSource\(\)\)/);
+});
+
+test('配色板重置会恢复默认渐变方向', () => {
+  assert.match(page, /function resetPalette\(\)[\s\S]*?palDirectionIdx = 3/);
+  assert.match(page, /dirBtn\.textContent = PAL_GRADIENTS\[palDirectionIdx\]\.label/);
 });
 
 test('首页只使用原始优选混色，十六色保留给单色展示', () => {
+  assert.match(page, /function getSolarBlend\(name, mode\)/);
+  assert.match(page, /var scheme = SOLAR_SCENES\[name\] && SOLAR_SCENES\[name\]\[mode \|\| 'light'\]/);
   assert.match(page, /function getHomeBlend\(name\)/);
-  assert.match(page, /var scheme = SOLAR_SCENES\[name\] && SOLAR_SCENES\[name\]\.light/);
-  assert.match(page, /return scheme \? getBlendSpec\(scheme\.colors\) : null/);
+  assert.match(page, /return getSolarBlend\(name, 'light'\)/);
   assert.doesNotMatch(page, /function cycleHomeBlend\(name\)/);
   assert.doesNotMatch(page, /homeBlendIndexes/);
 });
@@ -78,6 +96,14 @@ test('配色板节气卡复用首页的优选混色', () => {
   assert.doesNotMatch(paletteCards, /var blend = getBlendSpec\(colors\);/);
   assert.match(page, /function renderPalAllColors\(\)/);
   assert.match(inlineScript, /function applySolarTermPalette\(name\)/);
+});
+
+test('全部浏览节气卡按当前浅深模式复用同一混色来源', () => {
+  const gallerySolar = page.match(/function renderSolarSectionsInGallery\(\)[\s\S]*?\n}\s*function toggleSolarCardMode/)[0];
+  assert.match(gallerySolar, /var blend = getSolarBlend\(name, mode\);/);
+  assert.match(gallerySolar, /var gradient = blend\.gradient/);
+  assert.match(gallerySolar, /paletteRowMarkup\(colors\[c\], 'setPageBackground/);
+  assert.doesNotMatch(gallerySolar, /document\.body\.style\.background/);
 });
 
 test('配色板选色只更新对应色块，不重建全部网格', () => {
@@ -158,8 +184,9 @@ test('首页按二十四节气匹配独立下落动效，并由混色按钮切�
   assert.match(inlineScript, /function spawnHomeReferenceLeaves\(colors, termName\)/);
   assert.match(inlineScript, /function startHomeReferenceLeaves\(colors, termName\)/);
   assert.match(inlineScript, /HOME_TERM_FALLING\[termName\]/);
-  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-x', \(Math\.random\(\) \* 100\)/);
-  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-delay', \(-Math\.random\(\) \* speed\)/);
+  assert.match(inlineScript, /var lane = amount > 1 \? \(index \+ 0\.5\) \/ amount : 0\.5/);
+  assert.match(inlineScript, /var xPercent = Math\.max\(1\.5, Math\.min\(98\.5, \(lane \+ jitter\) \* 100\)\)/);
+  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-delay', \(Math\.random\(\) \* Math\.min\(speed \* 0\.18, 1\.6\)\)/);
   assert.match(inlineScript, /solar-card-blend[\s\S]*?applyHomeSolarEffect/);
   assert.doesNotMatch(inlineScript, /function spawnHomeSeasonFall\(/);
   assert.match(inlineScript, /function startHomeSolarEffect\(\)/);
@@ -168,6 +195,14 @@ test('首页按二十四节气匹配独立下落动效，并由混色按钮切�
   assert.doesNotMatch(inlineScript, /function updateHomeSolarEffectUi\(/);
   assert.match(inlineScript, /if \(prefersReducedMotion\(\)\) return;/);
   assert.match(page, /\.home-reference-leaf-layer \{ display: none; \}/);
+});
+
+test('雨水雨幕使用青绿色、完整下落和均匀分区生成', () => {
+  assert.match(inlineScript, /'雨水': \{ type: 'rain', emoji: \['💧'\], count: 150, speed: 8\.8, intensity: 'medium' \}/);
+  assert.match(inlineScript, /'雨水': \['#A4C4B8', '#5A8A7A', '#3D6B5C'\]/);
+  assert.match(inlineScript, /'谷雨': \{ type: 'rain', emoji: \['💧'\], count: 132, speed: 8\.2, intensity: 'heavy' \}/);
+  assert.match(inlineScript, /--reference-rain-drift', \(-14 \+ Math\.random\(\) \* 28\)/);
+  assert.match(page, /100% \{ transform: translate3d\(var\(--reference-rain-drift, 8px\), 115vh, 0\); opacity: 0; \}/);
 });
 
 test('首页不展示冗余节气摘要，动效仍由同色系背景承载', () => {
