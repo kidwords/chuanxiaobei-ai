@@ -8,7 +8,7 @@
 <style>
   :root{
     --bg:#E3EDF5; --bg-darker:#D1DEEC;
-    --text:#4A5C73; --text-soft:#7C8BA0; --text-muted:#A0AEC0;
+    --text:#4A5C73; --text-soft:#7C8BA0; --text-muted:#6F8094;
     --accent:#6C8EBF; --accent-2:#5B7A99;
     --sh-light:rgba(255,255,255,0.9); --sh-dark:rgba(163,177,198,0.55);
     --shadow-out:6px 6px 12px var(--sh-dark),-6px -6px 12px var(--sh-light);
@@ -50,7 +50,7 @@
   .example-list{display:flex;flex-direction:column;gap:8px;padding:14px;border-radius:var(--radius);background:var(--bg);box-shadow:var(--shadow-out-sm);max-height:70vh;overflow-y:auto}
   .example-list::-webkit-scrollbar{width:6px}
   .example-list::-webkit-scrollbar-thumb{background:var(--text-muted);border-radius:3px}
-  .ex-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;cursor:pointer;transition:all .2s;background:var(--bg)}
+  .ex-item{width:100%;display:flex;align-items:center;gap:12px;padding:12px 14px;border:0;border-radius:14px;cursor:pointer;transition:all .2s;background:var(--bg);color:inherit;text-align:left;font:inherit}
   .ex-item:hover{box-shadow:var(--shadow-in-sm)}
   .ex-item.active{box-shadow:var(--shadow-in-sm);color:var(--accent)}
   .ex-item .num{width:32px;height:32px;border-radius:10px;background:var(--bg);box-shadow:var(--shadow-out-sm);display:grid;place-items:center;font-family:'JetBrains Mono';font-size:12px;font-weight:600;flex-shrink:0}
@@ -58,6 +58,7 @@
   .ex-item .info{min-width:0}
   .ex-item .info .t{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .ex-item .info .s{font-size:11px;color:var(--text-muted)}
+  .ex-item:focus-visible,.btn:focus-visible,.size-btn:focus-visible,.back-link:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 
   /* 右侧主面板 */
   .panel{display:flex;flex-direction:column;gap:20px}
@@ -126,6 +127,36 @@
   .reveal{opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
   .reveal.in{opacity:1;transform:none}
   @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}}
+  @media (max-width:640px){
+    .topbar{padding:12px 0}
+    .topbar .wrap{padding:0 16px!important}
+    .nav{padding:12px 14px;border-radius:16px}
+    .brand{gap:8px;font-size:13px}
+    .brand .dot{width:32px;height:32px}
+    .brand .tag{display:none}
+    .back-link{padding:8px 12px;font-size:12px}
+    .wrap{padding:0 16px 40px}
+    .hero{padding:24px 0 20px}
+    .hero h1{font-size:28px}
+    .hero p{font-size:14px}
+    .layout{gap:16px}
+    .sidebar{position:static}
+    .example-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px;max-height:none}
+    .ex-item{padding:10px;gap:8px}
+    .ex-item .num{width:28px;height:28px}
+    .ex-item .info .t{font-size:12px}
+    .ex-item .info .s{font-size:10px}
+    .panel{gap:16px}
+    .panel-head,.preview-wrap,.scores-card,.prompt-card{padding:16px}
+    .panel-head .title-block h2{font-size:20px}
+    .panel-head .actions{width:100%}
+    .panel-head .actions .btn{flex:1;justify-content:center;padding:10px 12px}
+    .preview-bar{gap:6px}
+    .preview-bar .url{margin:0 4px;font-size:10px;padding:5px 8px}
+    .preview-frame-wrap iframe{height:560px}
+    .scores-grid{grid-template-columns:1fr;gap:14px}
+    .prompt-body{padding:16px}
+  }
 </style>
 </head>
 <body>
@@ -236,7 +267,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast">
+<div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true">
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
   <span id="toastMsg">已复制到剪贴板</span>
 </div>
@@ -531,14 +562,16 @@ const DIM_DESC = {
 };
 
 let currentIdx = 0;
+let scoreTimer = null;
+const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
 
 function renderList(){
   const list = document.getElementById('exList');
   list.innerHTML = EXAMPLES.map((e,i)=>`
-    <div class="ex-item ${i===currentIdx?'active':''}" data-idx="${i}">
+    <button type="button" class="ex-item ${i===currentIdx?'active':''}" data-idx="${i}" aria-current="${i===currentIdx?'true':'false'}">
       <div class="num">${String(i+1).padStart(2,'0')}</div>
       <div class="info"><div class="t">${e.name}</div><div class="s">${e.desc}</div></div>
-    </div>`).join('');
+    </button>`).join('');
   list.querySelectorAll('.ex-item').forEach(el=>{
     el.addEventListener('click',()=>{
       currentIdx = +el.dataset.idx;
@@ -557,13 +590,19 @@ function renderAll(){
   // iframe
   document.getElementById('previewFrame').src = 'examples/' + ex.file;
   // 列表激活
-  document.querySelectorAll('.ex-item').forEach((el,i)=>el.classList.toggle('active', i===currentIdx));
+  document.querySelectorAll('.ex-item').forEach((el,i)=>{
+    const active = i===currentIdx;
+    el.classList.toggle('active', active);
+    el.setAttribute('aria-current', active ? 'true' : 'false');
+  });
   // 评分
   renderScores(ex);
   // 提示词
   document.getElementById('promptText').textContent = ex.prompt;
   // 滚动顶部
-  document.querySelector('.panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+  if(window.matchMedia?.('(max-width:980px)').matches){
+    document.querySelector('.panel').scrollIntoView({behavior:reduceMotion?'auto':'smooth',block:'start'});
+  }
 }
 
 function renderScores(ex){
@@ -593,25 +632,29 @@ function renderScores(ex){
 
 function animateNum(id, target){
   const el = document.getElementById(id);
+  if(scoreTimer){clearInterval(scoreTimer);scoreTimer=null;}
+  if(reduceMotion){el.textContent = target;return;}
   let cur = 0;
   const step = Math.max(1, Math.ceil(target/30));
-  const t = setInterval(()=>{
+  scoreTimer = setInterval(()=>{
     cur += step;
-    if(cur >= target){cur = target; clearInterval(t);}
+    if(cur >= target){cur = target; clearInterval(scoreTimer);scoreTimer=null;}
     el.textContent = cur;
   }, 25);
 }
 
 // 复制
-function copyText(text){
-  if(navigator.clipboard && navigator.clipboard.writeText){
-    return navigator.clipboard.writeText(text);
+async function copyText(text){
+  if(navigator.clipboard?.writeText){
+    try{await navigator.clipboard.writeText(text);return;}catch(e){/* file:// 或权限受限时继续降级 */}
   }
   // 降级
   const ta = document.createElement('textarea');
   ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
   document.body.appendChild(ta); ta.select();
-  return Promise.resolve(document.execCommand('copy')).finally(()=>ta.remove());
+  const ok = document.execCommand('copy');
+  ta.remove();
+  if(!ok) throw new Error('copy failed');
 }
 document.getElementById('copyBtn').addEventListener('click', async ()=>{
   const text = document.getElementById('promptText').textContent;
@@ -644,10 +687,14 @@ document.querySelectorAll('.size-btn').forEach(btn=>{
 });
 
 // 入场动画
-const io = new IntersectionObserver((es)=>{
-  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in'); io.unobserve(e.target)}});
-},{threshold:.1});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+if('IntersectionObserver' in window){
+  const io = new IntersectionObserver((es)=>{
+    es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in'); io.unobserve(e.target)}});
+  },{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+}else{
+  document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+}
 
 // 初始化
 renderList();
