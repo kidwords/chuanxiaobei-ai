@@ -200,7 +200,10 @@ test('首页按二十四节气匹配独立下落动效，并由混色按钮切�
   assert.match(inlineScript, /HOME_TERM_FALLING\[termName\]/);
   assert.match(inlineScript, /var lane = amount > 1 \? \(index \+ 0\.5\) \/ amount : 0\.5/);
   assert.match(inlineScript, /var xPercent = Math\.max\(1\.5, Math\.min\(98\.5, \(lane \+ laneJitter\) \* 100\)\)/);
-  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-delay', \(index \/ Math\.max\(1, amount\) \* Math\.min\(speed \* 0\.72, 5\.2\)\)/);
+  assert.match(inlineScript, /var homeReferenceLaunchOrder = \[\]/);
+  assert.match(inlineScript, /for \(var shuffleIndex = amount - 1; shuffleIndex > 0; shuffleIndex--\)/);
+  assert.match(inlineScript, /var launchRank = homeReferenceLaunchOrder\[index\] == null \? index : homeReferenceLaunchOrder\[index\]/);
+  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-delay', \(\(launchRank \+ 0\.5\) \/ Math\.max\(1, amount\) \* Math\.min\(speed \* 0\.72, 5\.2\)\)/);
   assert.match(inlineScript, /solar-card-blend[\s\S]*?applyHomeSolarEffect/);
   assert.doesNotMatch(inlineScript, /function spawnHomeSeasonFall\(/);
   assert.match(inlineScript, /function startHomeSolarEffect\(\)/);
@@ -256,7 +259,7 @@ test('粒子性能预算、近大远小与节气类型近景模型完整', () =>
   assert.match(inlineScript, /var homeReferencePool = \[\]/);
   assert.match(inlineScript, /var homeReferencePoolKey = ""/);
   assert.match(inlineScript, /var areaScale = Math\.max\(0\.72, Math\.min\(1\.5/);
-  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-delay', \(index \/ Math\.max\(1, amount\)/);
+  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-delay', \(\(launchRank \+ 0\.5\) \/ Math\.max\(1, amount\) \* Math\.min\(speed \* 0\.72, 5\.2\)\)/);
   assert.match(inlineScript, /var depthIndex = depthSample < 0\.22 \? 0 : depthSample < 0\.68 \? 1 : 2/);
   assert.match(inlineScript, /--reference-rain-size', \(\(22 \+ rainDepth \* 42\) \* profile\.size \* depthProfile\.size\)/);
   assert.match(inlineScript, /var homeReferenceNearTimer = null/);

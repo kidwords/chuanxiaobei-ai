@@ -2121,6 +2121,7 @@ var HOME_REFERENCE_LEAF_MAX = 120;
 var homeReferenceNearTimer = null;
 var homeReferencePool = [];
 var homeReferencePoolKey = "";
+var homeReferenceLaunchOrder = [];
 var HOME_REFERENCE_DEVICE_BUDGET = { mobile: 26, tablet: 42, desktop: 64 };
 var HOME_REFERENCE_DEPTH_PROFILES = [
   { size: 1.18, opacity: 0.95, blur: 0, speed: 0.9, z: 3 },
@@ -2186,6 +2187,14 @@ function spawnHomeReferenceLeaves(colors, termName) {
   var poolKey = termName + '|' + config.type + '|' + amount + '|' + colors.join(',');
   if (homeReferencePoolKey === poolKey && homeReferencePool.length >= amount) return;
   homeReferencePoolKey = poolKey;
+  homeReferenceLaunchOrder = [];
+  for (var launchIndex = 0; launchIndex < amount; launchIndex++) homeReferenceLaunchOrder.push(launchIndex);
+  for (var shuffleIndex = amount - 1; shuffleIndex > 0; shuffleIndex--) {
+    var swapIndex = Math.floor(Math.random() * (shuffleIndex + 1));
+    var swapValue = homeReferenceLaunchOrder[shuffleIndex];
+    homeReferenceLaunchOrder[shuffleIndex] = homeReferenceLaunchOrder[swapIndex];
+    homeReferenceLaunchOrder[swapIndex] = swapValue;
+  }
   while (homeReferencePool.length < amount) {
     var created = document.createElement('span');
     created.className = 'home-reference-fall-item';
@@ -2219,7 +2228,8 @@ function spawnHomeReferenceLeaves(colors, termName) {
     var opacityBase = config.type === 'rain' ? 0.42 + rainDepth * 0.34 + Math.random() * 0.16 : 0.52 + Math.random() * 0.34;
     leaf.style.setProperty('--reference-leaf-opacity', Math.min(0.95, opacityBase * profile.opacity * depthProfile.opacity).toFixed(2));
     leaf.style.setProperty('--reference-leaf-duration', (speed * depthProfile.speed * (config.type === 'rain' ? (1.12 - rainDepth * 0.32) : (0.7 + Math.random() * 0.6))) + 's');
-    leaf.style.setProperty('--reference-leaf-delay', (index / Math.max(1, amount) * Math.min(speed * 0.72, 5.2)).toFixed(2) + 's');
+    var launchRank = homeReferenceLaunchOrder[index] == null ? index : homeReferenceLaunchOrder[index];
+    leaf.style.setProperty('--reference-leaf-delay', ((launchRank + 0.5) / Math.max(1, amount) * Math.min(speed * 0.72, 5.2)).toFixed(2) + 's');
     leaf.style.setProperty('--reference-leaf-drift', ((-120 + Math.round(Math.random() * 240)) * profile.sway) + 'px');
     leaf.style.setProperty('--reference-leaf-rotate', (180 + Math.random() * 540) + 'deg');
     leaf.style.setProperty('--reference-rain-size', ((22 + rainDepth * 42) * profile.size * depthProfile.size) + 'px');
