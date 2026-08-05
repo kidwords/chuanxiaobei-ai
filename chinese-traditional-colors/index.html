@@ -69,34 +69,34 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
     linear-gradient(135deg, #faf8f5 0%, #f0ede8 50%, #f5f2ee 100%);
   transition: background 0.8s ease;
 }
-.home-reference-leaf-layer { position: fixed; inset: 0; z-index: 0; contain: layout style; overflow: hidden; pointer-events: none; }
+.home-reference-leaf-layer { position: fixed; inset: 0; z-index: 0; contain: strict; overflow: hidden; pointer-events: none; }
 body[data-home-motion="off"] .home-reference-leaf-layer { display: none; }
 body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
 .home-reference-leaf {
   position: absolute; top: -40px; left: var(--reference-leaf-x); color: var(--reference-leaf-color);
   font-size: var(--reference-leaf-size); line-height: 1; opacity: var(--reference-leaf-opacity);
   animation: home-reference-leaf-fall var(--reference-leaf-duration) linear var(--reference-leaf-delay) forwards;
-  will-change: transform, opacity;
-  filter: drop-shadow(0 3px 5px rgba(55,48,40,0.08));
+
+  filter: none;
 }
 .home-reference-fall-item {
   position: absolute; top: -8vh; left: var(--reference-leaf-x);
   color: var(--reference-leaf-color); font-size: var(--reference-leaf-size); line-height: 1;
-  user-select: none; z-index: var(--reference-depth-z, 1); will-change: transform, opacity;
-  animation: home-reference-fall-down var(--reference-leaf-duration) linear var(--reference-leaf-delay) both;
-  filter: blur(var(--reference-depth-blur, 0px)) drop-shadow(0 2px 4px rgba(55,48,40,0.08));
+  user-select: none; z-index: var(--reference-depth-z, 1);
+  animation: home-reference-fall-down var(--reference-leaf-duration) linear var(--reference-leaf-delay) both; animation-iteration-count: infinite;
+  filter: none;
 }
 .home-reference-fall-item.is-rain {
   position: absolute; top: 0; width: var(--reference-rain-width, 2px); height: var(--reference-rain-size); font-size: 0;
   background: linear-gradient(to bottom, transparent 0%, rgba(118, 161, 177, 0.22) 26%, rgba(68, 116, 137, 0.88) 100%);
   border-radius: 999px; transform-origin: 50% 0;
-  filter: blur(var(--reference-rain-blur, .3px)) drop-shadow(0 0 2px rgba(79, 132, 153, 0.48));
+  filter: none;
   animation-name: home-reference-rain-down;
 }
 .home-reference-fall-item.is-rain::after {
   content: ''; position: absolute; left: 50%; bottom: -3px; width: var(--reference-rain-splash-size, 5px); height: calc(var(--reference-rain-splash-size, 5px) * .46);
   border: 1px solid color-mix(in srgb, var(--reference-leaf-color) 62%, transparent); border-top: 0; border-radius: 50%; opacity: 0;
-  transform: translate(-50%, -1px) scale(.2); animation: home-reference-rain-splash var(--reference-leaf-duration) ease-out var(--reference-leaf-delay) both;
+  transform: translate(-50%, -1px) scale(.2); animation: home-reference-rain-splash var(--reference-leaf-duration) ease-out var(--reference-leaf-delay) both; animation-iteration-count: infinite;
 }
 .home-reference-fall-item.is-dew {
   width: 10px; height: 14px; font-size: 0; border-radius: 50% 50% 50% 50% / 62% 62% 42% 42%;
@@ -104,21 +104,68 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   box-shadow: 0 0 8px color-mix(in srgb, var(--reference-leaf-color) 70%, transparent);
   animation-name: home-reference-dew-down;
 }
-.home-reference-fall-item.is-snow { color: #fff; text-shadow: 0 0 5px #fff, 0 0 14px color-mix(in srgb, var(--reference-leaf-color) 72%, transparent); filter: drop-shadow(0 0 3px #fff); animation-name: home-reference-snow-down; }
+.home-reference-fall-item.is-snow { color: #fff; text-shadow: 0 0 5px #fff, 0 0 14px color-mix(in srgb, var(--reference-leaf-color) 72%, transparent); animation-name: home-reference-snow-down; }
 .home-reference-fall-item.is-firefly { color: var(--reference-leaf-color); text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 16px color-mix(in srgb, var(--reference-leaf-color) 70%, transparent); animation-name: home-reference-firefly-down; }
-.home-reference-fall-item.is-hero {
-  position: absolute; top: -18vh; left: var(--reference-leaf-x);
-  width: var(--reference-hero-size); height: var(--reference-hero-size);
-  border-radius: 62% 38% 68% 32% / 58% 40% 60% 42%;
-  background: radial-gradient(circle at 28% 24%, rgba(255,255,255,.84) 0 8%, var(--reference-leaf-color) 38%, rgba(255,255,255,0) 78%);
-  opacity: var(--reference-hero-opacity, .46); z-index: 4; pointer-events: none; will-change: transform, opacity;
-  filter: blur(var(--reference-hero-blur, .2px)) drop-shadow(0 10px 24px rgba(55,48,40,.14));
-  animation: home-reference-hero-fall var(--reference-hero-duration, 12s) cubic-bezier(.22,.12,.2,1) var(--reference-hero-delay, 0s) both;
+.home-reference-fall-item.is-near-model {
+  position: absolute; top: -16vh; left: var(--reference-near-x);
+  width: var(--reference-near-size); height: var(--reference-near-size);
+  z-index: 4; pointer-events: none;
+  animation: home-reference-near-model-fall var(--reference-near-duration, 14s) cubic-bezier(.22,.12,.2,1) both;
+  filter: none;
 }
-.home-reference-fall-item.is-hero::after {
-  content: ''; position: absolute; left: 47%; top: 8%; width: 2px; height: 84%;
-  background: rgba(255,255,255,.34); border-radius: 999px; transform: rotate(14deg); transform-origin: bottom;
+.home-reference-fall-item.is-near-model::after {
+  content: ''; position: absolute; pointer-events: none;
 }
+.home-reference-fall-item.is-near-snow {
+  display: grid; place-items: center; color: rgba(255,255,255,.96);
+  font-size: calc(var(--reference-near-size) * .72); line-height: 1;
+  text-shadow: 0 0 4px rgba(255,255,255,.9), 0 0 18px var(--reference-leaf-color);
+  filter: drop-shadow(0 8px 18px rgba(58,89,110,.2));
+}
+.home-reference-fall-item.is-near-rain {
+  width: calc(var(--reference-near-size) * .34); height: calc(var(--reference-near-size) * .78);
+  border-radius: 68% 32% 62% 38% / 38% 40% 60% 62%;
+  background: radial-gradient(circle at 34% 24%, rgba(255,255,255,.78) 0 7%, var(--reference-leaf-color) 34%, rgba(255,255,255,.12) 76%);
+  transform-origin: 50% 28%;
+}
+.home-reference-fall-item.is-near-leaf {
+  width: calc(var(--reference-near-size) * .72); height: var(--reference-near-size);
+  border-radius: 20% 80% 20% 80%;
+  background: linear-gradient(125deg, rgba(255,255,255,.46), var(--reference-leaf-color) 42%, rgba(55,48,40,.18));
+  clip-path: polygon(50% 0%, 78% 16%, 100% 50%, 76% 84%, 50% 100%, 24% 84%, 0 50%, 22% 16%);
+  transform-origin: 36% 74%;
+}
+.home-reference-fall-item.is-near-petal {
+  width: calc(var(--reference-near-size) * .8); height: calc(var(--reference-near-size) * .66);
+  border-radius: 70% 30% 70% 30%;
+  background: radial-gradient(circle at 30% 25%, rgba(255,255,255,.6), var(--reference-leaf-color) 48%, rgba(55,48,40,.14));
+  transform-origin: 45% 72%;
+}
+.home-reference-fall-item.is-near-dew {
+  width: calc(var(--reference-near-size) * .46); height: calc(var(--reference-near-size) * .68);
+  border-radius: 58% 42% 64% 36% / 38% 44% 56% 62%;
+  background: radial-gradient(circle at 30% 24%, rgba(255,255,255,.92) 0 8%, var(--reference-leaf-color) 40%, rgba(255,255,255,.12) 80%);
+}
+.home-reference-fall-item.is-near-wheat {
+  width: calc(var(--reference-near-size) * .28); height: var(--reference-near-size);
+  border-radius: 70% 30% 70% 30%;
+  background: linear-gradient(90deg, rgba(255,255,255,.34), var(--reference-leaf-color) 52%, rgba(55,48,40,.2));
+  transform-origin: 50% 88%;
+}
+.home-reference-fall-item.is-near-bud {
+  width: calc(var(--reference-near-size) * .72); height: calc(var(--reference-near-size) * .8);
+  border-radius: 62% 38% 72% 28%;
+  background: linear-gradient(135deg, rgba(255,255,255,.48), var(--reference-leaf-color) 48%, rgba(55,48,40,.16));
+  clip-path: polygon(50% 0%, 78% 24%, 88% 56%, 58% 100%, 32% 72%, 0 42%, 22% 16%);
+}
+.home-reference-fall-item.is-near-firefly,
+.home-reference-fall-item.is-near-sun {
+  width: calc(var(--reference-near-size) * .48); height: calc(var(--reference-near-size) * .48);
+  clip-path: polygon(50% 0%, 61% 38%, 100% 50%, 61% 62%, 50% 100%, 39% 62%, 0 50%, 39% 38%);
+  background: radial-gradient(circle, #fff 0 12%, var(--reference-leaf-color) 42%, rgba(255,255,255,0) 78%);
+  filter: drop-shadow(0 0 16px var(--reference-leaf-color));
+}
+.home-reference-fall-item.is-near-model::after { left: 48%; top: 8%; width: 2px; height: 84%; border-radius: 999px; background: rgba(255,255,255,.32); transform: rotate(14deg); transform-origin: bottom; }
 .home-reference-fall-item.is-sun-aura { position: fixed; top: -42vmax; left: auto; right: -42vmax; width: 84vmax; height: 84vmax; border-radius: 50%; font-size: 0; background: radial-gradient(circle, color-mix(in srgb, var(--reference-leaf-color) 32%, transparent), transparent 62%); opacity: .48; animation: home-reference-sun-pulse 8s ease-in-out infinite; }
 @keyframes home-reference-leaf-fall {
   0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
@@ -171,12 +218,10 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   86% { transform: translate3d(26px, 92vh, 0) rotate(280deg); opacity: .6; }
   100% { transform: translate3d(12px, 115vh, 0) rotate(360deg); opacity: 0; }
 }
-@keyframes home-reference-hero-fall {
-  0% { transform: translate3d(0,-18vh,0) rotate(-18deg) scale(.72); opacity: 0; }
-  10% { transform: translate3d(calc(var(--reference-hero-drift) * .16), 8vh, 0) rotate(-8deg) scale(1); opacity: var(--reference-hero-opacity, .46); }
-  38% { transform: translate3d(calc(var(--reference-hero-drift) * .56), 38vh, 0) rotate(42deg) scale(1.08); }
-  70% { transform: translate3d(calc(var(--reference-hero-drift) * -.34), 70vh, 0) rotate(112deg) scale(.96); opacity: var(--reference-hero-opacity, .46); }
-  100% { transform: translate3d(var(--reference-hero-drift), 116vh, 0) rotate(178deg) scale(.84); opacity: 0; }
+@keyframes home-reference-near-model-fall {
+  0% { transform: translate3d(0,-16vh,0) rotate(-10deg) scale(.76); opacity: 0; }
+  50% { transform: translate3d(var(--reference-near-drift), 56vh, 0) rotate(86deg) scale(1); opacity: var(--reference-near-opacity, .74); }
+  100% { transform: translate3d(calc(var(--reference-near-drift) * .72), 116vh, 0) rotate(182deg) scale(.92); opacity: 0; }
 }
 @keyframes home-reference-sun-pulse { 0%, 100% { transform: scale(1); opacity: .32; } 50% { transform: scale(1.08); opacity: .52; } }
 .home-inner { position: relative; z-index: 1; max-width: 1000px; margin: 0 auto; padding: 3rem 2rem; }
@@ -185,7 +230,7 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   border-radius: 72% 28% 66% 34% / 58% 38% 62% 42%; background: var(--season-color); opacity: 0;
   box-shadow: inset -2px -2px 0 rgba(0,0,0,0.08), 0 3px 12px rgba(0,0,0,0.06);
   animation: var(--season-motion, home-season-fall) var(--season-duration) cubic-bezier(0.28, 0.08, 0.22, 1) forwards;
-  will-change: transform, opacity;
+
 }
 .solar-effect-petal { border-radius: 72% 28% 66% 34% / 58% 38% 62% 42%; transform-origin: 30% 70%; }
 .solar-effect-rain { width: 3px; aspect-ratio: auto; height: var(--season-size); border-radius: 999px; }
@@ -2072,9 +2117,11 @@ var homeSolarEffectActive = false;
 var homeSolarActiveName = null;
 var homeReferenceLeafTimer = null;
 var homeReferenceLeafColors = [];
-var HOME_REFERENCE_LEAF_MAX = 150;
-var homeReferenceHeroTimer = null;
-var HOME_REFERENCE_DEVICE_BUDGET = { mobile: 34, tablet: 58, desktop: 96 };
+var HOME_REFERENCE_LEAF_MAX = 120;
+var homeReferenceNearTimer = null;
+var homeReferencePool = [];
+var homeReferencePoolKey = "";
+var HOME_REFERENCE_DEVICE_BUDGET = { mobile: 26, tablet: 42, desktop: 64 };
 var HOME_REFERENCE_DEPTH_PROFILES = [
   { size: 1.18, opacity: 0.95, blur: 0, speed: 0.9, z: 3 },
   { size: 0.9, opacity: 0.72, blur: 0.24, speed: 1, z: 2 },
@@ -2082,11 +2129,15 @@ var HOME_REFERENCE_DEPTH_PROFILES = [
 ];
 function getHomeReferenceBudget() {
   var width = window.innerWidth || 1024;
+  var height = window.innerHeight || 720;
   var memory = Number(navigator.deviceMemory || 0);
   var cores = Number(navigator.hardwareConcurrency || 0);
-  if (width < 768 || (memory && memory <= 4) || (cores && cores <= 4)) return HOME_REFERENCE_DEVICE_BUDGET.mobile;
-  if (width < 1200 || (memory && memory <= 8) || (cores && cores <= 8)) return HOME_REFERENCE_DEVICE_BUDGET.tablet;
-  return HOME_REFERENCE_DEVICE_BUDGET.desktop;
+  var base = width < 768 ? HOME_REFERENCE_DEVICE_BUDGET.mobile : width < 1200 ? HOME_REFERENCE_DEVICE_BUDGET.tablet : HOME_REFERENCE_DEVICE_BUDGET.desktop;
+  var areaScale = Math.max(0.72, Math.min(1.5, Math.sqrt((width * height) / (1280 * 720))));
+  var memoryScale = memory && memory <= 4 ? 0.82 : memory && memory >= 12 ? 1.08 : 1;
+  var coreScale = cores && cores <= 4 ? 0.82 : cores && cores >= 12 ? 1.06 : 1;
+  var pixelScale = window.devicePixelRatio > 2 ? 0.84 : 1;
+  return Math.max(18, Math.min(HOME_REFERENCE_LEAF_MAX, Math.round(base * areaScale * memoryScale * coreScale * pixelScale)));
 }
 function isHomeReferencePaused() { return currentView !== 'home' || document.hidden; }
 function getHomeReferenceInterval() {
@@ -2102,7 +2153,15 @@ function prefersReducedMotion() {
 
 function clearHomeReferenceLeaves() {
   var layer = document.getElementById('homeReferenceLeafLayer');
-  if (layer) layer.replaceChildren();
+  homeReferencePoolKey = '';
+  homeReferencePool.forEach(function(leaf) {
+    leaf.hidden = true;
+    leaf.style.animationName = 'none';
+    leaf.style.animationPlayState = 'paused';
+  });
+  if (layer) {
+    layer.querySelectorAll('.is-sun-aura').forEach(function(aura) { aura.remove(); });
+  }
 }
 
 function spawnHomeReferenceLeaves(colors, termName) {
@@ -2112,7 +2171,10 @@ function spawnHomeReferenceLeaves(colors, termName) {
   var config = HOME_TERM_FALLING[termName] || HOME_TERM_FALLING['立春'];
   var profile = HOME_FALLING_INTENSITY[config.intensity] || HOME_FALLING_INTENSITY.medium;
   var speed = config.speed ? config.speed * profile.speed : 10;
-  var density = profile.density * (config.type === 'rain' ? 1.2 : 1);
+  var budget = getHomeReferenceBudget();
+  var maxActive = Math.min(HOME_REFERENCE_LEAF_MAX, budget);
+  var targetAmount = Math.max(8, Math.round(maxActive * Math.min(1.2, profile.density)));
+  var amount = Math.min(maxActive, targetAmount);
   if (config.type === 'sun' || config.type === 'heat') {
     if (layer.querySelector('.is-sun-aura')) return;
     var aura = document.createElement('i');
@@ -2121,42 +2183,43 @@ function spawnHomeReferenceLeaves(colors, termName) {
     layer.appendChild(aura);
     return;
   }
-  var maxActive = Math.min(HOME_REFERENCE_LEAF_MAX, getHomeReferenceBudget());
-  var available = Math.max(0, maxActive - layer.childElementCount);
-  var targetAmount = config.type === 'rain'
-    ? Math.max(8, Math.ceil(getHomeReferenceBudget() * 0.18))
-    : Math.round(config.count * density);
-  var amount = Math.min(targetAmount, available);
-  if (window.innerWidth < 768) amount = Math.min(amount, 46);
-  for (var index = 0; index < amount; index++) {
-    var leaf = document.createElement('span');
+  var poolKey = termName + '|' + config.type + '|' + amount + '|' + colors.join(',');
+  if (homeReferencePoolKey === poolKey && homeReferencePool.length >= amount) return;
+  homeReferencePoolKey = poolKey;
+  while (homeReferencePool.length < amount) {
+    var created = document.createElement('span');
+    created.className = 'home-reference-fall-item';
+    created.style.animationPlayState = 'paused';
+    layer.appendChild(created);
+    homeReferencePool.push(created);
+  }
+  for (var index = 0; index < homeReferencePool.length; index++) {
+    var leaf = homeReferencePool[index];
+    if (index >= amount) {
+      leaf.hidden = true;
+      continue;
+    }
+    leaf.hidden = false;
     var typeClass = config.type === 'rain' ? ' is-rain' : config.type === 'dew' ? ' is-dew' : config.type === 'snow' ? ' is-snow' : config.type === 'firefly' ? ' is-firefly' : '';
     leaf.className = 'home-reference-fall-item' + typeClass;
     leaf.textContent = config.type === 'rain' || config.type === 'dew' ? '' : config.emoji[index % config.emoji.length];
-    // 先按屏幕宽度分区，再在当前分区内抖动，避免完全随机造成空带和聚团。
-    var rainLaneOffset = config.type === 'rain' ? Math.random() : 0;
-    var laneJitter = config.type === 'rain'
-      ? (Math.random() - 0.5) * (0.72 / Math.max(1, amount))
-      : (Math.random() - 0.5) * (0.9 / Math.max(1, amount));
-    var lane = amount > 1 ? ((index + 0.5) / amount + rainLaneOffset) % 1 : 0.5;
-    var jitter = laneJitter;
-    var xPercent = Math.max(1.5, Math.min(98.5, (lane + jitter) * 100));
+    var laneJitter = (Math.random() - 0.5) * (0.72 / Math.max(1, amount));
+    var lane = amount > 1 ? (index + 0.5) / amount : 0.5;
+    var xPercent = Math.max(1.5, Math.min(98.5, (lane + laneJitter) * 100));
     leaf.style.setProperty('--reference-leaf-x', xPercent.toFixed(2) + '%');
     var rainDepth = config.type === 'rain' ? Math.random() : 0;
     var depthSample = Math.random();
     var depthIndex = depthSample < 0.22 ? 0 : depthSample < 0.68 ? 1 : 2;
     var depthProfile = HOME_REFERENCE_DEPTH_PROFILES[depthIndex];
     leaf.style.setProperty('--reference-depth-z', String(depthProfile.z));
-    leaf.style.setProperty('--reference-depth-blur', depthProfile.blur + 'px');
+    leaf.style.setProperty('--reference-depth-blur', '0px');
     var baseSize = config.type === 'rain' ? 18 + rainDepth * 28 : 16 + Math.random() * 22;
     leaf.style.setProperty('--reference-leaf-size', (baseSize * profile.size * depthProfile.size) + 'px');
     leaf.style.setProperty('--reference-leaf-color', colors[index % colors.length]);
     var opacityBase = config.type === 'rain' ? 0.42 + rainDepth * 0.34 + Math.random() * 0.16 : 0.52 + Math.random() * 0.34;
     leaf.style.setProperty('--reference-leaf-opacity', Math.min(0.95, opacityBase * profile.opacity * depthProfile.opacity).toFixed(2));
     leaf.style.setProperty('--reference-leaf-duration', (speed * depthProfile.speed * (config.type === 'rain' ? (1.12 - rainDepth * 0.32) : (0.7 + Math.random() * 0.6))) + 's');
-    // 不使用负延迟：负延迟会让元素从半程直接出现，造成“瞬间出现/消失”。
-    // 仅做短暂正向错峰，让每个元素都从顶部完整走完一次下落过程。
-    leaf.style.setProperty('--reference-leaf-delay', (Math.random() * Math.min(speed * 0.18, 1.6)).toFixed(2) + 's');
+    leaf.style.setProperty('--reference-leaf-delay', (index / Math.max(1, amount) * Math.min(speed * 0.72, 5.2)).toFixed(2) + 's');
     leaf.style.setProperty('--reference-leaf-drift', ((-120 + Math.round(Math.random() * 240)) * profile.sway) + 'px');
     leaf.style.setProperty('--reference-leaf-rotate', (180 + Math.random() * 540) + 'deg');
     leaf.style.setProperty('--reference-rain-size', ((22 + rainDepth * 42) * profile.size * depthProfile.size) + 'px');
@@ -2164,35 +2227,46 @@ function spawnHomeReferenceLeaves(colors, termName) {
       leaf.style.setProperty('--reference-rain-width', ((1.6 + rainDepth * 1.4 + Math.random() * 0.3) * depthProfile.size).toFixed(2) + 'px');
       leaf.style.setProperty('--reference-rain-drift', '0px');
       leaf.style.setProperty('--reference-rain-angle', '0deg');
-      leaf.style.setProperty('--reference-rain-blur', Math.max(0.1, 0.58 - rainDepth * 0.32 + depthProfile.blur).toFixed(2) + 'px');
+      leaf.style.setProperty('--reference-rain-blur', '0px');
       leaf.style.setProperty('--reference-rain-splash-size', (4 + rainDepth * 7).toFixed(1) + 'px');
     }
-    leaf.addEventListener('animationend', function(event) { event.currentTarget.remove(); }, { once: true });
-    layer.appendChild(leaf);
+    leaf.style.animationName = 'none';
+    leaf.style.animationPlayState = 'paused';
   }
+  window.requestAnimationFrame(function() {
+    if (homeReferencePoolKey !== poolKey) return;
+    homeReferencePool.forEach(function(leaf) {
+      if (!leaf.hidden) {
+        leaf.style.animationName = '';
+        leaf.style.animationPlayState = 'running';
+      }
+    });
+  });
 }
 
-function spawnHomeReferenceHero(colors, termName) {
+function spawnHomeReferenceNearModel(colors, termName) {
   if (isHomeReferencePaused() || !homeMotionEnabled || prefersReducedMotion()) return;
   var layer = document.getElementById('homeReferenceLeafLayer');
-  if (!layer || layer.querySelector('.is-hero')) return;
-  var hero = document.createElement('i');
-  hero.className = 'home-reference-fall-item is-hero';
+  var config = HOME_TERM_FALLING[termName] || HOME_TERM_FALLING['立春'];
+  if (!layer || layer.querySelector('.is-near-model')) return;
+  var model = document.createElement('i');
+  var modelType = config.type === 'snow' ? 'snow' : config.type === 'rain' ? 'rain' : config.type === 'dew' ? 'dew' : config.type === 'wheat' ? 'wheat' : config.type === 'leaf' ? 'leaf' : config.type === 'petal' ? 'petal' : config.type === 'bud' ? 'bud' : config.type === 'firefly' ? 'firefly' : config.type === 'sun' ? 'sun' : 'glow';
+  model.className = 'home-reference-fall-item is-near-model is-near-' + modelType;
+  if (modelType === 'snow') model.textContent = config.emoji[Math.floor(Math.random() * config.emoji.length)] || '❄';
   var width = window.innerWidth || 1024;
-  hero.style.setProperty('--reference-leaf-x', (8 + Math.random() * 78).toFixed(2) + '%');
-  hero.style.setProperty('--reference-leaf-color', colors[Math.floor(Math.random() * colors.length)]);
-  hero.style.setProperty('--reference-hero-size', Math.min(220, Math.max(72, Math.round(width * 0.1))) + 'px');
-  hero.style.setProperty('--reference-hero-opacity', (0.38 + Math.random() * 0.14).toFixed(2));
-  hero.style.setProperty('--reference-hero-blur', (0.08 + Math.random() * 0.2).toFixed(2) + 'px');
-  hero.style.setProperty('--reference-hero-drift', ((Math.random() - 0.5) * 180).toFixed(1) + 'px');
-  hero.addEventListener('animationend', function(event) { event.currentTarget.remove(); }, { once: true });
-  layer.appendChild(hero);
+  model.style.setProperty('--reference-near-x', (8 + Math.random() * 78).toFixed(2) + '%');
+  model.style.setProperty('--reference-leaf-color', colors[Math.floor(Math.random() * colors.length)]);
+  model.style.setProperty('--reference-near-size', Math.min(144, Math.max(72, Math.round(width * 0.08))) + 'px');
+  model.style.setProperty('--reference-near-opacity', (0.58 + Math.random() * 0.16).toFixed(2));
+  model.style.setProperty('--reference-near-drift', ((Math.random() - 0.5) * 140).toFixed(1) + 'px');
+  model.addEventListener('animationend', function(event) { event.currentTarget.remove(); }, { once: true });
+  layer.appendChild(model);
 }
 
-function runHomeReferenceHero() {
+function runHomeReferenceNearModel() {
   if (isHomeReferencePaused() || !homeSolarEffectActive || !homeMotionEnabled || prefersReducedMotion()) return;
-  spawnHomeReferenceHero(homeReferenceLeafColors, homeSolarActiveName || getActiveHomeSolarName());
-  homeReferenceHeroTimer = window.setTimeout(runHomeReferenceHero, 10000);
+  spawnHomeReferenceNearModel(homeReferenceLeafColors, homeSolarActiveName || getActiveHomeSolarName());
+  homeReferenceNearTimer = window.setTimeout(runHomeReferenceNearModel, 30000);
 }
 
 function runHomeReferenceLeaves() {
@@ -2205,12 +2279,12 @@ function startHomeReferenceLeaves(colors, termName) {
   homeReferenceLeafColors = colors;
   if (prefersReducedMotion() || !homeMotionEnabled) return;
   clearHomeReferenceLeaves();
-  if (homeReferenceHeroTimer) window.clearTimeout(homeReferenceHeroTimer);
-  homeReferenceHeroTimer = null;
+  if (homeReferenceNearTimer) window.clearTimeout(homeReferenceNearTimer);
+  homeReferenceNearTimer = null;
   spawnHomeReferenceLeaves(colors, termName);
   if (homeReferenceLeafTimer) window.clearTimeout(homeReferenceLeafTimer);
   homeReferenceLeafTimer = window.setTimeout(runHomeReferenceLeaves, getHomeReferenceInterval());
-  homeReferenceHeroTimer = window.setTimeout(runHomeReferenceHero, 10000);
+  homeReferenceNearTimer = window.setTimeout(runHomeReferenceNearModel, 30000);
 }
 
 function getActiveHomeSolarName() {
@@ -2254,18 +2328,18 @@ function stopHomeSolarEffect(preserveName) {
   homeSolarEffectActive = false;
   if (!preserveName) homeSolarActiveName = null;
   if (homeReferenceLeafTimer) window.clearTimeout(homeReferenceLeafTimer);
-  if (homeReferenceHeroTimer) window.clearTimeout(homeReferenceHeroTimer);
+  if (homeReferenceNearTimer) window.clearTimeout(homeReferenceNearTimer);
   homeReferenceLeafTimer = null;
-  homeReferenceHeroTimer = null;
+  homeReferenceNearTimer = null;
   clearHomeReferenceLeaves();
 }
 
 document.addEventListener('visibilitychange', function() {
   if (document.hidden) {
     if (homeReferenceLeafTimer) window.clearTimeout(homeReferenceLeafTimer);
-    if (homeReferenceHeroTimer) window.clearTimeout(homeReferenceHeroTimer);
+    if (homeReferenceNearTimer) window.clearTimeout(homeReferenceNearTimer);
     homeReferenceLeafTimer = null;
-    homeReferenceHeroTimer = null;
+    homeReferenceNearTimer = null;
     return;
   }
   if (currentView === 'home' && homeSolarEffectActive && homeMotionEnabled && !prefersReducedMotion()) {

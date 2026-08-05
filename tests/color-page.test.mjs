@@ -190,17 +190,17 @@ test('首页按二十四节气匹配独立下落动效，并由混色按钮切�
   for (const [name, type] of Object.entries(expectedTypes)) assert.equal(falling[name].type, type, `${name} 动效类型不匹配`);
   assert.doesNotMatch(page, /solar-effect-controls|previewHomeSolarEffect|resetHomeSolarEffect/);
   assert.doesNotMatch(page, /id="seasonCycleStatus"/);
-  assert.match(inlineScript, /var HOME_REFERENCE_LEAF_MAX = 150;/);
-  assert.match(inlineScript, /var HOME_REFERENCE_DEVICE_BUDGET = \{ mobile: 34, tablet: 58, desktop: 96 \}/);
+  assert.match(inlineScript, /var HOME_REFERENCE_LEAF_MAX = 120;/);
+  assert.match(inlineScript, /var HOME_REFERENCE_DEVICE_BUDGET = \{ mobile: 26, tablet: 42, desktop: 64 \};/);
   assert.match(inlineScript, /var HOME_FALLING_INTENSITY = \{/);
-  assert.match(inlineScript, /var density = profile\.density \* \(config\.type === 'rain' \? 1\.2 : 1\)/);
+  assert.match(inlineScript, /var targetAmount = Math\.max\(8, Math\.round\(maxActive \* Math\.min\(1\.2, profile\.density\)\)\)/);
   assert.match(inlineScript, /var HOME_REFERENCE_LEAF_CHARS = \['❀', '✿', '❋', '🍃', '🌿', '🍂'\]/);
   assert.match(inlineScript, /function spawnHomeReferenceLeaves\(colors, termName\)/);
   assert.match(inlineScript, /function startHomeReferenceLeaves\(colors, termName\)/);
   assert.match(inlineScript, /HOME_TERM_FALLING\[termName\]/);
-  assert.match(inlineScript, /var lane = amount > 1 \? \(\(index \+ 0\.5\) \/ amount \+ rainLaneOffset\) % 1 : 0\.5/);
-  assert.match(inlineScript, /var xPercent = Math\.max\(1\.5, Math\.min\(98\.5, \(lane \+ jitter\) \* 100\)\)/);
-  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-delay', \(Math\.random\(\) \* Math\.min\(speed \* 0\.18, 1\.6\)\)/);
+  assert.match(inlineScript, /var lane = amount > 1 \? \(index \+ 0\.5\) \/ amount : 0\.5/);
+  assert.match(inlineScript, /var xPercent = Math\.max\(1\.5, Math\.min\(98\.5, \(lane \+ laneJitter\) \* 100\)\)/);
+  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-delay', \(index \/ Math\.max\(1, amount\) \* Math\.min\(speed \* 0\.72, 5\.2\)\)/);
   assert.match(inlineScript, /solar-card-blend[\s\S]*?applyHomeSolarEffect/);
   assert.doesNotMatch(inlineScript, /function spawnHomeSeasonFall\(/);
   assert.match(inlineScript, /function startHomeSolarEffect\(\)/);
@@ -213,8 +213,8 @@ test('首页按二十四节气匹配独立下落动效，并由混色按钮切�
 
 test('雨水雨幕使用青绿色、完整下落和均匀分区生成', () => {
   assert.match(inlineScript, /'雨水': \{ type: 'rain', emoji: \['💧'\], count: 150, speed: 8\.8, intensity: 'medium' \}/);
+  assert.match(inlineScript, /AFC9D3/);
   assert.match(inlineScript, /'雨水': \['#AFC9D3', '#6F9CAF', '#3E6E82'\]/);
-  assert.match(inlineScript, /'谷雨': \{ type: 'rain', emoji: \['💧'\], count: 132, speed: 8\.2, intensity: 'heavy' \}/);
   assert.match(inlineScript, /var rainDepth = config\.type === 'rain' \? Math\.random\(\) : 0/);
   assert.match(inlineScript, /--reference-rain-drift', '0px'/);
   assert.match(inlineScript, /--reference-rain-angle', '0deg'/);
@@ -240,20 +240,28 @@ test('天气功能不进入当前页面运行时', () => {
 });
 
 
-test('粒子性能预算、近大远小与低频超大近景完整', () => {
-  assert.match(page, /contain: layout style/);
+test('粒子性能预算、近大远小与节气类型近景模型完整', () => {
+  assert.match(page, /contain: strict/);
   assert.match(page, /z-index: var\(--reference-depth-z, 1\)/);
-  assert.match(page, /filter: blur\(var\(--reference-depth-blur, 0px\)\)/);
-  assert.match(page, /\.home-reference-fall-item\.is-hero/);
-  assert.match(page, /@keyframes home-reference-hero-fall/);
+  assert.match(page, /animation-iteration-count: infinite/);
+  assert.match(page, /contain: strict/);
+  assert.match(page, /filter: none/);
+  assert.match(page, /\.home-reference-fall-item\.is-near-model/);
+  assert.match(page, /\.is-near-snow/);
+  assert.match(page, /\.is-near-rain/);
+  assert.match(page, /@keyframes home-reference-near-model-fall/);
   assert.match(inlineScript, /var HOME_REFERENCE_DEPTH_PROFILES = \[/);
   assert.match(inlineScript, /\{ size: 1\.18, opacity: 0\.95, blur: 0, speed: 0\.9, z: 3 \}/);
-  assert.match(inlineScript, /var maxActive = Math\.min\(HOME_REFERENCE_LEAF_MAX, getHomeReferenceBudget\(\)\)/);
+  assert.match(inlineScript, /var maxActive = Math\.min\(HOME_REFERENCE_LEAF_MAX, budget\)/);
+  assert.match(inlineScript, /var homeReferencePool = \[\]/);
+  assert.match(inlineScript, /var homeReferencePoolKey = ""/);
+  assert.match(inlineScript, /var areaScale = Math\.max\(0\.72, Math\.min\(1\.5/);
+  assert.match(inlineScript, /leaf\.style\.setProperty\('--reference-leaf-delay', \(index \/ Math\.max\(1, amount\)/);
   assert.match(inlineScript, /var depthIndex = depthSample < 0\.22 \? 0 : depthSample < 0\.68 \? 1 : 2/);
   assert.match(inlineScript, /--reference-rain-size', \(\(22 \+ rainDepth \* 42\) \* profile\.size \* depthProfile\.size\)/);
-  assert.match(inlineScript, /var homeReferenceHeroTimer = null/);
-  assert.match(inlineScript, /function spawnHomeReferenceHero\(colors, termName\)/);
-  assert.match(inlineScript, /window\.setTimeout\(runHomeReferenceHero, 10000\)/);
-  assert.match(inlineScript, /Math\.min\(220, Math\.max\(72, Math\.round\(width \* 0\.1\)\)\)/);
+  assert.match(inlineScript, /var homeReferenceNearTimer = null/);
+  assert.match(inlineScript, /function spawnHomeReferenceNearModel\(colors, termName\)/);
+  assert.match(inlineScript, /window\.setTimeout\(runHomeReferenceNearModel, 30000\)/);
+  assert.match(inlineScript, /config\.type === 'snow'/);
 });
 
