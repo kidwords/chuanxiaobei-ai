@@ -69,6 +69,11 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
     linear-gradient(135deg, #faf8f5 0%, #f0ede8 50%, #f5f2ee 100%);
   transition: background 0.8s ease;
 }
+.home-bg-transition {
+  position: fixed; inset: 0; z-index: 0; display: none;
+  background-size: cover; opacity: 0; pointer-events: none;
+  transition: opacity 0.75s ease;
+}
 .home-reference-leaf-layer { position: fixed; inset: 0; z-index: 0; contain: strict; overflow: hidden; pointer-events: none; }
 body[data-home-motion="off"] .home-reference-leaf-layer { display: none; }
 body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
@@ -311,7 +316,7 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
 }
 .entry-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-color: #ccc; }
 .home-focus-exit {
-  display: none; position: fixed; top: 24px; right: 24px; z-index: 30;
+  display: none; position: fixed; top: 24px; right: 156px; z-index: 30;
   min-height: 44px; padding: 0 16px; border: 1px solid rgba(255,255,255,.72); border-radius: 14px;
   color: #2f3035; background: rgba(255,255,255,.78); box-shadow: 0 8px 24px rgba(30,40,50,.12);
   backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font: inherit; cursor: pointer;
@@ -329,7 +334,7 @@ body.home-focus { overflow: hidden; }
 body.home-focus #home { position: fixed; inset: 0; z-index: 20; overflow: hidden; min-height: 100dvh; }
 body.home-focus #home .home-inner { visibility: hidden; pointer-events: none; }
 body.home-focus #home .home-focus-exit { display: inline-flex; align-items: center; justify-content: center; visibility: visible; pointer-events: auto; }
-@media (max-width: 640px) { .home-focus-exit { top: 16px; right: 16px; } }
+@media (max-width: 640px) { .home-focus-exit { top: 16px; right: 136px; } }
 .motion-toggle { flex-direction: column; gap: 2px; min-width: 118px; padding: 10px 24px 8px; }
 .motion-toggle-title { line-height: 1.2; }
 .motion-hint { margin: 0; color: rgba(55,70,80,.66); font-size: .64rem; line-height: 1.2; white-space: nowrap; letter-spacing: .01em; }
@@ -715,7 +720,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .imm-bg-transition {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
   background-size: cover;
   pointer-events: none;
   display: none;
@@ -809,6 +814,21 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 }
 .imm-solar-dot:hover::after {
   opacity: 1;
+}
+
+/* 两组快速切换按钮保持同一套尺寸与交互反馈 */
+.imm-scene-dot, .imm-solar-dot {
+  width: 32px; height: 32px; border-radius: 10px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+.imm-scene-dot:hover, .imm-solar-dot:hover {
+  transform: scale(1.12);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.16);
+  filter: saturate(1.06);
+}
+.imm-scene-dot.active, .imm-solar-dot.active {
+  transform: scale(1.14);
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.72), 0 4px 14px rgba(0,0,0,0.18);
 }
 
 /* Full prompt in immersive */
@@ -1090,8 +1110,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   .imm-left > div[style*="font-size:0.7rem"] { font-size: 0.6rem !important; margin-bottom: 4px !important; }
   .imm-scene-strip { gap: 6px !important; margin-bottom: 8px !important; padding-bottom: 6px !important; }
   .imm-solar-strip { gap: 5px !important; margin-bottom: 8px !important; padding-bottom: 6px !important; }
-  .imm-solar-dot { width: 24px !important; height: 24px !important; }
-  .imm-scene-dot { width: 32px !important; height: 32px !important; }
+  .imm-solar-dot, .imm-scene-dot { width: 28px !important; height: 28px !important; }
   .imm-strip { flex-direction: row !important; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
   .imm-swatch { width: 72px !important; height: 52px !important; flex-shrink: 0; border-radius: 10px; }
   .imm-swatch-label { font-size: 0.6rem !important; }
@@ -1189,6 +1208,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 </div>
 <div id="home" class="view active">
   <div class="home-bg" id="homeBg"></div>
+  <div class="home-bg-transition" id="homeBgTransition" aria-hidden="true"></div>
   <div class="home-reference-leaf-layer" id="homeReferenceLeafLayer" aria-hidden="true"></div>
   <div class="home-inner">
     <header class="cover" id="homeHeader">
@@ -1330,12 +1350,29 @@ function setPageBackground(value, size) {
 }
 
 function setHomeBackground(value, textHex) {
-  setPageBackground(value);
   var homeBackground = document.getElementById('homeBg');
-  if (homeBackground) {
-    homeBackground.style.background = value;
-    homeBackground.style.backgroundSize = 'cover';
+  var transition = document.getElementById('homeBgTransition');
+  var canFade = !!(homeBackground && transition);
+  if (canFade) {
+    if (transition._hideTimer) window.clearTimeout(transition._hideTimer);
+    transition.style.background = value;
+    transition.style.backgroundSize = 'cover';
+    transition.style.display = 'block';
+    transition.style.opacity = '1';
   }
+  requestAnimationFrame(function() {
+    setPageBackground(value);
+    if (homeBackground) {
+      homeBackground.style.background = value;
+      homeBackground.style.backgroundSize = 'cover';
+    }
+    if (canFade) {
+      transition.style.opacity = '0';
+      transition._hideTimer = window.setTimeout(function() {
+        transition.style.display = 'none';
+      }, 780);
+    }
+  });
   if (textHex && typeof window.updateHomeTextColors === 'function') {
     window.updateHomeTextColors(textHex);
   }
@@ -1349,6 +1386,17 @@ function setPaletteBackground(value) {
 }
 
 function setBg(value) {
+  var overlay = document.getElementById('immBgTransition');
+  var canFade = !!(overlay && !(typeof isAutoPlaying === 'boolean' && isAutoPlaying));
+  if (canFade) {
+    if (overlay._hideTimer) window.clearTimeout(overlay._hideTimer);
+    overlay.style.background = value;
+    overlay.style.backgroundSize = 'cover';
+    overlay.style.display = 'block';
+    overlay.style.clipPath = 'inset(0)';
+    overlay.style.transform = 'translate(0,0) scale(1)';
+    overlay.style.opacity = '1';
+  }
   requestAnimationFrame(function() {
     setPageBackground(value);
     var immersive = document.getElementById('immersive');
@@ -1357,6 +1405,12 @@ function setBg(value) {
     if (immersive) immersive.style.background = 'transparent';
     if (leftPanel) leftPanel.style.background = 'transparent';
     if (centerPanel) centerPanel.style.background = 'transparent';
+    if (canFade) {
+      overlay.style.opacity = '0';
+      overlay._hideTimer = window.setTimeout(function() {
+        overlay.style.display = 'none';
+      }, 780);
+    }
   });
 }
 
