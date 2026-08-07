@@ -71,8 +71,21 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 }
 .home-bg-transition {
   position: fixed; inset: 0; z-index: 0; display: none;
-  background-size: cover; opacity: 0; pointer-events: none;
+  background-size: cover; background-repeat: no-repeat; opacity: 0; pointer-events: none;
   transition: opacity 0.75s ease;
+  will-change: opacity;
+}
+.page-bg-transition {
+  position: fixed; inset: 0; z-index: 0; display: none;
+  background-size: cover; background-repeat: no-repeat; opacity: 0; pointer-events: none;
+  transition: opacity 0.75s ease;
+  will-change: opacity;
+}
+.palette-bg-transition {
+  position: fixed; inset: 0; z-index: 0; display: none;
+  background-size: cover; background-repeat: no-repeat; opacity: 0; pointer-events: none;
+  transition: opacity 0.75s ease;
+  will-change: opacity;
 }
 .home-reference-leaf-layer { position: fixed; inset: 0; z-index: 0; contain: strict; overflow: hidden; pointer-events: none; }
 body[data-home-motion="off"] .home-reference-leaf-layer { display: none; }
@@ -677,6 +690,20 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   padding-bottom: 0.8rem;
   border-bottom: 1px solid rgba(0,0,0,0.06);
 }
+.imm-left > div[style*="font-size:0.7rem"] {
+  padding-left: 4px;
+  color: rgba(255,255,255,0.72) !important;
+  letter-spacing: 0.08em !important;
+}
+.imm-scene-strip, .imm-solar-strip {
+  gap: 8px;
+  margin: 0 0 14px !important;
+  padding: 10px !important;
+  border: 1px solid rgba(255,255,255,0.18) !important;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.09);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 8px 18px rgba(30,40,50,0.08);
+}
 .imm-scene-dot {
   width: 36px; height: 36px;
   border-radius: 10px;
@@ -819,6 +846,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 /* 两组快速切换按钮保持同一套尺寸与交互反馈 */
 .imm-scene-dot, .imm-solar-dot {
   width: 32px; height: 32px; border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.24);
   transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
 }
 .imm-scene-dot:hover, .imm-solar-dot:hover {
@@ -1108,8 +1136,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   }
   #immPalette { padding-top: 10px !important; }
   .imm-left > div[style*="font-size:0.7rem"] { font-size: 0.6rem !important; margin-bottom: 4px !important; }
-  .imm-scene-strip { gap: 6px !important; margin-bottom: 8px !important; padding-bottom: 6px !important; }
-  .imm-solar-strip { gap: 5px !important; margin-bottom: 8px !important; padding-bottom: 6px !important; }
+  .imm-scene-strip, .imm-solar-strip { gap: 6px !important; margin-bottom: 8px !important; padding: 8px !important; border-radius: 12px; }
   .imm-solar-dot, .imm-scene-dot { width: 28px !important; height: 28px !important; }
   .imm-strip { flex-direction: row !important; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
   .imm-swatch { width: 72px !important; height: 52px !important; flex-shrink: 0; border-radius: 10px; }
@@ -1206,6 +1233,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
     <p class="export-dialog-note" id="exportDialogNote"></p>
   </div>
 </div>
+<div class="page-bg-transition" id="pageBgTransition" aria-hidden="true"></div>
 <div id="home" class="view active">
   <div class="home-bg" id="homeBg"></div>
   <div class="home-bg-transition" id="homeBgTransition" aria-hidden="true"></div>
@@ -1288,6 +1316,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
     <!-- 背景切换过渡层 -->
     <div class="imm-bg-transition" id="immBgTransition"></div>
     <div id="palBgLayer" style="position:fixed;inset:0;z-index:0;pointer-events:none;display:none;"></div>
+    <div class="palette-bg-transition" id="palBgTransition" aria-hidden="true"></div>
     <div class="imm-left" id="immLeft">
       <div style="font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.5);margin-bottom:8px;text-transform:uppercase;letter-spacing:1px;">场景配色</div>
       <div class="imm-scene-strip" id="immSceneStrip" style="margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:10px;"></div>
@@ -1344,35 +1373,77 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 <div class="copy-feedback" id="copyFeedback">已复制</div>
 <script>
 // === 色彩工具 ===
-function setPageBackground(value, size) {
+function applyPageBackground(value, size) {
   document.body.style.background = value;
   document.body.style.backgroundSize = size || 'cover';
+  var homeBackground = document.getElementById('homeBg');
+  if (homeBackground && currentView === 'home') {
+    homeBackground.style.background = value;
+    homeBackground.style.backgroundSize = size || 'cover';
+  }
+}
+
+function getBackgroundSource() {
+  if (currentView === 'home') return document.getElementById('homeBg') || document.body;
+  return document.body;
+}
+
+function readBackgroundStyle(element) {
+  if (!element) return '';
+  var inlineBackground = element.style && element.style.background;
+  if (inlineBackground) return inlineBackground;
+  return window.getComputedStyle(element).background || '';
+}
+
+function prepareCrossfadeLayer(layer, background, size) {
+  if (!layer) return;
+  if (layer._hideTimer) window.clearTimeout(layer._hideTimer);
+  layer.style.transition = 'none';
+  layer.style.background = background || 'transparent';
+  layer.style.backgroundSize = size || 'cover';
+  layer.style.backgroundRepeat = 'no-repeat';
+  layer.style.display = 'block';
+  layer.style.opacity = '1';
+  void layer.offsetWidth;
+}
+
+function finishCrossfadeLayer(layer) {
+  if (!layer) return;
+  requestAnimationFrame(function() {
+    layer.style.transition = 'opacity 0.75s ease';
+    layer.style.opacity = '0';
+    layer._hideTimer = window.setTimeout(function() {
+      layer.style.display = 'none';
+      layer.style.transition = '';
+    }, 800);
+  });
+}
+
+function getBackgroundTransitionLayer() {
+  if (currentView === 'home') return document.getElementById('homeBgTransition');
+  if (currentView === 'immersive') {
+    if (typeof isAutoPlaying === 'boolean' && isAutoPlaying) return null;
+    return document.getElementById('immBgTransition');
+  }
+  return document.getElementById('pageBgTransition');
+}
+
+function setPageBackground(value, size) {
+  var overlay = getBackgroundTransitionLayer();
+  if (!overlay) {
+    applyPageBackground(value, size);
+    return;
+  }
+  var source = getBackgroundSource();
+  var oldBackground = readBackgroundStyle(source);
+  var oldSize = source && source.style && source.style.backgroundSize;
+  prepareCrossfadeLayer(overlay, oldBackground, oldSize || 'cover');
+  applyPageBackground(value, size);
+  finishCrossfadeLayer(overlay);
 }
 
 function setHomeBackground(value, textHex) {
-  var homeBackground = document.getElementById('homeBg');
-  var transition = document.getElementById('homeBgTransition');
-  var canFade = !!(homeBackground && transition);
-  if (canFade) {
-    if (transition._hideTimer) window.clearTimeout(transition._hideTimer);
-    transition.style.background = value;
-    transition.style.backgroundSize = 'cover';
-    transition.style.display = 'block';
-    transition.style.opacity = '1';
-  }
-  requestAnimationFrame(function() {
-    setPageBackground(value);
-    if (homeBackground) {
-      homeBackground.style.background = value;
-      homeBackground.style.backgroundSize = 'cover';
-    }
-    if (canFade) {
-      transition.style.opacity = '0';
-      transition._hideTimer = window.setTimeout(function() {
-        transition.style.display = 'none';
-      }, 780);
-    }
-  });
+  setPageBackground(value);
   if (textHex && typeof window.updateHomeTextColors === 'function') {
     window.updateHomeTextColors(textHex);
   }
@@ -1382,36 +1453,27 @@ function setPaletteBackground(value) {
   var layer = document.getElementById('palBgLayer');
   if (!layer) return;
   layer.style.display = 'block';
+  var transition = document.getElementById('palBgTransition');
+  var canFade = !!(transition && !(typeof isAutoPlaying === 'boolean' && isAutoPlaying));
+  if (!canFade) {
+    layer.style.background = value;
+    return;
+  }
+  var oldBackground = readBackgroundStyle(layer);
+  var oldSize = layer.style.backgroundSize || 'cover';
+  prepareCrossfadeLayer(transition, oldBackground, oldSize);
   layer.style.background = value;
+  finishCrossfadeLayer(transition);
 }
 
 function setBg(value) {
-  var overlay = document.getElementById('immBgTransition');
-  var canFade = !!(overlay && !(typeof isAutoPlaying === 'boolean' && isAutoPlaying));
-  if (canFade) {
-    if (overlay._hideTimer) window.clearTimeout(overlay._hideTimer);
-    overlay.style.background = value;
-    overlay.style.backgroundSize = 'cover';
-    overlay.style.display = 'block';
-    overlay.style.clipPath = 'inset(0)';
-    overlay.style.transform = 'translate(0,0) scale(1)';
-    overlay.style.opacity = '1';
-  }
-  requestAnimationFrame(function() {
-    setPageBackground(value);
-    var immersive = document.getElementById('immersive');
-    var leftPanel = document.getElementById('immLeft');
-    var centerPanel = document.getElementById('immCenter');
-    if (immersive) immersive.style.background = 'transparent';
-    if (leftPanel) leftPanel.style.background = 'transparent';
-    if (centerPanel) centerPanel.style.background = 'transparent';
-    if (canFade) {
-      overlay.style.opacity = '0';
-      overlay._hideTimer = window.setTimeout(function() {
-        overlay.style.display = 'none';
-      }, 780);
-    }
-  });
+  setPageBackground(value);
+  var immersive = document.getElementById('immersive');
+  var leftPanel = document.getElementById('immLeft');
+  var centerPanel = document.getElementById('immCenter');
+  if (immersive) immersive.style.background = 'transparent';
+  if (leftPanel) leftPanel.style.background = 'transparent';
+  if (centerPanel) centerPanel.style.background = 'transparent';
 }
 
 function hexToHsl(hex) {
