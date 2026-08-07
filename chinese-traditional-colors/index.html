@@ -1239,6 +1239,13 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   <div class="home-bg-transition" id="homeBgTransition" aria-hidden="true"></div>
   <div class="home-reference-leaf-layer" id="homeReferenceLeafLayer" aria-hidden="true"></div>
   <div class="home-inner">
+    <div class="entry-row">
+      <button class="entry-btn" onclick="startTour(0)">逐步览色</button>
+      <button class="entry-btn" onclick="showGallery()">全部浏览</button>
+      <button class="entry-btn" id="homeFocusToggle" type="button" onclick="toggleHomeFocus()" aria-pressed="false">全屏动效</button>
+      <button class="entry-btn motion-toggle" id="homeMotionToggle" type="button" onclick="toggleHomeMotion()" aria-pressed="true" aria-label="关闭首页动效"><span class="motion-toggle-title">关闭动效</span><small class="motion-hint">卡顿请关闭特效</small></button>
+      <button class="entry-btn" onclick="saveHomeBg()">保存背景</button>
+    </div>
     <header class="cover" id="homeHeader">
       <h1 id="homeTitle">中国传统<strong>色</strong></h1>
       <p class="sub" id="homeSub">故宫里的色彩美学 · 384 色 · 24 节气 · 4 季</p>
@@ -1247,13 +1254,6 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
     <div class="intro-box" id="homeIntro">
       <p id="homeDesc1"><strong>《中国传统色：故宫里的色彩美学》</strong>由郭浩、李健明历时多年编撰，从故宫建筑、传统服饰、古画典籍中提取了 384 种中国传统色，按二十四节气编排，涵盖春、夏、秋、冬四季。每一种颜色都有独特的色名和深厚的文化意蕴——从「天缥」的春日晴空到「银朱」的宫廷正红，从「月魄」的清辉到「京元」的墨夜。</p>
       <p id="homeDesc2">本工具基于这 384 色，设计了 16 种应用场景与 24 种节气配色方案，每种均提供浅色/深色双模式、AI 提示词、以及推荐字体搭配。点击任意色块即可切换背景，感受色彩铺满视野的震撼。</p>
-    </div>
-    <div class="entry-row">
-      <button class="entry-btn" onclick="startTour(0)">逐步览色</button>
-      <button class="entry-btn" onclick="showGallery()">全部浏览</button>
-      <button class="entry-btn" id="homeFocusToggle" type="button" onclick="toggleHomeFocus()" aria-pressed="false">全屏动效</button>
-      <button class="entry-btn motion-toggle" id="homeMotionToggle" type="button" onclick="toggleHomeMotion()" aria-pressed="true" aria-label="关闭首页动效"><span class="motion-toggle-title">关闭动效</span><small class="motion-hint">卡顿请关闭特效</small></button>
-      <button class="entry-btn" onclick="saveHomeBg()">保存背景</button>
     </div>
     <div id="solarHomeContainer"></div>
     <div class="home-footer" id="homeFooter">基于《中国传统色：故宫里的色彩美学》郭浩 / 李健明 著</div>
