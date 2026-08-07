@@ -27,6 +27,11 @@
 
 直接双击仓库根目录的 [`index.html`](./index.html)，浏览器里就能看到所有项目卡片。
 
+**或者直接打开线上版：**
+
+- [中国传统色](https://kidwords.github.io/chuanxiaobei-ai/chinese-traditional-colors/index.html)
+- [新拟态深度探索](https://kidwords.github.io/chuanxiaobei-ai/showcase-neumorphism/index.html)
+
 ### 2. 跑项目
 
 进任意项目目录双击对应 `index.html`。两个项目都是纯静态、纯前端、零依赖。
