@@ -1,0 +1,970 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>节气混色方案对比 · 评审稿</title>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #faf8f5; color: #2b2620; font: 400 15px/1.6 "Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+  .wrap { width: min(100% - 32px, 1280px); margin: 0 auto; padding: 48px 0 96px; }
+  h1 { font-size: 30px; font-weight: 600; line-height: 1.3; margin: 0 0 8px; letter-spacing: .02em; }
+  .sub { color: #6f675c; margin: 0 0 24px; font-size: 14px; }
+  .diag { border: 1px solid #e5ddd0; border-radius: 14px; background: #fff; padding: 24px; margin-bottom: 40px; box-shadow: 0 1px 2px rgba(43,38,32,.05); }
+  .diag h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
+  .diag p { margin: 0 0 8px; color: #4c453b; }
+  .diag strong { color: #b15a43; }
+  .diag code { background: #f3efe7; border-radius: 6px; padding: 1px 6px; font-size: 13px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; }
+  .legend span { border-radius: 10px; border: 1px solid #e5ddd0; background: #faf8f5; padding: 4px 12px; font-size: 13px; color: #4c453b; }
+  .season { font-size: 20px; font-weight: 600; margin: 40px 0 16px; padding-bottom: 8px; border-bottom: 1px solid #e5ddd0; }
+  .season-春 { color: #4c8045; } .season-夏 { color: #b6a014; } .season-秋 { color: #b15a43; } .season-冬 { color: #5976ba; }
+  .grid { display: grid; gap: 24px; }
+  .term { border: 1px solid #e5ddd0; border-radius: 16px; background: #fff; padding: 24px; box-shadow: 0 1px 2px rgba(43,38,32,.05); }
+  .term-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .term-head h3 { margin: 0; font-size: 20px; font-weight: 600; letter-spacing: .08em; }
+  .term-desc { margin: 0; color: #8a8072; font-size: 13px; }
+  .card-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .card { display: flex; flex-direction: column; gap: 8px; }
+  .swatch { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 14px; border: 1px solid rgba(0,0,0,.08); cursor: pointer; padding: 0; overflow: hidden; transition: all .25s; box-shadow: 0 1px 2px rgba(43,38,32,.06); }
+  .swatch:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(43,38,32,.16); }
+  .swatch:focus-visible { outline: 3px solid #3271ae; outline-offset: 2px; }
+  .swatch-label { position: absolute; left: 8px; bottom: 8px; font-size: 12px; font-weight: 500; color: #fff; background: rgba(23,23,23,.42); border-radius: 8px; padding: 2px 8px; backdrop-filter: blur(4px); }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+  .chip { border-radius: 8px; padding: 1px 6px; font-size: 11px; line-height: 1.5; border: 1px solid rgba(0,0,0,.08); }
+  .chip i { font-style: normal; font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,.18); }
+  .tagline { margin: 0; color: #8a8072; font-size: 12px; }
+  #overlay { position: fixed; inset: 0; z-index: 50; display: none; align-items: flex-end; justify-content: center; padding: 32px; cursor: pointer; }
+  #overlay.show { display: flex; }
+  #overlay .hint { background: rgba(23,23,23,.55); color: #f8f7f4; border-radius: 10px; padding: 8px 16px; font-size: 13px; backdrop-filter: blur(6px); }
+  @media (max-width: 1024px) { .card-row { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .card-row { grid-template-columns: 1fr; } .wrap { padding-top: 24px; } }
+  @media (prefers-reduced-motion: reduce) { .swatch, .swatch:hover { transition: none; transform: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>节气混色方案对比 · 评审稿</h1>
+  <p class="sub">数据来源：chinese-traditional-colors/index.html · 生成日期 2026-08-07 · 全部候选色均取自各节气自身十六色 · 点击色卡可全屏预览</p>
+  <div class="diag">
+    <h2>现状诊断</h2>
+    <p>当前混色为 <code>SOLAR_BLEND_OVERRIDES</code> 人工指定的<strong>双色 135° 直线渐变</strong>，其中 <strong>16/24</strong> 个节气两端色相差超过 60°，以下 8 个接近或达到互补色（渐变中段会经过灰带，显得脏）：</p>
+    <p><strong>春分（141°）、清明（138°）、小暑（178°）、立秋（136°）、处暑（149°）、秋分（157°）、寒露（177°）、大雪（177°）</strong></p>
+    <p>另有 <strong>清明</strong> 两端均为低饱和灰（0.11 / 0.12），与「紫气东来」意象脱节。方案 B/C 通过加入中间色位或径向结构消除灰带，并让色彩走向贴合节气意象。</p>
+    <div class="legend">
+      <span>现状 · 双色直连</span>
+      <span>方案A · 和韵（同色系双色）</span>
+      <span>方案B · 意象三停（三色叙事）</span>
+      <span>方案C · 晨昏光影（径向光感）</span>
+    </div>
+  </div>
+<section data-season="春">
+<h2 id="season-春" class="season season-春">春季 · 立春 / 雨水 / 惊蛰 / 春分 / 清明 / 谷雨</h2>
+<div class="grid">
+<section class="term">
+  <header class="term-head">
+    <h3>立春</h3>
+    <p class="term-desc">春芽初绿，万物复苏 · 晨光破寒，新芽初绿</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #FFF799, #99BCAC)" data-css="linear-gradient(135deg, #FFF799, #99BCAC)" aria-label="点击全屏预览 立春 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#FFF799"><i style="color:#171717">黄白游</i></span><span class="chip" style="background:#99BCAC"><i style="color:#171717">苍筤</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #ECD452, #B6A014)" data-css="linear-gradient(135deg, #ECD452, #B6A014)" aria-label="点击全屏预览 立春 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#ECD452"><i style="color:#171717">缃叶</i></span><span class="chip" style="background:#B6A014"><i style="color:#171717">苍黄</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #FFF799, #D5EBE1, #99BCAC)" data-css="linear-gradient(135deg, #FFF799, #D5EBE1, #99BCAC)" aria-label="点击全屏预览 立春 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#FFF799"><i style="color:#171717">黄白游</i></span><span class="chip" style="background:#D5EBE1"><i style="color:#171717">天缥</i></span><span class="chip" style="background:#99BCAC"><i style="color:#171717">苍筤</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #FFEE6F 0%, #FFF799 33%, #D5EBE1 67%, #B1D5C8 100%)" data-css="radial-gradient(circle at 32% 22%, #FFEE6F 0%, #FFF799 33%, #D5EBE1 67%, #B1D5C8 100%)" aria-label="点击全屏预览 立春 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#FFEE6F"><i style="color:#171717">松花</i></span><span class="chip" style="background:#FFF799"><i style="color:#171717">黄白游</i></span><span class="chip" style="background:#D5EBE1"><i style="color:#171717">天缥</i></span><span class="chip" style="background:#B1D5C8"><i style="color:#171717">沧浪</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>雨水</h3>
+    <p class="term-desc">杏花微雨，润物无声 · 杏花微雨，粉雾由浅入深</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #ECB0C1, #A9BE7B)" data-css="linear-gradient(135deg, #ECB0C1, #A9BE7B)" aria-label="点击全屏预览 雨水 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#ECB0C1"><i style="color:#171717">水红</i></span><span class="chip" style="background:#A9BE7B"><i style="color:#171717">春辰</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F9D3E3, #A76283)" data-css="linear-gradient(135deg, #F9D3E3, #A76283)" aria-label="点击全屏预览 雨水 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F9D3E3"><i style="color:#171717">盈盈</i></span><span class="chip" style="background:#A76283"><i style="color:#171717">紫茎屏风</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F9D3E3, #ECB0C1, #A76283)" data-css="linear-gradient(135deg, #F9D3E3, #ECB0C1, #A76283)" aria-label="点击全屏预览 雨水 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F9D3E3"><i style="color:#171717">盈盈</i></span><span class="chip" style="background:#ECB0C1"><i style="color:#171717">水红</i></span><span class="chip" style="background:#A76283"><i style="color:#171717">紫茎屏风</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #F9D3E3 0%, #ECB0C1 33%, #DD7694 67%, #A76283 100%)" data-css="radial-gradient(circle at 32% 22%, #F9D3E3 0%, #ECB0C1 33%, #DD7694 67%, #A76283 100%)" aria-label="点击全屏预览 雨水 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F9D3E3"><i style="color:#171717">盈盈</i></span><span class="chip" style="background:#ECB0C1"><i style="color:#171717">水红</i></span><span class="chip" style="background:#DD7694"><i style="color:#171717">苏梅</i></span><span class="chip" style="background:#A76283"><i style="color:#171717">紫茎屏风</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>惊蛰</h3>
+    <p class="term-desc">春雷乍动，桃花初绽 · 春雷乍动，桃花初绽</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F6BEC8, #FAC03D)" data-css="linear-gradient(135deg, #F6BEC8, #FAC03D)" aria-label="点击全屏预览 惊蛰 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F6BEC8"><i style="color:#171717">桃夭</i></span><span class="chip" style="background:#FAC03D"><i style="color:#171717">栀子</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F6BEC8, #DC6B82)" data-css="linear-gradient(135deg, #F6BEC8, #DC6B82)" aria-label="点击全屏预览 惊蛰 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F6BEC8"><i style="color:#171717">桃夭</i></span><span class="chip" style="background:#DC6B82"><i style="color:#171717">长春</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #FEDC5E, #F6BEC8, #DC6B82)" data-css="linear-gradient(135deg, #FEDC5E, #F6BEC8, #DC6B82)" aria-label="点击全屏预览 惊蛰 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#FEDC5E"><i style="color:#171717">黄栗留</i></span><span class="chip" style="background:#F6BEC8"><i style="color:#171717">桃夭</i></span><span class="chip" style="background:#DC6B82"><i style="color:#171717">长春</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #FEDC5E 0%, #F6BEC8 33%, #C35C5D 67%, #45465E 100%)" data-css="radial-gradient(circle at 32% 22%, #FEDC5E 0%, #F6BEC8 33%, #C35C5D 67%, #45465E 100%)" aria-label="点击全屏预览 惊蛰 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#FEDC5E"><i style="color:#171717">黄栗留</i></span><span class="chip" style="background:#F6BEC8"><i style="color:#171717">桃夭</i></span><span class="chip" style="background:#C35C5D"><i style="color:#171717">牙绯</i></span><span class="chip" style="background:#45465E"><i style="color:#f8f7f4">青黛</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>春分</h3>
+    <p class="term-desc">昼夜均分，春和景明 · 昼夜均分，春和景明</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EBEDDF, #3271AE)" data-css="linear-gradient(135deg, #EBEDDF, #3271AE)" aria-label="点击全屏预览 春分 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBEDDF"><i style="color:#171717">吉量</i></span><span class="chip" style="background:#3271AE"><i style="color:#f8f7f4">青冥</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EBEDDF, #C7C6B6)" data-css="linear-gradient(135deg, #EBEDDF, #C7C6B6)" aria-label="点击全屏预览 春分 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBEDDF"><i style="color:#171717">吉量</i></span><span class="chip" style="background:#C7C6B6"><i style="color:#171717">霜地</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EBEEE8, #B26D5D, #BC836B)" data-css="linear-gradient(135deg, #EBEEE8, #B26D5D, #BC836B)" aria-label="点击全屏预览 春分 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBEEE8"><i style="color:#171717">皦玉</i></span><span class="chip" style="background:#B26D5D"><i style="color:#171717">檀色</i></span><span class="chip" style="background:#BC836B"><i style="color:#171717">紫磨金</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #EBEDDF 0%, #D2AF9D 33%, #B26D5D 67%, #3271AE 100%)" data-css="radial-gradient(circle at 32% 22%, #EBEDDF 0%, #D2AF9D 33%, #B26D5D 67%, #3271AE 100%)" aria-label="点击全屏预览 春分 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBEDDF"><i style="color:#171717">吉量</i></span><span class="chip" style="background:#D2AF9D"><i style="color:#171717">夏籥</i></span><span class="chip" style="background:#B26D5D"><i style="color:#171717">檀色</i></span><span class="chip" style="background:#3271AE"><i style="color:#f8f7f4">青冥</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>清明</h3>
+    <p class="term-desc">烟雨清明，紫气东来 · 烟雨清明，紫气东来</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D3CCD6, #9D9D82)" data-css="linear-gradient(135deg, #D3CCD6, #9D9D82)" aria-label="点击全屏预览 清明 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D3CCD6"><i style="color:#171717">香炉紫烟</i></span><span class="chip" style="background:#9D9D82"><i style="color:#171717">春碧</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D3CCD6, #9B8EA9)" data-css="linear-gradient(135deg, #D3CCD6, #9B8EA9)" aria-label="点击全屏预览 清明 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D3CCD6"><i style="color:#171717">香炉紫烟</i></span><span class="chip" style="background:#9B8EA9"><i style="color:#171717">紫菂</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D3CCD6, #9B8EA9, #663D74)" data-css="linear-gradient(135deg, #D3CCD6, #9B8EA9, #663D74)" aria-label="点击全屏预览 清明 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D3CCD6"><i style="color:#171717">香炉紫烟</i></span><span class="chip" style="background:#9B8EA9"><i style="color:#171717">紫菂</i></span><span class="chip" style="background:#663D74"><i style="color:#f8f7f4">三公子</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #D3CCD6 0%, #9B8EA9 33%, #7E527F 67%, #422256 100%)" data-css="radial-gradient(circle at 32% 22%, #D3CCD6 0%, #9B8EA9 33%, #7E527F 67%, #422256 100%)" aria-label="点击全屏预览 清明 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D3CCD6"><i style="color:#171717">香炉紫烟</i></span><span class="chip" style="background:#9B8EA9"><i style="color:#171717">紫菂</i></span><span class="chip" style="background:#7E527F"><i style="color:#f8f7f4">拂紫绵</i></span><span class="chip" style="background:#422256"><i style="color:#f8f7f4">凝夜紫</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>谷雨</h3>
+    <p class="term-desc">春末夏初，碧落苍翠 · 雨生百谷，碧落苍翠</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #AED0EE, #4C8045)" data-css="linear-gradient(135deg, #AED0EE, #4C8045)" aria-label="点击全屏预览 谷雨 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#AED0EE"><i style="color:#171717">碧落</i></span><span class="chip" style="background:#4C8045"><i style="color:#f8f7f4">翠微</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #AED0EE, #6E9BC5)" data-css="linear-gradient(135deg, #AED0EE, #6E9BC5)" aria-label="点击全屏预览 谷雨 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#AED0EE"><i style="color:#171717">碧落</i></span><span class="chip" style="background:#6E9BC5"><i style="color:#171717">挼蓝</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #AED0EE, #A8BF8F, #4C8045)" data-css="linear-gradient(135deg, #AED0EE, #A8BF8F, #4C8045)" aria-label="点击全屏预览 谷雨 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#AED0EE"><i style="color:#171717">碧落</i></span><span class="chip" style="background:#A8BF8F"><i style="color:#171717">苍葭</i></span><span class="chip" style="background:#4C8045"><i style="color:#f8f7f4">翠微</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #AED0EE 0%, #A8BF8F 33%, #4C8045 67%, #446A37 100%)" data-css="radial-gradient(circle at 32% 22%, #AED0EE 0%, #A8BF8F 33%, #4C8045 67%, #446A37 100%)" aria-label="点击全屏预览 谷雨 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#AED0EE"><i style="color:#171717">碧落</i></span><span class="chip" style="background:#A8BF8F"><i style="color:#171717">苍葭</i></span><span class="chip" style="background:#4C8045"><i style="color:#f8f7f4">翠微</i></span><span class="chip" style="background:#446A37"><i style="color:#f8f7f4">翠虬</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+</div>
+</section>
+<section data-season="夏">
+<h2 id="season-夏" class="season season-夏">夏季 · 立夏 / 小满 / 芒种 / 夏至 / 小暑 / 大暑</h2>
+<div class="grid">
+<section class="term">
+  <header class="term-head">
+    <h3>立夏</h3>
+    <p class="term-desc">绿意初盛，夏日将至 · 绿意初盛，浓荫渐成</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #C3D94E, #84A729)" data-css="linear-gradient(135deg, #C3D94E, #84A729)" aria-label="点击全屏预览 立夏 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#C3D94E"><i style="color:#171717">青粲</i></span><span class="chip" style="background:#84A729"><i style="color:#171717">水龙吟</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #C3D94E, #84A729)" data-css="linear-gradient(135deg, #C3D94E, #84A729)" aria-label="点击全屏预览 立夏 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#C3D94E"><i style="color:#171717">青粲</i></span><span class="chip" style="background:#84A729"><i style="color:#171717">水龙吟</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #C3D94E, #84A729, #70695D)" data-css="linear-gradient(135deg, #C3D94E, #84A729, #70695D)" aria-label="点击全屏预览 立夏 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#C3D94E"><i style="color:#171717">青粲</i></span><span class="chip" style="background:#84A729"><i style="color:#171717">水龙吟</i></span><span class="chip" style="background:#70695D"><i style="color:#f8f7f4">黑朱</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #C3D94E 0%, #B7D332 33%, #84A729 67%, #70695D 100%)" data-css="radial-gradient(circle at 32% 22%, #C3D94E 0%, #B7D332 33%, #84A729 67%, #70695D 100%)" aria-label="点击全屏预览 立夏 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#C3D94E"><i style="color:#171717">青粲</i></span><span class="chip" style="background:#B7D332"><i style="color:#171717">翠缥</i></span><span class="chip" style="background:#84A729"><i style="color:#171717">水龙吟</i></span><span class="chip" style="background:#70695D"><i style="color:#f8f7f4">黑朱</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>小满</h3>
+    <p class="term-desc">麦穗渐黄，丰盈初现 · 麦穗渐黄，丰盈初现</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F2C867, #4F794A)" data-css="linear-gradient(135deg, #F2C867, #4F794A)" aria-label="点击全屏预览 小满 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F2C867"><i style="color:#171717">嫩鹅黄</i></span><span class="chip" style="background:#4F794A"><i style="color:#f8f7f4">芰荷</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F2C867, #D3A237)" data-css="linear-gradient(135deg, #F2C867, #D3A237)" aria-label="点击全屏预览 小满 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F2C867"><i style="color:#171717">嫩鹅黄</i></span><span class="chip" style="background:#D3A237"><i style="color:#171717">鞠衣</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F2C867, #B4A379, #4F794A)" data-css="linear-gradient(135deg, #F2C867, #B4A379, #4F794A)" aria-label="点击全屏预览 小满 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F2C867"><i style="color:#171717">嫩鹅黄</i></span><span class="chip" style="background:#B4A379"><i style="color:#171717">黄螺</i></span><span class="chip" style="background:#4F794A"><i style="color:#f8f7f4">芰荷</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #F2C867 0%, #D4C9AA 33%, #4F794A 67%, #2A6E3F 100%)" data-css="radial-gradient(circle at 32% 22%, #F2C867 0%, #D4C9AA 33%, #4F794A 67%, #2A6E3F 100%)" aria-label="点击全屏预览 小满 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F2C867"><i style="color:#171717">嫩鹅黄</i></span><span class="chip" style="background:#D4C9AA"><i style="color:#171717">仙米</i></span><span class="chip" style="background:#4F794A"><i style="color:#f8f7f4">芰荷</i></span><span class="chip" style="background:#2A6E3F"><i style="color:#f8f7f4">官绿</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>芒种</h3>
+    <p class="term-desc">稻田青黄，梅雨将至 · 稻田青黄，梅雨将至</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D2A36C, #A8B092)" data-css="linear-gradient(135deg, #D2A36C, #A8B092)" aria-label="点击全屏预览 芒种 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D2A36C"><i style="color:#171717">芸黄</i></span><span class="chip" style="background:#A8B092"><i style="color:#171717">青玉案</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D2A36C, #B4884D)" data-css="linear-gradient(135deg, #D2A36C, #B4884D)" aria-label="点击全屏预览 芒种 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D2A36C"><i style="color:#171717">芸黄</i></span><span class="chip" style="background:#B4884D"><i style="color:#171717">雌黄</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D5D1AE, #A8B092, #868C4E)" data-css="linear-gradient(135deg, #D5D1AE, #A8B092, #868C4E)" aria-label="点击全屏预览 芒种 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D5D1AE"><i style="color:#171717">筠雾</i></span><span class="chip" style="background:#A8B092"><i style="color:#171717">青玉案</i></span><span class="chip" style="background:#868C4E"><i style="color:#171717">风入松</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #D5D1AE 0%, #A8B092 33%, #535164 67%, #1E2732 100%)" data-css="radial-gradient(circle at 32% 22%, #D5D1AE 0%, #A8B092 33%, #535164 67%, #1E2732 100%)" aria-label="点击全屏预览 芒种 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D5D1AE"><i style="color:#171717">筠雾</i></span><span class="chip" style="background:#A8B092"><i style="color:#171717">青玉案</i></span><span class="chip" style="background:#535164"><i style="color:#f8f7f4">曾青</i></span><span class="chip" style="background:#1E2732"><i style="color:#f8f7f4">瑾瑜</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>夏至</h3>
+    <p class="term-desc">阳气盛极，骄阳似火 · 阳气盛极，骄阳似火</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F0C2A2, #CC5D20)" data-css="linear-gradient(135deg, #F0C2A2, #CC5D20)" aria-label="点击全屏预览 夏至 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F0C2A2"><i style="color:#171717">扶光</i></span><span class="chip" style="background:#CC5D20"><i style="color:#171717">光明砂</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F0C2A2, #DB9C5E)" data-css="linear-gradient(135deg, #F0C2A2, #DB9C5E)" aria-label="点击全屏预览 夏至 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F0C2A2"><i style="color:#171717">扶光</i></span><span class="chip" style="background:#DB9C5E"><i style="color:#171717">椒房</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F0C2A2, #D9883D, #CC5D20)" data-css="linear-gradient(135deg, #F0C2A2, #D9883D, #CC5D20)" aria-label="点击全屏预览 夏至 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F0C2A2"><i style="color:#171717">扶光</i></span><span class="chip" style="background:#D9883D"><i style="color:#171717">红友</i></span><span class="chip" style="background:#CC5D20"><i style="color:#171717">光明砂</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #F0C2A2 0%, #D9883D 33%, #CB523E 67%, #822327 100%)" data-css="radial-gradient(circle at 32% 22%, #F0C2A2 0%, #D9883D 33%, #CB523E 67%, #822327 100%)" aria-label="点击全屏预览 夏至 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F0C2A2"><i style="color:#171717">扶光</i></span><span class="chip" style="background:#D9883D"><i style="color:#171717">红友</i></span><span class="chip" style="background:#CB523E"><i style="color:#171717">赩炽</i></span><span class="chip" style="background:#822327"><i style="color:#f8f7f4">大繎</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>小暑</h3>
+    <p class="term-desc">伏天初临，暴雨欲来 · 晚霞未尽，暴雨欲来</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F18F60, #106898)" data-css="linear-gradient(135deg, #F18F60, #106898)" aria-label="点击全屏预览 小暑 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F18F60"><i style="color:#171717">赪霞</i></span><span class="chip" style="background:#106898"><i style="color:#f8f7f4">柔蓝</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F18F60, #ED6D46)" data-css="linear-gradient(135deg, #F18F60, #ED6D46)" aria-label="点击全屏预览 小暑 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F18F60"><i style="color:#171717">赪霞</i></span><span class="chip" style="background:#ED6D46"><i style="color:#171717">朱柿</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F5B087, #E0DFC6, #106898)" data-css="linear-gradient(135deg, #F5B087, #E0DFC6, #106898)" aria-label="点击全屏预览 小暑 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F5B087"><i style="color:#171717">骍刚</i></span><span class="chip" style="background:#E0DFC6"><i style="color:#171717">天球</i></span><span class="chip" style="background:#106898"><i style="color:#f8f7f4">柔蓝</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #F5B087 0%, #F18F60 33%, #06436F 67%, #003460 100%)" data-css="radial-gradient(circle at 32% 22%, #F5B087 0%, #F18F60 33%, #06436F 67%, #003460 100%)" aria-label="点击全屏预览 小暑 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F5B087"><i style="color:#171717">骍刚</i></span><span class="chip" style="background:#F18F60"><i style="color:#171717">赪霞</i></span><span class="chip" style="background:#06436F"><i style="color:#f8f7f4">蓝采和</i></span><span class="chip" style="background:#003460"><i style="color:#f8f7f4">帝释青</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>大暑</h3>
+    <p class="term-desc">盛夏草木，繁茂至极 · 盛夏草木，繁茂至极</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D8DE8A, #AA8E59)" data-css="linear-gradient(135deg, #D8DE8A, #AA8E59)" aria-label="点击全屏预览 大暑 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D8DE8A"><i style="color:#171717">绮钱</i></span><span class="chip" style="background:#AA8E59"><i style="color:#171717">巨吕</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D8DE8A, #896D47)" data-css="linear-gradient(135deg, #D8DE8A, #896D47)" aria-label="点击全屏预览 大暑 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D8DE8A"><i style="color:#171717">绮钱</i></span><span class="chip" style="background:#896D47"><i style="color:#f8f7f4">吉金</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EDF1BB, #D8DE8A, #698E6A)" data-css="linear-gradient(135deg, #EDF1BB, #D8DE8A, #698E6A)" aria-label="点击全屏预览 大暑 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EDF1BB"><i style="color:#171717">葱青</i></span><span class="chip" style="background:#D8DE8A"><i style="color:#171717">绮钱</i></span><span class="chip" style="background:#698E6A"><i style="color:#171717">菉竹</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #E3ADB9 0%, #D8DE8A 33%, #81A380 67%, #698E6A 100%)" data-css="radial-gradient(circle at 32% 22%, #E3ADB9 0%, #D8DE8A 33%, #81A380 67%, #698E6A 100%)" aria-label="点击全屏预览 大暑 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#E3ADB9"><i style="color:#171717">夕岚</i></span><span class="chip" style="background:#D8DE8A"><i style="color:#171717">绮钱</i></span><span class="chip" style="background:#81A380"><i style="color:#171717">青楸</i></span><span class="chip" style="background:#698E6A"><i style="color:#171717">菉竹</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+</div>
+</section>
+<section data-season="秋">
+<h2 id="season-秋" class="season season-秋">秋季 · 立秋 / 处暑 / 白露 / 秋分 / 寒露 / 霜降</h2>
+<div class="grid">
+<section class="term">
+  <header class="term-head">
+    <h3>立秋</h3>
+    <p class="term-desc">秋高气爽，暑气渐消 · 秋高气爽，暑气渐消</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #88ABDA, #C0D09D)" data-css="linear-gradient(135deg, #88ABDA, #C0D09D)" aria-label="点击全屏预览 立秋 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#88ABDA"><i style="color:#171717">窃蓝</i></span><span class="chip" style="background:#C0D09D"><i style="color:#171717">麴尘</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #88ABDA, #6F94CD)" data-css="linear-gradient(135deg, #88ABDA, #6F94CD)" aria-label="点击全屏预览 立秋 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#88ABDA"><i style="color:#171717">窃蓝</i></span><span class="chip" style="background:#6F94CD"><i style="color:#171717">监德</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #88ABDA, #98B6C2, #C0D09D)" data-css="linear-gradient(135deg, #88ABDA, #98B6C2, #C0D09D)" aria-label="点击全屏预览 立秋 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#88ABDA"><i style="color:#171717">窃蓝</i></span><span class="chip" style="background:#98B6C2"><i style="color:#171717">白青</i></span><span class="chip" style="background:#C0D09D"><i style="color:#171717">麴尘</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #EFEFEF 0%, #88ABDA 33%, #7F9FAF 67%, #595333 100%)" data-css="radial-gradient(circle at 32% 22%, #EFEFEF 0%, #88ABDA 33%, #7F9FAF 67%, #595333 100%)" aria-label="点击全屏预览 立秋 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EFEFEF"><i style="color:#171717">缟羽</i></span><span class="chip" style="background:#88ABDA"><i style="color:#171717">窃蓝</i></span><span class="chip" style="background:#7F9FAF"><i style="color:#171717">竹月</i></span><span class="chip" style="background:#595333"><i style="color:#f8f7f4">素綦</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>处暑</h3>
+    <p class="term-desc">残暑犹存，秋水渐凉 · 残暑犹存，秋水渐凉</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #A2D2E2, #EAD89A)" data-css="linear-gradient(135deg, #A2D2E2, #EAD89A)" aria-label="点击全屏预览 处暑 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#A2D2E2"><i style="color:#171717">云门</i></span><span class="chip" style="background:#EAD89A"><i style="color:#171717">桑蕾</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #A2D2E2, #87C0CA)" data-css="linear-gradient(135deg, #A2D2E2, #87C0CA)" aria-label="点击全屏预览 处暑 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#A2D2E2"><i style="color:#171717">云门</i></span><span class="chip" style="background:#87C0CA"><i style="color:#171717">西子</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #A2D2E2, #5AA4AE, #108B96)" data-css="linear-gradient(135deg, #A2D2E2, #5AA4AE, #108B96)" aria-label="点击全屏预览 处暑 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#A2D2E2"><i style="color:#171717">云门</i></span><span class="chip" style="background:#5AA4AE"><i style="color:#171717">天水碧</i></span><span class="chip" style="background:#108B96"><i style="color:#171717">法翠</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #A2D2E2 0%, #87C0CA 33%, #5AA4AE 67%, #108B96 100%)" data-css="radial-gradient(circle at 32% 22%, #A2D2E2 0%, #87C0CA 33%, #5AA4AE 67%, #108B96 100%)" aria-label="点击全屏预览 处暑 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#A2D2E2"><i style="color:#171717">云门</i></span><span class="chip" style="background:#87C0CA"><i style="color:#171717">西子</i></span><span class="chip" style="background:#5AA4AE"><i style="color:#171717">天水碧</i></span><span class="chip" style="background:#108B96"><i style="color:#171717">法翠</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>白露</h3>
+    <p class="term-desc">露凝为霜，秋意渐浓 · 露凝为霜，月照秋意</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F5F2E9, #86908A)" data-css="linear-gradient(135deg, #F5F2E9, #86908A)" aria-label="点击全屏预览 白露 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F5F2E9"><i style="color:#171717">凝脂</i></span><span class="chip" style="background:#86908A"><i style="color:#171717">蕉月</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F5F2E9, #D5C8A0)" data-css="linear-gradient(135deg, #F5F2E9, #D5C8A0)" aria-label="点击全屏预览 白露 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F5F2E9"><i style="color:#171717">凝脂</i></span><span class="chip" style="background:#D5C8A0"><i style="color:#171717">缣缃</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F5F2E9, #D5C8A0, #6B7D73)" data-css="linear-gradient(135deg, #F5F2E9, #D5C8A0, #6B7D73)" aria-label="点击全屏预览 白露 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F5F2E9"><i style="color:#171717">凝脂</i></span><span class="chip" style="background:#D5C8A0"><i style="color:#171717">缣缃</i></span><span class="chip" style="background:#6B7D73"><i style="color:#171717">千山翠</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #F5F2E9 0%, #DFD6B8 33%, #86908A 67%, #45493D 100%)" data-css="radial-gradient(circle at 32% 22%, #F5F2E9 0%, #DFD6B8 33%, #86908A 67%, #45493D 100%)" aria-label="点击全屏预览 白露 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F5F2E9"><i style="color:#171717">凝脂</i></span><span class="chip" style="background:#DFD6B8"><i style="color:#171717">黄润</i></span><span class="chip" style="background:#86908A"><i style="color:#171717">蕉月</i></span><span class="chip" style="background:#45493D"><i style="color:#f8f7f4">绿云</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>秋分</h3>
+    <p class="term-desc">天高云淡，桂花飘香 · 天高云淡，桂花飘香</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EAEEF1, #C0AD5E)" data-css="linear-gradient(135deg, #EAEEF1, #C0AD5E)" aria-label="点击全屏预览 秋分 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EAEEF1"><i style="color:#171717">浅云</i></span><span class="chip" style="background:#C0AD5E"><i style="color:#171717">栾华</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #C0AD5E, #AA9649)" data-css="linear-gradient(135deg, #C0AD5E, #AA9649)" aria-label="点击全屏预览 秋分 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#C0AD5E"><i style="color:#171717">栾华</i></span><span class="chip" style="background:#AA9649"><i style="color:#171717">大赤</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EAEEF1, #C0AD5E, #683632)" data-css="linear-gradient(135deg, #EAEEF1, #C0AD5E, #683632)" aria-label="点击全屏预览 秋分 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EAEEF1"><i style="color:#171717">浅云</i></span><span class="chip" style="background:#C0AD5E"><i style="color:#171717">栾华</i></span><span class="chip" style="background:#683632"><i style="color:#f8f7f4">蜜褐</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #EAEEF1 0%, #C0AD5E 33%, #8F3D2C 67%, #683632 100%)" data-css="radial-gradient(circle at 32% 22%, #EAEEF1 0%, #C0AD5E 33%, #8F3D2C 67%, #683632 100%)" aria-label="点击全屏预览 秋分 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EAEEF1"><i style="color:#171717">浅云</i></span><span class="chip" style="background:#C0AD5E"><i style="color:#171717">栾华</i></span><span class="chip" style="background:#8F3D2C"><i style="color:#f8f7f4">佛赤</i></span><span class="chip" style="background:#683632"><i style="color:#f8f7f4">蜜褐</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>寒露</h3>
+    <p class="term-desc">晨霜染叶，秋深露寒 · 晨霜染叶，秋深露寒</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #8BA3C7, #DDB078)" data-css="linear-gradient(135deg, #8BA3C7, #DDB078)" aria-label="点击全屏预览 寒露 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#8BA3C7"><i style="color:#171717">东方既白</i></span><span class="chip" style="background:#DDB078"><i style="color:#171717">九斤黄</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #DDB078, #DA9233)" data-css="linear-gradient(135deg, #DDB078, #DA9233)" aria-label="点击全屏预览 寒露 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#DDB078"><i style="color:#171717">九斤黄</i></span><span class="chip" style="background:#DA9233"><i style="color:#171717">杏子</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #DDB078, #BC6E37, #9F5221)" data-css="linear-gradient(135deg, #DDB078, #BC6E37, #9F5221)" aria-label="点击全屏预览 寒露 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#DDB078"><i style="color:#171717">九斤黄</i></span><span class="chip" style="background:#BC6E37"><i style="color:#171717">媚蝶</i></span><span class="chip" style="background:#9F5221"><i style="color:#f8f7f4">韎韐</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #ECD9C7 0%, #DDB078 33%, #9F5221 67%, #1A2847 100%)" data-css="radial-gradient(circle at 32% 22%, #ECD9C7 0%, #DDB078 33%, #9F5221 67%, #1A2847 100%)" aria-label="点击全屏预览 寒露 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#ECD9C7"><i style="color:#171717">弗肯红</i></span><span class="chip" style="background:#DDB078"><i style="color:#171717">九斤黄</i></span><span class="chip" style="background:#9F5221"><i style="color:#f8f7f4">韎韐</i></span><span class="chip" style="background:#1A2847"><i style="color:#f8f7f4">花青</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>霜降</h3>
+    <p class="term-desc">深秋霜染，枫叶如火 · 深秋霜染，枫叶如火</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #DFD7C2, #B15A43)" data-css="linear-gradient(135deg, #DFD7C2, #B15A43)" aria-label="点击全屏预览 霜降 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#DFD7C2"><i style="color:#171717">蜜合</i></span><span class="chip" style="background:#B15A43"><i style="color:#f8f7f4">棠梨</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F8C6B5, #B15A43)" data-css="linear-gradient(135deg, #F8C6B5, #B15A43)" aria-label="点击全屏预览 霜降 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F8C6B5"><i style="color:#171717">十样锦</i></span><span class="chip" style="background:#B15A43"><i style="color:#f8f7f4">棠梨</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F8C6B5, #B15A43, #8F1D22)" data-css="linear-gradient(135deg, #F8C6B5, #B15A43, #8F1D22)" aria-label="点击全屏预览 霜降 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F8C6B5"><i style="color:#171717">十样锦</i></span><span class="chip" style="background:#B15A43"><i style="color:#f8f7f4">棠梨</i></span><span class="chip" style="background:#8F1D22"><i style="color:#f8f7f4">朱樱</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #F8C6B5 0%, #DA9E8C 33%, #B15A43 67%, #631216 100%)" data-css="radial-gradient(circle at 32% 22%, #F8C6B5 0%, #DA9E8C 33%, #B15A43 67%, #631216 100%)" aria-label="点击全屏预览 霜降 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F8C6B5"><i style="color:#171717">十样锦</i></span><span class="chip" style="background:#DA9E8C"><i style="color:#171717">檀唇</i></span><span class="chip" style="background:#B15A43"><i style="color:#f8f7f4">棠梨</i></span><span class="chip" style="background:#631216"><i style="color:#f8f7f4">爵头</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+</div>
+</section>
+<section data-season="冬">
+<h2 id="season-冬" class="season season-冬">冬季 · 立冬 / 小雪 / 大雪 / 冬至 / 小寒 / 大寒</h2>
+<div class="grid">
+<section class="term">
+  <header class="term-head">
+    <h3>立冬</h3>
+    <p class="term-desc">初寒乍到，残阳暖冬 · 初寒乍到，残阳暖冬</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #FFFBC7, #88BFB8)" data-css="linear-gradient(135deg, #FFFBC7, #88BFB8)" aria-label="点击全屏预览 立冬 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#FFFBC7"><i style="color:#171717">半见</i></span><span class="chip" style="background:#88BFB8"><i style="color:#171717">繱犗</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #FFFBC7, #D6C560)" data-css="linear-gradient(135deg, #FFFBC7, #D6C560)" aria-label="点击全屏预览 立冬 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#FFFBC7"><i style="color:#171717">半见</i></span><span class="chip" style="background:#D6C560"><i style="color:#171717">姜黄</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #FFFBC7, #D6C560, #6D5C3D)" data-css="linear-gradient(135deg, #FFFBC7, #D6C560, #6D5C3D)" aria-label="点击全屏预览 立冬 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#FFFBC7"><i style="color:#171717">半见</i></span><span class="chip" style="background:#D6C560"><i style="color:#171717">姜黄</i></span><span class="chip" style="background:#6D5C3D"><i style="color:#f8f7f4">伽罗</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #FFFBC7 0%, #ECE093 33%, #D6C560 67%, #5A4B3B 100%)" data-css="radial-gradient(circle at 32% 22%, #FFFBC7 0%, #ECE093 33%, #D6C560 67%, #5A4B3B 100%)" aria-label="点击全屏预览 立冬 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#FFFBC7"><i style="color:#171717">半见</i></span><span class="chip" style="background:#ECE093"><i style="color:#171717">绢纨</i></span><span class="chip" style="background:#D6C560"><i style="color:#171717">姜黄</i></span><span class="chip" style="background:#5A4B3B"><i style="color:#f8f7f4">苍艾</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>小雪</h3>
+    <p class="term-desc">初雪降临，山峦叠嶂 · 初雪降临，山峦叠嶂</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D4E5EF, #A3BBDB)" data-css="linear-gradient(135deg, #D4E5EF, #A3BBDB)" aria-label="点击全屏预览 小雪 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D4E5EF"><i style="color:#171717">月白</i></span><span class="chip" style="background:#A3BBDB"><i style="color:#171717">晴山</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D4E5EF, #8AABCC)" data-css="linear-gradient(135deg, #D4E5EF, #8AABCC)" aria-label="点击全屏预览 小雪 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D4E5EF"><i style="color:#171717">月白</i></span><span class="chip" style="background:#8AABCC"><i style="color:#171717">品月</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #D4E5EF, #A3BBDB, #72453A)" data-css="linear-gradient(135deg, #D4E5EF, #A3BBDB, #72453A)" aria-label="点击全屏预览 小雪 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D4E5EF"><i style="color:#171717">月白</i></span><span class="chip" style="background:#A3BBDB"><i style="color:#171717">晴山</i></span><span class="chip" style="background:#72453A"><i style="color:#f8f7f4">椒褐</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #D4E5EF 0%, #BCD4E7 33%, #A3BBDB 67%, #7C5B3E 100%)" data-css="radial-gradient(circle at 32% 22%, #D4E5EF 0%, #BCD4E7 33%, #A3BBDB 67%, #7C5B3E 100%)" aria-label="点击全屏预览 小雪 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#D4E5EF"><i style="color:#171717">月白</i></span><span class="chip" style="background:#BCD4E7"><i style="color:#171717">星郎</i></span><span class="chip" style="background:#A3BBDB"><i style="color:#171717">晴山</i></span><span class="chip" style="background:#7C5B3E"><i style="color:#f8f7f4">驼褐</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>大雪</h3>
+    <p class="term-desc">大雪纷飞，暮山苍茫 · 大雪纷飞，暮山苍茫</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EEEAD9, #A4ABD6)" data-css="linear-gradient(135deg, #EEEAD9, #A4ABD6)" aria-label="点击全屏预览 大雪 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EEEAD9"><i style="color:#171717">米汤娇</i></span><span class="chip" style="background:#A4ABD6"><i style="color:#171717">暮山紫</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #A4ABD6, #757CBB)" data-css="linear-gradient(135deg, #A4ABD6, #757CBB)" aria-label="点击全屏预览 大雪 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#A4ABD6"><i style="color:#171717">暮山紫</i></span><span class="chip" style="background:#757CBB"><i style="color:#171717">紫苑</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EEEAD9, #A4ABD6, #4A4B9D)" data-css="linear-gradient(135deg, #EEEAD9, #A4ABD6, #4A4B9D)" aria-label="点击全屏预览 大雪 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EEEAD9"><i style="color:#171717">米汤娇</i></span><span class="chip" style="background:#A4ABD6"><i style="color:#171717">暮山紫</i></span><span class="chip" style="background:#4A4B9D"><i style="color:#f8f7f4">延维</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #EEEAD9 0%, #A4ABD6 33%, #615EA8 67%, #4A4B9D 100%)" data-css="radial-gradient(circle at 32% 22%, #EEEAD9 0%, #A4ABD6 33%, #615EA8 67%, #4A4B9D 100%)" aria-label="点击全屏预览 大雪 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EEEAD9"><i style="color:#171717">米汤娇</i></span><span class="chip" style="background:#A4ABD6"><i style="color:#171717">暮山紫</i></span><span class="chip" style="background:#615EA8"><i style="color:#f8f7f4">优昙瑞</i></span><span class="chip" style="background:#4A4B9D"><i style="color:#f8f7f4">延维</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>冬至</h3>
+    <p class="term-desc">阳生冬至，梅开暗香 · 阳生冬至，梅开暗香</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EBE1A9, #7C4449)" data-css="linear-gradient(135deg, #EBE1A9, #7C4449)" aria-label="点击全屏预览 冬至 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBE1A9"><i style="color:#171717">莺儿</i></span><span class="chip" style="background:#7C4449"><i style="color:#f8f7f4">霁红</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EBE1A9, #D6BC46)" data-css="linear-gradient(135deg, #EBE1A9, #D6BC46)" aria-label="点击全屏预览 冬至 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBE1A9"><i style="color:#171717">莺儿</i></span><span class="chip" style="background:#D6BC46"><i style="color:#171717">姚黄</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #E7CAD3, #BB7A8C, #9E4E56)" data-css="linear-gradient(135deg, #E7CAD3, #BB7A8C, #9E4E56)" aria-label="点击全屏预览 冬至 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#E7CAD3"><i style="color:#171717">银红</i></span><span class="chip" style="background:#BB7A8C"><i style="color:#171717">紫梅</i></span><span class="chip" style="background:#9E4E56"><i style="color:#f8f7f4">紫矿</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #EBE1A9 0%, #D9A0B3 33%, #BB7A8C 67%, #46433B 100%)" data-css="radial-gradient(circle at 32% 22%, #EBE1A9 0%, #D9A0B3 33%, #BB7A8C 67%, #46433B 100%)" aria-label="点击全屏预览 冬至 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBE1A9"><i style="color:#171717">莺儿</i></span><span class="chip" style="background:#D9A0B3"><i style="color:#171717">莲红</i></span><span class="chip" style="background:#BB7A8C"><i style="color:#171717">紫梅</i></span><span class="chip" style="background:#46433B"><i style="color:#f8f7f4">驖骊</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>小寒</h3>
+    <p class="term-desc">极寒冰封，腊梅含苞 · 极寒冰封，腊梅含苞</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F6F9E4, #226B68)" data-css="linear-gradient(135deg, #F6F9E4, #226B68)" aria-label="点击全屏预览 小寒 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F6F9E4"><i style="color:#171717">酂白</i></span><span class="chip" style="background:#226B68"><i style="color:#f8f7f4">䌦色</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F6F9E4, #E1D384)" data-css="linear-gradient(135deg, #F6F9E4, #E1D384)" aria-label="点击全屏预览 小寒 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F6F9E4"><i style="color:#171717">酂白</i></span><span class="chip" style="background:#E1D384"><i style="color:#171717">田赤</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #F6F9E4, #A4C9CC, #151D29)" data-css="linear-gradient(135deg, #F6F9E4, #A4C9CC, #151D29)" aria-label="点击全屏预览 小寒 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F6F9E4"><i style="color:#171717">酂白</i></span><span class="chip" style="background:#A4C9CC"><i style="color:#171717">井天</i></span><span class="chip" style="background:#151D29"><i style="color:#f8f7f4">獭见</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #F6F9E4 0%, #E1D384 33%, #6CA8AF 67%, #151D29 100%)" data-css="radial-gradient(circle at 32% 22%, #F6F9E4 0%, #E1D384 33%, #6CA8AF 67%, #151D29 100%)" aria-label="点击全屏预览 小寒 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#F6F9E4"><i style="color:#171717">酂白</i></span><span class="chip" style="background:#E1D384"><i style="color:#171717">田赤</i></span><span class="chip" style="background:#6CA8AF"><i style="color:#171717">正青</i></span><span class="chip" style="background:#151D29"><i style="color:#f8f7f4">獭见</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+<section class="term">
+  <header class="term-head">
+    <h3>大寒</h3>
+    <p class="term-desc">岁末沉寂，寒极将春 · 岁末沉寂，寒极将春</p>
+  </header>
+  <div class="card-row">
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EBE3C7, #420B2F)" data-css="linear-gradient(135deg, #EBE3C7, #420B2F)" aria-label="点击全屏预览 大寒 现状">
+    <span class="swatch-label">现状</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBE3C7"><i style="color:#171717">骨缥</i></span><span class="chip" style="background:#420B2F"><i style="color:#f8f7f4">油紫</i></span></div>
+  <p class="tagline">双色 135° 直连</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EBE3C7, #92896B)" data-css="linear-gradient(135deg, #EBE3C7, #92896B)" aria-label="点击全屏预览 大寒 方案A · 和韵">
+    <span class="swatch-label">方案A · 和韵</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBE3C7"><i style="color:#171717">骨缥</i></span><span class="chip" style="background:#92896B"><i style="color:#171717">绿豆褐</i></span></div>
+  <p class="tagline">同色系双色，柔和过渡</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:linear-gradient(135deg, #EBE3C7, #C8B6BB, #76555D)" data-css="linear-gradient(135deg, #EBE3C7, #C8B6BB, #76555D)" aria-label="点击全屏预览 大寒 方案B · 意象三停">
+    <span class="swatch-label">方案B · 意象三停</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBE3C7"><i style="color:#171717">骨缥</i></span><span class="chip" style="background:#C8B6BB"><i style="color:#171717">石英</i></span><span class="chip" style="background:#76555D"><i style="color:#f8f7f4">紫诰</i></span></div>
+  <p class="tagline">三色叙事，避开灰带</p>
+</div>
+    <div class="card">
+  <button type="button" class="swatch" style="background:radial-gradient(circle at 32% 22%, #EBE3C7 0%, #C8B6BB 33%, #995D7F 67%, #420B2F 100%)" data-css="radial-gradient(circle at 32% 22%, #EBE3C7 0%, #C8B6BB 33%, #995D7F 67%, #420B2F 100%)" aria-label="点击全屏预览 大寒 方案C · 晨昏光影">
+    <span class="swatch-label">方案C · 晨昏光影</span>
+  </button>
+  <div class="chips"><span class="chip" style="background:#EBE3C7"><i style="color:#171717">骨缥</i></span><span class="chip" style="background:#C8B6BB"><i style="color:#171717">石英</i></span><span class="chip" style="background:#995D7F"><i style="color:#f8f7f4">紫府</i></span><span class="chip" style="background:#420B2F"><i style="color:#f8f7f4">油紫</i></span></div>
+  <p class="tagline">径向光斑，节气光感</p>
+</div>
+  </div>
+</section>
+</div>
+</section>
+
+</div>
+<div id="overlay" role="dialog" aria-label="全屏渐变预览，点击任意处关闭"><span class="hint">点击任意处或按 ESC 退出预览</span></div>
+<script>
+  // ?only=春 单季渲染，便于无头截图验证
+  var only = new URLSearchParams(location.search).get('only');
+  if (only) {
+    document.querySelectorAll('section[data-season]').forEach(function (sec) {
+      if (sec.dataset.season !== only) sec.style.display = 'none';
+    });
+  }
+  var overlay = document.getElementById('overlay');
+  document.querySelectorAll('.swatch').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      overlay.style.background = btn.dataset.css;
+      overlay.classList.add('show');
+    });
+  });
+  overlay.addEventListener('click', function () { overlay.classList.remove('show'); });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') overlay.classList.remove('show');
+  });
+</script>
+</body>
+</html>
