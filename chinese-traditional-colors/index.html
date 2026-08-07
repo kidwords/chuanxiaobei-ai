@@ -13,7 +13,7 @@ body {
   font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
   color: #1a1a1a;
   background: #f5f5f5;
-  transition: background 0.8s ease, background-color 0.8s ease;
+  transition: none;
   overflow-x: hidden;
   min-height: 100vh;
 }
@@ -67,7 +67,7 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
     radial-gradient(ellipse at 50% 80%, rgba(61,142,134,0.12) 0%, transparent 50%),
     radial-gradient(ellipse at 10% 70%, rgba(130,159,175,0.1) 0%, transparent 40%),
     linear-gradient(135deg, #faf8f5 0%, #f0ede8 50%, #f5f2ee 100%);
-  transition: background 0.8s ease;
+  transition: none;
 }
 .home-bg-transition {
   position: fixed; inset: 0; z-index: 0; display: none;
@@ -102,8 +102,9 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   color: var(--reference-leaf-color); font-size: var(--reference-leaf-size); line-height: 1;
   user-select: none; z-index: var(--reference-depth-z, 1);
   animation: home-reference-fall-down var(--reference-leaf-duration) linear var(--reference-leaf-delay) both; animation-iteration-count: infinite;
-  filter: none;
+  filter: none; backface-visibility: hidden;
 }
+.home-reference-fall-item > svg { display: block; width: var(--reference-leaf-size); height: var(--reference-leaf-size); overflow: visible; }
 .home-reference-fall-item.is-rain {
   position: absolute; top: 0; width: var(--reference-rain-width, 2px); height: var(--reference-rain-size); font-size: 0;
   background: linear-gradient(to bottom, transparent 0%, rgba(118, 161, 177, 0.22) 26%, rgba(68, 116, 137, 0.88) 100%);
@@ -128,6 +129,11 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
 .home-reference-fall-item.is-sun-aura { position: fixed; top: -42vmax; left: auto; right: -42vmax; width: 84vmax; height: 84vmax; border-radius: 50%; font-size: 0; background: radial-gradient(circle, color-mix(in srgb, var(--reference-leaf-color) 32%, transparent), transparent 62%); opacity: .48; animation: home-reference-sun-pulse 8s ease-in-out infinite; }
 .home-reference-fall-item.is-depth-background:not(.is-rain) { filter: blur(var(--reference-depth-blur, .4px)); }
 @media (max-width: 767px) { .home-reference-fall-item.is-depth-background:not(.is-rain) { filter: none; } }
+@media (max-width: 1100px) {
+  .home-reference-fall-item.is-depth-background:not(.is-rain) { filter: none; }
+  .intro-box { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,0.84); }
+  .cover h1 strong { animation: none; }
+}
 @supports not (background: color-mix(in srgb, red, blue)) {
   .home-reference-fall-item.is-dew { background: radial-gradient(circle at 35% 25%, #fff, var(--reference-leaf-color) 46%, rgba(255,255,255,.2)); box-shadow: 0 0 8px var(--reference-leaf-color); }
   .home-reference-fall-item.is-snow { text-shadow: 0 0 5px #fff, 0 0 14px var(--reference-leaf-color); }
@@ -317,8 +323,37 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
 .intro-box p { font-size: 0.92rem; line-height: 1.8; color: #555; }
 .intro-box p + p { margin-top: 0.6rem; }
 
-/* Entry buttons */
-.entry-row { display: flex; gap: 14px; justify-content: center; margin-bottom: 2.5rem; flex-wrap: wrap; }
+/* 首页操作栏：将页面跳转与当前页工具分组，降低误触并保持移动端可用 */
+.home-actions-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.8fr);
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 2.5rem;
+  padding: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.68);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.home-action-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.home-navigation-actions { justify-content: flex-start; }
+.home-tool-actions { justify-content: flex-end; }
+.home-action-divider { width: 1px; height: 32px; background: rgba(0,0,0,0.1); }
+.home-actions-bar .entry-btn { padding: 12px 18px; }
+.home-actions-bar .project-home-link {
+  position: static;
+  top: auto;
+  right: auto;
+  left: auto;
+  z-index: auto;
+  min-height: 44px;
+  padding: 0 16px;
+  white-space: nowrap;
+}
 .entry-btn {
   background: #fff; border: 1px solid #e0e0e0; border-radius: 14px;
   padding: 14px 28px; font-size: 0.95rem; font-family: inherit;
@@ -1179,8 +1214,11 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   /* === 首页 === */
   .cover h1 { font-size: 2rem; }
   .home-inner { padding: 1rem; }
-  .entry-row { flex-direction: column; gap: 8px; }
-  .entry-btn { width: 100%; }
+  .home-actions-bar { grid-template-columns: 1fr; gap: 10px; }
+  .home-action-divider { width: 100%; height: 1px; }
+  .home-action-group { justify-content: stretch; }
+  .home-action-group .entry-btn,
+  .home-action-group .project-home-link { flex: 1 1 0; min-width: 0; }
   .intro-box p { font-size: 0.82rem; line-height: 1.5; }
   .pal-toolbar { flex-direction: column; align-items: stretch !important; gap: 10px; }
   .pal-toolbar-summary { width: 100%; }
@@ -1202,15 +1240,15 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   .solar-term-hero .st-current { font-size: 1.16rem; }
   .solar-section-label { font-size: 1rem; }
   .solar-section-hint { font-size: 0.68rem; }
+  .home-action-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home-action-group .entry-btn,
+  .home-action-group .project-home-link { width: 100%; justify-content: center; }
+  .home-actions-bar .motion-toggle { min-width: 0; }
 }
 
 </style>
 </head>
 <body>
-<a class="project-home-link" href="../index.html" aria-label="返回项目总览">
-  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path><path d="M9 12h11"></path></svg>
-  <span>返回总览</span>
-</a>
 <div class="export-dialog" id="exportDialog" role="dialog" aria-modal="true" aria-labelledby="exportDialogTitle" aria-hidden="true">
   <div class="export-dialog-card">
     <div class="export-dialog-head">
@@ -1239,12 +1277,21 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   <div class="home-bg-transition" id="homeBgTransition" aria-hidden="true"></div>
   <div class="home-reference-leaf-layer" id="homeReferenceLeafLayer" aria-hidden="true"></div>
   <div class="home-inner">
-    <div class="entry-row">
-      <button class="entry-btn" onclick="startTour(0)">逐步览色</button>
-      <button class="entry-btn" onclick="showGallery()">全部浏览</button>
-      <button class="entry-btn" id="homeFocusToggle" type="button" onclick="toggleHomeFocus()" aria-pressed="false">全屏动效</button>
-      <button class="entry-btn motion-toggle" id="homeMotionToggle" type="button" onclick="toggleHomeMotion()" aria-pressed="true" aria-label="关闭首页动效"><span class="motion-toggle-title">关闭动效</span><small class="motion-hint">卡顿请关闭特效</small></button>
-      <button class="entry-btn" onclick="saveHomeBg()">保存背景</button>
+    <div class="home-actions-bar" role="toolbar" aria-label="首页操作">
+      <div class="home-action-group home-navigation-actions" aria-label="页面浏览">
+        <button class="entry-btn" onclick="startTour(0)">逐步览色</button>
+        <button class="entry-btn" onclick="showGallery()">全部浏览</button>
+      </div>
+      <div class="home-action-divider" aria-hidden="true"></div>
+      <div class="home-action-group home-tool-actions" aria-label="首页操作">
+        <button class="entry-btn" id="homeFocusToggle" type="button" onclick="toggleHomeFocus()" aria-pressed="false">全屏动效</button>
+        <button class="entry-btn motion-toggle" id="homeMotionToggle" type="button" onclick="toggleHomeMotion()" aria-pressed="true" aria-label="关闭首页动效"><span class="motion-toggle-title">关闭动效</span><small class="motion-hint">卡顿请关闭特效</small></button>
+        <button class="entry-btn" onclick="saveHomeBg()">保存背景</button>
+        <a class="project-home-link home-action-return" href="../index.html" aria-label="返回项目总览">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"></path><path d="M9 12h11"></path></svg>
+          <span>返回总览</span>
+        </a>
+      </div>
     </div>
     <header class="cover" id="homeHeader">
       <h1 id="homeTitle">中国传统<strong>色</strong></h1>
@@ -2241,57 +2288,31 @@ var cardModes = [];
 for (var i = 0; i < sceneNames.length; i++) { cardModes.push('light'); }
 
 // === 首页二十四节气专属动效 ===
-var HOME_SOLAR_EFFECTS = {
-  '立春': { label: '春芽萌发', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', initial: 10, density: 2, interval: 900, size: [16, 26], duration: [9800, 13200] },
-  '雨水': { label: '细雨如丝', shape: 'solar-effect-rain', motion: 'solar-rain-fall', initial: 14, density: 2, interval: 720, size: [20, 34], duration: [7600, 9800] },
-  '惊蛰': { label: '春雷乍动', shape: 'solar-effect-thunder', motion: 'solar-drift', initial: 8, density: 1, interval: 1100, size: [14, 24], duration: [6800, 9200] },
-  '春分': { label: '花瓣均衡', shape: 'solar-effect-petal', motion: 'solar-petal-fall', initial: 12, density: 2, interval: 820, size: [16, 26], duration: [8800, 11800] },
-  '清明': { label: '烟雨清明', shape: 'solar-effect-mist', motion: 'solar-drift', initial: 8, density: 1, interval: 1300, size: [22, 36], duration: [10800, 14200] },
-  '谷雨': { label: '谷雨润泽', shape: 'solar-effect-dew', motion: 'solar-rain-fall', initial: 11, density: 2, interval: 860, size: [12, 21], duration: [9000, 12200] },
-  '立夏': { label: '夏叶舒展', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', initial: 12, density: 2, interval: 820, size: [18, 30], duration: [9200, 12600] },
-  '小满': { label: '麦粒渐满', shape: 'solar-effect-grain', motion: 'solar-grain-fall', initial: 14, density: 2, interval: 760, size: [11, 18], duration: [7600, 10400] },
-  '芒种': { label: '芒种轻扬', shape: 'solar-effect-wing', motion: 'solar-drift', initial: 10, density: 2, interval: 880, size: [13, 22], duration: [8200, 11200] },
-  '夏至': { label: '日光流金', shape: 'solar-effect-sun', motion: 'solar-heat-fall', initial: 8, density: 1, interval: 1200, size: [15, 26], duration: [9600, 13000] },
-  '小暑': { label: '雷热初起', shape: 'solar-effect-wing', motion: 'solar-drift', initial: 10, density: 2, interval: 940, size: [11, 19], duration: [8600, 11600] },
-  '大暑': { label: '暑气浮光', shape: 'solar-effect-sun', motion: 'solar-heat-fall', initial: 9, density: 1, interval: 1080, size: [17, 30], duration: [10400, 13800] },
-  '立秋': { label: '初秋叶笺', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', initial: 12, density: 2, interval: 840, size: [18, 30], duration: [9000, 12200] },
-  '处暑': { label: '凉风横过', shape: 'solar-effect-wind', motion: 'solar-drift', initial: 9, density: 1, interval: 1120, size: [20, 34], duration: [9600, 12800] },
-  '白露': { label: '白露凝珠', shape: 'solar-effect-dew', motion: 'solar-frost-settle', initial: 13, density: 2, interval: 780, size: [10, 18], duration: [8200, 11200] },
-  '秋分': { label: '桂瓣平衡', shape: 'solar-effect-petal', motion: 'solar-petal-fall', initial: 11, density: 2, interval: 860, size: [16, 26], duration: [9000, 12000] },
-  '寒露': { label: '寒露微坠', shape: 'solar-effect-dew', motion: 'solar-frost-settle', initial: 12, density: 2, interval: 820, size: [9, 16], duration: [9800, 13400] },
-  '霜降': { label: '霜晶渐落', shape: 'solar-effect-frost', motion: 'solar-frost-settle', initial: 12, density: 2, interval: 800, size: [10, 18], duration: [8800, 11800] },
-  '立冬': { label: '万物归藏', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', initial: 12, density: 2, interval: 840, size: [16, 25], duration: [9200, 12400] },
-  '小雪': { label: '小雪疏落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', initial: 14, density: 2, interval: 760, size: [10, 18], duration: [8200, 11200] },
-  '大雪': { label: '大雪丰落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', initial: 16, density: 2, interval: 680, size: [14, 24], duration: [7600, 10400] },
-  '冬至': { label: '冬至微光', shape: 'solar-effect-sun', motion: 'solar-heat-fall', initial: 8, density: 1, interval: 1180, size: [14, 25], duration: [10000, 13600] },
-  '小寒': { label: '小寒冰晶', shape: 'solar-effect-frost', motion: 'solar-frost-settle', initial: 11, density: 2, interval: 860, size: [9, 17], duration: [9200, 12400] },
-  '大寒': { label: '大寒寒星', shape: 'solar-effect-frost', motion: 'solar-frost-settle', initial: 9, density: 1, interval: 1080, size: [14, 23], duration: [10400, 14000] }
-};
-var HOME_TERM_FALLING = {
-  '立春': { type: 'bud', emoji: ['🌿', '🌱', '🍃'], count: 14, speed: 10, intensity: 'light' },
-  '雨水': { type: 'rain', emoji: ['💧'], count: 180, speed: 9.6, intensity: 'medium' },
-  '惊蛰': { type: 'petal', emoji: ['🌸'], count: 18, speed: 9, intensity: 'medium' },
-  '春分': { type: 'petal', emoji: ['🌸', '🌼', '🌿'], count: 16, speed: 9, intensity: 'light' },
-  '清明': { type: 'rain', emoji: ['💧'], count: 160, speed: 9.1, intensity: 'medium' },
-  '谷雨': { type: 'rain', emoji: ['💧'], count: 168, speed: 9, intensity: 'heavy' },
-  '立夏': { type: 'leaf', emoji: ['🍃'], count: 14, speed: 8, intensity: 'medium' },
-  '小满': { type: 'wheat', emoji: ['🌾'], count: 16, speed: 9, intensity: 'medium' },
-  '芒种': { type: 'wheat', emoji: ['🌾'], count: 18, speed: 8, intensity: 'heavy' },
-  '夏至': { type: 'firefly', emoji: ['✦', '✧', '·'], count: 28, speed: 6.6, intensity: 'heavy' },
-  '小暑': { type: 'heat', emoji: ['·', '✦', '✧'], count: 24, speed: 7.2, intensity: 'medium' },
-  '大暑': { type: 'firefly', emoji: ['✦', '✧'], count: 30, speed: 7, intensity: 'heavy' },
-  '立秋': { type: 'leaf', emoji: ['🍂', '🍁'], count: 14, speed: 9, intensity: 'light' },
-  '处暑': { type: 'leaf', emoji: ['🍂', '🍃'], count: 14, speed: 9, intensity: 'medium' },
-  '白露': { type: 'dew', emoji: ['💧'], count: 36, speed: 5, intensity: 'light' },
-  '秋分': { type: 'leaf', emoji: ['🍂'], count: 16, speed: 8, intensity: 'medium' },
-  '寒露': { type: 'leaf', emoji: ['🍂', '🍁'], count: 16, speed: 8, intensity: 'heavy' },
-  '霜降': { type: 'leaf', emoji: ['🍁', '🍂'], count: 18, speed: 8, intensity: 'heavy' },
-  '立冬': { type: 'snow', emoji: ['❄', '❅'], count: 24, speed: 7, intensity: 'light' },
-  '小雪': { type: 'snow', emoji: ['❄', '❅', '❆'], count: 40, speed: 6, intensity: 'light' },
-  '大雪': { type: 'snow', emoji: ['❄', '❅', '❆'], count: 80, speed: 5, intensity: 'heavy' },
-  '冬至': { type: 'snow', emoji: ['❄', '❅'], count: 50, speed: 6, intensity: 'medium' },
-  '小寒': { type: 'snow', emoji: ['❄', '❆'], count: 60, speed: 5, intensity: 'medium' },
-  '大寒': { type: 'snow', emoji: ['❄', '❅', '❆'], count: 70, speed: 5, intensity: 'heavy' }
+var HOME_TERM_EFFECTS = {
+  '立春': { label: '春芽萌发', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'bud', svg: 'bud', count: 14, speed: 10, intensity: 'light', initial: 10, density: 2, interval: 900, size: [16, 26], duration: [9800, 13200] },
+  '雨水': { label: '细雨如丝', shape: 'solar-effect-rain', motion: 'solar-rain-fall', type: 'rain', count: 180, speed: 9.6, intensity: 'medium', initial: 14, density: 2, interval: 720, size: [20, 34], duration: [7600, 9800] },
+  '惊蛰': { label: '春雷乍动', shape: 'solar-effect-thunder', motion: 'solar-drift', type: 'petal', svg: 'petal', count: 18, speed: 9, intensity: 'medium', initial: 8, density: 1, interval: 1100, size: [14, 24], duration: [6800, 9200] },
+  '春分': { label: '花瓣均衡', shape: 'solar-effect-petal', motion: 'solar-petal-fall', type: 'petal', svg: 'petal', count: 16, speed: 9, intensity: 'light', initial: 12, density: 2, interval: 820, size: [16, 26], duration: [8800, 11800] },
+  '清明': { label: '烟雨清明', shape: 'solar-effect-mist', motion: 'solar-drift', type: 'rain', count: 160, speed: 9.1, intensity: 'medium', initial: 8, density: 1, interval: 1300, size: [22, 36], duration: [10800, 14200] },
+  '谷雨': { label: '谷雨润泽', shape: 'solar-effect-dew', motion: 'solar-rain-fall', type: 'rain', count: 168, speed: 9, intensity: 'heavy', initial: 11, density: 2, interval: 860, size: [12, 21], duration: [9000, 12200] },
+  '立夏': { label: '夏叶舒展', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 14, speed: 8, intensity: 'medium', initial: 12, density: 2, interval: 820, size: [18, 30], duration: [9200, 12600] },
+  '小满': { label: '麦粒渐满', shape: 'solar-effect-grain', motion: 'solar-grain-fall', type: 'wheat', svg: 'wheat', count: 16, speed: 9, intensity: 'medium', initial: 14, density: 2, interval: 760, size: [11, 18], duration: [7600, 10400] },
+  '芒种': { label: '芒种轻扬', shape: 'solar-effect-wing', motion: 'solar-drift', type: 'wheat', svg: 'wheat', count: 18, speed: 8, intensity: 'heavy', initial: 10, density: 2, interval: 880, size: [13, 22], duration: [8200, 11200] },
+  '夏至': { label: '日光流金', shape: 'solar-effect-sun', motion: 'solar-heat-fall', type: 'firefly', svg: 'spark', count: 28, speed: 6.6, intensity: 'heavy', initial: 8, density: 1, interval: 1200, size: [15, 26], duration: [9600, 13000] },
+  '小暑': { label: '雷热初起', shape: 'solar-effect-wing', motion: 'solar-drift', type: 'heat', svg: 'spark', count: 24, speed: 7.2, intensity: 'medium', initial: 10, density: 2, interval: 940, size: [11, 19], duration: [8600, 11600] },
+  '大暑': { label: '暑气浮光', shape: 'solar-effect-sun', motion: 'solar-heat-fall', type: 'firefly', svg: 'spark', count: 30, speed: 7, intensity: 'heavy', initial: 9, density: 1, interval: 1080, size: [17, 30], duration: [10400, 13800] },
+  '立秋': { label: '初秋叶笺', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 14, speed: 9, intensity: 'light', initial: 12, density: 2, interval: 840, size: [18, 30], duration: [9000, 12200] },
+  '处暑': { label: '凉风横过', shape: 'solar-effect-wind', motion: 'solar-drift', type: 'leaf', svg: 'leaf', count: 14, speed: 9, intensity: 'medium', initial: 9, density: 1, interval: 1120, size: [20, 34], duration: [9600, 12800] },
+  '白露': { label: '白露凝珠', shape: 'solar-effect-dew', motion: 'solar-frost-settle', type: 'dew', count: 36, speed: 5, intensity: 'light', initial: 13, density: 2, interval: 780, size: [10, 18], duration: [8200, 11200] },
+  '秋分': { label: '桂瓣平衡', shape: 'solar-effect-petal', motion: 'solar-petal-fall', type: 'petal', svg: 'petal', count: 16, speed: 8, intensity: 'medium', initial: 11, density: 2, interval: 860, size: [16, 26], duration: [9000, 12000] },
+  '寒露': { label: '寒露微坠', shape: 'solar-effect-dew', motion: 'solar-frost-settle', type: 'dew', count: 16, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 820, size: [9, 16], duration: [9800, 13400] },
+  '霜降': { label: '霜晶渐落', shape: 'solar-effect-frost', motion: 'solar-frost-settle', type: 'frost', svg: 'crystal', count: 18, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 800, size: [10, 18], duration: [8800, 11800] },
+  '立冬': { label: '万物归藏', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 24, speed: 7, intensity: 'light', initial: 12, density: 2, interval: 840, size: [16, 25], duration: [9200, 12400] },
+  '小雪': { label: '小雪疏落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', count: 40, speed: 6, intensity: 'light', initial: 14, density: 2, interval: 760, size: [10, 18], duration: [8200, 11200] },
+  '大雪': { label: '大雪丰落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', count: 80, speed: 5, intensity: 'heavy', initial: 16, density: 2, interval: 680, size: [14, 24], duration: [7600, 10400] },
+  '冬至': { label: '冬至微光', shape: 'solar-effect-sun', motion: 'solar-heat-fall', type: 'snow', svg: 'snow', count: 50, speed: 6, intensity: 'medium', initial: 8, density: 1, interval: 1180, size: [14, 25], duration: [10000, 13600] },
+  '小寒': { label: '小寒冰晶', shape: 'solar-effect-frost', motion: 'solar-frost-settle', type: 'frost', svg: 'crystal', count: 60, speed: 5, intensity: 'medium', initial: 11, density: 2, interval: 860, size: [9, 17], duration: [9200, 12400] },
+  '大寒': { label: '大寒寒星', shape: 'solar-effect-frost', motion: 'solar-frost-settle', type: 'frost', svg: 'crystal', count: 70, speed: 5, intensity: 'heavy', initial: 9, density: 1, interval: 1080, size: [14, 23], duration: [10400, 14000] }
 };
 var HOME_FALLING_INTENSITY = {
   light: { density: 0.96, size: 0.9, opacity: 0.82, speed: 1.1, sway: 0.82 },
@@ -2319,7 +2340,6 @@ var homeReferenceLeafColors = [];
 var HOME_REFERENCE_LEAF_MAX = 120;
 var homeReferencePool = [];
 var homeReferencePoolKey = "";
-var homeReferenceLaunchOrder = [];
 var HOME_REFERENCE_DEVICE_BUDGET = { mobile: 30, tablet: 48, desktop: 72 };
 var HOME_REFERENCE_DEPTH_PROFILES = [
   { size: 1.18, opacity: 0.95, blur: 0, speed: 0.9, z: 3 },
@@ -2340,14 +2360,28 @@ function getHomeReferenceBudget() {
 }
 function isHomeReferencePaused() { return currentView !== 'home' || document.hidden; }
 function getHomeReferenceInterval() {
-  var active = HOME_TERM_FALLING[homeSolarActiveName];
+  var active = HOME_TERM_EFFECTS[homeSolarActiveName];
   if (active && active.type === 'rain') return getHomeReferenceBudget() < 60 ? 1050 : 780;
   return getHomeReferenceBudget() < 60 ? 2400 : 1800;
 }
-var HOME_REFERENCE_LEAF_CHARS = ['❀', '✿', '❋', '🍃', '🌿', '🍂'];
 
 function prefersReducedMotion() {
   return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+var HOME_PARTICLE_SVG = {
+  bud: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 37C19 27 18 18 21 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 25C10 24 5 18 8 11c8 0 13 4 12 14Z" fill="currentColor" opacity=".82"/><path d="M21 18c1-9 7-14 14-13 1 8-3 13-14 15Z" fill="currentColor" opacity=".56"/></svg>',
+  leaf: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 37C19 28 20 17 24 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".72"/><path d="M23 29C11 28 5 20 8 10c12 0 18 7 15 19Z" fill="currentColor" opacity=".76"/><path d="M22 20C24 10 31 5 37 7c0 10-5 15-15 17Z" fill="currentColor" opacity=".46"/></svg>',
+  petal: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 20C10 13 10 5 16 3c5 2 7 7 4 17Z" fill="currentColor" opacity=".72"/><path d="M20 20C26 9 34 9 37 15c-2 5-8 7-17 5Z" fill="currentColor" opacity=".56"/><path d="M20 20C30 26 29 34 23 37c-5-2-7-8-5-17Z" fill="currentColor" opacity=".72"/><path d="M20 20C14 31 6 30 3 24c2-5 8-7 17-4Z" fill="currentColor" opacity=".56"/><circle cx="20" cy="20" r="3" fill="currentColor"/></svg>',
+  wheat: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 37C20 27 21 17 25 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M22 22c-8-1-11-5-10-9 6-1 10 2 11 8Z" fill="currentColor" opacity=".7"/><path d="M23 17c1-7 5-10 10-9 1 5-2 9-9 11Z" fill="currentColor" opacity=".56"/><path d="M20 29c-7-1-9-5-8-8 5 0 8 3 9 7Z" fill="currentColor" opacity=".62"/></svg>',
+  spark: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 2l3.1 13.9L37 20l-13.9 3.1L20 37l-3.1-13.9L3 20l13.9-4.1Z" fill="currentColor" opacity=".78"/><circle cx="20" cy="20" r="3" fill="#fff" opacity=".7"/></svg>',
+  snow: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 3v34M5.3 11.5l29.4 17M5.3 28.5l29.4-17M12 6.5l8 8 8-8M12 33.5l8-8 8 8M3 18l11 2 0 11M37 22l-11-2 0-11"/></g></svg>',
+  crystal: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 3 34 12v16L20 37 6 28V12Z" fill="none" stroke="currentColor" stroke-width="1.8" opacity=".82"/><path d="M20 3v34M6 12l28 16M34 12 6 28" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".64"/></svg>'
+};
+
+function getHomeParticleMarkup(config, index) {
+  if (!config.svg) return '';
+  return HOME_PARTICLE_SVG[config.svg] || HOME_PARTICLE_SVG.spark;
 }
 
 function clearHomeReferenceLeaves() {
@@ -2367,7 +2401,7 @@ function spawnHomeReferenceLeaves(colors, termName) {
   if (prefersReducedMotion() || !homeMotionEnabled) return;
   var layer = document.getElementById('homeReferenceLeafLayer');
   if (!layer) return;
-  var config = HOME_TERM_FALLING[termName] || HOME_TERM_FALLING['立春'];
+  var config = HOME_TERM_EFFECTS[termName] || HOME_TERM_EFFECTS['立春'];
   var profile = HOME_FALLING_INTENSITY[config.intensity] || HOME_FALLING_INTENSITY.medium;
   var speed = config.speed ? config.speed * profile.speed : 10;
   var budget = getHomeReferenceBudget();
@@ -2384,17 +2418,15 @@ function spawnHomeReferenceLeaves(colors, termName) {
     }
     if (config.type === 'sun') return;
   }
-  var poolKey = termName + '|' + config.type + '|' + amount + '|' + colors.join(',');
-  if (homeReferencePoolKey === poolKey && homeReferencePool.length >= amount) return;
-  homeReferencePoolKey = poolKey;
-  homeReferenceLaunchOrder = [];
-  for (var launchIndex = 0; launchIndex < amount; launchIndex++) homeReferenceLaunchOrder.push(launchIndex);
-  for (var shuffleIndex = amount - 1; shuffleIndex > 0; shuffleIndex--) {
-    var swapIndex = Math.floor(Math.random() * (shuffleIndex + 1));
-    var swapValue = homeReferenceLaunchOrder[shuffleIndex];
-    homeReferenceLaunchOrder[shuffleIndex] = homeReferenceLaunchOrder[swapIndex];
-    homeReferenceLaunchOrder[swapIndex] = swapValue;
+  var poolKey = config.type + '|' + amount;
+  if (homeReferencePoolKey === poolKey && homeReferencePool.length >= amount) {
+    homeReferenceLeafColors = colors.slice();
+    homeReferencePool.slice(0, amount).forEach(function(leaf, index) {
+      leaf.style.setProperty('--reference-leaf-color', colors[index % colors.length]);
+    });
+    return;
   }
+  homeReferencePoolKey = poolKey;
   while (homeReferencePool.length < amount) {
     var created = document.createElement('span');
     created.className = 'home-reference-fall-item';
@@ -2409,8 +2441,11 @@ function spawnHomeReferenceLeaves(colors, termName) {
       continue;
     }
     leaf.hidden = false;
-    leaf.textContent = config.type === 'rain' || config.type === 'dew' ? '' : config.emoji[index % config.emoji.length];
-    var laneJitter = (Math.random() - 0.5) * (0.72 / Math.max(1, amount));
+    if (leaf.dataset.particleShape !== (config.svg || config.type)) {
+      leaf.innerHTML = getHomeParticleMarkup(config, index);
+      leaf.dataset.particleShape = config.svg || config.type;
+    }
+    var laneJitter = (Math.random() - 0.5) * (1.05 / Math.max(1, amount));
     var lane = amount > 1 ? (index + 0.5) / amount : 0.5;
     var xPercent = Math.max(1.5, Math.min(98.5, (lane + laneJitter) * 100));
     leaf.style.setProperty('--reference-leaf-x', xPercent.toFixed(2) + '%');
@@ -2428,9 +2463,9 @@ function spawnHomeReferenceLeaves(colors, termName) {
     leaf.style.setProperty('--reference-leaf-color', colors[index % colors.length]);
     var opacityBase = config.type === 'rain' ? 0.42 + rainDepth * 0.34 + Math.random() * 0.16 : 0.52 + Math.random() * 0.34;
     leaf.style.setProperty('--reference-leaf-opacity', Math.min(0.95, opacityBase * profile.opacity * depthProfile.opacity).toFixed(2));
-    leaf.style.setProperty('--reference-leaf-duration', (speed * depthProfile.speed * (config.type === 'rain' ? (1.12 - rainDepth * 0.32) : (0.7 + Math.random() * 0.6))) + 's');
-    var launchRank = homeReferenceLaunchOrder[index] == null ? index : homeReferenceLaunchOrder[index];
-    leaf.style.setProperty('--reference-leaf-delay', ((launchRank + 0.5) / Math.max(1, amount) * Math.min(speed * 0.72, 5.2)).toFixed(2) + 's');
+    var durationSeconds = speed * depthProfile.speed * (config.type === 'rain' ? (1.12 - rainDepth * 0.32) : (0.7 + Math.random() * 0.6));
+    leaf.style.setProperty('--reference-leaf-duration', durationSeconds + 's');
+    leaf.style.setProperty('--reference-leaf-delay', (-Math.random() * durationSeconds).toFixed(2) + 's');
     leaf.style.setProperty('--reference-leaf-drift', ((-120 + Math.round(Math.random() * 240)) * profile.sway) + 'px');
     leaf.style.setProperty('--reference-leaf-rotate', (180 + Math.random() * 540) + 'deg');
     leaf.style.setProperty('--reference-rain-size', ((22 + rainDepth * 42) * profile.size * depthProfile.size) + 'px');
@@ -2492,13 +2527,21 @@ function getHomeSolarBackground(colors, shape) {
 
 function applyHomeSolarEffect(name) {
   var scheme = SOLAR_SCENES[name].light;
-  var effect = HOME_SOLAR_EFFECTS[name];
+  var effect = HOME_TERM_EFFECTS[name];
   var colors = scheme.colors;
   var blend = getHomeBlend(name);
+  var previousName = homeSolarActiveName;
+  var previousEffect = previousName ? HOME_TERM_EFFECTS[previousName] : null;
   homeSolarActiveName = name;
   setHomeBackground(blend ? blend.gradient : getHomeSolarBackground(colors, effect.shape), blend ? blend.first.hex : colors[4].hex);
   homeReferenceLeafColors = (HOME_TERM_EFFECT_COLORS[name] || colors.slice(1, 4).map(function(color) { return color.hex; })).slice();
-  if (homeSolarEffectActive) startHomeReferenceLeaves(homeReferenceLeafColors, name);
+  if (homeSolarEffectActive && (!previousName || !previousEffect || previousEffect.type !== effect.type)) {
+    startHomeReferenceLeaves(homeReferenceLeafColors, name);
+  } else if (homeSolarEffectActive) {
+    homeReferencePool.forEach(function(leaf, index) {
+      leaf.style.setProperty('--reference-leaf-color', homeReferenceLeafColors[index % homeReferenceLeafColors.length]);
+    });
+  }
 }
 
 function startHomeSolarEffect() {
@@ -2551,6 +2594,17 @@ function toggleHomeMotion() {
   } else {
     stopHomeSolarEffect(true);
   }
+}
+
+var homeReducedMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+function handleHomeReducedMotionChange() {
+  updateHomeMotionUi();
+  if (homeReducedMotionQuery && homeReducedMotionQuery.matches) stopHomeSolarEffect(true);
+  else if (homeMotionEnabled && currentView === 'home') startHomeSolarEffect();
+}
+if (homeReducedMotionQuery) {
+  if (homeReducedMotionQuery.addEventListener) homeReducedMotionQuery.addEventListener('change', handleHomeReducedMotionChange);
+  else if (homeReducedMotionQuery.addListener) homeReducedMotionQuery.addListener(handleHomeReducedMotionChange);
 }
 
 function setHomeFocusMode(enabled) {
