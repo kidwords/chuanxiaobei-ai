@@ -42,10 +42,10 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 .export-dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
 .export-dialog-title { font-size: 1.15rem; font-weight: 700; color: #1a1a1a; }
 .export-dialog-copy { margin-top: 8px; color: #666; font-size: 0.82rem; line-height: 1.65; }
-.export-dialog-close { width: 32px; height: 32px; border: 1px solid #e0e0e0; border-radius: 10px; background: #fff; color: #444; font-size: 1.1rem; cursor: pointer; transition: all 0.2s ease; }
+.export-dialog-close { width: 32px; height: 32px; border: 1px solid #e0e0e0; border-radius: 10px; background: #fff; color: #444; font-size: 1.1rem; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease; }
 .export-dialog-close:hover { background: #f5f5f5; border-color: #bbb; }
 .export-options { display: grid; gap: 10px; margin-top: 20px; }
-.export-option { width: 100%; border: 1px solid #dedede; border-radius: 14px; background: #fff; padding: 16px; text-align: left; color: #1a1a1a; cursor: pointer; transition: all 0.25s ease; }
+.export-option { width: 100%; border: 1px solid #dedede; border-radius: 14px; background: #fff; padding: 16px; text-align: left; color: #1a1a1a; cursor: pointer; transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease; }
 .export-option:hover { transform: translateY(-1px); border-color: #8f6b55; box-shadow: 0 8px 20px rgba(0,0,0,0.08); }
 .export-option-title { display: block; font-size: 0.92rem; font-weight: 700; }
 .export-option-meta { display: block; margin-top: 5px; color: #666; font-size: 0.78rem; line-height: 1.5; }
@@ -120,35 +120,32 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
 .home-reference-fall-item.is-dew {
   width: 10px; height: 14px; font-size: 0; border-radius: 50% 50% 50% 50% / 62% 62% 42% 42%;
   background: radial-gradient(circle at 35% 25%, #fff, var(--reference-leaf-color) 46%, color-mix(in srgb, var(--reference-leaf-color) 80%, transparent));
-  box-shadow: 0 0 8px color-mix(in srgb, var(--reference-leaf-color) 70%, transparent);
+  box-shadow: none;
   animation-name: home-reference-dew-down;
 }
-.home-reference-fall-item.is-snow { color: #fff; text-shadow: 0 0 5px #fff, 0 0 14px color-mix(in srgb, var(--reference-leaf-color) 72%, transparent); animation-name: home-reference-snow-down; }
-.home-reference-fall-item.is-firefly { color: var(--reference-leaf-color); text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 16px color-mix(in srgb, var(--reference-leaf-color) 70%, transparent); animation-name: home-reference-firefly-down; }
-.home-reference-fall-item.is-heat { color: var(--reference-leaf-color); text-shadow: 0 0 8px color-mix(in srgb, var(--reference-leaf-color) 78%, transparent), 0 0 18px color-mix(in srgb, var(--reference-leaf-color) 52%, transparent); animation-name: home-reference-heat-down; }
+.home-reference-fall-item.is-dew.is-depth-foreground { box-shadow: 0 0 8px color-mix(in srgb, var(--reference-leaf-color) 70%, transparent); }
+.home-reference-fall-item.is-snow { color: #fff; text-shadow: none; animation-name: home-reference-snow-down; }
+.home-reference-fall-item.is-snow.is-depth-foreground { text-shadow: 0 0 5px #fff, 0 0 14px color-mix(in srgb, var(--reference-leaf-color) 72%, transparent); }
+.home-reference-fall-item.is-firefly { color: var(--reference-leaf-color); text-shadow: none; animation-name: home-reference-firefly-down; }
+.home-reference-fall-item.is-firefly.is-depth-foreground { text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 16px color-mix(in srgb, var(--reference-leaf-color) 70%, transparent); }
+.home-reference-fall-item.is-heat { color: var(--reference-leaf-color); text-shadow: none; animation-name: home-reference-heat-down; }
+.home-reference-fall-item.is-heat.is-depth-foreground { text-shadow: 0 0 8px color-mix(in srgb, var(--reference-leaf-color) 78%, transparent), 0 0 18px color-mix(in srgb, var(--reference-leaf-color) 52%, transparent); }
 .home-reference-fall-item.is-bud { animation-name: home-reference-bud-down; }
 .home-reference-fall-item.is-leaf { animation-name: home-reference-leaf-down; }
 .home-reference-fall-item.is-petal { animation-name: home-reference-petal-down; }
 .home-reference-fall-item.is-wheat { animation-name: home-reference-wheat-down; }
 .home-reference-fall-item.is-frost { animation-name: home-reference-frost-down; }
-.home-reference-fall-item.is-bud > svg,
-.home-reference-fall-item.is-leaf > svg,
-.home-reference-fall-item.is-petal > svg,
-.home-reference-fall-item.is-wheat > svg,
-.home-reference-fall-item.is-frost > svg { filter: drop-shadow(0 1px 1px rgba(31, 43, 49, .2)); }
 .home-reference-fall-item.is-sun-aura { position: fixed; top: -42vmax; left: auto; right: -42vmax; width: 84vmax; height: 84vmax; border-radius: 50%; font-size: 0; background: radial-gradient(circle, color-mix(in srgb, var(--reference-leaf-color) 32%, transparent), transparent 62%); opacity: .48; animation: home-reference-sun-pulse 8s ease-in-out infinite; }
-.home-reference-fall-item.is-depth-background:not(.is-rain) { filter: blur(var(--reference-depth-blur, .4px)); }
-@media (max-width: 767px) { .home-reference-fall-item.is-depth-background:not(.is-rain) { filter: none; } }
 @media (max-width: 1100px) {
-  .home-reference-fall-item.is-depth-background:not(.is-rain) { filter: none; }
   .intro-box, .home-actions-bar, .home-focus-exit { backdrop-filter: none; -webkit-backdrop-filter: none; background: rgba(255,255,255,0.84); }
   .cover h1 strong { animation: none; }
 }
 @supports not (background: color-mix(in srgb, red, blue)) {
-  .home-reference-fall-item.is-dew { background: radial-gradient(circle at 35% 25%, #fff, var(--reference-leaf-color) 46%, rgba(255,255,255,.2)); box-shadow: 0 0 8px var(--reference-leaf-color); }
-  .home-reference-fall-item.is-snow { text-shadow: 0 0 5px #fff, 0 0 14px var(--reference-leaf-color); }
-  .home-reference-fall-item.is-firefly { text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 16px var(--reference-leaf-color); }
-  .home-reference-fall-item.is-heat { text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 18px var(--reference-leaf-color); }
+  .home-reference-fall-item.is-dew { background: radial-gradient(circle at 35% 25%, #fff, var(--reference-leaf-color) 46%, rgba(255,255,255,.2)); box-shadow: none; }
+  .home-reference-fall-item.is-dew.is-depth-foreground { box-shadow: 0 0 8px var(--reference-leaf-color); }
+  .home-reference-fall-item.is-snow.is-depth-foreground { text-shadow: 0 0 5px #fff, 0 0 14px var(--reference-leaf-color); }
+  .home-reference-fall-item.is-firefly.is-depth-foreground { text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 16px var(--reference-leaf-color); }
+  .home-reference-fall-item.is-heat.is-depth-foreground { text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 16px var(--reference-leaf-color); }
   .home-reference-fall-item.is-sun-aura { background: radial-gradient(circle, rgba(255,255,255,.22), transparent 62%); }
   .home-reference-fall-item.is-rain::after { border-color: rgba(118,161,177,.62); }
 }
@@ -505,7 +502,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   border: none;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 .solar-gallery-card:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 10px 24px rgba(0,0,0,0.12); }
 .solar-card-top {
@@ -549,7 +546,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   line-height: 1.2;
   text-align: left;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
 }
 .palette-row:hover,
 .palette-row:focus-visible {
@@ -585,7 +582,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   border-radius: 6px;
   min-height: 30px; padding: 4px 11px; font-size: 0.78rem;
   color: #fff; cursor: pointer; font-family: inherit;
-  font-weight: 600; transition: all 0.2s;
+  font-weight: 600; transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
   z-index: 2;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
@@ -634,13 +631,13 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .back-btn {
   background: #fff; border: 1px solid #ddd; border-radius: 10px;
   padding: 8px 18px; font-size: 0.82rem; cursor: pointer;
-  font-family: inherit; transition: all 0.25s; font-weight: 500;
+  font-family: inherit; transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease; font-weight: 500;
 }
 .back-btn:hover { background: #f5f5f5; }
 .gallery-index-btn {
   background: transparent; border: 1px solid rgba(0,0,0,0.15);
   border-radius: 8px; padding: 6px 14px; font-size: 0.8rem;
-  cursor: pointer; font-family: inherit; transition: all 0.25s;
+  cursor: pointer; font-family: inherit; transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
   font-weight: 500; color: #555;
 }
 .gallery-index-btn:hover { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.25); }
@@ -657,7 +654,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .mode-toggle {
   background: #1a1a1a; color: #fff; border: none; border-radius: 10px;
   padding: 8px 18px; font-size: 0.82rem; cursor: pointer;
-  font-family: inherit; font-weight: 500; transition: all 0.25s;
+  font-family: inherit; font-weight: 500; transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
 }
 .mode-toggle:hover { background: #333; }
 
@@ -715,7 +712,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   border: none;
   padding: 2rem 1.8rem;
   box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-  transition: all 0.4s;
+  transition: background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
 }
 .imm-panel h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.3rem; }
 .imm-panel .imm-desc { font-size: 0.9rem; margin-bottom: 1rem; }
@@ -748,7 +745,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   color: inherit;
   cursor: pointer;
   font-family: inherit;
-  transition: all 0.25s;
+  transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
   text-align: center;
 }
 .imm-arrow-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.03); }
@@ -957,7 +954,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   border-radius: 8px; padding: 6px 14px;
   font-size: 0.75rem; cursor: pointer;
   font-family: inherit; color: inherit;
-  transition: all 0.2s;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 .imm-prompt-copy:hover { background: rgba(255,255,255,0.25); }
 .imm-prompt-box.light .imm-prompt-copy {
@@ -1038,7 +1035,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;
   padding: 7px 14px; font-size: 0.78rem; cursor: pointer;
   color: inherit; font-family: inherit; font-weight: 500;
-  transition: all 0.25s;
+  transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
 }
 .imm-btn:hover { background: rgba(255,255,255,0.22); }
 .nav-project-link {
@@ -1046,7 +1043,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   border: 1px solid rgba(255,255,255,0.22); border-radius: 10px;
   background: rgba(255,255,255,0.14); color: inherit; text-decoration: none;
   font-size: 0.78rem; font-weight: 500; white-space: nowrap;
-  transition: all 0.25s ease;
+  transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
 }
 .nav-project-link:hover { background: rgba(255,255,255,0.25); transform: translateY(-1px); }
 .gallery-header .nav-project-link {
@@ -1079,7 +1076,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   aspect-ratio: 1 / 1; border-radius: 6px; cursor: pointer;
   border: 1px solid rgba(255,255,255,0.18);
   box-shadow: none;
-  transition: all 0.25s;
+  transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
 }
 .pal-c:hover {
   transform: scale(1.15);
@@ -1149,7 +1146,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 
 /* Progress */
 .imm-progress { display: flex; gap: 6px; justify-content: center; margin-top: 1.2rem; }
-.imm-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(128,128,128,0.3); cursor: pointer; transition: all 0.3s; }
+.imm-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(128,128,128,0.3); cursor: pointer; transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease; }
 .imm-dot.active { background: currentColor; transform: scale(1.3); }
 .imm-dot:hover { background: rgba(128,128,128,0.6); }
 
@@ -1160,7 +1157,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   background: rgba(0,0,0,0.75); backdrop-filter: blur(16px);
   color: #fff; padding: 12px 28px; border-radius: 12px;
   font-size: 0.9rem; z-index: 200; opacity: 0;
-  transition: all 0.3s; pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease; pointer-events: none;
 }
 .copy-feedback.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
@@ -2351,13 +2348,13 @@ var HOME_TERM_EFFECTS = {
   '白露': { label: '白露凝珠', shape: 'solar-effect-dew', motion: 'solar-frost-settle', type: 'dew', count: 36, speed: 5, intensity: 'light', initial: 13, density: 2, interval: 780, size: [10, 18], duration: [8200, 11200] },
   '秋分': { label: '桂瓣平衡', shape: 'solar-effect-petal', motion: 'solar-petal-fall', type: 'petal', svg: 'petal', count: 16, speed: 8, intensity: 'medium', initial: 11, density: 2, interval: 860, size: [16, 26], duration: [9000, 12000] },
   '寒露': { label: '寒露微坠', shape: 'solar-effect-dew', motion: 'solar-frost-settle', type: 'dew', count: 16, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 820, size: [9, 16], duration: [9800, 13400] },
-  '霜降': { label: '霜花飘落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', count: 18, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 800, size: [10, 18], duration: [8800, 11800] },
+  '霜降': { label: '霜花飘落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', snowVariant: 'classic-feather', count: 18, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 800, size: [10, 18], duration: [8800, 11800] },
   '立冬': { label: '万物归藏', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 24, speed: 7, intensity: 'light', initial: 12, density: 2, interval: 840, size: [16, 25], duration: [9200, 12400] },
-  '小雪': { label: '小雪疏落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', count: 40, speed: 6, intensity: 'light', initial: 14, density: 2, interval: 760, size: [10, 18], duration: [8200, 11200] },
-  '大雪': { label: '大雪丰落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', count: 80, speed: 5, intensity: 'heavy', initial: 16, density: 2, interval: 680, size: [14, 24], duration: [7600, 10400] },
-  '冬至': { label: '冬至微光', shape: 'solar-effect-sun', motion: 'solar-heat-fall', type: 'snow', svg: 'snow', count: 50, speed: 6, intensity: 'medium', initial: 8, density: 1, interval: 1180, size: [14, 25], duration: [10000, 13600] },
-  '小寒': { label: '小寒疏雪', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', count: 60, speed: 5, intensity: 'medium', initial: 11, density: 2, interval: 860, size: [9, 17], duration: [9200, 12400] },
-  '大寒': { label: '大寒纷雪', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', count: 70, speed: 5, intensity: 'heavy', initial: 9, density: 1, interval: 1080, size: [14, 23], duration: [10400, 14000] }
+  '小雪': { label: '小雪疏落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', snowVariant: 'classic-feather', count: 40, speed: 6, intensity: 'light', initial: 14, density: 2, interval: 760, size: [10, 18], duration: [8200, 11200] },
+  '大雪': { label: '大雪丰落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', snowVariant: 'classic-feather', count: 80, speed: 5, intensity: 'heavy', initial: 16, density: 2, interval: 680, size: [14, 24], duration: [7600, 10400] },
+  '冬至': { label: '冬至微光', shape: 'solar-effect-sun', motion: 'solar-heat-fall', type: 'snow', svg: 'snow', snowVariant: 'classic-feather', count: 50, speed: 6, intensity: 'medium', initial: 8, density: 1, interval: 1180, size: [14, 25], duration: [10000, 13600] },
+  '小寒': { label: '小寒疏雪', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', snowVariant: 'classic-feather', count: 60, speed: 5, intensity: 'medium', initial: 11, density: 2, interval: 860, size: [9, 17], duration: [9200, 12400] },
+  '大寒': { label: '大寒纷雪', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', snowVariant: 'classic-feather', count: 70, speed: 5, intensity: 'heavy', initial: 9, density: 1, interval: 1080, size: [14, 23], duration: [10400, 14000] }
 };
 var HOME_FALLING_INTENSITY = {
   light: { density: 0.96, size: 0.9, opacity: 0.82, speed: 1.1, sway: 0.82 },
@@ -2367,7 +2364,9 @@ var HOME_FALLING_INTENSITY = {
 var HOME_TERM_EFFECT_COLORS = {
   // 参考 seasons_change/seasons/yushui.html：雨幕使用青绿层次，避免粉色花色混入雨滴。
   '雨水': ['#AFC9D3', '#6F9CAF', '#3E6E82'],
-  '谷雨': ['#B8D2D0', '#6E9E9A', '#3E6D70']
+  '谷雨': ['#B8D2D0', '#6E9E9A', '#3E6D70'],
+  // 惊蛰用明显的桃粉到莓红，避免被黄栗留背景吞掉。
+  '惊蛰': ['#F6BEC8', '#E57A99', '#B83C67']
 };
 var HOME_MOTION_STORAGE_KEY = 'chinese-traditional-colors.home-motion-enabled';
 var HOME_MOTION_OVERRIDE_STORAGE_KEY = 'chinese-traditional-colors.home-motion-user-override';
@@ -2422,11 +2421,15 @@ var HOME_PARTICLE_SVG = {
   wheat: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 37C20 27 21 17 25 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M22 22c-8-1-11-5-10-9 6-1 10 2 11 8Z" fill="currentColor" opacity=".7"/><path d="M23 17c1-7 5-10 10-9 1 5-2 9-9 11Z" fill="currentColor" opacity=".56"/><path d="M20 29c-7-1-9-5-8-8 5 0 8 3 9 7Z" fill="currentColor" opacity=".62"/></svg>',
   spark: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 2l3.1 13.9L37 20l-13.9 3.1L20 37l-3.1-13.9L3 20l13.9-4.1Z" fill="currentColor" opacity=".78"/><circle cx="20" cy="20" r="3" fill="#fff" opacity=".7"/></svg>',
   snow: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 3v34M5.3 11.5l29.4 17M5.3 28.5l29.4-17M12 6.5l8 8 8-8M12 33.5l8-8 8 8M3 18l11 2 0 11M37 22l-11-2 0-11"/></g></svg>',
+  snowFeather: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"><path d="M20 2.5v35M4.8 11.2l30.4 17.6M4.8 28.8l30.4-17.6"/><path d="M20 8l-3.8 3.8M20 8l3.8 3.8M20 14l-5.6 5.6M20 14l5.6 5.6M20 26l-5.6-5.6M20 26l5.6-5.6M20 32l-3.8-3.8M20 32l3.8-3.8"/><path d="M12 15.4l.8 5.1M12 15.4l4.9 1.1M28 15.4l-.8 5.1M28 15.4l-4.9 1.1M12 24.6l.8-5.1M12 24.6l4.9-1.1M28 24.6l-.8-5.1M28 24.6l-4.9-1.1"/></g><circle cx="20" cy="20" r="1.4" fill="currentColor"/></svg>',
   crystal: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 3 34 12v16L20 37 6 28V12Z" fill="none" stroke="currentColor" stroke-width="1.8" opacity=".82"/><path d="M20 3v34M6 12l28 16M34 12 6 28" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".64"/></svg>'
 };
 
 function getHomeParticleMarkup(config, index) {
   if (!config.svg) return '';
+  if (config.type === 'snow' && config.snowVariant === 'classic-feather') {
+    return HOME_PARTICLE_SVG[index % 3 === 0 ? 'snowFeather' : 'snow'];
+  }
   return HOME_PARTICLE_SVG[config.svg] || HOME_PARTICLE_SVG.spark;
 }
 
@@ -2466,7 +2469,8 @@ function spawnHomeReferenceLeaves(colors, termName) {
     }
     if (config.type === 'sun') return;
   }
-  var poolKey = config.type + '|' + amount;
+  var particleShapeKey = config.type === 'snow' ? (config.snowVariant || config.svg || config.type) : (config.svg || config.type);
+  var poolKey = config.type + '|' + amount + '|' + particleShapeKey;
   if (homeReferencePoolKey === poolKey && homeReferencePool.length >= amount) {
     homeReferenceLeafColors = colors.slice();
     homeReferencePool.slice(0, amount).forEach(function(leaf, index) {
@@ -2489,9 +2493,9 @@ function spawnHomeReferenceLeaves(colors, termName) {
       continue;
     }
     leaf.hidden = false;
-    if (leaf.dataset.particleShape !== (config.svg || config.type)) {
+    if (leaf.dataset.particleShape !== particleShapeKey) {
       leaf.innerHTML = getHomeParticleMarkup(config, index);
-      leaf.dataset.particleShape = config.svg || config.type;
+      leaf.dataset.particleShape = particleShapeKey;
     }
     var laneJitter = (Math.random() - 0.5) * (1.05 / Math.max(1, amount));
     var lane = amount > 1 ? (index + 0.5) / amount : 0.5;
@@ -2569,16 +2573,28 @@ function homeColorContrast(first, second) {
   return (Math.max(firstLum, secondLum) + 0.05) / (Math.min(firstLum, secondLum) + 0.05);
 }
 
+function homeMinimumContrast(color, backgrounds) {
+  var minimum = Infinity;
+  for (var index = 0; index < backgrounds.length; index++) {
+    minimum = Math.min(minimum, homeColorContrast(color, backgrounds[index]));
+  }
+  return minimum;
+}
+
 function getHomeParticleColors(name, colors) {
   var effect = HOME_TERM_EFFECTS[name];
   var base = (HOME_TERM_EFFECT_COLORS[name] || colors.slice(1, 4).map(function(color) { return color.hex; })).slice();
-  if (HOME_TERM_EFFECT_COLORS[name] || !colors[4] || (effect && effect.type === 'snow')) return base;
-  var background = colors[0].hex;
+  if (!colors[4] || (effect && effect.type === 'snow')) return base;
+  var backgrounds = [colors[0].hex];
+  var blend = getHomeBlend(name);
+  if (blend) {
+    backgrounds.push(blend.first.hex, blend.second.hex);
+  }
   var weakestIndex = 0;
   for (var index = 1; index < base.length; index++) {
-    if (homeColorContrast(background, base[index]) < homeColorContrast(background, base[weakestIndex])) weakestIndex = index;
+    if (homeMinimumContrast(base[index], backgrounds) < homeMinimumContrast(base[weakestIndex], backgrounds)) weakestIndex = index;
   }
-  if (homeColorContrast(background, base[weakestIndex]) < 2 && homeColorContrast(background, colors[4].hex) > homeColorContrast(background, base[weakestIndex])) {
+  if (homeMinimumContrast(base[weakestIndex], backgrounds) < 2.2 && homeMinimumContrast(colors[4].hex, backgrounds) > homeMinimumContrast(base[weakestIndex], backgrounds)) {
     base[weakestIndex] = colors[4].hex;
   }
   return base;
@@ -2633,7 +2649,11 @@ document.addEventListener('visibilitychange', function() {
   }
 });
 var homeReferenceResizeTimer = null;
+var homeReferenceLastWidth = window.innerWidth || 0;
 window.addEventListener('resize', function() {
+  var nextWidth = window.innerWidth || 0;
+  if (Math.abs(nextWidth - homeReferenceLastWidth) < 24) return;
+  homeReferenceLastWidth = nextWidth;
   if (homeReferenceResizeTimer) window.clearTimeout(homeReferenceResizeTimer);
   homeReferenceResizeTimer = window.setTimeout(function() {
     homeReferenceResizeTimer = null;
