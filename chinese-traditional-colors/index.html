@@ -105,6 +105,7 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   filter: none; backface-visibility: hidden;
 }
 .home-reference-fall-item > svg { display: block; width: var(--reference-leaf-size); height: var(--reference-leaf-size); overflow: visible; }
+.home-reference-fall-item.is-depth-foreground > svg { filter: drop-shadow(0 1px 1px rgba(255,255,255,.22)); }
 .home-reference-fall-item.is-rain {
   position: absolute; top: 0; width: var(--reference-rain-width, 2px); height: var(--reference-rain-size); font-size: 0;
   background: linear-gradient(to bottom, transparent 0%, rgba(118, 161, 177, 0.22) 26%, rgba(68, 116, 137, 0.88) 100%);
@@ -118,12 +119,11 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   transform: translate(-50%, -1px) scale(.2); animation: home-reference-rain-splash var(--reference-leaf-duration) ease-out var(--reference-leaf-delay) both; animation-iteration-count: infinite;
 }
 .home-reference-fall-item.is-dew {
-  width: 10px; height: 14px; font-size: 0; border-radius: 50% 50% 50% 50% / 62% 62% 42% 42%;
-  background: radial-gradient(circle at 35% 25%, #fff, var(--reference-leaf-color) 46%, color-mix(in srgb, var(--reference-leaf-color) 80%, transparent));
-  box-shadow: none;
-  animation-name: home-reference-dew-down;
+  width: var(--reference-leaf-size); height: calc(var(--reference-leaf-size) * 1.25); font-size: 0; border-radius: 0;
+  background: none; box-shadow: none; animation-name: home-reference-dew-down;
 }
-.home-reference-fall-item.is-dew.is-depth-foreground { box-shadow: 0 0 8px color-mix(in srgb, var(--reference-leaf-color) 70%, transparent); }
+.home-reference-fall-item.is-dew > svg { width: 100%; height: 100%; }
+.home-reference-fall-item.is-dew.is-depth-foreground { box-shadow: none; }
 .home-reference-fall-item.is-snow { color: #fff; text-shadow: none; animation-name: home-reference-snow-down; }
 .home-reference-fall-item.is-snow.is-depth-foreground { text-shadow: 0 0 5px #fff, 0 0 14px color-mix(in srgb, var(--reference-leaf-color) 72%, transparent); }
 .home-reference-fall-item.is-firefly { color: var(--reference-leaf-color); text-shadow: none; animation-name: home-reference-firefly-down; }
@@ -141,8 +141,8 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   .cover h1 strong { animation: none; }
 }
 @supports not (background: color-mix(in srgb, red, blue)) {
-  .home-reference-fall-item.is-dew { background: radial-gradient(circle at 35% 25%, #fff, var(--reference-leaf-color) 46%, rgba(255,255,255,.2)); box-shadow: none; }
-  .home-reference-fall-item.is-dew.is-depth-foreground { box-shadow: 0 0 8px var(--reference-leaf-color); }
+  .home-reference-fall-item.is-dew { background: none; box-shadow: none; }
+  .home-reference-fall-item.is-dew.is-depth-foreground { box-shadow: none; }
   .home-reference-fall-item.is-snow.is-depth-foreground { text-shadow: 0 0 5px #fff, 0 0 14px var(--reference-leaf-color); }
   .home-reference-fall-item.is-firefly.is-depth-foreground { text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 16px var(--reference-leaf-color); }
   .home-reference-fall-item.is-heat.is-depth-foreground { text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 16px var(--reference-leaf-color); }
@@ -1811,10 +1811,10 @@ var SOLAR_16_COLORS = {
     {name: "椒房", hex: "#DB9C5E"},
     {name: "红友", hex: "#D9883D"},
     {name: "光明砂", hex: "#CC5D20"},
-    {name: "山矾", hex: "#CC5D20"},
-    {name: "玉頩", hex: "#CC5D20"},
-    {name: "二目鱼", hex: "#CC5D20"},
-    {name: "明月珰", hex: "#CC5D20"}
+    {name: "山矾", hex: "#F5F2E8"},
+    {name: "玉頩", hex: "#F0E6D6"},
+    {name: "二目鱼", hex: "#E8DFD0"},
+    {name: "明月珰", hex: "#E0D5C5"}
   ],
   "小暑": [
     {name: "骍刚", hex: "#F5B087"},
@@ -2333,8 +2333,8 @@ for (var i = 0; i < sceneNames.length; i++) { cardModes.push('light'); }
 var HOME_TERM_EFFECTS = {
   '立春': { label: '春芽萌发', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'bud', svg: 'bud', count: 14, speed: 10, intensity: 'light', initial: 10, density: 2, interval: 900, size: [16, 26], duration: [9800, 13200] },
   '雨水': { label: '细雨如丝', shape: 'solar-effect-rain', motion: 'solar-rain-fall', type: 'rain', count: 220, speed: 10.8, intensity: 'medium', initial: 14, density: 2, interval: 720, size: [20, 34], duration: [7600, 9800] },
-  '惊蛰': { label: '春雷乍动', shape: 'solar-effect-thunder', motion: 'solar-drift', type: 'petal', svg: 'petal', count: 18, speed: 9, intensity: 'medium', initial: 8, density: 1, interval: 1100, size: [14, 24], duration: [6800, 9200] },
-  '春分': { label: '花瓣均衡', shape: 'solar-effect-petal', motion: 'solar-petal-fall', type: 'petal', svg: 'petal', count: 16, speed: 9, intensity: 'light', initial: 12, density: 2, interval: 820, size: [16, 26], duration: [8800, 11800] },
+  '惊蛰': { label: '春雷乍动', shape: 'solar-effect-thunder', motion: 'solar-drift', type: 'petal', svg: 'petal', count: 32, speed: 9, intensity: 'medium', initial: 8, density: 1, interval: 1100, size: [20, 32], duration: [6800, 9200] },
+  '春分': { label: '花瓣均衡', shape: 'solar-effect-petal', motion: 'solar-petal-fall', type: 'petal', svg: 'petal', count: 28, speed: 9, intensity: 'light', initial: 12, density: 2, interval: 820, size: [22, 34], duration: [8800, 11800] },
   '清明': { label: '烟雨清明', shape: 'solar-effect-mist', motion: 'solar-drift', type: 'rain', count: 196, speed: 10.2, intensity: 'medium', initial: 8, density: 1, interval: 1300, size: [22, 36], duration: [10800, 14200] },
   '谷雨': { label: '谷雨润泽', shape: 'solar-effect-dew', motion: 'solar-rain-fall', type: 'rain', count: 210, speed: 10.4, intensity: 'heavy', initial: 11, density: 2, interval: 860, size: [12, 21], duration: [9000, 12200] },
   '立夏': { label: '夏叶舒展', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 14, speed: 8, intensity: 'medium', initial: 12, density: 2, interval: 820, size: [18, 30], duration: [9200, 12600] },
@@ -2345,10 +2345,10 @@ var HOME_TERM_EFFECTS = {
   '大暑': { label: '暑气浮光', shape: 'solar-effect-sun', motion: 'solar-heat-fall', type: 'firefly', svg: 'spark', count: 30, speed: 7, intensity: 'heavy', initial: 9, density: 1, interval: 1080, size: [17, 30], duration: [10400, 13800] },
   '立秋': { label: '初秋叶笺', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 14, speed: 9, intensity: 'light', initial: 12, density: 2, interval: 840, size: [18, 30], duration: [9000, 12200] },
   '处暑': { label: '凉风横过', shape: 'solar-effect-wind', motion: 'solar-drift', type: 'leaf', svg: 'leaf', count: 14, speed: 9, intensity: 'medium', initial: 9, density: 1, interval: 1120, size: [20, 34], duration: [9600, 12800] },
-  '白露': { label: '白露凝珠', shape: 'solar-effect-dew', motion: 'solar-frost-settle', type: 'dew', count: 36, speed: 5, intensity: 'light', initial: 13, density: 2, interval: 780, size: [10, 18], duration: [8200, 11200] },
+  '白露': { label: '露凝秋草', shape: 'solar-effect-dew', motion: 'solar-frost-settle', type: 'dew', svg: 'dew', count: 36, speed: 5, intensity: 'light', initial: 13, density: 2, interval: 780, size: [12, 22], duration: [8200, 11200] },
   '秋分': { label: '桂瓣平衡', shape: 'solar-effect-petal', motion: 'solar-petal-fall', type: 'petal', svg: 'petal', count: 16, speed: 8, intensity: 'medium', initial: 11, density: 2, interval: 860, size: [16, 26], duration: [9000, 12000] },
-  '寒露': { label: '寒露微坠', shape: 'solar-effect-dew', motion: 'solar-frost-settle', type: 'dew', count: 16, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 820, size: [9, 16], duration: [9800, 13400] },
-  '霜降': { label: '霜花飘落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', snowVariant: 'feather-irregular', count: 18, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 800, size: [10, 18], duration: [8800, 11800] },
+  '寒露': { label: '寒叶初染', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 16, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 820, size: [18, 30], duration: [9800, 13400] },
+  '霜降': { label: '霜染枫叶', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 18, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 800, size: [18, 30], duration: [8800, 11800] },
   '立冬': { label: '万物归藏', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 24, speed: 7, intensity: 'light', initial: 12, density: 2, interval: 840, size: [16, 25], duration: [9200, 12400] },
   '小雪': { label: '小雪疏落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', snowVariant: 'feather-irregular', count: 40, speed: 6, intensity: 'light', initial: 14, density: 2, interval: 760, size: [10, 18], duration: [8200, 11200] },
   '大雪': { label: '大雪丰落', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', snowVariant: 'feather-irregular', count: 80, speed: 5, intensity: 'heavy', initial: 16, density: 2, interval: 680, size: [14, 24], duration: [7600, 10400] },
@@ -2357,16 +2357,31 @@ var HOME_TERM_EFFECTS = {
   '大寒': { label: '大寒纷雪', shape: 'solar-effect-snow', motion: 'solar-snow-fall', type: 'snow', svg: 'snow', snowVariant: 'feather-irregular', count: 70, speed: 5, intensity: 'heavy', initial: 9, density: 1, interval: 1080, size: [14, 23], duration: [10400, 14000] }
 };
 var HOME_FALLING_INTENSITY = {
-  light: { density: 0.96, size: 0.9, opacity: 0.82, speed: 1.1, sway: 0.82 },
-  medium: { density: 1.08, size: 1, opacity: 0.92, speed: 1, sway: 1 },
+  light: { density: 0.96, size: 0.9, opacity: 0.94, speed: 1.1, sway: 0.82 },
+  medium: { density: 1.08, size: 1, opacity: 0.98, speed: 1, sway: 1 },
   heavy: { density: 1.38, size: 1.1, opacity: 1, speed: 0.88, sway: 1.12 }
 };
 var HOME_TERM_EFFECT_COLORS = {
   // 参考 seasons_change/seasons/yushui.html：雨幕使用青绿层次，避免粉色花色混入雨滴。
   '雨水': ['#AFC9D3', '#6F9CAF', '#3E6E82'],
   '谷雨': ['#B8D2D0', '#6E9E9A', '#3E6D70'],
-  // 惊蛰用明显的桃粉到莓红，避免被黄栗留背景吞掉。
-  '惊蛰': ['#F6BEC8', '#E57A99', '#B83C67']
+  // 其余颜色均取自对应节气的 16 色，只挑选在默认混色背景上更清晰的层次。
+  '立春': ['#D5EBE1', '#80A492', '#BA5140'],
+  '惊蛰': ['#F091A0', '#A64036', '#9E2A22'],
+  '春分': ['#B26D5D', '#EA5514', '#3271AE'],
+  '清明': ['#D3CCD6', '#903754', '#663D74'],
+  '立夏': ['#84A729', '#ED6D3D', '#C3D94E'],
+  '小满': ['#4F794A', '#F2C867', '#B81A35'],
+  '芒种': ['#868C4E', '#D2A36C', '#535164'],
+  '夏至': ['#CB523E', '#D9883D', '#CC5D20'],
+  '小暑': ['#954024', '#106898', '#F18F60'],
+  '大暑': ['#D8DE8A', '#9BB496', '#896D47'],
+  '立秋': ['#5976BA', '#2E59A7', '#C0D09D'],
+  '处暑': ['#6C8650', '#5AA4AE', '#AA8534'],
+  '白露': ['#F5F2E9', '#6B7D73', '#A58A5F'],
+  '秋分': ['#8F3D2C', '#32788A', '#C0AD5E'],
+  '寒露': ['#819D8E', '#DDB078', '#9F5221'],
+  '霜降': ['#AB1D22', '#D77F66', '#631216']
 };
 var HOME_MOTION_STORAGE_KEY = 'chinese-traditional-colors.home-motion-enabled';
 var HOME_MOTION_OVERRIDE_STORAGE_KEY = 'chinese-traditional-colors.home-motion-user-override';
@@ -2390,9 +2405,9 @@ var homeReferencePool = [];
 var homeReferencePoolKey = "";
 var HOME_REFERENCE_DEVICE_BUDGET = { mobile: 30, tablet: 48, desktop: 72 };
 var HOME_REFERENCE_DEPTH_PROFILES = [
-  { size: 1.18, opacity: 0.95, blur: 0, speed: 0.9, z: 3 },
-  { size: 0.9, opacity: 0.76, blur: 0.24, speed: 1, z: 2 },
-  { size: 0.68, opacity: 0.56, blur: 0.56, speed: 1.08, z: 1 }
+  { size: 1.18, opacity: 0.98, blur: 0, speed: 0.9, z: 3 },
+  { size: 0.9, opacity: 0.86, blur: 0.24, speed: 1, z: 2 },
+  { size: 0.68, opacity: 0.7, blur: 0.56, speed: 1.08, z: 1 }
 ];
 function getHomeReferenceBudget() {
   var width = window.innerWidth || 1024;
@@ -2415,21 +2430,43 @@ function shouldReduceHomeMotion() {
 }
 
 var HOME_PARTICLE_SVG = {
-  bud: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 37C19 27 18 18 21 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M20 25C10 24 5 18 8 11c8 0 13 4 12 14Z" fill="currentColor" opacity=".82"/><path d="M21 18c1-9 7-14 14-13 1 8-3 13-14 15Z" fill="currentColor" opacity=".56"/></svg>',
-  leaf: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 37C19 28 20 17 24 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" opacity=".72"/><path d="M23 29C11 28 5 20 8 10c12 0 18 7 15 19Z" fill="currentColor" opacity=".76"/><path d="M22 20C24 10 31 5 37 7c0 10-5 15-15 17Z" fill="currentColor" opacity=".46"/></svg>',
-  petal: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 20C12 17 9 10 13 5c5-2 9 3 9 12Z" fill="currentColor" opacity=".78"/><path d="M20 20C20 11 26 5 32 7c3 4-1 10-9 14Z" fill="currentColor" opacity=".62"/><path d="M20 20C28 17 35 20 36 26c-4 4-10 1-15-4Z" fill="currentColor" opacity=".7"/><path d="M20 20C25 27 23 34 17 36c-5-2-5-9-1-15Z" fill="currentColor" opacity=".58"/><path d="M20 20C14 26 7 25 5 20c2-5 8-6 15-3Z" fill="currentColor" opacity=".66"/><circle cx="20" cy="20" r="2.8" fill="#f7c968" opacity=".9"/></svg>',
+  bud: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 38C20 28 19 18 21 7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".72"/><path d="M20 27C10 25 5 19 8 12c8 0 13 5 13 13Z" fill="currentColor" opacity=".82"/><path d="M21 19c2-8 8-12 14-10 0 7-5 12-14 14Z" fill="currentColor" opacity=".58"/></svg>',
+  budAlt: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 38C20 29 20 19 18 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".72"/><path d="M19 27C11 27 6 22 7 16c7-2 12 2 13 10Z" fill="currentColor" opacity=".86"/><path d="M19 19c-1-7 3-12 9-14 4 6 0 12-8 16Z" fill="currentColor" opacity=".62"/><path d="M20 12c-2-4 0-8 4-10 3 4 1 8-3 11Z" fill="currentColor" opacity=".48"/></svg>',
+  leaf: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 38C20 28 22 17 27 5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".62"/><path d="M24 31C12 29 6 21 9 10c11 0 18 7 15 21Z" fill="currentColor" opacity=".78"/><path d="M22 29 11 12" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity=".34"/></svg>',
+  leafAlt: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M19 39C22 28 26 18 33 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" opacity=".62"/><path d="M24 31C16 28 12 20 15 12c8 0 13 6 11 16Z" fill="currentColor" opacity=".78"/><path d="M24 30 17 14" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity=".34"/><path d="M26 24c4-5 8-6 11-4-1 5-5 8-10 8Z" fill="currentColor" opacity=".48"/></svg>',
+  petal: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 36C12 31 7 23 10 13c2-7 8-10 13-5 7 7 3 19-3 28Z" fill="currentColor" opacity=".78"/><path d="M20 34C18 26 18 18 22 9" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity=".26"/></svg>',
+  petalSoft: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 37C13 31 9 24 11 16c1-6 5-10 10-8 7 3 8 12 3 21-1 3-3 6-4 8Z" fill="currentColor" opacity=".82"/><path d="M20 34c0-8 1-15 5-22" fill="none" stroke="#fff" stroke-width="1" stroke-linecap="round" opacity=".34"/></svg>',
+  petalFlower: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><g fill="currentColor" opacity=".86"><ellipse cx="20" cy="9" rx="5" ry="9"/><ellipse cx="30.5" cy="16" rx="5" ry="9" transform="rotate(72 30.5 16)"/><ellipse cx="27" cy="29" rx="5" ry="9" transform="rotate(144 27 29)"/><ellipse cx="13" cy="29" rx="5" ry="9" transform="rotate(216 13 29)"/><ellipse cx="9.5" cy="16" rx="5" ry="9" transform="rotate(288 9.5 16)"/></g><circle cx="20" cy="20" r="4.2" fill="#F6D98B"/><circle cx="18.7" cy="18.7" r="1.1" fill="#fff" opacity=".75"/></svg>',
+  dew: '<svg viewBox="0 0 40 48" aria-hidden="true" focusable="false"><path d="M20 2C17 9 7 18 7 28c0 10 5.8 17 13 17s13-7 13-17C33 18 23 9 20 2Z" fill="currentColor" opacity=".76" stroke="#fff" stroke-width="1.2" stroke-opacity=".46"/><path d="M20 4C17 11 10 19 10 27c0 7 3.9 12 10 15-3.8-5.4-5.1-10.5-4.6-15.4C15.9 19.8 18.9 12.5 20 4Z" fill="#fff" opacity=".2"/><ellipse cx="15" cy="20" rx="3.5" ry="6" fill="#fff" opacity=".52" transform="rotate(24 15 20)"/></svg>',
   wheat: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 37C20 27 21 17 25 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M22 22c-8-1-11-5-10-9 6-1 10 2 11 8Z" fill="currentColor" opacity=".7"/><path d="M23 17c1-7 5-10 10-9 1 5-2 9-9 11Z" fill="currentColor" opacity=".56"/><path d="M20 29c-7-1-9-5-8-8 5 0 8 3 9 7Z" fill="currentColor" opacity=".62"/></svg>',
+  wheatAlt: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M17 38C18 28 19 18 17 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 11c-6-2-9-6-8-10 6 0 9 3 10 9Z" fill="currentColor" opacity=".78"/><path d="M18 16c6-4 10-3 12 1-3 4-7 5-12 2Z" fill="currentColor" opacity=".64"/><path d="M17 23c-6-3-9-1-10 3 4 3 8 2 10-1Z" fill="currentColor" opacity=".72"/><path d="M17 30c5-3 8-2 10 1-3 3-6 4-10 2Z" fill="currentColor" opacity=".58"/></svg>',
   spark: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 2l3.1 13.9L37 20l-13.9 3.1L20 37l-3.1-13.9L3 20l13.9-4.1Z" fill="currentColor" opacity=".78"/><circle cx="20" cy="20" r="3" fill="#fff" opacity=".7"/></svg>',
+  sparkSoft: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 4c1.8 9.3 6.8 14.2 16 16-9.2 1.8-14.2 6.7-16 16-1.8-9.3-6.8-14.2-16-16C13.2 18.2 18.2 13.3 20 4Z" fill="currentColor" opacity=".72"/><circle cx="20" cy="20" r="4.5" fill="#fff" opacity=".42"/></svg>',
   snow: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M20 3v34M5.3 11.5l29.4 17M5.3 28.5l29.4-17M12 6.5l8 8 8-8M12 33.5l8-8 8 8M3 18l11 2 0 11M37 22l-11-2 0-11"/></g></svg>',
+  snowClassic: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 3v34M5.3 11.5l29.4 17M5.3 28.5l29.4-17"/><path d="m20 9-3 3m3-3 3 3m-9 1 3 3m-3-3-4 1m16-1-3 3m3-3 4 1m-4 11 4-1m-4 1 3 3m-16-3 3-1m-3 1 4 3m6 2-3-3m3 3 3-3"/></g><circle cx="20" cy="20" r="1.6" fill="currentColor"/></svg>',
   snowFeather: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round"><path d="M20 2.5v35M4.8 11.2l30.4 17.6M4.8 28.8l30.4-17.6"/><path d="M20 8l-3.8 3.8M20 8l3.8 3.8M20 14l-5.6 5.6M20 14l5.6 5.6M20 26l-5.6-5.6M20 26l5.6-5.6M20 32l-3.8-3.8M20 32l3.8-3.8"/><path d="M12 15.4l.8 5.1M12 15.4l4.9 1.1M28 15.4l-.8 5.1M28 15.4l-4.9 1.1M12 24.6l.8-5.1M12 24.6l4.9-1.1M28 24.6l-.8-5.1M28 24.6l-4.9-1.1"/></g><circle cx="20" cy="20" r="1.4" fill="currentColor"/></svg>',
   snowIrregular: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M19.6 3.4 20.9 12l-1.4 7.2 1.1 8.2-.8 9.2M5.2 11.4l7.8 4.8 6.3 3.1 7.1 3.9 8.5 4.9M5.8 28.7l8.3-4.5 6-4.1 7.2-3.7 7.3-5"/><path d="M12.4 15.8 12 10.9M12.4 15.8l4.9-1.2M28.1 23.7l4.8 1.2M28.1 23.7l.4 4.9M14.1 24.2l1.2 4.8M14.1 24.2l-4.7-.2M25.5 16.1l-.7-4.8M25.5 16.1l4.6.5"/></g><path d="M19.6 18.7c1.2-.9 2.5-.6 3.1.3-.2 1.2-1.1 2-2.4 1.9-1-.4-1.3-1.2-.7-2.2Z" fill="currentColor" opacity=".72"/></svg>',
   crystal: '<svg viewBox="0 0 40 40" aria-hidden="true" focusable="false"><path d="M20 3 34 12v16L20 37 6 28V12Z" fill="none" stroke="currentColor" stroke-width="1.8" opacity=".82"/><path d="M20 3v34M6 12l28 16M34 12 6 28" fill="none" stroke="currentColor" stroke-width="1.3" opacity=".64"/></svg>'
 };
 
+var HOME_PARTICLE_VARIANT_SETS = {
+  bud: ['bud', 'budAlt'],
+  leaf: ['leaf', 'leafAlt'],
+  petal: ['petalFlower', 'petalSoft'],
+  wheat: ['wheat', 'wheatAlt'],
+  firefly: ['spark', 'sparkSoft'],
+  heat: ['spark', 'sparkSoft']
+};
+
 function getHomeParticleMarkup(config, index) {
   if (!config.svg) return '';
   if (config.type === 'snow' && config.snowVariant === 'feather-irregular') {
-    return HOME_PARTICLE_SVG[index % 2 === 0 ? 'snowFeather' : 'snowIrregular'];
+    var snowShape = index % 3 === 0 ? 'snowClassic' : (index % 2 === 0 ? 'snowFeather' : 'snowIrregular');
+    return HOME_PARTICLE_SVG[snowShape];
+  }
+  var variants = HOME_PARTICLE_VARIANT_SETS[config.type];
+  if (variants && variants.length) {
+    return HOME_PARTICLE_SVG[variants[index % variants.length]];
   }
   return HOME_PARTICLE_SVG[config.svg] || HOME_PARTICLE_SVG.spark;
 }
@@ -2457,8 +2494,8 @@ function spawnHomeReferenceLeaves(colors, termName) {
   var budget = getHomeReferenceBudget();
   var rainScale = config.type === 'rain' ? Math.min(1.3, Math.max(1, (Number(config.count) || 0) / 150)) : 1;
   var maxActive = Math.min(HOME_REFERENCE_LEAF_MAX, Math.round(budget * rainScale));
-  var countScale = config.type === 'rain' || config.type === 'heat' ? 1 : Math.min(1.35, Math.max(0.72, (Number(config.count) || 40) / 40));
-  var baseAmount = config.type === 'rain' ? Math.round(maxActive * 0.92) : Math.round(budget * 0.78);
+  var countScale = config.type === 'rain' || config.type === 'heat' ? 1 : Math.min(1.35, Math.max(0.95, (Number(config.count) || 40) / 40));
+  var baseAmount = config.type === 'rain' ? Math.round(maxActive * 0.92) : Math.round(budget * 0.9);
   var targetAmount = config.type === 'heat' ? Math.min(maxActive, Math.max(8, Number(config.count) || 18)) : Math.max(8, Math.round(baseAmount * profile.density * countScale));
   var amount = Math.min(maxActive, targetAmount);
   if (config.type === 'sun' || config.type === 'heat') {
@@ -2511,11 +2548,19 @@ function spawnHomeReferenceLeaves(colors, termName) {
     leaf.className = 'home-reference-fall-item' + typeClass + depthClass;
     leaf.style.setProperty('--reference-depth-z', String(depthProfile.z));
     leaf.style.setProperty('--reference-depth-blur', depthProfile.blur + 'px');
-    var baseSize = config.type === 'rain' ? 18 + rainDepth * 28 : 16 + Math.random() * 22;
+    var baseSize = config.type === 'rain'
+      ? 18 + rainDepth * 28
+      : config.type === 'petal'
+      ? 22 + Math.random() * 14
+      : 16 + Math.random() * 22;
     leaf.style.setProperty('--reference-leaf-size', (baseSize * profile.size * depthProfile.size) + 'px');
     leaf.style.setProperty('--reference-leaf-color', colors[index % colors.length]);
-    var opacityBase = config.type === 'rain' ? 0.42 + rainDepth * 0.34 + Math.random() * 0.16 : 0.58 + Math.random() * 0.3;
-    leaf.style.setProperty('--reference-leaf-opacity', Math.min(0.95, opacityBase * profile.opacity * depthProfile.opacity).toFixed(2));
+    var opacityBase = config.type === 'rain'
+      ? 0.42 + rainDepth * 0.34 + Math.random() * 0.16
+      : config.type === 'petal'
+      ? 0.82 + Math.random() * 0.16
+      : 0.7 + Math.random() * 0.26;
+    leaf.style.setProperty('--reference-leaf-opacity', Math.min(1, opacityBase * profile.opacity * depthProfile.opacity).toFixed(2));
     var durationSeconds = speed * depthProfile.speed * (config.type === 'rain' ? (1.12 - rainDepth * 0.32) : (0.7 + Math.random() * 0.6));
     leaf.style.setProperty('--reference-leaf-duration', durationSeconds + 's');
     leaf.style.setProperty('--reference-leaf-delay', (-Math.random() * durationSeconds).toFixed(2) + 's');
@@ -2574,30 +2619,8 @@ function homeColorContrast(first, second) {
   return (Math.max(firstLum, secondLum) + 0.05) / (Math.min(firstLum, secondLum) + 0.05);
 }
 
-function homeMinimumContrast(color, backgrounds) {
-  var minimum = Infinity;
-  for (var index = 0; index < backgrounds.length; index++) {
-    minimum = Math.min(minimum, homeColorContrast(color, backgrounds[index]));
-  }
-  return minimum;
-}
-
 function getHomeParticleColors(name, colors) {
-  var effect = HOME_TERM_EFFECTS[name];
   var base = (HOME_TERM_EFFECT_COLORS[name] || colors.slice(1, 4).map(function(color) { return color.hex; })).slice();
-  if (!colors[4] || (effect && effect.type === 'snow')) return base;
-  var backgrounds = [colors[0].hex];
-  var blend = getHomeBlend(name);
-  if (blend) {
-    backgrounds.push(blend.first.hex, blend.second.hex);
-  }
-  var weakestIndex = 0;
-  for (var index = 1; index < base.length; index++) {
-    if (homeMinimumContrast(base[index], backgrounds) < homeMinimumContrast(base[weakestIndex], backgrounds)) weakestIndex = index;
-  }
-  if (homeMinimumContrast(base[weakestIndex], backgrounds) < 2.2 && homeMinimumContrast(colors[4].hex, backgrounds) > homeMinimumContrast(base[weakestIndex], backgrounds)) {
-    base[weakestIndex] = colors[4].hex;
-  }
   return base;
 }
 
