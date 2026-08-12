@@ -723,12 +723,16 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .gallery-inspector-facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:20px; padding-top:0; border-top:0; }
 .gallery-inspector-facts div { display:flex; flex-direction:column; gap:5px; min-width:0; }
 .gallery-inspector-facts span,.gallery-note-label { color:#93857d; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; }
-.gallery-inspector-facts strong { overflow:hidden; color:#4d443e; font-family:'SF Mono','Consolas',monospace; font-size:.9rem; font-weight:600; text-overflow:ellipsis; white-space:nowrap; }
+.gallery-inspector-facts strong { min-width:0; overflow:visible; color:#4d443e; font-family:'SF Mono','Consolas',monospace; font-size:.78rem; font-weight:600; line-height:1.4; white-space:normal; word-break:keep-all; }
 .gallery-inspector-notes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:24px; }
 .gallery-inspector-note { padding:14px; border-radius:13px; background:rgba(255,255,255,.43); }
 .gallery-inspector-note p { margin:7px 0 0; color:#685e58; font-size:.76rem; line-height:1.65; }
 .gallery-inspector-blend { margin-top:24px; padding:10px 0 0; border-radius:0; background:transparent; }
+.gallery-inspector-blend-heading { display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .gallery-inspector-blend .gallery-note-label { display:block; }
+.gallery-blend-reset { min-height:25px; padding:3px 10px; border:1px solid rgba(0,0,0,.12); border-radius:7px; background:rgba(255,255,255,.58); color:#71665e; font:inherit; font-size:.62rem; cursor:pointer; transition:background-color .2s ease,color .2s ease,opacity .2s ease; }
+.gallery-blend-reset:hover { background:#4e4742; color:#fff; }
+.gallery-blend-reset[hidden] { display:none; }
 .gallery-harmony-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:10px; }
 .gallery-harmony-item { display:grid; grid-template-columns:42px minmax(0,1fr); gap:8px; align-items:center; min-width:0; padding:7px; border:1px solid rgba(0,0,0,.08); border-radius:10px; background:rgba(255,255,255,.5); }
 .gallery-harmony-swatch { width:42px; height:42px; border:0; border-radius:8px; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,.35); }
@@ -756,12 +760,16 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .gallery-inspector-main:-webkit-full-screen .gallery-inspector-swatch { border-radius:0; }
 .gallery-inspector-main:-webkit-full-screen .gallery-inspector-fullscreen { top:22px; right:22px; }
 .gallery-inspector-main .gallery-inspector-swatch { position:absolute; inset:0; width:100%; min-height:0; border:0; border-radius:18px; box-shadow:none; }
-.gallery-inspector-main .gallery-inspector-heading { position:absolute; right:22px; bottom:22px; z-index:1; width:min(52%,420px); padding:16px 18px; border:0; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; text-shadow:0 2px 10px rgba(255,255,255,.88),0 1px 3px rgba(0,0,0,.28); }
+.gallery-inspector-main .gallery-inspector-heading { position:absolute; right:22px; bottom:22px; z-index:1; width:min(52%,420px); padding:16px 18px; border:0; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; color:var(--gallery-ink,#2f2925); text-shadow:0 2px 10px rgba(255,255,255,.88),0 1px 3px rgba(0,0,0,.28); }
+.gallery-inspector-main .gallery-inspector-season,
+.gallery-inspector-main .gallery-inspector-heading h3,
+.gallery-inspector-main .gallery-inspector-hex,
+.gallery-inspector-main .gallery-inspector-hint { color:var(--gallery-ink,#2f2925); }
 .gallery-inspector-main[data-tone="dark"] .gallery-inspector-heading { color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.78),0 1px 3px rgba(0,0,0,.9); }
 .gallery-inspector-main[data-tone="dark"] .gallery-inspector-season,
 .gallery-inspector-main[data-tone="dark"] .gallery-inspector-heading h3,
 .gallery-inspector-main[data-tone="dark"] .gallery-inspector-hex,
-.gallery-inspector-main[data-tone="dark"] .gallery-inspector-hint { color:#fff; }
+.gallery-inspector-main[data-tone="dark"] .gallery-inspector-hint { color:var(--gallery-ink,#fff); }
 .gallery-inspector-main[data-tone="dark"] .gallery-inspector-hex-btn[data-copied="true"] { color:#d8f4df; }
 /* 色卡文字可读性：色块保持原色，文字统一放在高对比表面上 */
 .gallery-color-list-card { gap:5px; padding:6px; }
@@ -769,9 +777,9 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .gallery-color-list-name { color:#2f2925; font-size:.8rem; font-weight:700; line-height:1.3; }
 .gallery-color-list-meta { color:#5f554e; font-size:.66rem; line-height:1.35; }
 .gallery-color-list-meta span:last-child { color:#4c423b; font-weight:600; }
-.solar-label { display:inline-block; padding:2px 7px; border-radius:999px; background:rgba(255,255,255,.62); color:#302822 !important; font-size:.74rem; font-weight:700; text-shadow:0 1px 1px rgba(255,255,255,.35); }
+.solar-label { display:inline-block; padding:2px 7px; border-radius:999px; background:rgba(255,255,255,.62); color:var(--label-ink,#302822) !important; font-size:.74rem; font-weight:700; text-shadow:0 1px 1px rgba(255,255,255,.35); }
 .solar-card-name { padding:3px 7px; border-radius:7px; background:rgba(0,0,0,.22); text-shadow:0 1px 3px rgba(0,0,0,.55); }
-.pal-card-name { display:inline-block; padding:2px 7px; border-radius:999px; background:rgba(0,0,0,.22); text-shadow:0 1px 3px rgba(0,0,0,.55); }
+.pal-card-name { display:inline-block; padding:2px 7px; border-radius:999px; background:rgba(255,255,255,.62); color:var(--label-ink,#302822) !important; font-size:.74rem; font-weight:700; line-height:1.2; text-shadow:0 1px 1px rgba(255,255,255,.35); }
 .palette-row-name { color:#2f2925; font-size:.88rem; font-weight:700; }
 .palette-row-hex { color:#5d534c; font-size:.75rem; font-weight:600; }
 .gallery-search { display:flex; align-items:center; gap:8px; min-width:0; color:#555; font-size:.78rem; font-weight:600; }
@@ -1292,7 +1300,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .pal-card:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.2); }
 .pal-card-blend { display: block; width: 100%; padding: 0; border: 0; background: transparent; color: inherit; cursor: pointer; font: inherit; text-align: left; }
 .pal-card-blend:focus-visible, .pal-c:focus-visible, .pal-x:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
-.pal-card-name { font-size: 0.82rem; color: rgba(255,255,255,0.95); margin-bottom: 7px; font-weight: 700; text-shadow: none; }
+.pal-card-name { display:inline-block; padding:2px 7px; border-radius:999px; background:rgba(255,255,255,.62); color:var(--label-ink,#302822) !important; font-size:.74rem; line-height:1.2; margin-bottom:7px; font-weight:700; text-shadow:0 1px 1px rgba(255,255,255,.35); }
 .pal-card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
 .pal-c {
   aspect-ratio: 1 / 1; border-radius: 6px; cursor: pointer;
@@ -1673,7 +1681,10 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
             </div>
           </div>
           <div class="gallery-inspector-blend">
-            <span class="gallery-note-label">推荐搭配</span>
+            <div class="gallery-inspector-blend-heading">
+              <span class="gallery-note-label">推荐搭配</span>
+              <button type="button" class="gallery-blend-reset" id="galleryBlendReset" onclick="resetGalleryHarmony()" hidden>还原</button>
+            </div>
             <div class="gallery-harmony-list" id="galleryHarmonyList"></div>
           </div>
         </section>
@@ -2399,7 +2410,7 @@ function renderPalAllColors() {
     if (!blend) continue;
     var blendBg = blend.gradient;
     var labelColor = getReadableTextColor(blend.first.hex);
-    html += '<div class="pal-card" style="background:' + blendBg + '"><button type="button" class="pal-card-blend" title="应用 ' + name + ' 混色并切换节气动效" aria-label="应用 ' + name + ' 混色并切换节气动效" onclick="applySolarTermPalette(\'' + name + '\')"><div class="pal-card-name" style="color:' + labelColor + '">' + name + '</div></button><div class="pal-card-grid">';
+    html += '<div class="pal-card" style="--label-ink:' + labelColor + ';background:' + blendBg + '"><button type="button" class="pal-card-blend" title="应用 ' + name + ' 混色并切换节气动效" aria-label="应用 ' + name + ' 混色并切换节气动效" onclick="applySolarTermPalette(\'' + name + '\')"><div class="pal-card-name">' + name + '</div></button><div class="pal-card-grid">';
     for (var j = 0; j < colors.length; j++) {
       var c = colors[j];
       var isSelected = selectedPaletteColors.some(function(selected) { return selected.hex === c.hex; });
@@ -3863,6 +3874,13 @@ function applyGalleryHarmony(first, second) {
   renderGalleryInspector(gallerySelectedColor);
 }
 
+function resetGalleryHarmony() {
+  if (!gallerySelectedColor) return;
+  galleryBlendPreview = null;
+  setPageBackground(gallerySelectedColor.hex);
+  renderGalleryInspector(gallerySelectedColor);
+}
+
 function renderGalleryHarmony(record) {
   var list = document.getElementById('galleryHarmonyList');
   if (!list) return;
@@ -3901,8 +3919,10 @@ function renderGalleryInspector(record) {
   var descEl = document.getElementById('galleryDetailDescription');
   var usageEl = document.getElementById('galleryDetailUsage');
   var originEl = document.getElementById('galleryDetailOrigin');
+  var resetBlendButton = document.getElementById('galleryBlendReset');
   if (!record) {
-    if (main) main.removeAttribute('data-tone');
+    if (resetBlendButton) resetBlendButton.hidden = true;
+    if (main) { main.removeAttribute('data-tone'); main.style.removeProperty('--gallery-ink'); }
     if (swatch) swatch.style.background = 'linear-gradient(135deg,#eee,#ddd)';
     if (season) season.textContent = '';
     if (title) title.textContent = '选择一个颜色';
@@ -3917,9 +3937,13 @@ function renderGalleryInspector(record) {
     return;
   }
   var rgb = hexToRgbForGallery(record.hex), hsl = rgbToHslForGallery(rgb);
+  if (resetBlendButton) resetBlendButton.hidden = !galleryBlendPreview;
   var visualHex = galleryBlendPreview ? galleryBlendPreview.first.hex : record.hex;
   var textColor = getReadableTextColor(visualHex);
-  if (main) main.setAttribute('data-tone', textColor === '#f8f7f4' ? 'dark' : 'light');
+  if (main) {
+    main.setAttribute('data-tone', textColor === '#f8f7f4' ? 'dark' : 'light');
+    main.style.setProperty('--gallery-ink', textColor);
+  }
   if (swatch) swatch.style.background = galleryBlendPreview ? galleryBlendPreview.gradient : record.hex;
   if (season) season.textContent = record.season + ' · ' + record.term;
   if (title) title.textContent = record.name;
@@ -4588,7 +4612,7 @@ function renderSolarHome() {
       var blend = getHomeBlend(name); if (!blend) continue;
       var blendBg = blend.gradient;
       var labelColor = getReadableTextColor(blend.first.hex);
-      html += '<article class="solar-group" style="background:' + blendBg + ';border:none;"><button type="button" class="solar-blend" aria-label="应用' + name + '混色背景并切换节气动效" onclick="applyHomeSolarEffect(\'' + name + '\')"><span class="solar-label" style="color:' + labelColor + '">' + name + '</span></button><div class="solar-dots">';
+      html += '<article class="solar-group" style="--label-ink:' + labelColor + ';background:' + blendBg + ';border:none;"><button type="button" class="solar-blend" aria-label="应用' + name + '混色背景并切换节气动效" onclick="applyHomeSolarEffect(\'' + name + '\')"><span class="solar-label">' + name + '</span></button><div class="solar-dots">';
       for (var c = 0; c < colors.length; c++) {
         html += '<button type="button" class="solar-dot" style="background:' + colors[c].hex + '" title="应用 ' + colors[c].name + ' ' + colors[c].hex + '" aria-label="应用 ' + colors[c].name + ' ' + colors[c].hex + '" onclick="event.stopPropagation();setHomeBackground(\'' + colors[c].hex + '\',\'' + colors[c].hex + '\')"></button>';
       }
