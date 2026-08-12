@@ -641,6 +641,228 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   font-weight: 500; color: #555;
 }
 .gallery-index-btn:hover { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.25); }
+.gallery-browser-tools { display:grid; grid-template-columns:minmax(220px,1.4fr) auto minmax(150px,.7fr) auto auto; gap:10px; align-items:center; margin:0 0 1.5rem; padding:12px 14px; border:1px solid rgba(0,0,0,.07); border-radius:16px; background:rgba(255,255,255,.58); box-shadow:0 6px 18px rgba(42,34,38,.06); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
+.gallery-browser-layout { display:grid; grid-template-columns:minmax(360px,42%) minmax(0,1fr); gap:28px; align-items:start; }
+.gallery-filter-sidebar { position:sticky; top:84px; height:calc(100vh - 112px); max-height:none; overflow:hidden; display:flex; flex-direction:column; padding:18px; border:1px solid rgba(0,0,0,.08); border-radius:18px; background:rgba(255,255,255,.66); box-shadow:0 8px 24px rgba(42,34,38,.07); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); scrollbar-width:thin; }
+.gallery-sidebar-title { color:#39332f; font-size:.95rem; font-weight:700; letter-spacing:.04em; }
+.gallery-sidebar-title-row { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.gallery-sidebar-title-actions { display:flex; align-items:center; gap:5px; flex:0 0 auto; }
+.gallery-sidebar-title-actions .gallery-color-nav-btn { width:28px; min-height:30px; }
+.gallery-sidebar-title-row .gallery-color-nav-random { min-height:34px; padding:7px 24px; border-radius:8px; font-size:.74rem; }
+.gallery-sidebar-section { margin-top:17px; }
+.gallery-sidebar-label { margin-bottom:7px; color:#81766f; font-size:.68rem; font-weight:700; letter-spacing:.08em; }
+.gallery-filter-sidebar .gallery-search { display:block; margin-top:12px; }
+.gallery-filter-sidebar .gallery-search span { display:block; margin-bottom:6px; color:#81766f; font-size:.68rem; font-weight:700; letter-spacing:.08em; }
+.gallery-filter-sidebar .gallery-search input { box-sizing:border-box; padding:9px 10px; }
+.gallery-search-row { display:grid; grid-template-columns:110px minmax(0,1fr); gap:8px; align-items:end; margin-top:12px; }
+.gallery-term-filter-compact { display:flex; flex-direction:column; gap:6px; min-width:0; }
+.gallery-term-filter-compact > span { color:#81766f; font-size:.68rem; font-weight:700; letter-spacing:.08em; }
+.gallery-search-row .gallery-search { display:flex; flex-direction:column; align-items:stretch; gap:6px; min-width:0; margin-top:0; }
+.gallery-search-row .gallery-search span { margin-bottom:0; }
+.gallery-color-nav { display:none; }
+.gallery-color-nav-btn,
+.gallery-color-nav-random { min-height:32px; border:1px solid rgba(0,0,0,.13); border-radius:8px; background:rgba(255,255,255,.62); color:#555; font:inherit; cursor:pointer; transition:background-color .2s ease,color .2s ease,transform .2s ease; }
+.gallery-color-nav-btn { font-size:1.25rem; line-height:1; }
+.gallery-color-nav-random { font-size:.7rem; }
+.gallery-color-nav-btn:hover,.gallery-color-nav-random:hover { background:#4e4742; color:#fff; }
+.gallery-color-nav-btn:active,.gallery-color-nav-random:active { transform:scale(.97); }
+.gallery-filter-sidebar .gallery-filter-group { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; }
+.gallery-filter-sidebar .gallery-filter-btn { width:100%; padding:7px 2px; border-radius:9px; font-size:.68rem; }
+.gallery-season-row { display:block; }
+.gallery-season-row .gallery-filter-group { grid-template-columns:repeat(6,minmax(0,1fr)); }
+.gallery-season-row .gallery-reset-btn { width:100%; margin:0; padding:7px 2px; border:1px solid rgba(0,0,0,.13); border-radius:9px; background:rgba(255,255,255,.62); color:#555; font-size:.68rem; }
+.gallery-season-row .gallery-reset-btn:hover { background:#4e4742; border-color:#4e4742; color:#fff; }
+.gallery-term-list { display:flex; flex-direction:column; gap:4px; }
+.gallery-term-btn { width:100%; padding:8px 9px; border:1px solid transparent; border-radius:9px; background:rgba(255,255,255,.44); color:#5b524d; font:inherit; font-size:.74rem; text-align:left; cursor:pointer; transition:background-color .2s ease,color .2s ease,border-color .2s ease,transform .2s ease; }
+.gallery-term-btn:hover { border-color:rgba(78,71,66,.16); background:rgba(255,255,255,.8); transform:translateX(2px); }
+.gallery-term-btn[aria-current="true"] { border-color:rgba(78,71,66,.35); background:#4e4742; color:#fff; box-shadow:0 4px 9px rgba(42,34,38,.12); }
+.gallery-term-btn span { display:block; }
+.gallery-term-btn small { display:block; margin-top:2px; color:inherit; opacity:.65; font-size:.6rem; }
+.gallery-term-list-empty { padding:10px 4px; color:#8b817a; font-size:.7rem; text-align:center; }
+.gallery-reset-btn { width:100%; margin-top:16px; }
+.gallery-filter-sidebar .gallery-result-count { display:block; margin-top:9px; text-align:center; line-height:1.45; white-space:normal; }
+.gallery-browser-content { min-width:0; }
+.gallery-browser-content .gallery-color-detail { margin-top:0; }
+.solar-gallery-selected-term .solar-color-term-card { max-width:760px; }
+.gallery-sidebar-subtitle { margin-top:5px; color:#918680; font-size:.66rem; line-height:1.45; }
+.gallery-term-select { width:100%; box-sizing:border-box; padding:9px 10px; border:1px solid rgba(0,0,0,.13); border-radius:9px; background:rgba(255,255,255,.78); color:#4f4742; font:inherit; font-size:.74rem; outline:none; }
+.gallery-term-select:focus { border-color:rgba(78,71,66,.45); box-shadow:0 0 0 3px rgba(78,71,66,.1); }
+.gallery-sidebar-list-heading { display:flex; align-items:baseline; justify-content:space-between; gap:8px; margin-top:18px; margin-bottom:7px; color:#81766f; font-size:.68rem; font-weight:700; letter-spacing:.08em; }
+.gallery-sidebar-list-heading .gallery-result-count { margin:0; color:#918680; font-size:.62rem; font-weight:500; letter-spacing:0; }
+.gallery-color-list { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; flex:1 1 auto; min-height:0; max-height:none; overflow-y:auto; padding:2px 4px 4px 0; scrollbar-width:thin; }
+.gallery-color-list-empty { grid-column:1/-1; padding:28px 12px; border:1px dashed rgba(0,0,0,.15); border-radius:12px; color:#8b817a; font-size:.72rem; line-height:1.5; text-align:center; }
+.gallery-color-list-card { display:flex; min-width:0; aspect-ratio:1; flex-direction:column; gap:5px; padding:6px; border:1px solid transparent; border-radius:9px; background:rgba(255,255,255,.48); color:#4a4541; font:inherit; text-align:left; cursor:pointer; transition:transform .2s ease,border-color .2s ease,background-color .2s ease,box-shadow .2s ease; }
+.gallery-color-list-card:hover,.gallery-color-list-card:focus-visible { transform:translateY(-1px); border-color:rgba(78,71,66,.2); background:#fff; box-shadow:0 5px 12px rgba(42,34,38,.09); outline:none; }
+.gallery-color-list-card[aria-selected="true"] { border-color:rgba(78,71,66,.45); background:#fff; box-shadow:0 0 0 2px rgba(78,71,66,.12),0 5px 12px rgba(42,34,38,.09); }
+.gallery-color-list-swatch { position:relative; display:flex; width:100%; aspect-ratio:1.35; height:auto; align-items:flex-end; border-radius:6px; border:1px solid rgba(0,0,0,.1); box-shadow:inset 0 1px 0 rgba(255,255,255,.3); overflow:hidden; }
+.gallery-color-list-swatch-name { width:100%; padding:7px 7px 6px; color:var(--swatch-ink,#2f2925); font-size:.82rem; font-weight:800; line-height:1.2; text-shadow:0 1px 3px rgba(255,255,255,.45),0 1px 2px rgba(0,0,0,.18); }
+.gallery-color-list-card[data-tone="dark"] .gallery-color-list-swatch-name { text-shadow:0 1px 4px rgba(0,0,0,.65),0 1px 2px rgba(0,0,0,.4); }
+.gallery-color-list-copy { display:flex; align-items:center; justify-content:space-between; gap:6px; min-width:0; }
+.gallery-color-list-index { flex:0 0 auto; color:#766b64; font-family:'SF Mono','Consolas',monospace; font-size:.58rem; font-weight:700; }
+.gallery-color-list-name { display:none; }
+.gallery-color-list-meta { display:flex; flex:1 1 auto; justify-content:space-between; gap:5px; color:#8a7e76; font-size:.57rem; line-height:1.2; }
+.gallery-color-list-meta span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.gallery-color-list-meta span:last-child { font-family:'SF Mono','Consolas',monospace; }
+.gallery-color-inspector { min-height:calc(100vh - 180px); padding:26px; border:1px solid rgba(255,255,255,.55); border-radius:22px; background:linear-gradient(145deg,rgba(255,255,255,.72),rgba(255,255,255,.42)); box-shadow:0 14px 36px rgba(42,34,38,.1); backdrop-filter:blur(15px); -webkit-backdrop-filter:blur(15px); }
+.gallery-inspector-kicker { color:#8b7d74; font-size:.7rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+.gallery-inspector-main { display:grid; grid-template-columns:minmax(240px,45%) minmax(0,1fr); gap:24px; align-items:center; margin-top:18px; }
+.gallery-inspector-swatch { min-height:300px; border-radius:18px; border:1px solid rgba(0,0,0,.1); background:linear-gradient(135deg,#eee,#ddd); box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 16px 34px rgba(42,34,38,.12); transition:background .35s ease,box-shadow .35s ease; }
+.gallery-inspector-heading { min-width:0; }
+.gallery-inspector-season { color:#9a8c83; font-size:.72rem; letter-spacing:.12em; }
+.gallery-inspector-heading h3 { margin:10px 0 8px; color:#2f2925; font-size:clamp(2.4rem,5vw,4.4rem); font-weight:600; letter-spacing:.05em; line-height:1.05; }
+.gallery-inspector-hex { color:#655a53; font-family:'SF Mono','Consolas',monospace; font-size:1.28rem; letter-spacing:.08em; }
+.gallery-inspector-hex-btn { display:inline-block; padding:0; border:0; background:transparent; cursor:pointer; text-align:left; }
+.gallery-inspector-hex-btn { text-decoration:underline; text-decoration-thickness:2px; text-underline-offset:5px; }
+.gallery-inspector-hex-btn:hover { color:#2f2925; text-decoration-thickness:3px; }
+.gallery-inspector-hex-btn[data-copied="true"] { color:#3e7a55; }
+.gallery-inspector-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:24px; }
+.gallery-inspector-actions button { min-height:38px; padding:8px 13px; border:1px solid rgba(0,0,0,.13); border-radius:9px; background:rgba(255,255,255,.72); color:#514943; font:inherit; font-size:.72rem; cursor:pointer; transition:background-color .2s ease,color .2s ease,transform .2s ease; }
+.gallery-inspector-hint { align-self:center; color:#81756d; font-size:.68rem; }
+.gallery-inspector-actions button:hover { background:#4e4742; color:#fff; }
+.gallery-inspector-actions button:active { transform:scale(.97); }
+.gallery-inspector-facts { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:20px; padding-top:0; border-top:0; }
+.gallery-inspector-facts div { display:flex; flex-direction:column; gap:5px; min-width:0; }
+.gallery-inspector-facts span,.gallery-note-label { color:#93857d; font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; }
+.gallery-inspector-facts strong { overflow:hidden; color:#4d443e; font-family:'SF Mono','Consolas',monospace; font-size:.9rem; font-weight:600; text-overflow:ellipsis; white-space:nowrap; }
+.gallery-inspector-notes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:24px; }
+.gallery-inspector-note { padding:14px; border-radius:13px; background:rgba(255,255,255,.43); }
+.gallery-inspector-note p { margin:7px 0 0; color:#685e58; font-size:.76rem; line-height:1.65; }
+.gallery-inspector-blend { margin-top:24px; padding:10px 0 0; border-radius:0; background:transparent; }
+.gallery-inspector-blend .gallery-note-label { display:block; }
+.gallery-harmony-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:10px; }
+.gallery-harmony-item { display:grid; grid-template-columns:42px minmax(0,1fr); gap:8px; align-items:center; min-width:0; padding:7px; border:1px solid rgba(0,0,0,.08); border-radius:10px; background:rgba(255,255,255,.5); }
+.gallery-harmony-swatch { width:42px; height:42px; border:0; border-radius:8px; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,.35); }
+.gallery-harmony-name { overflow:hidden; color:#4d443e; font-size:.72rem; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+.gallery-harmony-hex { display:block; margin-top:2px; color:#81756d; font-family:'SF Mono','Consolas',monospace; font-size:.61rem; }
+.gallery-harmony-mix { grid-column:1/-1; width:100%; padding:5px 6px; border:1px solid rgba(0,0,0,.1); border-radius:7px; background:rgba(255,255,255,.72); color:#62574f; font:inherit; font-size:.62rem; cursor:pointer; }
+.gallery-harmony-mix:hover { background:#4e4742; color:#fff; }
+.gallery-inspector-origin { margin-top:0; padding:12px 13px; border-left:3px solid rgba(78,71,66,.28); background:rgba(255,255,255,.32); }
+.gallery-inspector-notes .gallery-inspector-origin { width:auto; margin-left:0; }
+.gallery-inspector-origin p { margin:7px 0 0; color:#685e58; font-size:.76rem; line-height:1.65; }
+/* 详情内容向右收拢，给色块预览保留更宽的呼吸空间 */
+.gallery-inspector-kicker,
+.gallery-inspector-facts,
+.gallery-inspector-notes,
+.gallery-inspector-blend,
+.gallery-inspector-origin { width:100%; margin-left:0; }
+.gallery-inspector-main { position:relative; width:100%; min-height:380px; margin:18px 0 0; display:block; overflow:hidden; border-radius:18px; }
+.gallery-inspector-fullscreen { position:absolute; top:14px; right:14px; z-index:3; min-height:34px; padding:7px 14px; border:1px solid rgba(255,255,255,.7); border-radius:9px; background:rgba(255,255,255,.72); color:#4e4742; font:inherit; font-size:.7rem; cursor:pointer; box-shadow:0 4px 12px rgba(42,34,38,.12); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); transition:background-color .2s ease,color .2s ease,transform .2s ease; }
+.gallery-inspector-fullscreen:hover { background:#4e4742; color:#fff; }
+.gallery-inspector-fullscreen:active { transform:scale(.97); }
+.gallery-inspector-main:fullscreen { width:100vw; height:100vh; min-height:100vh; margin:0; border-radius:0; background:#dfe9e4; }
+.gallery-inspector-main:fullscreen .gallery-inspector-swatch { border-radius:0; }
+.gallery-inspector-main:fullscreen .gallery-inspector-fullscreen { top:22px; right:22px; }
+.gallery-inspector-main:-webkit-full-screen { width:100vw; height:100vh; min-height:100vh; margin:0; border-radius:0; background:#dfe9e4; }
+.gallery-inspector-main:-webkit-full-screen .gallery-inspector-swatch { border-radius:0; }
+.gallery-inspector-main:-webkit-full-screen .gallery-inspector-fullscreen { top:22px; right:22px; }
+.gallery-inspector-main .gallery-inspector-swatch { position:absolute; inset:0; width:100%; min-height:0; border:0; border-radius:18px; box-shadow:none; }
+.gallery-inspector-main .gallery-inspector-heading { position:absolute; right:22px; bottom:22px; z-index:1; width:min(52%,420px); padding:16px 18px; border:0; border-radius:0; background:transparent; box-shadow:none; backdrop-filter:none; -webkit-backdrop-filter:none; text-shadow:0 2px 10px rgba(255,255,255,.88),0 1px 3px rgba(0,0,0,.28); }
+.gallery-inspector-main[data-tone="dark"] .gallery-inspector-heading { color:#fff; text-shadow:0 2px 12px rgba(0,0,0,.78),0 1px 3px rgba(0,0,0,.9); }
+.gallery-inspector-main[data-tone="dark"] .gallery-inspector-season,
+.gallery-inspector-main[data-tone="dark"] .gallery-inspector-heading h3,
+.gallery-inspector-main[data-tone="dark"] .gallery-inspector-hex,
+.gallery-inspector-main[data-tone="dark"] .gallery-inspector-hint { color:#fff; }
+.gallery-inspector-main[data-tone="dark"] .gallery-inspector-hex-btn[data-copied="true"] { color:#d8f4df; }
+/* 色卡文字可读性：色块保持原色，文字统一放在高对比表面上 */
+.gallery-color-list-card { gap:5px; padding:6px; }
+.gallery-color-list-swatch { height:auto; }
+.gallery-color-list-name { color:#2f2925; font-size:.8rem; font-weight:700; line-height:1.3; }
+.gallery-color-list-meta { color:#5f554e; font-size:.66rem; line-height:1.35; }
+.gallery-color-list-meta span:last-child { color:#4c423b; font-weight:600; }
+.solar-label { display:inline-block; padding:2px 7px; border-radius:999px; background:rgba(255,255,255,.62); color:#302822 !important; font-size:.74rem; font-weight:700; text-shadow:0 1px 1px rgba(255,255,255,.35); }
+.solar-card-name { padding:3px 7px; border-radius:7px; background:rgba(0,0,0,.22); text-shadow:0 1px 3px rgba(0,0,0,.55); }
+.pal-card-name { display:inline-block; padding:2px 7px; border-radius:999px; background:rgba(0,0,0,.22); text-shadow:0 1px 3px rgba(0,0,0,.55); }
+.palette-row-name { color:#2f2925; font-size:.88rem; font-weight:700; }
+.palette-row-hex { color:#5d534c; font-size:.75rem; font-weight:600; }
+.gallery-search { display:flex; align-items:center; gap:8px; min-width:0; color:#555; font-size:.78rem; font-weight:600; }
+.gallery-search input { width:100%; min-width:0; border:1px solid rgba(0,0,0,.13); border-radius:10px; padding:9px 12px; background:rgba(255,255,255,.78); color:#27272a; font:inherit; outline:none; transition:border-color .2s ease,box-shadow .2s ease,background-color .2s ease; }
+.gallery-search input:focus { border-color:rgba(92,78,68,.45); box-shadow:0 0 0 3px rgba(92,78,68,.1); background:#fff; }
+.gallery-filter-group { display:flex; gap:4px; flex-wrap:wrap; }
+.gallery-filter-btn,.gallery-reset-btn { border:1px solid rgba(0,0,0,.13); border-radius:999px; padding:7px 11px; background:rgba(255,255,255,.62); color:#555; font:inherit; font-size:.74rem; cursor:pointer; transition:background-color .2s ease,color .2s ease,border-color .2s ease,transform .2s ease; }
+.gallery-filter-btn:hover,.gallery-filter-btn.active { background:#4e4742; border-color:#4e4742; color:#fff; }
+.gallery-filter-btn:active,.gallery-reset-btn:active { transform:scale(.97); }
+.gallery-term-filter { display:flex; align-items:center; gap:6px; color:#555; font-size:.74rem; font-weight:600; white-space:nowrap; }
+.gallery-term-filter select { min-width:112px; border:1px solid rgba(0,0,0,.13); border-radius:9px; padding:8px 9px; background:rgba(255,255,255,.78); color:#333; font:inherit; font-size:.74rem; }
+.gallery-reset-btn { border-radius:9px; }
+.gallery-result-count { color:#777; font-size:.72rem; white-space:nowrap; }
+.gallery-color-detail { display:flex; align-items:center; gap:11px; margin:-.35rem 0 1.25rem; padding:10px 12px; border:1px solid rgba(0,0,0,.08); border-radius:13px; background:rgba(255,255,255,.74); box-shadow:0 5px 16px rgba(42,34,38,.06); }
+.gallery-color-detail[hidden] { display:none; }
+.gallery-detail-swatch { width:42px; height:32px; flex:0 0 auto; border-radius:9px; border:1px solid rgba(0,0,0,.12); box-shadow:inset 0 1px 0 rgba(255,255,255,.3); }
+.gallery-detail-copy { display:flex; flex-direction:column; gap:2px; min-width:0; }
+.gallery-detail-copy strong { color:#333; font-size:.86rem; }
+.gallery-detail-copy span { color:#777; font-size:.7rem; }
+.gallery-detail-copy-btn,.gallery-detail-close { border:1px solid rgba(0,0,0,.12); border-radius:8px; padding:6px 10px; background:rgba(255,255,255,.72); color:#555; font:inherit; font-size:.72rem; cursor:pointer; }
+.gallery-detail-copy-btn { margin-left:auto; }
+.gallery-detail-close { font-size:1rem; line-height:1; padding:6px 9px; }
+.gallery-detail-copy-btn:hover,.gallery-detail-close:hover { background:#fff; }
+.solar-section-empty { padding:2rem 1rem; border:1px dashed rgba(0,0,0,.16); border-radius:15px; color:#777; text-align:center; font-size:.82rem; }
+.solar-gallery-section-title { display:flex; align-items:baseline; gap:9px; margin:2.1rem 0 .8rem; }
+.solar-gallery-section-title h3 { margin:0; color:#333; font-size:1.1rem; font-weight:700; }
+.solar-gallery-section-title span { color:#888; font-size:.7rem; }
+.solar-card-section-label { display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 10px 0; color:#777; font-size:.68rem; font-weight:600; }
+.solar-card-expand { border:0; padding:3px 5px; background:transparent; color:#6b625c; font:inherit; font-size:.68rem; cursor:pointer; }
+.solar-card-expand:hover { color:#2f2925; text-decoration:underline; }
+.gallery-full-colors { display:none; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; padding:8px; border-top:1px solid rgba(0,0,0,.06); background:rgba(250,250,250,.75); }
+.solar-gallery-card.is-expanded .gallery-full-colors { display:grid; }
+.gallery-full-color { display:grid; grid-template-columns:22px minmax(0,1fr); gap:5px; align-items:center; min-width:0; padding:4px; border:1px solid transparent; border-radius:7px; background:rgba(255,255,255,.58); color:#555; font:inherit; text-align:left; cursor:pointer; }
+.gallery-full-color:hover,.gallery-full-color:focus-visible { border-color:rgba(0,0,0,.14); background:#fff; outline:none; }
+.gallery-full-color-swatch { width:22px; height:16px; border-radius:5px; border:1px solid rgba(0,0,0,.1); }
+.gallery-full-color-copy { min-width:0; overflow:hidden; }
+.gallery-full-color-name { display:block; overflow:hidden; color:#4a4541; font-size:.63rem; font-weight:600; text-overflow:ellipsis; white-space:nowrap; }
+.gallery-full-color-hex { display:block; color:#888; font-family:'SF Mono','Consolas',monospace; font-size:.57rem; }
+.solar-color-term-card { cursor:default; overflow:hidden; border:1px solid rgba(0,0,0,.08); background:rgba(255,255,255,.66); }
+.solar-color-term-card:hover { transform:translateY(-2px); box-shadow:0 9px 22px rgba(0,0,0,.1); }
+.solar-term-card-header { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; padding:12px 12px 9px; border-bottom:1px solid rgba(0,0,0,.07); background:linear-gradient(135deg,rgba(255,255,255,.74),rgba(255,255,255,.42)); }
+.solar-term-card-heading { min-width:0; }
+.solar-term-card-name { display:block; color:#302d2b; font-size:.92rem; font-weight:700; letter-spacing:.03em; }
+.solar-term-card-desc { display:block; overflow:hidden; margin-top:3px; color:#777; font-size:.66rem; text-overflow:ellipsis; white-space:nowrap; }
+.solar-term-card-count { flex:0 0 auto; padding:3px 6px; border-radius:999px; background:rgba(80,70,62,.09); color:#777; font-size:.62rem; white-space:nowrap; }
+.solar-color-wall { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; padding:10px; }
+.gallery-color-tile { display:flex; min-width:0; flex-direction:column; gap:3px; padding:5px; border:1px solid transparent; border-radius:8px; background:rgba(255,255,255,.46); color:#4a4541; font:inherit; text-align:left; cursor:pointer; transition:transform .2s ease,border-color .2s ease,background-color .2s ease,box-shadow .2s ease; }
+.gallery-color-tile:hover,.gallery-color-tile:focus-visible { transform:translateY(-1px); border-color:rgba(0,0,0,.15); background:#fff; box-shadow:0 4px 10px rgba(0,0,0,.08); outline:none; }
+.gallery-color-tile-swatch { width:100%; height:25px; border-radius:5px; border:1px solid rgba(0,0,0,.1); box-shadow:inset 0 1px 0 rgba(255,255,255,.28); }
+.gallery-color-tile-name { overflow:hidden; color:#4a4541; font-size:.62rem; font-weight:600; text-overflow:ellipsis; white-space:nowrap; }
+.gallery-color-tile-hex { color:#888; font-family:'SF Mono','Consolas',monospace; font-size:.55rem; line-height:1.1; }
+.gallery-color-tile[aria-current="true"] { border-color:rgba(78,71,66,.55); box-shadow:0 0 0 2px rgba(78,71,66,.12); }
+@media (min-width: 1200px) {
+  .gallery-inner { width:100%; max-width:1500px; margin-left:auto; margin-right:auto; }
+  .solar-gallery-grid { grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; }
+}
+@media (min-width: 1440px) {
+  .gallery-inner { max-width:1500px; margin-left:auto; margin-right:auto; padding:1.5rem 2rem 3rem; }
+}
+@media (max-width: 900px) {
+  .gallery-browser-layout { grid-template-columns:1fr; gap:16px; }
+  .gallery-filter-sidebar { position:static; height:auto; max-height:none; overflow:visible; }
+  .gallery-color-list { max-height:360px; }
+  .gallery-color-inspector { min-height:0; }
+  .gallery-inspector-kicker,
+  .gallery-inspector-main,
+  .gallery-inspector-facts,
+  .gallery-inspector-notes,
+  .gallery-inspector-blend,
+  .gallery-inspector-origin { width:100%; }
+  .gallery-inspector-main { min-height:340px; }
+  .gallery-inspector-swatch { min-height:240px; }
+  .gallery-harmony-list { grid-template-columns:repeat(3,minmax(0,1fr)); }
+}
+@media (max-width: 600px) {
+  .gallery-search-row { grid-template-columns:96px minmax(0,1fr); }
+  .gallery-color-list { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .gallery-inspector-main { min-height:300px; }
+  .gallery-inspector-main .gallery-inspector-heading { right:12px; bottom:12px; width:calc(100% - 24px); padding:12px 14px; }
+  .gallery-inspector-swatch { min-height:220px; }
+  .gallery-inspector-notes { grid-template-columns:1fr; }
+}
+@media (max-width: 420px) {
+  .gallery-search-row { grid-template-columns:86px minmax(0,1fr); gap:6px; }
+  .gallery-filter-sidebar .gallery-filter-group { gap:4px; }
+  .gallery-filter-sidebar .gallery-filter-btn { padding-left:1px; padding-right:1px; font-size:.64rem; }
+  .gallery-color-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .gallery-color-inspector { padding:18px; border-radius:16px; }
+  .gallery-inspector-facts { grid-template-columns:1fr; }
+  .gallery-harmony-list { grid-template-columns:1fr; }
+}
 .back-to-top {
   position: fixed; bottom: 24px; right: 24px;
   width: 44px; height: 44px; border-radius: 50%;
@@ -1252,6 +1474,17 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   .back-btn, .gallery-index-btn { font-size: 0.7rem; padding: 5px 10px; white-space: nowrap; }
   .gallery-actions { width: 100%; overflow-x: auto; flex-wrap: nowrap !important; padding-bottom: 2px; scrollbar-width: none; }
   .gallery-actions::-webkit-scrollbar { display: none; }
+  .gallery-browser-tools { grid-template-columns: 1fr; gap: 8px; padding: 10px; }
+  .gallery-search { width: 100%; }
+  .gallery-filter-group { width: 100%; }
+  .gallery-filter-btn { flex: 1 1 0; min-height: 36px; padding: 6px 8px; }
+  .gallery-term-filter { justify-content: space-between; }
+  .gallery-term-filter select { flex: 1 1 auto; }
+  .gallery-reset-btn { min-height: 36px; }
+  .gallery-result-count { text-align: center; }
+  .gallery-color-detail { align-items: flex-start; flex-wrap: wrap; }
+  .gallery-detail-copy-btn { margin-left: auto; }
+  .gallery-full-colors { grid-template-columns: 1fr 1fr; }
 
   /* === 首页 === */
   .cover h1 { font-size: 2rem; }
@@ -1354,22 +1587,98 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
     <div class="gallery-header">
       <div class="gallery-heading">
         <h2>全部浏览</h2>
-        <span>场景与节气配色 · 点击色卡即可切换背景</span>
+        <span>左侧筛选与浏览 384 色 · 右侧查看单色详情与节气关联</span>
       </div>
       <div id="gallerySolarInfo" class="solar-term-info" style="font-size:0.78rem;color:#555;margin-right:12px;"></div>
       <div class="gallery-actions" style="display:flex;gap:10px;align-items:center;">
-        <button class="gallery-index-btn" onclick="scrollToGallerySection('scenes')">场景配色</button>
-        <button class="gallery-index-btn" onclick="scrollToGallerySection('solar')">节气配色</button>
         <button class="back-btn" onclick="saveBackgroundAsImage()">保存背景</button>
         <button class="back-btn gallery-home-btn" onclick="showView('home')">&#8592; 返回首页</button>
         <a class="nav-project-link" href="../index.html">返回总览</a>
       </div>
     </div>
-    <div id="galleryScenesSection">
-      <div class="solar-gallery-grid" id="galleryGrid"></div>
-    </div>
-    <div id="gallerySolarSection">
-      <div id="solarSectionsInGallery"></div>
+    <div class="gallery-browser-layout">
+      <aside class="gallery-filter-sidebar" id="galleryFilterSidebar" aria-label="色卡筛选">
+        <div class="gallery-sidebar-title-row">
+          <div class="gallery-sidebar-title">中国传统色</div>
+          <div class="gallery-sidebar-title-actions" aria-label="颜色浏览操作">
+            <button type="button" class="gallery-color-nav-btn" onclick="stepGalleryColor(-1)" aria-label="上一个颜色">‹</button>
+            <button type="button" class="gallery-color-nav-random" onclick="randomGalleryColor()">随机</button>
+            <button type="button" class="gallery-color-nav-btn" onclick="stepGalleryColor(1)" aria-label="下一个颜色">›</button>
+          </div>
+        </div>
+        <div class="gallery-sidebar-subtitle">从 384 色中选择一色，查看它的节气位置与色彩关系</div>
+        <div class="gallery-search-row">
+          <label class="gallery-term-filter-compact" for="galleryTermFilter">
+            <span>节气</span>
+            <select id="galleryTermFilter" class="gallery-term-select" onchange="setGalleryTermFilter(this.value)">
+              <option value="all">全部</option>
+            </select>
+          </label>
+          <label class="gallery-search" for="gallerySearchInput">
+            <span>搜索</span>
+            <input id="gallerySearchInput" type="search" placeholder="颜色名、HEX 或节气" autocomplete="off" oninput="updateGallerySearch(this.value)">
+          </label>
+        </div>
+        <div class="gallery-sidebar-section">
+          <div class="gallery-season-row">
+            <div class="gallery-sidebar-label">季节</div>
+            <div class="gallery-filter-group" role="group" aria-label="季节筛选">
+              <button type="button" class="gallery-reset-btn" onclick="resetGalleryFilters()">重置</button>
+              <button type="button" class="gallery-filter-btn active" data-season="all" onclick="setGallerySeasonFilter('all')">全部</button>
+              <button type="button" class="gallery-filter-btn" data-season="春" onclick="setGallerySeasonFilter('春')">春</button>
+              <button type="button" class="gallery-filter-btn" data-season="夏" onclick="setGallerySeasonFilter('夏')">夏</button>
+              <button type="button" class="gallery-filter-btn" data-season="秋" onclick="setGallerySeasonFilter('秋')">秋</button>
+              <button type="button" class="gallery-filter-btn" data-season="冬" onclick="setGallerySeasonFilter('冬')">冬</button>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-sidebar-list-heading">
+          <span>色卡</span>
+          <span id="galleryResultCount" class="gallery-result-count" aria-live="polite"></span>
+        </div>
+        <div id="galleryColorList" class="gallery-color-list" role="listbox" aria-label="传统色列表"></div>
+      </aside>
+      <main class="gallery-browser-content">
+        <section class="gallery-color-inspector" id="galleryColorInspector" aria-live="polite">
+          <div class="gallery-inspector-kicker" id="galleryInspectorKicker">节气色谱 · 当前选色</div>
+          <div class="gallery-inspector-main">
+            <div class="gallery-inspector-swatch" id="galleryDetailSwatch" aria-hidden="true"></div>
+            <button type="button" class="gallery-inspector-fullscreen" onclick="toggleGalleryInspectorFullscreen()" aria-label="全屏查看当前颜色">全屏</button>
+            <div class="gallery-inspector-heading">
+              <div class="gallery-inspector-season" id="galleryDetailSeason"></div>
+              <h3 id="galleryDetailName">选择一个颜色</h3>
+              <button type="button" class="gallery-inspector-hex gallery-inspector-hex-btn" id="galleryDetailMeta" onclick="copyGalleryColor()" title="点击色值复制">从左侧色卡开始探索</button>
+              <div class="gallery-inspector-actions">
+                <span class="gallery-inspector-hint">点击色值可复制 · 点击左侧色卡即可换背景</span>
+              </div>
+            </div>
+          </div>
+          <div class="gallery-inspector-facts">
+            <div><span>RGB</span><strong id="galleryDetailRgb">—</strong></div>
+            <div><span>HSL</span><strong id="galleryDetailHsl">—</strong></div>
+            <div><span>色阶</span><strong id="galleryDetailTone">—</strong></div>
+          </div>
+          <div class="gallery-inspector-notes">
+            <div class="gallery-inspector-origin">
+              <span class="gallery-note-label">颜色由来</span>
+              <p id="galleryDetailOrigin">传统色名称多来自自然、器物与古典文献，这里结合节气语境做简明说明。</p>
+            </div>
+            <div class="gallery-inspector-note">
+              <span class="gallery-note-label">节气意象</span>
+              <p id="galleryDetailDescription">选择颜色后，这里会显示对应节气的色彩意象。</p>
+            </div>
+            <div class="gallery-inspector-note">
+              <span class="gallery-note-label">使用提示</span>
+              <p id="galleryDetailUsage">适合作为背景、表面、主色或文字色进行搭配探索。</p>
+            </div>
+          </div>
+          <div class="gallery-inspector-blend">
+            <span class="gallery-note-label">推荐搭配</span>
+            <div class="gallery-harmony-list" id="galleryHarmonyList"></div>
+          </div>
+        </section>
+        <div id="solarSectionsInGallery" hidden></div>
+      </main>
     </div>
     <button class="back-to-top" id="backToTopBtn" onclick="scrollToTop()">&#8593;</button>
   </div>
@@ -2326,8 +2635,6 @@ var currentMode = 'light';
 var isTourMode = false;
 var immersiveMode = 'scene';
 var currentSolarIdx = 0;
-var cardModes = [];
-for (var i = 0; i < sceneNames.length; i++) { cardModes.push('light'); }
 
 // === 首页二十四节气专属动效 ===
 var HOME_TERM_EFFECTS = {
@@ -2786,7 +3093,7 @@ function showView(name) {
 }
 
 function goHome() { if (isAutoPlaying) stopAutoPlay(); renderSolarHome(); renderSolarTermInfo(); showView('home'); isTourMode = false; var hb = document.getElementById('homeBg'); if (hb) { hb.style.background = defaultSolarBg; hb.style.backgroundSize = 'cover'; } var ic = getCurrentSolarTerm(); var cc = SOLAR_16_COLORS[ic.current]; updateHomeTextColors(cc[0].hex); }
-function showGallery() { showView('gallery'); renderGallery(); renderSolarSectionsInGallery(); renderSolarTermInfo(); }
+function showGallery() { showView('gallery'); renderSolarSectionsInGallery(); renderSolarTermInfo(); }
 
 // === Tour ===
 function startTour(sceneIdx) {
@@ -3379,75 +3686,333 @@ document.addEventListener('touchstart', function(e) {
 });
 
 // === SOLAR DATA ===
-var solarCardModes = new Array(24).fill('light');
 
-function paletteRowMarkup(color, action) {
-  return '<button type="button" class="palette-row" title="应用 ' + color.name + ' ' + color.hex + '" onclick="event.stopPropagation();' + action + '">' +
-    '<span class="palette-row-color" style="background:' + color.hex + '"></span>' +
-    '<span class="palette-row-name">' + color.name + '</span>' +
-    '<span class="palette-row-hex">' + color.hex + '</span>' +
-  '</button>';
+// === 节气浏览器 ===
+var gallerySeasonFilter = 'all';
+var galleryTermFilter = 'all';
+var gallerySearchQuery = '';
+var gallerySelectedColor = null;
+var galleryColorRecords = null;
+var galleryBlendPreview = null;
+
+function initGalleryBrowserControls() {
+  var select = document.getElementById('galleryTermFilter');
+  if (!select || select.options.length > 1) return;
+  for (var i = 0; i < solarNames.length; i++) {
+    var option = document.createElement('option');
+    option.value = solarNames[i];
+    option.textContent = solarNames[i];
+    select.appendChild(option);
+  }
 }
 
-// === Solar sections in gallery ===
-function renderSolarSectionsInGallery() {
-  var container = document.getElementById('solarSectionsInGallery');
-  if (!container) return;
-  var seasonMap = {'春': {label: '春 Spring', en: 'Spring', names: []}, '夏': {label: '夏 Summer', en: 'Summer', names: []}, '秋': {label: '秋 Autumn', en: 'Autumn', names: []}, '冬': {label: '冬 Winter', en: 'Winter', names: []}};
+function updateGallerySearch(value) {
+  gallerySearchQuery = String(value || '').trim().toLowerCase();
+  renderGalleryColorBrowser();
+}
+
+function setGallerySeasonFilter(season) {
+  gallerySeasonFilter = season || 'all';
+  if (galleryTermFilter !== 'all' && gallerySeasonFilter !== 'all' && (SOLAR_SCENES[galleryTermFilter] || {}).season !== gallerySeasonFilter) {
+    galleryTermFilter = 'all';
+  }
+  var select = document.getElementById('galleryTermFilter');
+  if (select) select.value = galleryTermFilter;
+  updateGallerySeasonButtons();
+  renderGalleryColorBrowser();
+}
+
+function setGalleryTermFilter(term) {
+  galleryTermFilter = term || 'all';
+  if (galleryTermFilter !== 'all') gallerySeasonFilter = (SOLAR_SCENES[galleryTermFilter] || {}).season || 'all';
+  var select = document.getElementById('galleryTermFilter');
+  if (select) select.value = galleryTermFilter;
+  updateGallerySeasonButtons();
+  renderGalleryColorBrowser();
+}
+
+function resetGalleryFilters() {
+  gallerySeasonFilter = 'all';
+  galleryTermFilter = 'all';
+  gallerySearchQuery = '';
+  var input = document.getElementById('gallerySearchInput');
+  if (input) input.value = '';
+  var select = document.getElementById('galleryTermFilter');
+  if (select) select.value = 'all';
+  updateGallerySeasonButtons();
+  closeGalleryColorDetail();
+  renderGalleryColorBrowser();
+}
+
+function updateGallerySeasonButtons() {
+  var buttons = document.querySelectorAll('.gallery-filter-btn');
+  for (var i = 0; i < buttons.length; i++) {
+    buttons[i].classList.toggle('active', buttons[i].getAttribute('data-season') === gallerySeasonFilter);
+  }
+}
+
+function stepGalleryColor(direction) {
+  var visible = getGalleryVisibleColorRecords();
+  if (!visible.length) return;
+  var currentIndex = gallerySelectedColor ? visible.findIndex(function(record) { return record.uid === gallerySelectedColor.uid; }) : -1;
+  if (currentIndex < 0) currentIndex = direction > 0 ? -1 : 0;
+  var next = visible[(currentIndex + direction + visible.length) % visible.length];
+  selectGalleryColor(next.term, next.name, next.hex, null, next);
+  renderGalleryColorBrowser();
+}
+
+function randomGalleryColor() {
+  var visible = getGalleryVisibleColorRecords();
+  if (!visible.length) return;
+  var pool = visible.filter(function(record) { return !gallerySelectedColor || record.uid !== gallerySelectedColor.uid; });
+  var next = (pool.length ? pool : visible)[Math.floor(Math.random() * (pool.length ? pool : visible).length)];
+  selectGalleryColor(next.term, next.name, next.hex, null, next);
+  renderGalleryColorBrowser();
+}
+
+function getGalleryColorRecords() {
+  if (galleryColorRecords) return galleryColorRecords;
+  galleryColorRecords = [];
+  var uid = 0;
   for (var i = 0; i < solarNames.length; i++) {
-    var s = SOLAR_SCENES[solarNames[i]].season;
-    if (seasonMap[s]) seasonMap[s].names.push(solarNames[i]);
+    var term = solarNames[i];
+    var data = SOLAR_SCENES[term] || {};
+    var colors = SOLAR_16_COLORS[term] || [];
+    for (var c = 0; c < colors.length; c++) {
+      galleryColorRecords.push({uid: uid, globalIndex: uid + 1, term: term, season: data.season || '', desc: data.desc || '', name: colors[c].name, hex: colors[c].hex, index: c, tone: ['浅阶','中浅阶','中深阶','深阶'][Math.floor(c / 4)] || '色阶'});
+      uid++;
+    }
+  }
+  return galleryColorRecords;
+}
+
+function galleryColorRecordMatches(record) {
+  if (gallerySeasonFilter !== 'all' && record.season !== gallerySeasonFilter) return false;
+  if (galleryTermFilter !== 'all' && record.term !== galleryTermFilter) return false;
+  if (!gallerySearchQuery) return true;
+  return [record.name, record.hex, record.term, record.season, record.desc].join(' ').toLowerCase().indexOf(gallerySearchQuery) !== -1;
+}
+
+function getGalleryVisibleColorRecords() {
+  var all = getGalleryColorRecords();
+  var visible = [];
+  for (var i = 0; i < all.length; i++) if (galleryColorRecordMatches(all[i])) visible.push(all[i]);
+  return visible;
+}
+
+function hexToRgbForGallery(hex) {
+  var value = String(hex || '').replace('#','');
+  if (value.length === 3) value = value.split('').map(function(c) { return c + c; }).join('');
+  var number = parseInt(value, 16);
+  return {r:(number >> 16) & 255, g:(number >> 8) & 255, b:number & 255};
+}
+
+function rgbToHslForGallery(rgb) {
+  var r = rgb.r / 255, g = rgb.g / 255, b = rgb.b / 255;
+  var max = Math.max(r,g,b), min = Math.min(r,g,b), h = 0, s = 0, l = (max + min) / 2;
+  if (max !== min) {
+    var d = max - min;
+    s = l > .5 ? d / (2 - max - min) : d / (max + min);
+    switch (max) { case r: h = (g - b) / d + (g < b ? 6 : 0); break; case g: h = (b - r) / d + 2; break; default: h = (r - g) / d + 4; }
+    h /= 6;
+  }
+  return {h:Math.round(h * 360), s:Math.round(s * 100), l:Math.round(l * 100)};
+}
+
+function renderGalleryColorList(records) {
+  var list = document.getElementById('galleryColorList');
+  if (!list) return;
+  if (!records.length) {
+    list.innerHTML = '<div class="gallery-color-list-empty">没有找到匹配颜色，试试其他关键词或重置筛选。</div>';
+    return;
   }
   var html = '';
-  var seasonKeys = ['春', '夏', '秋', '冬'];
-  for (var si = 0; si < seasonKeys.length; si++) {
-    var sk = seasonKeys[si];
-    var sd = seasonMap[sk];
-    html += '<div style="margin-top:2.5rem;"><h3 style="font-size:1.1rem;font-weight:700;margin-bottom:1rem;color:#333;">' + sd.label + '</h3>';
-    html += '<div class="solar-gallery-grid">';
-    for (var j = 0; j < sd.names.length; j++) {
-      var idx = solarNames.indexOf(sd.names[j]);
-      var name = sd.names[j];
-      var mode = solarCardModes[idx];
-      var scheme = SOLAR_SCENES[name][mode];
-      var colors = scheme.colors;
-      var blend = getSolarBlend(name, mode);
-      if (!blend) continue;
-      var gradient = blend.gradient;
-      var colorSq = '';
-      for (var c = 0; c < colors.length; c++) {
-        colorSq += paletteRowMarkup(colors[c], 'setPageBackground(\'' + colors[c].hex + '\')');
-      }
-      html += '<article class="solar-gallery-card">' +
-        '<div class="solar-card-top" style="background:' + gradient + '">' +
-          '<button type="button" class="solar-card-blend" aria-label="应用' + name + '混色背景并切换节气动效" onclick="applyHomeSolarEffect(\'' + name + '\')"></button>' +
-          '<div class="solar-card-actions">' +
-            '<button class="solar-card-mode" type="button" onclick="event.stopPropagation();toggleSolarCardMode(' + idx + ')">' + (mode === 'light' ? '深' : '浅') + '</button>' +
-            '<button class="solar-card-mode" type="button" onclick="event.stopPropagation();copySolarCardPrompt(' + idx + ')">复制</button>' +
-          '</div>' +
-          '<div class="solar-card-name">' + name + '</div>' +
-        '</div>' +
-        '<div class="solar-card-colors">' + colorSq + '</div>' +
-      '</article>';
-    }
-    html += '</div></div>';
+  for (var i = 0; i < records.length; i++) {
+    var record = records[i];
+    var listTextColor = getReadableTextColor(record.hex);
+    var listTone = listTextColor === '#f8f7f4' ? 'dark' : 'light';
+    html += '<button type="button" class="gallery-color-list-card" role="option" data-tone="' + listTone + '" data-gallery-color-id="' + record.uid + '" aria-selected="' + (gallerySelectedColor && gallerySelectedColor.uid === record.uid ? 'true' : 'false') + '" title="' + record.name + ' ' + record.hex + '" onclick="selectGalleryColorByIndex(' + record.uid + ',this)">' +
+      '<span class="gallery-color-list-swatch" style="--swatch-ink:' + listTextColor + ';background:' + record.hex + '"><span class="gallery-color-list-swatch-name">' + record.name + '</span></span>' +
+      '<span class="gallery-color-list-copy"><span class="gallery-color-list-index">#' + record.globalIndex + '</span><span class="gallery-color-list-name">' + record.name + '</span><span class="gallery-color-list-meta"><span>' + record.term + '</span><span>' + record.hex + '</span></span></span>' +
+    '</button>';
   }
-  container.innerHTML = html;
+  list.innerHTML = html;
 }
 
-function toggleSolarCardMode(cardIdx) {
-  solarCardModes[cardIdx] = solarCardModes[cardIdx] === 'light' ? 'dark' : 'light';
-  renderSolarSectionsInGallery();
+function getGalleryHarmonyRecords(record) {
+  if (!record) return [];
+  var sameTerm = getGalleryColorRecords().filter(function(item) { return item.term === record.term; });
+  var picks = [];
+  var offsets = [-4, 4, 8];
+  for (var i = 0; i < offsets.length; i++) {
+    var candidate = sameTerm[record.index + offsets[i]];
+    if (candidate && candidate.uid !== record.uid && picks.every(function(item) { return item.uid !== candidate.uid; })) picks.push(candidate);
+  }
+  if (picks.length < 3) {
+    for (var j = 0; j < sameTerm.length && picks.length < 3; j++) {
+      if (sameTerm[j].uid !== record.uid && picks.every(function(item) { return item.uid !== sameTerm[j].uid; })) picks.push(sameTerm[j]);
+    }
+  }
+  return picks;
 }
 
-function copySolarCardPrompt(cardIdx) {
-  var name = solarNames[cardIdx];
-  var mode = solarCardModes[cardIdx];
-  copyText(SOLAR_SCENES[name][mode].prompt);
-  var fb = document.getElementById('copyFeedback');
-  fb.textContent = '提示词已复制';
-  fb.classList.add('show');
-  setTimeout(function() { fb.classList.remove('show'); fb.textContent = '已复制'; }, 1500);
+function applyGalleryHarmony(first, second) {
+  if (!first || !second) return;
+  galleryBlendPreview = {first:first, second:second, gradient:'linear-gradient(135deg,' + first.hex + ',' + second.hex + ')'};
+  setPageBackground(galleryBlendPreview.gradient);
+  renderGalleryInspector(gallerySelectedColor);
+}
+
+function renderGalleryHarmony(record) {
+  var list = document.getElementById('galleryHarmonyList');
+  if (!list) return;
+  if (!record) { list.innerHTML = '<span class="gallery-inspector-hint">选择颜色后显示同节气搭配</span>'; return; }
+  var harmony = getGalleryHarmonyRecords(record);
+  var html = '';
+  for (var i = 0; i < harmony.length; i++) {
+    var item = harmony[i];
+    html += '<div class="gallery-harmony-item">' +
+      '<button type="button" class="gallery-harmony-swatch" style="background:' + item.hex + '" title="切换到' + item.name + '" aria-label="切换到' + item.name + '" onclick="selectGalleryColorByIndex(' + item.uid + ',this)"></button>' +
+      '<div><div class="gallery-harmony-name">' + item.name + '</div><span class="gallery-harmony-hex">' + item.hex + '</span></div>' +
+      '<button type="button" class="gallery-harmony-mix" onclick="applyGalleryHarmony(gallerySelectedColor, getGalleryColorRecords()[' + item.uid + '])">预览混色</button>' +
+    '</div>';
+  }
+  list.innerHTML = html;
+}
+
+function getGalleryColorOrigin(record) {
+  if (!record) return '传统色名称多来自自然、器物与古典文献，这里结合节气语境做简明说明。';
+  var name = record.name || '';
+  if (/雨|露|霜|雪|冰|云|天|月|星|山|水|江|海/.test(name)) return '名称带有自然物候或景物意象，用来记录传统语境中的颜色观察。';
+  if (/朱|丹|赤|绛|绯|胭|赭|褐|棕|栗/.test(name)) return '名称多与矿物、染料或器物色泽有关，常用于描述温暖而有重量感的色彩。';
+  if (/青|碧|绿|翠|苍|黛|蓝/.test(name)) return '名称多借自然植物、山水与织物意象，呈现清润、沉静的传统审美。';
+  return '名称来自传统色名整理，与当时的自然观察、器物材质和生活审美相关。';
+}
+
+function renderGalleryInspector(record) {
+  var swatch = document.getElementById('galleryDetailSwatch');
+  var main = document.querySelector('.gallery-inspector-main');
+  var season = document.getElementById('galleryDetailSeason');
+  var title = document.getElementById('galleryDetailName');
+  var meta = document.getElementById('galleryDetailMeta');
+  var rgbEl = document.getElementById('galleryDetailRgb');
+  var hslEl = document.getElementById('galleryDetailHsl');
+  var toneEl = document.getElementById('galleryDetailTone');
+  var descEl = document.getElementById('galleryDetailDescription');
+  var usageEl = document.getElementById('galleryDetailUsage');
+  var originEl = document.getElementById('galleryDetailOrigin');
+  if (!record) {
+    if (main) main.removeAttribute('data-tone');
+    if (swatch) swatch.style.background = 'linear-gradient(135deg,#eee,#ddd)';
+    if (season) season.textContent = '';
+    if (title) title.textContent = '选择一个颜色';
+    if (meta) meta.textContent = '从左侧色卡开始探索';
+    if (rgbEl) rgbEl.textContent = '—';
+    if (hslEl) hslEl.textContent = '—';
+    if (toneEl) toneEl.textContent = '—';
+    if (descEl) descEl.textContent = '选择颜色后，这里会显示对应节气的色彩意象。';
+    if (usageEl) usageEl.textContent = '适合作为背景、表面、主色或文字色进行搭配探索。';
+    if (originEl) originEl.textContent = getGalleryColorOrigin(null);
+    renderGalleryHarmony(null);
+    return;
+  }
+  var rgb = hexToRgbForGallery(record.hex), hsl = rgbToHslForGallery(rgb);
+  var visualHex = galleryBlendPreview ? galleryBlendPreview.first.hex : record.hex;
+  var textColor = getReadableTextColor(visualHex);
+  if (main) main.setAttribute('data-tone', textColor === '#f8f7f4' ? 'dark' : 'light');
+  if (swatch) swatch.style.background = galleryBlendPreview ? galleryBlendPreview.gradient : record.hex;
+  if (season) season.textContent = record.season + ' · ' + record.term;
+  if (title) title.textContent = record.name;
+  if (meta) meta.textContent = record.hex;
+  if (rgbEl) rgbEl.textContent = rgb.r + ', ' + rgb.g + ', ' + rgb.b;
+  if (hslEl) hslEl.textContent = hsl.h + '°, ' + hsl.s + '%, ' + hsl.l + '%';
+  if (toneEl) toneEl.textContent = record.tone + ' · 节气第 ' + (record.index + 1) + ' 色 · 全部第 ' + (record.globalIndex || (record.uid + 1)) + ' 色';
+  if (descEl) descEl.textContent = record.desc || '二十四节气传统色的当代表达。';
+  if (usageEl) usageEl.textContent = record.tone + '适合与同一节气的左侧色卡组合，点击左侧色卡即可切换背景。';
+  if (originEl) originEl.textContent = getGalleryColorOrigin(record);
+  renderGalleryHarmony(record);
+}
+
+function selectGalleryColorByIndex(index, button) {
+  var records = getGalleryColorRecords();
+  var record = records[index];
+  if (!record) return;
+  selectGalleryColor(record.term, record.name, record.hex, button, record);
+}
+
+function selectGalleryColor(term, name, hex, button, record) {
+  var selected = record || {uid:-1, term:term, name:name, hex:hex, season:(SOLAR_SCENES[term] || {}).season || '', desc:(SOLAR_SCENES[term] || {}).desc || '', index:0, tone:'色阶'};
+  gallerySelectedColor = selected;
+  galleryBlendPreview = null;
+  setPageBackground(hex);
+  var cards = document.querySelectorAll('[data-gallery-color-id]');
+  for (var i = 0; i < cards.length; i++) cards[i].setAttribute('aria-selected', cards[i].getAttribute('data-gallery-color-id') === String(selected.uid) ? 'true' : 'false');
+  renderGalleryInspector(selected);
+  var result = document.getElementById('galleryResultCount');
+  if (result) result.textContent = '筛选 ' + getGalleryVisibleColorRecords().length + ' 色 · 当前第 ' + (selected.globalIndex || (selected.uid + 1)) + ' / 384 色';
+}
+
+function copyGalleryColor() {
+  if (!gallerySelectedColor) return;
+  copyText(gallerySelectedColor.hex);
+  var button = document.getElementById('galleryDetailMeta');
+  if (button) {
+    button.setAttribute('data-copied', 'true');
+    setTimeout(function() { button.removeAttribute('data-copied'); }, 1200);
+  }
+}
+
+function closeGalleryColorDetail() {
+  gallerySelectedColor = null;
+  galleryBlendPreview = null;
+  renderGalleryInspector(null);
+}
+
+function toggleGalleryInspectorFullscreen() {
+  var target = document.querySelector('.gallery-inspector-main');
+  if (!target) return;
+  var active = document.fullscreenElement || document.webkitFullscreenElement;
+  if (active === target) {
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    return;
+  }
+  if (target.requestFullscreen) target.requestFullscreen().catch(function() {});
+  else if (target.webkitRequestFullscreen) target.webkitRequestFullscreen();
+}
+
+function updateGalleryInspectorFullscreenLabel() {
+  var button = document.querySelector('.gallery-inspector-fullscreen');
+  if (!button) return;
+  var active = document.fullscreenElement || document.webkitFullscreenElement;
+  button.textContent = active ? '退出全屏' : '全屏';
+  button.setAttribute('aria-label', active ? '退出全屏查看' : '全屏查看当前颜色');
+}
+
+document.addEventListener('fullscreenchange', updateGalleryInspectorFullscreenLabel);
+document.addEventListener('webkitfullscreenchange', updateGalleryInspectorFullscreenLabel);
+
+function renderGalleryColorBrowser() {
+  initGalleryBrowserControls();
+  var visible = getGalleryVisibleColorRecords();
+  if (!visible.length) {
+    gallerySelectedColor = null;
+  } else if (!gallerySelectedColor || visible.every(function(record) { return record.uid !== gallerySelectedColor.uid; })) {
+    var preferredTerm = '';
+    try { preferredTerm = getCurrentSolarTerm().current; } catch (error) {}
+    gallerySelectedColor = visible[0];
+    for (var i = 0; i < visible.length; i++) if (visible[i].term === preferredTerm) { gallerySelectedColor = visible[i]; break; }
+  }
+  var select = document.getElementById('galleryTermFilter');
+  if (select) select.value = galleryTermFilter;
+  renderGalleryColorList(visible);
+  renderGalleryInspector(gallerySelectedColor);
+  var result = document.getElementById('galleryResultCount');
+  if (result) result.textContent = '筛选 ' + visible.length + ' 色 · 当前第 ' + (gallerySelectedColor ? gallerySelectedColor.globalIndex : '—') + ' / 384 色';
+}
+
+function renderSolarSectionsInGallery() {
+  renderGalleryColorBrowser();
 }
 
 function copyPromptFromImm() {
@@ -3948,42 +4513,6 @@ function getLuma(hex) {
   return 0.299 * r + 0.587 * g + 0.114 * b;
 }
 
-// === Gallery ===
-function renderGallery() {
-  var grid = document.getElementById('galleryGrid');
-  grid.innerHTML = '';
-  for (var i = 0; i < sceneNames.length; i++) {
-    var name = sceneNames[i];
-    var data = SCENES[name];
-    var mode = cardModes[i];
-    var scheme = data[mode];
-    var colors = scheme.colors;
-    var gradient = getBlendSpec(colors).gradient;
-    var colorSq = '';
-    for (var c = 0; c < colors.length; c++) {
-      colorSq += paletteRowMarkup(colors[c], 'previewColor(\'' + colors[c].hex + '\')');
-    }
-    var card = document.createElement('article');
-    card.className = 'solar-gallery-card';
-    card.innerHTML =
-      '<div class="solar-card-top" style="background:' + gradient + '">' +
-        '<button type="button" class="solar-card-blend" aria-label="应用' + name + '混色背景" onclick="previewScene(' + i + ', \'' + mode + '\')"></button>' +
-        '<div class="solar-card-actions">' +
-          '<button class="solar-card-mode" type="button" onclick="event.stopPropagation();toggleCardMode(' + i + ')">' + (mode === 'light' ? '深' : '浅') + '</button>' +
-          '<button class="solar-card-mode" type="button" onclick="event.stopPropagation();copyCardPrompt(' + i + ')">复制</button>' +
-        '</div>' +
-        '<div class="solar-card-name">' + name + '</div>' +
-      '</div>' +
-      '<div class="solar-card-colors">' + colorSq + '</div>';
-    grid.appendChild(card);
-  }
-}
-
-function scrollToGallerySection(section) {
-  var el = document.getElementById(section === 'scenes' ? 'galleryScenesSection' : 'gallerySolarSection');
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -3996,33 +4525,6 @@ window.addEventListener('scroll', function() {
     else btn.classList.remove('show');
   }
 });
-
-function toggleCardMode(cardIdx) {
-  cardModes[cardIdx] = cardModes[cardIdx] === 'light' ? 'dark' : 'light';
-  renderGallery();
-}
-
-function copyCardPrompt(cardIdx) {
-  var name = sceneNames[cardIdx];
-  var mode = cardModes[cardIdx];
-  var prompt = SCENES[name][mode].prompt;
-  copyText(prompt);
-  var fb = document.getElementById('copyFeedback');
-  fb.textContent = '提示词已复制';
-  fb.classList.add('show');
-  setTimeout(function() { fb.classList.remove('show'); fb.textContent = '已复制'; }, 1500);
-}
-
-function previewScene(sceneIdx, mode) {
-  var name = sceneNames[sceneIdx];
-  var colors = SCENES[name][mode].colors;
-  var gradient = getBlendSpec(colors).gradient;
-  setPageBackground(gradient);
-}
-
-function previewColor(hex) {
-  setPageBackground(hex);
-}
 
 function updateHomeTextColors(bgHex) {
   var tc = getReadableTextColor(bgHex);
