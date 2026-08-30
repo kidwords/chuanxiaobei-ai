@@ -1192,64 +1192,69 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   opacity: .18;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
 }
-.ppt-kicker, .ppt-count, .ppt-vertical, .ppt-quote, .ppt-hint, .ppt-card { position: absolute; }
+
+.ppt-scape {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none;
+}
+.ppt-kicker, .ppt-count, .ppt-plaque, .ppt-quote, .ppt-hint { position: absolute; }
 .ppt-kicker {
   left: 5.2vw; top: 5.6rem;
   font-size: .72rem; letter-spacing: .42em; font-weight: 500; opacity: .78;
+  z-index: 2;
 }
 .ppt-count {
   right: 5.2vw; top: 5.6rem;
   font-size: .78rem; letter-spacing: .28em; font-variant-numeric: tabular-nums; opacity: .7;
+  z-index: 2;
 }
-.ppt-vertical {
-  left: 5vw; top: 18vh; bottom: 16vh;
-  writing-mode: vertical-rl;
-  font-size: clamp(4.2rem, 13vh, 8.6rem);
-  font-weight: 600; letter-spacing: .28em; line-height: 1;
-  text-shadow: 0 8px 40px rgba(0,0,0,.18);
+.ppt-plaque {
+  left: 46%; top: 46%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  width: 9.6rem; height: 9.6rem;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(circle at 50% 46%, #fffdf6 0 58%, transparent 59%),
+    radial-gradient(circle at 50% 18%, #fffdf6 0 22%, transparent 23%),
+    radial-gradient(circle at 50% 82%, #fffdf6 0 22%, transparent 23%),
+    radial-gradient(circle at 18% 50%, #fffdf6 0 22%, transparent 23%),
+    radial-gradient(circle at 82% 50%, #fffdf6 0 22%, transparent 23%);
+  color: #5a221c;
+  filter: drop-shadow(0 0 1px #d7b56a) drop-shadow(0 10px 28px rgba(40,20,12,.18));
 }
-.ppt-card {
-  left: 46%; top: 24vh;
-  width: min(248px, 26vw);
-  transform: rotate(-4deg);
-  border-radius: 18px;
-  overflow: hidden;
-  background: #f7f4ee;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.55), 0 22px 60px rgba(20,12,8,.22);
-  filter: drop-shadow(0 0 28px rgba(255,255,255,.28));
-  pointer-events: none;
-}
-.ppt-card-swatch { height: 210px; }
-.ppt-card-meta { padding: 16px 18px 18px; color: #1c1916; }
-.ppt-card-meta strong {
-  display: block; font-size: 1.28rem; font-weight: 600; letter-spacing: .12em;
+.ppt-plaque span {
+  font-size: clamp(1.8rem, 4.2vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: .18em;
+  writing-mode: horizontal-tb;
+  line-height: 1.15;
+  text-align: center;
   font-family: "Source Han Serif SC","Noto Serif SC","STSong","SimSun",serif;
 }
-.ppt-card-meta span { display: block; margin-top: 6px; font-size: .72rem; letter-spacing: .16em; color: #6b645c; }
 .ppt-quote {
   right: 6vw; bottom: 9vh; left: auto;
-  max-width: 14em; margin: 0;
+  max-width: 14em; margin: 0; z-index: 2;
   text-align: right; font-size: clamp(.92rem, 1.7vw, 1.15rem);
   letter-spacing: .18em; line-height: 1.7; opacity: .88;
 }
 .ppt-hint {
-  left: 5.2vw; bottom: 4.6vh;
+  left: 5.2vw; bottom: 4.6vh; z-index: 2;
   font-size: .68rem; letter-spacing: .16em; opacity: .55;
 }
 .ppt-edge {
   position: absolute; top: 50%; transform: translateY(-50%);
   width: 52px; height: 52px; border: 0; border-radius: 999px;
   background: rgba(255,255,255,.16); color: inherit; font-size: 1.6rem; line-height: 1;
-  cursor: pointer; pointer-events: auto;
+  cursor: pointer; pointer-events: auto; z-index: 4;
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
 }
 .ppt-edge-prev { left: 1.4vw; }
 .ppt-edge-next { right: 1.4vw; }
 .ppt-edge:hover { background: rgba(255,255,255,.28); }
 @media (max-width: 760px) {
-  .ppt-card { left: auto; right: 8vw; top: 28vh; width: 42vw; transform: rotate(-3deg); }
-  .ppt-card-swatch { height: 150px; }
-  .ppt-vertical { font-size: clamp(3.2rem, 16vw, 5.4rem); }
+  .ppt-plaque { width: 7.6rem; height: 7.6rem; }
+  .ppt-plaque span { font-size: 1.6rem; }
   .ppt-quote { max-width: 11em; }
 }
 .home-navigation-actions { flex-wrap: nowrap; }
@@ -1871,16 +1876,36 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   <div class="imm-layout">
     <div class="ppt-stage" id="pptStage" hidden>
       <div class="ppt-grain" aria-hidden="true"></div>
+      <svg class="ppt-scape" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <filter id="pptInk" x="-20%" y="-20%" width="140%" height="140%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.012 0.06" numOctaves="3" seed="3" result="n"/>
+            <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/>
+          </filter>
+          <filter id="pptWash" x="-10%" y="-10%" width="120%" height="120%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="t"/>
+            <feColorMatrix in="t" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.35 0"/>
+            <feComposite in="SourceGraphic" operator="in"/>
+          </filter>
+        </defs>
+        <g id="pptMountains" fill="#3a332c" opacity="0.16">
+          <path d="M0 900 L0 628 C170 510 290 690 430 592 C580 488 650 708 800 568 C950 430 1080 650 1240 530 C1340 460 1440 555 1440 555 L1440 900Z"/>
+          <path d="M0 900 L0 718 C210 638 350 790 530 702 C720 612 870 768 1060 682 C1200 622 1330 708 1440 646 L1440 900Z" opacity="0.75"/>
+          <path d="M980 900 L1120 742 C1188 692 1260 760 1440 700 L1440 900Z" opacity="0.55"/>
+        </g>
+        <g id="pptClouds" fill="none" stroke="#f7f1e6" stroke-width="1.4" opacity="0.42">
+          <path d="M110 92 c18-22 52-22 68 2 14 18 6 34-12 38-8 28-46 30-60 2-22 4-32-14-20-28-12-14-2-30 24-14z"/>
+          <path d="M1180 128 c22-26 62-24 80 4 16 22 6 40-14 44-10 32-54 34-70 2-26 6-38-16-24-32-14-16-4-36 28-18z"/>
+          <path d="M1260 210 c14-16 40-16 52 2 10 14 4 26-10 28-6 22-36 22-46 2-16 2-24-10-16-20-10-10-2-24 20-12z"/>
+          <path d="M80 760 c20-20 56-18 70 4 12 16 4 32-12 34-8 26-44 26-58 0-20 4-30-12-18-26-12-12-2-28 18-12z"/>
+          <path d="M220 820 c12-14 36-14 46 2 8 12 4 22-8 24-6 18-32 18-42 0-14 2-22-10-14-18-8-8-2-20 18-8z"/>
+        </g>
+        <path id="pptWashPath" fill="#ba5140" opacity="0.28" filter="url(#pptWash)" d="M-80 250 C 180 40, 420 390, 700 250 S 1080 40, 1320 280 S 1560 520, 1600 430 L 1620 620 C 1280 720, 980 360, 680 500 S 240 780, -20 560 Z"/>
+        <path id="pptStroke" fill="#ba5140" filter="url(#pptInk)" d="M-60 240 C 220 70, 400 370, 640 290 S 1000 90, 1220 250 S 1460 470, 1540 400 L 1580 540 C 1260 630, 1080 360, 780 450 S 380 710, 40 540 Z"/>
+      </svg>
       <div class="ppt-kicker" id="pptKicker">中国传统色</div>
       <div class="ppt-count" id="pptCount">1 / 24</div>
-      <h2 class="ppt-vertical" id="pptVertical">立春</h2>
-      <article class="ppt-card" id="pptCard">
-        <div class="ppt-card-swatch" id="pptCardSwatch"></div>
-        <div class="ppt-card-meta">
-          <strong id="pptCardName">色名</strong>
-          <span id="pptCardHex">#000000</span>
-        </div>
-      </article>
+      <div class="ppt-plaque"><span id="pptVertical">立春</span></div>
       <p class="ppt-quote" id="pptQuote"></p>
       <button class="ppt-edge ppt-edge-prev" type="button" onclick="prevScene()" aria-label="上一页">‹</button>
       <button class="ppt-edge ppt-edge-next" type="button" onclick="nextScene()" aria-label="下一页">›</button>
@@ -3840,22 +3865,25 @@ function updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc) {
   stage.hidden = !isPptMode;
   if (!isPptMode) return;
   var colors = (scheme && scheme.colors) || [];
-  var accent = colors[2] || colors[0] || { name: name, hex: '#888888' };
+  var ink = colors[2] || colors[1] || colors[0] || { hex: '#8a3a32' };
+  var wash = colors[1] || colors[0] || ink;
   var ff = getFontFamily((data && data.font) || '');
-  var vert = document.getElementById('pptVertical');
-  if (vert) { vert.textContent = name; vert.style.color = tc; vert.style.fontFamily = ff; }
+  var title = document.getElementById('pptVertical');
+  if (title) { title.textContent = name; title.style.fontFamily = ff; title.style.color = ink.hex || '#5a221c'; }
   var kicker = document.getElementById('pptKicker');
   if (kicker) { kicker.textContent = '中国传统色 · ' + ((data && data.season) || '') + '季'; kicker.style.color = mc; }
   var count = document.getElementById('pptCount');
   if (count) { count.textContent = (currentIdx + 1) + ' / ' + totalCount; count.style.color = mc; }
   var quote = document.getElementById('pptQuote');
   if (quote) { quote.textContent = (data && data.desc) || ''; quote.style.color = tc; }
-  var swatch = document.getElementById('pptCardSwatch');
-  if (swatch) swatch.style.background = accent.hex;
-  var cardName = document.getElementById('pptCardName');
-  if (cardName) { cardName.textContent = accent.name || name; cardName.style.fontFamily = ff; }
-  var cardHex = document.getElementById('pptCardHex');
-  if (cardHex) cardHex.textContent = (accent.hex || '').toUpperCase();
+  var stroke = document.getElementById('pptStroke');
+  if (stroke) stroke.setAttribute('fill', ink.hex || '#8a3a32');
+  var washEl = document.getElementById('pptWashPath');
+  if (washEl) washEl.setAttribute('fill', wash.hex || ink.hex);
+  var mt = document.getElementById('pptMountains');
+  if (mt) mt.setAttribute('fill', (colors[4] && colors[4].hex) || '#3a332c');
+  var clouds = document.getElementById('pptClouds');
+  if (clouds) clouds.setAttribute('stroke', tc);
   var hint = document.querySelector('.ppt-hint');
   if (hint) hint.style.color = mc;
   document.querySelectorAll('.ppt-edge').forEach(function(b) { b.style.color = tc; });
