@@ -39,9 +39,7 @@
 
 ## 下载到本地
 
-打开 [下载页](./download.html)，点「一键下载 HTML」。浏览器会保存 `中国传统色.html`。这是一个自包含单文件，双击即可离线使用。
-
-线上入口：https://kidwords.github.io/chuanxiaobei-ai/chinese-traditional-colors/download.html
+在项目总览首页点击「下载 HTML」。浏览器会弹出系统保存对话框，把完整的单文件 HTML 保存为 `中国传统色.html`。选择本地路径后即可离线双击打开。
 
 ## 本地打开
 
