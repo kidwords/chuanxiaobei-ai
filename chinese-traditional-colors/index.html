@@ -1178,25 +1178,41 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 #immersive.present .ppt-stage,
 #immersive.ppt .ppt-stage[hidden],
 #immersive.present .ppt-stage[hidden] { display: block !important; }
-.ppt-grain {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(120% 80% at 12% 18%, rgba(255,255,255,.16), transparent 46%),
-    radial-gradient(90% 70% at 88% 82%, rgba(0,0,0,.14), transparent 50%);
-  mix-blend-mode: soft-light;
-  pointer-events: none;
+.ppt-wash {
+  position: absolute; inset: -18%;
+  z-index: 0;
+  filter: blur(52px) saturate(0.86);
+  transform: scale(1.04);
 }
-.ppt-grain::after {
-  content: "";
-  position: absolute; inset: 0;
-  opacity: .18;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+.ppt-flow {
+  position: absolute;
+  left: -14%; top: 26%;
+  width: 128%; height: 42%;
+  z-index: 1;
+  border-radius: 50% 44% 48% 42%;
+  transform: rotate(-16deg);
+  filter: blur(42px);
+  opacity: 0.42;
 }
+.ppt-mount {
+  position: absolute;
+  left: -10%; right: -10%; bottom: -14%;
+  height: 46%;
+  z-index: 1;
+  border-radius: 80% 70% 0 0 / 100% 90% 0 0;
+  filter: blur(28px);
+  opacity: 0.18;
+}
+.ppt-cloud {
+  position: absolute; z-index: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,252,246,.55) 0%, rgba(255,252,246,0) 70%);
+  filter: blur(16px);
+}
+.ppt-cloud-a { width: 28vw; height: 16vw; left: 4vw; top: 8vh; }
+.ppt-cloud-b { width: 22vw; height: 12vw; right: 6vw; top: 12vh; }
+.ppt-cloud-c { width: 18vw; height: 10vw; left: 10vw; bottom: 10vh; }
 
-.ppt-scape {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  pointer-events: none;
-}
 .ppt-kicker, .ppt-count, .ppt-plaque, .ppt-quote, .ppt-hint { position: absolute; }
 .ppt-kicker {
   left: 5.2vw; top: 5.6rem;
@@ -1875,34 +1891,12 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   </nav>
   <div class="imm-layout">
     <div class="ppt-stage" id="pptStage" hidden>
-      <div class="ppt-grain" aria-hidden="true"></div>
-      <svg class="ppt-scape" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <defs>
-          <filter id="pptInk" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.012 0.06" numOctaves="3" seed="3" result="n"/>
-            <feDisplacementMap in="SourceGraphic" in2="n" scale="22" xChannelSelector="R" yChannelSelector="G"/>
-          </filter>
-          <filter id="pptWash" x="-10%" y="-10%" width="120%" height="120%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" result="t"/>
-            <feColorMatrix in="t" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.35 0"/>
-            <feComposite in="SourceGraphic" operator="in"/>
-          </filter>
-        </defs>
-        <g id="pptMountains" fill="#3a332c" opacity="0.16">
-          <path d="M0 900 L0 628 C170 510 290 690 430 592 C580 488 650 708 800 568 C950 430 1080 650 1240 530 C1340 460 1440 555 1440 555 L1440 900Z"/>
-          <path d="M0 900 L0 718 C210 638 350 790 530 702 C720 612 870 768 1060 682 C1200 622 1330 708 1440 646 L1440 900Z" opacity="0.75"/>
-          <path d="M980 900 L1120 742 C1188 692 1260 760 1440 700 L1440 900Z" opacity="0.55"/>
-        </g>
-        <g id="pptClouds" fill="none" stroke="#f7f1e6" stroke-width="1.4" opacity="0.42">
-          <path d="M110 92 c18-22 52-22 68 2 14 18 6 34-12 38-8 28-46 30-60 2-22 4-32-14-20-28-12-14-2-30 24-14z"/>
-          <path d="M1180 128 c22-26 62-24 80 4 16 22 6 40-14 44-10 32-54 34-70 2-26 6-38-16-24-32-14-16-4-36 28-18z"/>
-          <path d="M1260 210 c14-16 40-16 52 2 10 14 4 26-10 28-6 22-36 22-46 2-16 2-24-10-16-20-10-10-2-24 20-12z"/>
-          <path d="M80 760 c20-20 56-18 70 4 12 16 4 32-12 34-8 26-44 26-58 0-20 4-30-12-18-26-12-12-2-28 18-12z"/>
-          <path d="M220 820 c12-14 36-14 46 2 8 12 4 22-8 24-6 18-32 18-42 0-14 2-22-10-14-18-8-8-2-20 18-8z"/>
-        </g>
-        <path id="pptWashPath" fill="#ba5140" opacity="0.28" filter="url(#pptWash)" d="M-80 250 C 180 40, 420 390, 700 250 S 1080 40, 1320 280 S 1560 520, 1600 430 L 1620 620 C 1280 720, 980 360, 680 500 S 240 780, -20 560 Z"/>
-        <path id="pptStroke" fill="#ba5140" filter="url(#pptInk)" d="M-60 240 C 220 70, 400 370, 640 290 S 1000 90, 1220 250 S 1460 470, 1540 400 L 1580 540 C 1260 630, 1080 360, 780 450 S 380 710, 40 540 Z"/>
-      </svg>
+      <div class="ppt-wash" id="pptWashBg" aria-hidden="true"></div>
+      <div class="ppt-flow" id="pptFlow" aria-hidden="true"></div>
+      <div class="ppt-mount" id="pptMount" aria-hidden="true"></div>
+      <div class="ppt-cloud ppt-cloud-a" aria-hidden="true"></div>
+      <div class="ppt-cloud ppt-cloud-b" aria-hidden="true"></div>
+      <div class="ppt-cloud ppt-cloud-c" aria-hidden="true"></div>
       <div class="ppt-kicker" id="pptKicker">中国传统色</div>
       <div class="ppt-count" id="pptCount">1 / 24</div>
       <div class="ppt-plaque"><span id="pptVertical">立春</span></div>
@@ -3654,7 +3648,10 @@ function renderImmersive() {
   document.getElementById('nextSceneBtn').disabled = false;
 
   // 背景更新放在最后，确保所有DOM就绪后再统一变色
-  if (!window.skipBgUpdate) setBg(blendGrad);
+  if (!window.skipBgUpdate) {
+    if (isPptMode) setBg(getPptWashStyle(colors));
+    else setBg(blendGrad);
+  }
 }
 
 function toggleMode() {
@@ -3859,6 +3856,32 @@ function getFontFamily(fontName) {
   if (fontName.indexOf('黑') !== -1 || fontName.indexOf('站酷') !== -1) return '"ZCOOL QingKe HuangYou","zcoolqingkehuangyou","YouSheBiaoTiHei",sans-serif';
   return 'sans-serif';
 }
+function mixHex(a, b, t) {
+  function n(h, i) { return parseInt(h.slice(i, i + 2), 16); }
+  function to(v) { var x = Math.max(0, Math.min(255, Math.round(v))).toString(16); return x.length < 2 ? '0' + x : x; }
+  if (!a || a[0] !== '#') a = '#c8b8a0';
+  if (!b || b[0] !== '#') b = a;
+  return '#' + to(n(a,1)+(n(b,1)-n(a,1))*t) + to(n(a,3)+(n(b,3)-n(a,3))*t) + to(n(a,5)+(n(b,5)-n(a,5))*t);
+}
+function hexRgba(hex, a) {
+  if (!hex || hex[0] !== '#') hex = '#c8b8a0';
+  var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+}
+function getPptWashStyle(colors) {
+  var bg = (colors[0] && colors[0].hex) || '#f3ead4';
+  var surface = (colors[1] && colors[1].hex) || bg;
+  var accent = (colors[2] && colors[2].hex) || surface;
+  var paper = mixHex('#f7f1e4', bg, 0.55);
+  var mid = mixHex(paper, surface, 0.42);
+  var far = mixHex(surface, accent, 0.22);
+  return [
+    'radial-gradient(110% 85% at 16% 10%, ' + hexRgba(paper, 0.98) + ' 0%, transparent 58%)',
+    'radial-gradient(90% 75% at 84% 82%, ' + hexRgba(accent, 0.22) + ' 0%, transparent 64%)',
+    'radial-gradient(70% 60% at 48% 46%, ' + hexRgba(surface, 0.34) + ' 0%, transparent 72%)',
+    'linear-gradient(168deg, ' + paper + ' 0%, ' + mid + ' 46%, ' + far + ' 100%)'
+  ].join(',');
+}
 function updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc) {
   var stage = document.getElementById('pptStage');
   if (!stage) return;
@@ -3876,14 +3899,12 @@ function updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc) {
   if (count) { count.textContent = (currentIdx + 1) + ' / ' + totalCount; count.style.color = mc; }
   var quote = document.getElementById('pptQuote');
   if (quote) { quote.textContent = (data && data.desc) || ''; quote.style.color = tc; }
-  var stroke = document.getElementById('pptStroke');
-  if (stroke) stroke.setAttribute('fill', ink.hex || '#8a3a32');
-  var washEl = document.getElementById('pptWashPath');
-  if (washEl) washEl.setAttribute('fill', wash.hex || ink.hex);
-  var mt = document.getElementById('pptMountains');
-  if (mt) mt.setAttribute('fill', (colors[4] && colors[4].hex) || '#3a332c');
-  var clouds = document.getElementById('pptClouds');
-  if (clouds) clouds.setAttribute('stroke', tc);
+  var washBg = document.getElementById('pptWashBg');
+  if (washBg) washBg.style.background = getPptWashStyle(colors);
+  var flow = document.getElementById('pptFlow');
+  if (flow) flow.style.background = 'radial-gradient(120% 80% at 50% 50%, ' + hexRgba(ink.hex, 0.55) + ' 0%, ' + hexRgba(wash.hex, 0.18) + ' 55%, transparent 78%)';
+  var mount = document.getElementById('pptMount');
+  if (mount) mount.style.background = 'linear-gradient(180deg, ' + hexRgba((colors[4] && colors[4].hex) || ink.hex, 0.0) + ' 0%, ' + hexRgba((colors[4] && colors[4].hex) || ink.hex, 0.35) + ' 100%)';
   var hint = document.querySelector('.ppt-hint');
   if (hint) hint.style.color = mc;
   document.querySelectorAll('.ppt-edge').forEach(function(b) { b.style.color = tc; });
