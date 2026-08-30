@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>下载到本地 · 中国传统色</title>
+  <meta name="description" content="一键下载中国传统色单页 HTML，双击即可打开，无需安装。">
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; color: #2f2925;
+      font: 400 16px/1.7 "Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(176,106,59,.16), transparent 32%),
+        radial-gradient(circle at 88% 8%, rgba(88,171,218,.18), transparent 28%),
+        linear-gradient(135deg, #f7f1e8 0%, #efe6d8 48%, #e4efe8 100%);
+    }
+    .wrap { width: min(100% - 32px, 640px); margin: 0 auto; padding: 72px 0 96px; }
+    .back { display: inline-flex; color: #7a6a5c; font-size: 14px; text-decoration: none; margin-bottom: 28px; }
+    .back:hover { color: #2f2925; }
+    h1 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 40px); font-weight: 600; letter-spacing: .02em; line-height: 1.25; }
+    .lead { margin: 0 0 32px; color: #5c534b; font-size: 15px; }
+    .card {
+      border: 1px solid rgba(47,41,37,.1); border-radius: 20px; padding: 28px 28px 24px;
+      background: rgba(255,255,255,.78); box-shadow: 0 16px 40px rgba(47,41,37,.08);
+      backdrop-filter: blur(12px);
+    }
+    .file {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      padding: 14px 16px; border-radius: 14px; background: #f6f1ea; margin-bottom: 20px;
+    }
+    .file strong { display: block; font-size: 15px; }
+    .file span { color: #8a8072; font-size: 13px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    button, .btn {
+      appearance: none; border: 0; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center;
+      min-height: 44px; padding: 0 18px; border-radius: 12px; font: inherit; font-weight: 600;
+    }
+    .primary { background: #4e4742; color: #fff; }
+    .primary:hover { background: #3a342f; }
+    .ghost { background: #fff; color: #3a322e; border: 1px solid rgba(47,41,37,.14); }
+    .ghost:hover { border-color: #8f6b55; }
+    .status { min-height: 1.5em; margin: 14px 0 0; color: #7a4e32; font-size: 14px; }
+    .status.ok { color: #3d6b45; }
+    ol { margin: 28px 0 0; padding-left: 1.2em; color: #5c534b; font-size: 14px; }
+    li + li { margin-top: 8px; }
+    code { font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 12px; background: #f3efe7; padding: 1px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="index.html">← 返回中国传统色</a>
+    <h1>把这个单页保存到本地</h1>
+    <p class="lead">中国传统色是一个自包含的 HTML 文件，样式、384 色和节气逻辑都在里面。下载后离线双击即可打开，不需要安装，也不需要联网。</p>
+    <div class="card">
+      <div class="file">
+        <div>
+          <strong>中国传统色.html</strong>
+          <span id="fileMeta">单文件 · 正在读取大小</span>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="downloadBtn" type="button">一键下载 HTML</button>
+        <a class="btn ghost" href="index.html">先打开线上版</a>
+      </div>
+      <p class="status" id="status"></p>
+    </div>
+    <ol>
+      <li>点击「一键下载 HTML」，浏览器会保存 <code>中国传统色.html</code>。</li>
+      <li>放到任意文件夹，双击用浏览器打开。</li>
+      <li>点色卡、混色、逐步览色、配色板，和线上版一样。</li>
+    </ol>
+  </div>
+  <script>
+    (function () {
+      var SOURCE = 'index.html';
+      var FILENAME = '中国传统色.html';
+      var btn = document.getElementById('downloadBtn');
+      var status = document.getElementById('status');
+      var meta = document.getElementById('fileMeta');
+      var cachedBlob = null;
+
+      function setStatus(text, ok) {
+        status.textContent = text || '';
+        status.className = 'status' + (ok ? ' ok' : '');
+      }
+      function formatSize(bytes) {
+        if (!bytes) return '';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+      }
+      function saveBlob(blob) {
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = FILENAME;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(function () { URL.revokeObjectURL(url); }, 1500);
+      }
+      function loadSource() {
+        return fetch(SOURCE, { cache: 'no-cache' }).then(function (res) {
+          if (!res.ok) throw new Error('fetch failed');
+          return res.blob();
+        }).then(function (blob) {
+          cachedBlob = blob;
+          meta.textContent = '单文件 · ' + formatSize(blob.size);
+          return blob;
+        });
+      }
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        setStatus('正在打包…');
+        var job = cachedBlob ? Promise.resolve(cachedBlob) : loadSource();
+        job.then(function (blob) {
+          saveBlob(blob);
+          setStatus('已开始下载。若浏览器拦截，请允许本页下载文件。', true);
+        }).catch(function () {
+          var fallback = document.createElement('a');
+          fallback.href = SOURCE;
+          fallback.download = FILENAME;
+          fallback.rel = 'noopener';
+          document.body.appendChild(fallback);
+          fallback.click();
+          fallback.remove();
+          setStatus('已改用直接下载。若仍失败，请在线上版里用浏览器「另存为」。');
+        }).then(function () { btn.disabled = false; });
+      });
+      loadSource().catch(function () {
+        meta.textContent = '单文件 · 约 330 KB';
+      });
+    })();
+  </script>
+</body>
+</html>
