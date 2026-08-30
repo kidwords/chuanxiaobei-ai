@@ -1120,7 +1120,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .imm-season { display: none; }
 .imm-panel h2 { transition: font-family 0.4s ease, color 0.35s ease; }
 
-/* PPT / present mode: 二十四节气全屏讲演 */
+/* PPT / present mode: 海报式边角排版，避免正中堆字 */
 #immersive.ppt .imm-left,
 #immersive.present .imm-left,
 #immersive.ppt #immPalette,
@@ -1142,70 +1142,19 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 #immersive.ppt #immColorName,
 #immersive.present #immColorName,
 #immersive.ppt .imm-center,
-#immersive.present .imm-center {
+#immersive.present .imm-center,
+#immersive.ppt .imm-right,
+#immersive.present .imm-right,
+#immersive.ppt .imm-nav-left,
+#immersive.present .imm-nav-left {
   display: none !important;
 }
 #immersive.ppt .imm-layout,
 #immersive.present .imm-layout {
-  justify-content: center;
-  align-items: center;
-}
-#immersive.ppt .imm-right,
-#immersive.present .imm-right {
-  width: min(840px, 92vw);
-  margin: 0 auto;
-  padding: 6.5rem 1.5rem 2.4rem;
-  pointer-events: none;
-}
-#immersive.ppt .imm-panel,
-#immersive.present .imm-panel {
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: none;
-  border: none;
-  text-align: center;
-  padding: 0;
-  pointer-events: auto;
-}
-#immersive.ppt .imm-season,
-#immersive.present .imm-season {
   display: block;
-  font-size: clamp(0.82rem, 2vw, 1.05rem);
-  letter-spacing: 0.38em;
-  font-weight: 600;
-  opacity: 0.72;
-  margin-bottom: 0.85rem;
+  position: relative;
+  min-height: 100vh;
 }
-#immersive.ppt .imm-panel h2,
-#immersive.present .imm-panel h2 {
-  font-size: clamp(3.1rem, 12vw, 7rem);
-  letter-spacing: 0.16em;
-  line-height: 1.12;
-  margin-bottom: 0.55rem;
-}
-#immersive.ppt .imm-panel > div:first-child + div,
-#immersive.present .imm-panel > div:first-child + div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-#immersive.ppt .imm-desc,
-#immersive.present .imm-desc {
-  font-size: clamp(1rem, 2.4vw, 1.45rem);
-  letter-spacing: 0.14em;
-  margin-bottom: 2.1rem;
-  opacity: 0.86;
-}
-#immersive.ppt .imm-scene-nav,
-#immersive.present .imm-scene-nav {
-  max-width: 280px;
-  margin: 0 auto;
-}
-#immersive.ppt .imm-arrow-hint,
-#immersive.present .imm-arrow-hint { opacity: 0.58; }
-#immersive.ppt .imm-progress,
-#immersive.present .imm-progress { justify-content: center; }
 #immersive.ppt .imm-nav-bg,
 #immersive.present .imm-nav-bg {
   background: transparent;
@@ -1213,6 +1162,98 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   -webkit-backdrop-filter: none;
   border-bottom: none;
 }
+#immersive.ppt .imm-nav,
+#immersive.present .imm-nav { pointer-events: none; }
+#immersive.ppt .imm-nav-right,
+#immersive.present .imm-nav-right { pointer-events: auto; }
+.ppt-stage {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  color: inherit;
+}
+#immersive.ppt .ppt-stage,
+#immersive.present .ppt-stage,
+#immersive.ppt .ppt-stage[hidden],
+#immersive.present .ppt-stage[hidden] { display: block !important; }
+.ppt-grain {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(120% 80% at 12% 18%, rgba(255,255,255,.16), transparent 46%),
+    radial-gradient(90% 70% at 88% 82%, rgba(0,0,0,.14), transparent 50%);
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+.ppt-grain::after {
+  content: "";
+  position: absolute; inset: 0;
+  opacity: .18;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+.ppt-kicker, .ppt-count, .ppt-vertical, .ppt-quote, .ppt-hint, .ppt-card { position: absolute; }
+.ppt-kicker {
+  left: 5.2vw; top: 5.6rem;
+  font-size: .72rem; letter-spacing: .42em; font-weight: 500; opacity: .78;
+}
+.ppt-count {
+  right: 5.2vw; top: 5.6rem;
+  font-size: .78rem; letter-spacing: .28em; font-variant-numeric: tabular-nums; opacity: .7;
+}
+.ppt-vertical {
+  left: 5vw; top: 18vh; bottom: 16vh;
+  writing-mode: vertical-rl;
+  font-size: clamp(4.2rem, 13vh, 8.6rem);
+  font-weight: 600; letter-spacing: .28em; line-height: 1;
+  text-shadow: 0 8px 40px rgba(0,0,0,.18);
+}
+.ppt-card {
+  left: 46%; top: 24vh;
+  width: min(248px, 26vw);
+  transform: rotate(-4deg);
+  border-radius: 18px;
+  overflow: hidden;
+  background: #f7f4ee;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.55), 0 22px 60px rgba(20,12,8,.22);
+  filter: drop-shadow(0 0 28px rgba(255,255,255,.28));
+  pointer-events: none;
+}
+.ppt-card-swatch { height: 210px; }
+.ppt-card-meta { padding: 16px 18px 18px; color: #1c1916; }
+.ppt-card-meta strong {
+  display: block; font-size: 1.28rem; font-weight: 600; letter-spacing: .12em;
+  font-family: "Source Han Serif SC","Noto Serif SC","STSong","SimSun",serif;
+}
+.ppt-card-meta span { display: block; margin-top: 6px; font-size: .72rem; letter-spacing: .16em; color: #6b645c; }
+.ppt-quote {
+  right: 6vw; bottom: 9vh; left: auto;
+  max-width: 14em; margin: 0;
+  text-align: right; font-size: clamp(.92rem, 1.7vw, 1.15rem);
+  letter-spacing: .18em; line-height: 1.7; opacity: .88;
+}
+.ppt-hint {
+  left: 5.2vw; bottom: 4.6vh;
+  font-size: .68rem; letter-spacing: .16em; opacity: .55;
+}
+.ppt-edge {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 52px; height: 52px; border: 0; border-radius: 999px;
+  background: rgba(255,255,255,.16); color: inherit; font-size: 1.6rem; line-height: 1;
+  cursor: pointer; pointer-events: auto;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.ppt-edge-prev { left: 1.4vw; }
+.ppt-edge-next { right: 1.4vw; }
+.ppt-edge:hover { background: rgba(255,255,255,.28); }
+@media (max-width: 760px) {
+  .ppt-card { left: auto; right: 8vw; top: 28vh; width: 42vw; transform: rotate(-3deg); }
+  .ppt-card-swatch { height: 150px; }
+  .ppt-vertical { font-size: clamp(3.2rem, 16vw, 5.4rem); }
+  .ppt-quote { max-width: 11em; }
+}
+.home-navigation-actions { flex-wrap: nowrap; }
+.home-actions-bar { grid-template-columns: auto auto minmax(0, 1fr); }
 
 /* Solar strip - 24节气切换 */
 .imm-solar-strip {
@@ -1828,6 +1869,23 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
     </div>
   </nav>
   <div class="imm-layout">
+    <div class="ppt-stage" id="pptStage" hidden>
+      <div class="ppt-grain" aria-hidden="true"></div>
+      <div class="ppt-kicker" id="pptKicker">中国传统色</div>
+      <div class="ppt-count" id="pptCount">1 / 24</div>
+      <h2 class="ppt-vertical" id="pptVertical">立春</h2>
+      <article class="ppt-card" id="pptCard">
+        <div class="ppt-card-swatch" id="pptCardSwatch"></div>
+        <div class="ppt-card-meta">
+          <strong id="pptCardName">色名</strong>
+          <span id="pptCardHex">#000000</span>
+        </div>
+      </article>
+      <p class="ppt-quote" id="pptQuote"></p>
+      <button class="ppt-edge ppt-edge-prev" type="button" onclick="prevScene()" aria-label="上一页">‹</button>
+      <button class="ppt-edge ppt-edge-next" type="button" onclick="nextScene()" aria-label="下一页">›</button>
+      <div class="ppt-hint">← → 或空格翻页 · Esc 退出</div>
+    </div>
     <!-- 自动轮播时的居中配色名 -->
     <div class="imm-auto-label" id="immAutoLabel" style="display:none;">
       <div class="imm-auto-name" id="immAutoName"></div>
@@ -3228,6 +3286,8 @@ function setPptMode(on) {
     root.classList.toggle('ppt', isPptMode);
     root.classList.toggle('present', isPptMode);
   }
+  var stage = document.getElementById('pptStage');
+  if (stage) stage.hidden = !isPptMode;
 }
 
 function startPptMode() {
@@ -3510,6 +3570,7 @@ function renderImmersive() {
     fpEl.style.fontFamily = schemeFont;
   }
   if (isAutoPlaying && !isPaletteAutoPlay) applyAutoTitleFont(data.font || '');
+  updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc);
 
   // Prompt
   var pbox = document.getElementById('immPromptBox');
@@ -3772,6 +3833,32 @@ function getFontFamily(fontName) {
   if (fontName.indexOf('楷') !== -1) return '"LXGW WenKai","KaiTi","STKaiti",serif';
   if (fontName.indexOf('黑') !== -1 || fontName.indexOf('站酷') !== -1) return '"ZCOOL QingKe HuangYou","zcoolqingkehuangyou","YouSheBiaoTiHei",sans-serif';
   return 'sans-serif';
+}
+function updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc) {
+  var stage = document.getElementById('pptStage');
+  if (!stage) return;
+  stage.hidden = !isPptMode;
+  if (!isPptMode) return;
+  var colors = (scheme && scheme.colors) || [];
+  var accent = colors[2] || colors[0] || { name: name, hex: '#888888' };
+  var ff = getFontFamily((data && data.font) || '');
+  var vert = document.getElementById('pptVertical');
+  if (vert) { vert.textContent = name; vert.style.color = tc; vert.style.fontFamily = ff; }
+  var kicker = document.getElementById('pptKicker');
+  if (kicker) { kicker.textContent = '中国传统色 · ' + ((data && data.season) || '') + '季'; kicker.style.color = mc; }
+  var count = document.getElementById('pptCount');
+  if (count) { count.textContent = (currentIdx + 1) + ' / ' + totalCount; count.style.color = mc; }
+  var quote = document.getElementById('pptQuote');
+  if (quote) { quote.textContent = (data && data.desc) || ''; quote.style.color = tc; }
+  var swatch = document.getElementById('pptCardSwatch');
+  if (swatch) swatch.style.background = accent.hex;
+  var cardName = document.getElementById('pptCardName');
+  if (cardName) { cardName.textContent = accent.name || name; cardName.style.fontFamily = ff; }
+  var cardHex = document.getElementById('pptCardHex');
+  if (cardHex) cardHex.textContent = (accent.hex || '').toUpperCase();
+  var hint = document.querySelector('.ppt-hint');
+  if (hint) hint.style.color = mc;
+  document.querySelectorAll('.ppt-edge').forEach(function(b) { b.style.color = tc; });
 }
 function applyAutoTitleFont(fontName) {
   var ff = getFontFamily(fontName || '');
