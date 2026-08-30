@@ -22,6 +22,7 @@
 ## 在线预览
 
 - [打开中国传统色在线版](https://kidwords.github.io/chuanxiaobei-ai/chinese-traditional-colors/index.html)
+- [下载到本地](https://kidwords.github.io/chuanxiaobei-ai/chinese-traditional-colors/download.html)
 - [查看 GitHub 仓库](https://github.com/kidwords/chinese-traditional-colors)
 
 在线版不需要安装任何软件，打开链接后直接点击色卡即可使用。
@@ -35,6 +36,12 @@
 5. 想自己搭配时，打开“配色板”，选择颜色并调整混色方向。
 6. 需要图片时，点击“保存背景”。
 7. 如果页面在手机或平板上卡顿，可以点击“关闭动效”；颜色浏览和配色功能不会受影响。
+
+## 下载到本地
+
+打开 [下载页](./download.html)，点「一键下载 HTML」。浏览器会保存 `中国传统色.html`。这是一个自包含单文件，双击即可离线使用。
+
+线上入口：https://kidwords.github.io/chuanxiaobei-ai/chinese-traditional-colors/download.html
 
 ## 本地打开
 
@@ -87,6 +94,7 @@
 ```text
 chinese-traditional-colors/
 ├─ index.html                 # 项目唯一入口，页面、样式和脚本都在这里
+├─ download.html              # 一键下载单页 HTML
 ├─ cover.png                  # 项目封面
 ├─ cover.svg                  # 矢量封面，可选
 ├─ meta.json                  # 仓库首页使用的项目简介
@@ -125,10 +133,10 @@ node scripts/generate-projects.mjs
 
 - 双击 `chinese-traditional-colors/index.html`，确认页面可以打开。
 - 点击首页单色、混色、逐步览色、全部浏览和配色板入口。
+- 打开 `download.html`，确认可以下载 `中国传统色.html`。
 - 在手机或平板上确认页面可以滚动，必要时测试关闭动效。
 - 修改项目简介后，检查 `meta.json` 的 JSON 格式是否正确。
 
 ## 版权与使用提醒
 
 代码以 Apache-2.0 许可证发布，具体以 [LICENSE](./LICENSE) 为准。颜色名称和传统色资料来自公开出版物整理，若用于商业项目，请自行确认资料引用、字体和图片素材的授权范围。
-
