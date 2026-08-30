@@ -5,7 +5,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>中国传统色 · 故宫里的色彩美学</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-regular.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-bold.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5.2.5/chinese-simplified-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc@5.2.5/chinese-simplified-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/zcool-kuaile@5.2.5/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/zcool-xiaowei@5.2.5/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/zcool-qingke-huangyou@5.2.5/index.css">
 <style>
+
+@font-face { font-family: 'LXGW WenKai'; src: local('LXGW WenKai'), local('霞鹜文楷'); font-display: swap; }
+@font-face { font-family: 'Source Han Serif SC'; src: local('Source Han Serif SC'), local('Noto Serif SC'), local('思源宋体'), local('SimSun'); font-display: swap; }
+@font-face { font-family: 'Noto Serif SC'; src: local('Noto Serif SC'), local('Source Han Serif SC'); font-display: swap; }
+@font-face { font-family: 'ZCOOL KuaiLe'; src: local('ZCOOL KuaiLe'), local('站酷快乐体'); font-display: swap; }
+@font-face { font-family: 'ZCOOL XiaoWei'; src: local('ZCOOL XiaoWei'), local('站酷文艺体'); font-display: swap; }
+@font-face { font-family: 'ZCOOL QingKe HuangYou'; src: local('ZCOOL QingKe HuangYou'), local('zcoolqingkehuangyou'), local('站酷高端黑'); font-display: swap; }
 /* === Reset === */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { font-size: 16px; }
@@ -1102,6 +1117,164 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .auto-playing .imm-left { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
 .auto-playing .imm-right { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
 .auto-playing .imm-center { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+.imm-season { display: none; }
+.imm-panel h2 { transition: font-family 0.4s ease, color 0.35s ease; }
+
+/* PPT / present mode: 海报式边角排版，避免正中堆字 */
+#immersive.ppt .imm-left,
+#immersive.present .imm-left,
+#immersive.ppt #immPalette,
+#immersive.present #immPalette,
+#immersive.ppt .imm-tab,
+#immersive.present .imm-tab,
+#immersive.ppt #autoPlayBtn,
+#immersive.present #autoPlayBtn,
+#immersive.ppt .imm-nav-right > span,
+#immersive.present .imm-nav-right > span,
+#immersive.ppt .imm-nav-project-link,
+#immersive.present .imm-nav-project-link,
+#immersive.ppt .imm-prompt-box,
+#immersive.present .imm-prompt-box,
+#immersive.ppt .imm-font,
+#immersive.present .imm-font,
+#immersive.ppt .imm-font-preview,
+#immersive.present .imm-font-preview,
+#immersive.ppt #immColorName,
+#immersive.present #immColorName,
+#immersive.ppt .imm-center,
+#immersive.present .imm-center,
+#immersive.ppt .imm-right,
+#immersive.present .imm-right,
+#immersive.ppt .imm-nav-left,
+#immersive.present .imm-nav-left {
+  display: none !important;
+}
+#immersive.ppt .imm-layout,
+#immersive.present .imm-layout {
+  display: block;
+  position: relative;
+  min-height: 100vh;
+}
+#immersive.ppt .imm-nav-bg,
+#immersive.present .imm-nav-bg {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: none;
+}
+#immersive.ppt .imm-nav,
+#immersive.present .imm-nav { pointer-events: none; }
+#immersive.ppt .imm-nav-right,
+#immersive.present .imm-nav-right { pointer-events: auto; }
+.ppt-stage {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  color: inherit;
+}
+#immersive.ppt .ppt-stage,
+#immersive.present .ppt-stage,
+#immersive.ppt .ppt-stage[hidden],
+#immersive.present .ppt-stage[hidden] { display: block !important; }
+.ppt-wash {
+  position: absolute; inset: -18%;
+  z-index: 0;
+  filter: blur(52px) saturate(0.86);
+  transform: scale(1.04);
+}
+.ppt-flow {
+  position: absolute;
+  left: -14%; top: 26%;
+  width: 128%; height: 42%;
+  z-index: 1;
+  border-radius: 50% 44% 48% 42%;
+  transform: rotate(-16deg);
+  filter: blur(42px);
+  opacity: 0.42;
+}
+.ppt-mount {
+  position: absolute;
+  left: -10%; right: -10%; bottom: -14%;
+  height: 46%;
+  z-index: 1;
+  border-radius: 80% 70% 0 0 / 100% 90% 0 0;
+  filter: blur(28px);
+  opacity: 0.18;
+}
+.ppt-cloud {
+  position: absolute; z-index: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,252,246,.55) 0%, rgba(255,252,246,0) 70%);
+  filter: blur(16px);
+}
+.ppt-cloud-a { width: 28vw; height: 16vw; left: 4vw; top: 8vh; }
+.ppt-cloud-b { width: 22vw; height: 12vw; right: 6vw; top: 12vh; }
+.ppt-cloud-c { width: 18vw; height: 10vw; left: 10vw; bottom: 10vh; }
+
+.ppt-kicker, .ppt-count, .ppt-plaque, .ppt-quote, .ppt-hint { position: absolute; }
+.ppt-kicker {
+  left: 5.2vw; top: 5.6rem;
+  font-size: .72rem; letter-spacing: .42em; font-weight: 500; opacity: .78;
+  z-index: 2;
+}
+.ppt-count {
+  right: 5.2vw; top: 5.6rem;
+  font-size: .78rem; letter-spacing: .28em; font-variant-numeric: tabular-nums; opacity: .7;
+  z-index: 2;
+}
+.ppt-plaque {
+  left: 46%; top: 46%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  width: 9.6rem; height: 9.6rem;
+  display: grid; place-items: center;
+  background:
+    radial-gradient(circle at 50% 46%, #fffdf6 0 58%, transparent 59%),
+    radial-gradient(circle at 50% 18%, #fffdf6 0 22%, transparent 23%),
+    radial-gradient(circle at 50% 82%, #fffdf6 0 22%, transparent 23%),
+    radial-gradient(circle at 18% 50%, #fffdf6 0 22%, transparent 23%),
+    radial-gradient(circle at 82% 50%, #fffdf6 0 22%, transparent 23%);
+  color: #5a221c;
+  filter: drop-shadow(0 0 1px #d7b56a) drop-shadow(0 10px 28px rgba(40,20,12,.18));
+}
+.ppt-plaque span {
+  font-size: clamp(1.8rem, 4.2vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: .18em;
+  writing-mode: horizontal-tb;
+  line-height: 1.15;
+  text-align: center;
+  font-family: "Source Han Serif SC","Noto Serif SC","STSong","SimSun",serif;
+}
+.ppt-quote {
+  right: 6vw; bottom: 9vh; left: auto;
+  max-width: 14em; margin: 0; z-index: 2;
+  text-align: right; font-size: clamp(.92rem, 1.7vw, 1.15rem);
+  letter-spacing: .18em; line-height: 1.7; opacity: .88;
+}
+.ppt-hint {
+  left: 5.2vw; bottom: 4.6vh; z-index: 2;
+  font-size: .68rem; letter-spacing: .16em; opacity: .55;
+}
+.ppt-edge {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 52px; height: 52px; border: 0; border-radius: 999px;
+  background: rgba(255,255,255,.16); color: inherit; font-size: 1.6rem; line-height: 1;
+  cursor: pointer; pointer-events: auto; z-index: 4;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.ppt-edge-prev { left: 1.4vw; }
+.ppt-edge-next { right: 1.4vw; }
+.ppt-edge:hover { background: rgba(255,255,255,.28); }
+@media (max-width: 760px) {
+  .ppt-plaque { width: 7.6rem; height: 7.6rem; }
+  .ppt-plaque span { font-size: 1.6rem; }
+  .ppt-quote { max-width: 11em; }
+}
+.home-navigation-actions { flex-wrap: nowrap; }
+.home-actions-bar { grid-template-columns: auto auto minmax(0, 1fr); }
 
 /* Solar strip - 24节气切换 */
 .imm-solar-strip {
@@ -1564,6 +1737,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
       <div class="home-action-group home-navigation-actions" aria-label="页面浏览">
         <button class="entry-btn" onclick="startTour(0)">逐步览色</button>
         <button class="entry-btn" onclick="showGallery()">全部浏览</button>
+        <button class="entry-btn" type="button" onclick="startPptMode()">PPT 模式</button>
       </div>
       <div class="home-action-divider" aria-hidden="true"></div>
       <div class="home-action-group home-tool-actions" aria-label="首页操作">
@@ -1716,6 +1890,21 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
     </div>
   </nav>
   <div class="imm-layout">
+    <div class="ppt-stage" id="pptStage" hidden>
+      <div class="ppt-wash" id="pptWashBg" aria-hidden="true"></div>
+      <div class="ppt-flow" id="pptFlow" aria-hidden="true"></div>
+      <div class="ppt-mount" id="pptMount" aria-hidden="true"></div>
+      <div class="ppt-cloud ppt-cloud-a" aria-hidden="true"></div>
+      <div class="ppt-cloud ppt-cloud-b" aria-hidden="true"></div>
+      <div class="ppt-cloud ppt-cloud-c" aria-hidden="true"></div>
+      <div class="ppt-kicker" id="pptKicker">中国传统色</div>
+      <div class="ppt-count" id="pptCount">1 / 24</div>
+      <div class="ppt-plaque"><span id="pptVertical">立春</span></div>
+      <p class="ppt-quote" id="pptQuote"></p>
+      <button class="ppt-edge ppt-edge-prev" type="button" onclick="prevScene()" aria-label="上一页">‹</button>
+      <button class="ppt-edge ppt-edge-next" type="button" onclick="nextScene()" aria-label="下一页">›</button>
+      <div class="ppt-hint">← → 或空格翻页 · Esc 退出</div>
+    </div>
     <!-- 自动轮播时的居中配色名 -->
     <div class="imm-auto-label" id="immAutoLabel" style="display:none;">
       <div class="imm-auto-name" id="immAutoName"></div>
@@ -1757,6 +1946,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
     <div class="imm-center" id="immCenter"></div>
     <div class="imm-right" id="immRight">
       <div class="imm-panel" id="immPanel">
+        <div class="imm-season" id="immSeason"></div>
         <div style="display:flex;align-items:center;gap:12px;">
           <h2 id="immName">场景名</h2>
           <span id="immColorName" style="font-size:0.85rem;font-weight:500;opacity:0.8;"></span>
@@ -2644,6 +2834,7 @@ var currentView = 'home';
 var currentScene = -1;
 var currentMode = 'light';
 var isTourMode = false;
+var isPptMode = false;
 var immersiveMode = 'scene';
 var currentSolarIdx = 0;
 
@@ -3103,12 +3294,32 @@ function showView(name) {
   if (name === 'home') { updateHomeMotionUi(); window.setTimeout(startHomeSolarEffect, 0); }
 }
 
-function goHome() { if (isAutoPlaying) stopAutoPlay(); renderSolarHome(); renderSolarTermInfo(); showView('home'); isTourMode = false; var hb = document.getElementById('homeBg'); if (hb) { hb.style.background = defaultSolarBg; hb.style.backgroundSize = 'cover'; } var ic = getCurrentSolarTerm(); var cc = SOLAR_16_COLORS[ic.current]; updateHomeTextColors(cc[0].hex); }
+function goHome() { if (isAutoPlaying) stopAutoPlay(); setPptMode(false); renderSolarHome(); renderSolarTermInfo(); showView('home'); isTourMode = false; var hb = document.getElementById('homeBg'); if (hb) { hb.style.background = defaultSolarBg; hb.style.backgroundSize = 'cover'; } var ic = getCurrentSolarTerm(); var cc = SOLAR_16_COLORS[ic.current]; updateHomeTextColors(cc[0].hex); }
 function showGallery() { showView('gallery'); renderSolarSectionsInGallery(); renderSolarTermInfo(); }
 
 // === Tour ===
+function setPptMode(on) {
+  isPptMode = !!on;
+  var root = document.getElementById('immersive');
+  if (root) {
+    root.classList.toggle('ppt', isPptMode);
+    root.classList.toggle('present', isPptMode);
+  }
+  var stage = document.getElementById('pptStage');
+  if (stage) stage.hidden = !isPptMode;
+}
+
+function startPptMode() {
+  if (isAutoPlaying) stopAutoPlay();
+  setPptMode(true);
+  isTourMode = true;
+  currentMode = 'light';
+  previewSolarInImmersive(0);
+}
+
 function startTour(sceneIdx) {
   if (typeof sceneIdx === 'undefined') sceneIdx = 0;
+  setPptMode(false);
   isTourMode = true;
   immersiveMode = 'scene';
   openScene(sceneIdx);
@@ -3126,13 +3337,14 @@ function openScene(idx) {
 function previewSolarInImmersive(idx) {
   immersiveMode = 'solar';
   currentSolarIdx = idx;
-  currentMode = 'light';
+  if (!isPptMode) currentMode = 'light';
   showView('immersive');
   renderImmersive();
 }
 
 function backFromImmersive() {
   isTourMode = false;
+  setPptMode(false);
   if (isAutoPlaying) stopAutoPlay();
   var immersiveRoot = document.getElementById('immersive');
   if (immersiveRoot) immersiveRoot.classList.remove('palette-folded');
@@ -3172,6 +3384,12 @@ function setCyclePosition(group, index) {
 
 function nextScene() {
   if (isAutoPlaying) stopAutoPlay();
+  if (isPptMode) {
+    immersiveMode = 'solar';
+    currentSolarIdx = (currentSolarIdx + 1) % solarNames.length;
+    renderImmersive();
+    return;
+  }
   var pos = getCyclePosition();
   var c = CYCLE_ORDER[pos.group];
   var maxIdx = c.mode === 'scene' ? sceneNames.length - 1 : solarNames.length - 1;
@@ -3186,6 +3404,12 @@ function nextScene() {
 
 function prevScene() {
   if (isAutoPlaying) stopAutoPlay();
+  if (isPptMode) {
+    immersiveMode = 'solar';
+    currentSolarIdx = (currentSolarIdx - 1 + solarNames.length) % solarNames.length;
+    renderImmersive();
+    return;
+  }
   var pos = getCyclePosition();
   if (pos.index > 0) {
     setCyclePosition(pos.group, pos.index - 1);
@@ -3290,6 +3514,7 @@ function renderImmersive() {
   // Nav
   document.getElementById('immNavTitle').textContent = name;
   document.getElementById('immNavTitle').style.color = tc;
+  document.getElementById('immNavTitle').style.fontFamily = getFontFamily(data.font || '');
   document.getElementById('modeBtn').textContent = currentMode === 'light' ? '切换深色' : '切换浅色';
   document.querySelectorAll('.imm-btn').forEach(function(b) { b.style.color = tc; });
 
@@ -3337,6 +3562,21 @@ function renderImmersive() {
   panel.style.color = tc;
   document.getElementById('immName').textContent = name;
   document.getElementById('immName').style.color = tc;
+  var schemeFont = getFontFamily(data.font || '');
+  document.getElementById('immName').style.fontFamily = schemeFont;
+  var seasonEl = document.getElementById('immSeason');
+  if (seasonEl) {
+    seasonEl.textContent = data.season ? (data.season + '季') : '';
+    seasonEl.style.color = mc;
+  }
+  var navCtx = document.querySelector('.imm-nav-context span');
+  if (navCtx) {
+    navCtx.textContent = isPptMode
+      ? ('PPT 模式 · ' + (data.season || '') + ' · ' + (currentIdx + 1) + ' / ' + totalCount)
+      : '沉浸式选色 · 大面积背景预览';
+  }
+  var arrowHint = document.querySelector('.imm-arrow-hint');
+  if (arrowHint) arrowHint.textContent = isPptMode ? '← → 或空格翻页 · Esc 退出' : '← → 键盘翻页';
   var cnEl = document.getElementById('immColorName');
   if (cnEl) { cnEl.textContent = ''; cnEl.style.color = mc; }
   document.getElementById('immDesc').textContent = data.desc;
@@ -3346,12 +3586,10 @@ function renderImmersive() {
   var fpEl = document.getElementById('immFontPreview');
   if (fpEl) {
     fpEl.style.color = tc;
-    var ff = data.font;
-    if (ff.indexOf('宋体') !== -1) fpEl.style.fontFamily = '"Source Han Serif SC","Noto Serif SC","SimSun","STSong",serif';
-    else if (ff.indexOf('楷') !== -1) fpEl.style.fontFamily = '"LXGW WenKai","KaiTi","STKaiti",serif';
-    else if (ff.indexOf('黑') !== -1 || ff.indexOf('站酷') !== -1) fpEl.style.fontFamily = '"zcoolqingkehuangyou","YouSheBiaoTiHei",sans-serif';
-    else fpEl.style.fontFamily = 'sans-serif';
+    fpEl.style.fontFamily = schemeFont;
   }
+  if (isAutoPlaying && !isPaletteAutoPlay) applyAutoTitleFont(data.font || '');
+  updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc);
 
   // Prompt
   var pbox = document.getElementById('immPromptBox');
@@ -3410,7 +3648,10 @@ function renderImmersive() {
   document.getElementById('nextSceneBtn').disabled = false;
 
   // 背景更新放在最后，确保所有DOM就绪后再统一变色
-  if (!window.skipBgUpdate) setBg(blendGrad);
+  if (!window.skipBgUpdate) {
+    if (isPptMode) setBg(getPptWashStyle(colors));
+    else setBg(blendGrad);
+  }
 }
 
 function toggleMode() {
@@ -3513,6 +3754,7 @@ function scheduleNext() {
     renderImmersive();
     window.skipBgUpdate = false;
     updateAutoLabel();
+    if (!isPaletteAutoPlay) applyAutoTitleFont((data && data.font) || '');
 
     // 触发展开动画（新背景推入覆盖旧背景）
     setTimeout(function() { setTransitionVisible(overlay); }, 30);
@@ -3606,10 +3848,74 @@ function stopAutoPlay() {
 }
 
 function getFontFamily(fontName) {
+  fontName = fontName || '';
+  if (fontName.indexOf('快乐') !== -1) return '"ZCOOL KuaiLe","站酷快乐体","KaiTi","STKaiti",cursive,sans-serif';
+  if (fontName.indexOf('文艺') !== -1) return '"ZCOOL XiaoWei","站酷文艺体","KaiTi","STKaiti",serif';
   if (fontName.indexOf('宋体') !== -1) return '"Source Han Serif SC","Noto Serif SC","SimSun","STSong",serif';
   if (fontName.indexOf('楷') !== -1) return '"LXGW WenKai","KaiTi","STKaiti",serif';
-  if (fontName.indexOf('黑') !== -1 || fontName.indexOf('站酷') !== -1) return '"zcoolqingkehuangyou","YouSheBiaoTiHei",sans-serif';
+  if (fontName.indexOf('黑') !== -1 || fontName.indexOf('站酷') !== -1) return '"ZCOOL QingKe HuangYou","zcoolqingkehuangyou","YouSheBiaoTiHei",sans-serif';
   return 'sans-serif';
+}
+function mixHex(a, b, t) {
+  function n(h, i) { return parseInt(h.slice(i, i + 2), 16); }
+  function to(v) { var x = Math.max(0, Math.min(255, Math.round(v))).toString(16); return x.length < 2 ? '0' + x : x; }
+  if (!a || a[0] !== '#') a = '#c8b8a0';
+  if (!b || b[0] !== '#') b = a;
+  return '#' + to(n(a,1)+(n(b,1)-n(a,1))*t) + to(n(a,3)+(n(b,3)-n(a,3))*t) + to(n(a,5)+(n(b,5)-n(a,5))*t);
+}
+function hexRgba(hex, a) {
+  if (!hex || hex[0] !== '#') hex = '#c8b8a0';
+  var r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
+}
+function getPptWashStyle(colors) {
+  var bg = (colors[0] && colors[0].hex) || '#f3ead4';
+  var surface = (colors[1] && colors[1].hex) || bg;
+  var accent = (colors[2] && colors[2].hex) || surface;
+  var paper = mixHex('#f7f1e4', bg, 0.55);
+  var mid = mixHex(paper, surface, 0.42);
+  var far = mixHex(surface, accent, 0.22);
+  return [
+    'radial-gradient(110% 85% at 16% 10%, ' + hexRgba(paper, 0.98) + ' 0%, transparent 58%)',
+    'radial-gradient(90% 75% at 84% 82%, ' + hexRgba(accent, 0.22) + ' 0%, transparent 64%)',
+    'radial-gradient(70% 60% at 48% 46%, ' + hexRgba(surface, 0.34) + ' 0%, transparent 72%)',
+    'linear-gradient(168deg, ' + paper + ' 0%, ' + mid + ' 46%, ' + far + ' 100%)'
+  ].join(',');
+}
+function updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc) {
+  var stage = document.getElementById('pptStage');
+  if (!stage) return;
+  stage.hidden = !isPptMode;
+  if (!isPptMode) return;
+  var colors = (scheme && scheme.colors) || [];
+  var ink = colors[2] || colors[1] || colors[0] || { hex: '#8a3a32' };
+  var wash = colors[1] || colors[0] || ink;
+  var ff = getFontFamily((data && data.font) || '');
+  var title = document.getElementById('pptVertical');
+  if (title) { title.textContent = name; title.style.fontFamily = ff; title.style.color = ink.hex || '#5a221c'; }
+  var kicker = document.getElementById('pptKicker');
+  if (kicker) { kicker.textContent = '中国传统色 · ' + ((data && data.season) || '') + '季'; kicker.style.color = mc; }
+  var count = document.getElementById('pptCount');
+  if (count) { count.textContent = (currentIdx + 1) + ' / ' + totalCount; count.style.color = mc; }
+  var quote = document.getElementById('pptQuote');
+  if (quote) { quote.textContent = (data && data.desc) || ''; quote.style.color = tc; }
+  var washBg = document.getElementById('pptWashBg');
+  if (washBg) washBg.style.background = getPptWashStyle(colors);
+  var flow = document.getElementById('pptFlow');
+  if (flow) flow.style.background = 'radial-gradient(120% 80% at 50% 50%, ' + hexRgba(ink.hex, 0.55) + ' 0%, ' + hexRgba(wash.hex, 0.18) + ' 55%, transparent 78%)';
+  var mount = document.getElementById('pptMount');
+  if (mount) mount.style.background = 'linear-gradient(180deg, ' + hexRgba((colors[4] && colors[4].hex) || ink.hex, 0.0) + ' 0%, ' + hexRgba((colors[4] && colors[4].hex) || ink.hex, 0.35) + ' 100%)';
+  var hint = document.querySelector('.ppt-hint');
+  if (hint) hint.style.color = mc;
+  document.querySelectorAll('.ppt-edge').forEach(function(b) { b.style.color = tc; });
+}
+function applyAutoTitleFont(fontName) {
+  var ff = getFontFamily(fontName || '');
+  var nameEl = document.getElementById('immAutoName');
+  var fontEl = document.getElementById('immAutoFont');
+  if (nameEl) nameEl.style.fontFamily = ff;
+  if (fontEl) fontEl.style.fontFamily = ff;
+  return ff;
 }
 function updateAutoLabel() {
   if (isPaletteAutoPlay) {
@@ -3636,14 +3942,9 @@ function updateAutoLabel() {
   var typeLabel = immersiveMode === 'scene' ? '场景' : '节气';
   document.getElementById('immAutoName').textContent = name;
   document.getElementById('immAutoMeta').textContent = typeLabel + ' · ' + modeLabel + ' · ' + (data.font || '');
-  var ff = getFontFamily(data.font || '');
-  var nameEl = document.getElementById('immAutoName');
+  applyAutoTitleFont(data.font || '');
   var fontEl = document.getElementById('immAutoFont');
-  if (nameEl) nameEl.style.fontFamily = ff;
-  if (fontEl) {
-    fontEl.style.fontFamily = ff;
-    fontEl.textContent = '中国传统色';
-  }
+  if (fontEl) fontEl.textContent = '中国传统色';
   var label = document.getElementById('immAutoLabel');
   var topPct = 15 + Math.random() * 55;
   var leftPct = 10 + Math.random() * 80;
@@ -4652,6 +4953,12 @@ function showSolarToast(name, hex, jieqi, season) {
 document.addEventListener('keydown', function(e) {
   if (currentView !== 'immersive') return;
   if (e.target.matches('input, textarea, select, [contenteditable="true"]')) return;
+  if (isPptMode) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); nextScene(); return; }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevScene(); return; }
+    if (e.key === 'Escape') { e.preventDefault(); backFromImmersive(); return; }
+    return;
+  }
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); nextScene(); }
   if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevScene(); }
   if (e.key === 'Escape') backFromImmersive();
