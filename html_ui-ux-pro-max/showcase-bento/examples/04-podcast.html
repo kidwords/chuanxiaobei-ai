@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>深夜电台 · 每周一晚，陪你聊到天亮</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   设计令牌 - 温暖编辑感
+   ============================================================ */
+:root{
+  --bg:#F5F5F7;
+  --card:#FFFFFF;
+  --ink:#1D1D1F;
+  --muted:#6B7280;
+  --soft:#86868B;
+  --line:#E5E7EB;
+  --accent:#E11D48;          /* 玫红 - 电台暖调 */
+  --accent-2:#F59E0B;
+  --accent-soft:#FFE4E6;
+
+  --pink:#FFE4E6; --blue:#DBEAFE; --green:#DCFCE7; --amber:#FEF3C7;
+
+  --radius:26px;
+  --shadow:0 4px 20px rgba(0,0,0,0.06);
+  --shadow-hover:0 16px 38px rgba(0,0,0,0.13);
+  --transition:280ms cubic-bezier(.4,0,.2,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Inter','Noto Sans SC',system-ui,sans-serif;
+  background:var(--bg); color:var(--ink); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+img{max-width:100%;display:block;}
+
+.page{ max-width:1240px; margin:0 auto; padding:24px 24px 64px; }
+
+/* 顶部条 */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:24px; padding:6px 4px;
+}
+.brand{ display:flex; align-items:center; gap:11px; font-weight:700; font-size:18px; letter-spacing:-.01em; }
+.brand .logo{
+  width:34px; height:34px; border-radius:10px;
+  background:linear-gradient(135deg,#1D1D1F,#4B5563);
+  display:grid; place-items:center;
+}
+.brand .logo svg{ width:18px; height:18px; color:#fff; }
+.topnav{ display:flex; gap:4px; }
+.topnav a{
+  padding:9px 16px; border-radius:999px; font-size:14px; font-weight:500;
+  color:var(--muted); transition:var(--transition);
+}
+.topnav a:hover{ color:var(--ink); background:rgba(0,0,0,0.04); }
+
+/* ============================================================
+   Bento 网格
+   ============================================================ */
+.bento{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-auto-rows:minmax(110px,auto);
+  gap:20px;
+}
+.card{
+  background:var(--card); border-radius:var(--radius);
+  padding:28px; box-shadow:var(--shadow);
+  border:1px solid rgba(0,0,0,0.03);
+  transition:transform var(--transition), box-shadow var(--transition);
+  display:flex; flex-direction:column;
+  position:relative; overflow:hidden;
+}
+.card.clickable{cursor:pointer;}
+.card.clickable:hover{ transform:translateY(-4px); box-shadow:var(--shadow-hover); }
+
+.span-hero{grid-column:span 5; grid-row:span 2;}
+.span-4{grid-column:span 4;}
+.span-3{grid-column:span 3;}
+.span-5{grid-column:span 5;}
+.span-6{grid-column:span 6;}
+.span-7{grid-column:span 7;}
+.span-8{grid-column:span 8;}
+.span-12{grid-column:span 12;}
+
+.card.dark{background:#1D1D1F; color:#F5F5F7;}
+.card.dark .muted{color:#A1A1A6;}
+.card.warm{background:linear-gradient(150deg,#451A03,#7C2D12,#9A3412); color:#FFF7ED;}
+.card.pink{background:var(--pink);}
+.card.amber{background:var(--amber);}
+
+/* ============================================================
+   HERO 卡片 (封面 + 标题 + 订阅)
+   ============================================================ */
+.hero{ justify-content:space-between; background:linear-gradient(165deg,#1D1D1F 0%, #292524 60%, #44403C 100%); color:#fff; }
+.hero::before{
+  content:""; position:absolute; top:-80px; right:-80px;
+  width:260px; height:260px; border-radius:50%;
+  background:radial-gradient(circle, rgba(245,158,11,0.28), transparent 70%);
+  pointer-events:none;
+}
+.cover-art{
+  width:140px; height:140px; border-radius:22px; flex-shrink:0;
+  background:linear-gradient(135deg,#F59E0B 0%,#E11D48 50%,#7C3AED 100%);
+  display:grid; place-items:center; position:relative;
+  box-shadow:0 18px 40px rgba(225,29,72,0.4);
+}
+.cover-art .wave{
+  display:flex; align-items:center; gap:4px; height:42px;
+}
+.cover-art .wave span{
+  width:5px; border-radius:3px; background:rgba(255,255,255,0.92);
+}
+.cover-art .badge-num{
+  position:absolute; top:10px; right:12px; font-size:11px; font-weight:700;
+  color:rgba(255,255,255,0.85); letter-spacing:.05em;
+}
+.hero-top{ display:flex; gap:20px; align-items:flex-start; }
+.hero h1{
+  font-size:clamp(32px,3.6vw,46px); font-weight:800; letter-spacing:-.025em; line-height:1.05;
+  margin-top:4px;
+}
+.hero .sub{ color:#D6D3D1; font-size:15px; margin-top:8px; }
+.host-row{ display:flex; align-items:center; gap:10px; margin-top:14px; font-size:13px; color:#A8A29E; }
+.host-row .dot{ width:4px; height:4px; border-radius:50%; background:#A8A29E; }
+.hero-stats{ display:flex; gap:24px; margin-top:24px; }
+.hero-stat .n{ font-size:22px; font-weight:800; letter-spacing:-.02em; }
+.hero-stat .l{ font-size:12px; color:#A8A29E; }
+.hero-actions{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
+.btn{
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 20px; border-radius:12px; font-size:14px; font-weight:600;
+  transition:var(--transition);
+}
+.btn-primary{ background:#fff; color:#1D1D1F; }
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(255,255,255,0.2); }
+.btn-ghost{ background:rgba(255,255,255,0.1); color:#fff; border:1px solid rgba(255,255,255,0.2); }
+.btn-ghost:hover{ background:rgba(255,255,255,0.18); }
+
+/* ============================================================
+   最新一期 featured 卡
+   ============================================================ */
+.featured-ep{ justify-content:space-between; }
+.ep-tag{
+  display:inline-flex; align-items:center; gap:6px; width:fit-content;
+  padding:6px 12px; border-radius:999px; font-size:12px; font-weight:600;
+  background:var(--accent-soft); color:var(--accent);
+}
+.ep-title{
+  font-size:clamp(22px,2.6vw,30px); font-weight:800; letter-spacing:-.02em; line-height:1.2;
+  margin-top:14px;
+}
+.ep-desc{ color:var(--muted); font-size:14px; line-height:1.7; margin-top:10px; max-width:520px; }
+.ep-meta{ display:flex; gap:18px; margin-top:14px; font-size:13px; color:var(--soft); flex-wrap:wrap; }
+.ep-meta span{ display:inline-flex; align-items:center; gap:5px; }
+
+/* 播放器 */
+.player{
+  margin-top:auto; padding-top:22px;
+}
+.player-bar{
+  display:flex; align-items:center; gap:14px;
+}
+.play-btn{
+  width:54px; height:54px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,#1D1D1F,#4B5563); color:#fff;
+  display:grid; place-items:center; transition:var(--transition);
+}
+.play-btn:hover{ transform:scale(1.06); box-shadow:0 8px 20px rgba(0,0,0,0.25); }
+.play-btn svg{ width:20px; height:20px; margin-left:2px; }
+.waveform{
+  flex:1; display:flex; align-items:center; gap:3px; height:38px;
+}
+.waveform .bar{
+  flex:1; background:#E5E7EB; border-radius:2px; transition:background .2s;
+  min-width:2px;
+}
+.waveform .bar.played{ background:linear-gradient(180deg,#E11D48,#F59E0B); }
+.player-time{ display:flex; justify-content:space-between; font-size:12px; color:var(--soft); margin-top:8px; padding:0 4px; font-variant-numeric:tabular-nums; }
+
+/* ============================================================
+   单集列表
+   ============================================================ */
+.ep-list{ margin-top:8px; }
+.ep-item{
+  display:grid; grid-template-columns:40px 1fr auto auto; align-items:center; gap:14px;
+  padding:14px 0; border-bottom:1px solid var(--line); cursor:pointer;
+  transition:var(--transition);
+}
+.ep-item:last-child{ border-bottom:none; }
+.ep-item:hover{ padding-left:6px; }
+.ep-play{
+  width:38px; height:38px; border-radius:11px; flex-shrink:0;
+  background:#F1F1F4; display:grid; place-items:center; color:var(--ink);
+  transition:var(--transition);
+}
+.ep-item:hover .ep-play{ background:var(--ink); color:#fff; }
+.ep-play svg{ width:15px; height:15px; }
+.ep-info .ep-no{ font-size:11px; font-weight:600; color:var(--soft); letter-spacing:.05em; }
+.ep-info .ep-name{ font-weight:600; font-size:14px; margin-top:2px; }
+.ep-date{ font-size:12px; color:var(--soft); }
+.ep-dur{ font-size:12px; color:var(--muted); font-weight:500; font-variant-numeric:tabular-nums; }
+
+/* ============================================================
+   主播卡片
+   ============================================================ */
+.host-card{ }
+.host-avatar{
+  width:64px; height:64px; border-radius:50%;
+  background:linear-gradient(135deg,#F59E0B,#E11D48);
+  display:grid; place-items:center; color:#fff; font-weight:700; font-size:22px;
+}
+.host-name{ font-size:20px; font-weight:700; margin-top:14px; }
+.host-bio{ color:var(--muted); font-size:14px; line-height:1.7; margin-top:8px; }
+.host-social{ display:flex; gap:8px; margin-top:18px; }
+.social-mini{
+  width:38px; height:38px; border-radius:10px; background:#F1F1F4;
+  display:grid; place-items:center; color:var(--ink); transition:var(--transition);
+}
+.social-mini:hover{ background:var(--ink); color:#fff; transform:translateY(-2px); }
+
+/* 标签云 */
+.topic-cloud{ display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.topic{
+  padding:8px 14px; border-radius:999px; font-size:13px; font-weight:500;
+  background:#F1F1F4; color:var(--muted); transition:var(--transition); cursor:pointer;
+}
+.topic:hover{ background:var(--ink); color:#fff; }
+.topic.hot{ background:var(--accent-soft); color:var(--accent); }
+
+/* 评论 */
+.review{ padding:16px 0; border-bottom:1px solid var(--line); }
+.review:last-child{ border-bottom:none; }
+.review-stars{ color:#F59E0B; font-size:13px; letter-spacing:1px; }
+.review-text{ font-size:14px; line-height:1.65; margin-top:6px; }
+.review-meta{ display:flex; align-items:center; gap:9px; margin-top:8px; font-size:12px; color:var(--soft); }
+.review-avatar{
+  width:26px; height:26px; border-radius:50%;
+  display:grid; place-items:center; color:#fff; font-size:11px; font-weight:700;
+}
+
+/* 通用 */
+.eyebrow{ font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--soft); }
+.card-title{ font-size:18px; font-weight:700; letter-spacing:-.01em; }
+
+/* footer */
+.footer{
+  margin-top:40px; padding-top:22px; border-top:1px solid var(--line);
+  display:flex; justify-content:space-between; color:var(--soft); font-size:13px; flex-wrap:wrap; gap:8px;
+}
+
+/* 动画 */
+.reveal{ opacity:0; transform:translateY(20px); transition:opacity .6s ease, transform .6s ease; }
+.reveal.in{ opacity:1; transform:none; }
+
+/* 响应式 */
+@media (max-width:1024px){
+  .span-hero{ grid-column:span 12; grid-row:span 1; }
+  .span-8,.span-7,.span-6,.span-5{ grid-column:span 6; }
+  .span-4,.span-3{ grid-column:span 6; }
+}
+@media (max-width:640px){
+  .page{padding:18px 16px 48px;}
+  .bento{grid-template-columns:1fr;}
+  .span-hero,.span-3,.span-4,.span-5,.span-6,.span-7,.span-8,.span-12{grid-column:span 1;}
+  .card{padding:22px;}
+  .topnav{display:none;}
+  .hero-top{flex-direction:column;}
+  .ep-item{grid-template-columns:38px 1fr auto;}
+  .ep-date{display:none;}
+  .waveform .bar:nth-child(even){display:none;}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  .reveal{opacity:1; transform:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- 顶部 -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h2l2 8 4-16 4 12 2-4h4"/></svg>
+      </span>
+      <span>深夜电台</span>
+    </div>
+    <nav class="topnav" aria-label="主导航">
+      <a href="#episodes">单集</a>
+      <a href="#host">主播</a>
+      <a href="#topics">话题</a>
+      <a href="#">关于</a>
+    </nav>
+  </header>
+
+  <main class="bento">
+
+    <!-- HERO (5x2) -->
+    <section class="card hero span-hero reveal" aria-label="节目介绍">
+      <div class="hero-top">
+        <div class="cover-art" aria-hidden="true">
+          <span class="badge-num">EP 048</span>
+          <div class="wave" id="coverWave"></div>
+        </div>
+        <div>
+          <span class="ep-tag" style="background:rgba(245,158,11,0.18); color:#FBBF24; border:1px solid rgba(245,158,11,0.3);">
+            <span style="width:7px;height:7px;border-radius:50%;background:#FBBF24;display:inline-block;animation:pulseDot 2s infinite;"></span>
+            每周一 22:00 更新
+          </span>
+          <h1>深夜电台</h1>
+          <p class="sub">关于城市、孤独、与那些没人提起的小事</p>
+          <div class="host-row">
+            <span>主播 · 苏晚</span><span class="dot"></span>
+            <span>访谈 / 独白</span><span class="dot"></span>
+            <span>中文</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="n">12.8万</div><div class="l">订阅听众</div></div>
+        <div class="hero-stat"><div class="n">48</div><div class="l">已更新单集</div></div>
+        <div class="hero-stat"><div class="n">4.9</div><div class="l">平均评分</div></div>
+      </div>
+
+      <div class="hero-actions">
+        <button class="btn btn-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12h14"/></svg>
+          订阅节目
+        </button>
+        <button class="btn btn-ghost">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          播放最新一期
+        </button>
+      </div>
+    </section>
+
+    <!-- 最新一期 featured (7x2) -->
+    <section class="card featured-ep span-7 reveal" style="grid-row:span 2;" id="episodes">
+      <div>
+        <div class="card-head" style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="ep-tag">最新一期 · EP 048</span>
+          <span style="font-size:12px; color:var(--soft);">2026.07.28</span>
+        </div>
+        <h2 class="ep-title">凌晨三点的便利店，亮着城市最后的灯</h2>
+        <p class="ep-desc">这期我们走进一家开了 24 年的便利店。店长老周说，他见过太多失眠的人。我们聊了聊那些深夜出现的人，以及他们没说出口的故事。本集含一段现场录音。</p>
+        <div class="ep-meta">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> 时长 47:32</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg> 访谈</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> 城市观察</span>
+        </div>
+      </div>
+
+      <div class="player">
+        <div class="player-bar">
+          <button class="play-btn" aria-label="播放">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <div class="waveform" id="waveform" aria-hidden="true"></div>
+        </div>
+        <div class="player-time"><span>14:08</span><span>47:32</span></div>
+      </div>
+    </section>
+
+    <!-- 单集列表 (7x1) -->
+    <section class="card span-7 reveal">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="eyebrow">往期节目</div>
+          <div class="card-title" style="margin-top:4px;">最近更新</div>
+        </div>
+        <a href="#" style="font-size:13px; color:var(--accent); font-weight:500;">全部 48 期 →</a>
+      </div>
+      <div class="ep-list">
+        <div class="ep-item">
+          <div class="ep-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="ep-info"><div class="ep-no">EP 047</div><div class="ep-name">雨夜，与一只流浪猫的对视</div></div>
+          <span class="ep-date">07.21</span>
+          <span class="ep-dur">38:14</span>
+        </div>
+        <div class="ep-item">
+          <div class="ep-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="ep-info"><div class="ep-no">EP 046</div><div class="ep-name">关于「说不出口的告别」</div></div>
+          <span class="ep-date">07.14</span>
+          <span class="ep-dur">52:09</span>
+        </div>
+        <div class="ep-item">
+          <div class="ep-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="ep-info"><div class="ep-no">EP 045</div><div class="ep-name">那些我们假装忘记的童年</div></div>
+          <span class="ep-date">07.07</span>
+          <span class="ep-dur">41:55</span>
+        </div>
+        <div class="ep-item">
+          <div class="ep-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="ep-info"><div class="ep-no">EP 044</div><div class="ep-name">一个人的晚餐，也可以很认真</div></div>
+          <span class="ep-date">06.30</span>
+          <span class="ep-dur">36:42</span>
+        </div>
+        <div class="ep-item">
+          <div class="ep-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="ep-info"><div class="ep-no">EP 043</div><div class="ep-name">地铁里的陌生人，各自去向何方</div></div>
+          <span class="ep-date">06.23</span>
+          <span class="ep-dur">44:18</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 主播卡 (5x1) -->
+    <section class="card host-card span-5 reveal" id="host">
+      <div class="eyebrow">关于主播</div>
+      <div class="host-avatar" aria-hidden="true">苏</div>
+      <div class="host-name">苏晚</div>
+      <p class="host-bio">前杂志编辑，现自由写作者。相信声音是比文字更温柔的容器。三年前开始做这档电台，希望在每个失眠的夜里，给你一点点陪伴。</p>
+      <div class="host-social">
+        <a class="social-mini" href="#" aria-label="微博">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity="0.3"/><path d="M12 8c-3 0-6 2-6 5s3 4 6 4 6-1 6-4-3-5-6-5zm0 7c-1.5 0-3-.5-3-2s1.5-2.5 3-2.5 3 1 3 2.5-1.5 2-3 2z"/></svg>
+        </a>
+        <a class="social-mini" href="#" aria-label="邮件">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+        </a>
+        <a class="social-mini" href="#" aria-label="网站">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 010 20"/><path d="M12 2a15 15 0 000 20"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- 话题标签云 (5x1) -->
+    <section class="card span-5 reveal" id="topics">
+      <div class="eyebrow">节目话题</div>
+      <div class="card-title" style="margin-top:4px;">我们聊过这些</div>
+      <div class="topic-cloud">
+        <span class="topic hot">城市</span>
+        <span class="topic hot">孤独</span>
+        <span class="topic">失眠</span>
+        <span class="topic">记忆</span>
+        <span class="topic">访谈</span>
+        <span class="topic">独白</span>
+        <span class="topic hot">治愈</span>
+        <span class="topic">日常</span>
+        <span class="topic">写作</span>
+        <span class="topic">音乐</span>
+        <span class="topic">告别</span>
+        <span class="topic">童年</span>
+        <span class="topic">陌生人</span>
+      </div>
+    </section>
+
+    <!-- 听众评论 (7x1) -->
+    <section class="card span-7 reveal">
+      <div class="card-head" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <div class="eyebrow">听众反馈</div>
+          <div class="card-title" style="margin-top:4px;">他们说</div>
+        </div>
+        <span style="font-size:13px; color:var(--muted);">★ 4.9 · 来自 2,341 位听众</span>
+      </div>
+      <div>
+        <div class="review">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">「每晚都靠这档电台入睡。苏晚的声音像一杯温热的牛奶，不甜，但很安心。EP046 那期关于告别，我循环了三遍。」</p>
+          <div class="review-meta">
+            <span class="review-avatar" style="background:linear-gradient(135deg,#6366F1,#0071E3);">林</span>
+            <span>林清和 · 小宇宙</span>
+          </div>
+        </div>
+        <div class="review">
+          <div class="review-stars">★★★★★</div>
+          <p class="review-text">「不是为了听懂什么，而是为了那个被理解的瞬间。这是一档真正懂「安静」的节目。订阅之后，每周一成了我期待的日子。」</p>
+          <div class="review-meta">
+            <span class="review-avatar" style="background:linear-gradient(135deg,#E11D48,#F59E0B);">沈</span>
+            <span>沈知微 · Apple Podcasts</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 深夜电台 · 由苏晚独立制作</span>
+    <span>每周一 22:00 · 与你准时相约</span>
+  </footer>
+</div>
+
+<style>
+@keyframes pulseDot{
+  0%,100%{ opacity:1; }
+  50%{ opacity:.4; }
+}
+</style>
+
+<script>
+/* 入场动画 */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('in'), (i%6)*60);
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* 生成封面波形条 */
+const coverWave = document.getElementById('coverWave');
+const heights = [18,32,42,28,38,22,30,42];
+heights.forEach(h=>{
+  const b = document.createElement('span');
+  b.style.height = h + 'px';
+  coverWave.appendChild(b);
+});
+
+/* 生成播放器波形 (含进度) */
+const waveform = document.getElementById('waveform');
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const N = 56;
+const playedCount = Math.floor(N * 0.30); // 30% 进度
+for(let i=0; i<N; i++){
+  const b = document.createElement('span');
+  b.className = 'bar' + (i < playedCount ? ' played' : '');
+  // 用一个伪随机但稳定的波形
+  const h = 6 + Math.round(Math.abs(Math.sin(i*0.5) * 18) + Math.abs(Math.cos(i*0.9) * 12));
+  b.style.height = Math.min(34, h) + 'px';
+  if(reduce && i < playedCount) b.classList.add('played');
+  waveform.appendChild(b);
+}
+
+/* 波形条入场高度动画 (从 0 长起) */
+if(!reduce){
+  waveform.querySelectorAll('.bar').forEach((b,i)=>{
+    const target = b.style.height;
+    b.style.height = '0px';
+    setTimeout(()=> b.style.height = target, 200 + i*12);
+  });
+}
+
+/* 播放按钮切换 */
+const playBtns = document.querySelectorAll('.play-btn, .btn-ghost');
+playBtns.forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const isPlaying = btn.dataset.playing === '1';
+    btn.dataset.playing = isPlaying ? '0' : '1';
+    const svg = btn.querySelector('svg');
+    if(svg){
+      svg.innerHTML = isPlaying
+        ? '<path d="M8 5v14l11-7z"/>'                              /* play */
+        : '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';                /* pause */
+    }
+  });
+});
+
+/* 单集点击高亮 */
+document.querySelectorAll('.ep-item').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    document.querySelectorAll('.ep-item').forEach(i=>i.style.background='');
+    item.style.background = 'rgba(0,0,0,0.02)';
+  });
+});
+</script>
+
+</body>
+</html>

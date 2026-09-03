@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="林墨白 — 全栈工程师 / 数字设计师，杭州。以留白为设计语言。" />
+<title>林墨白 — Lin Mobai</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300&family=Inter:wght@200;300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500;600&display=swap" rel="stylesheet" />
+
+<style>
+  /* =========================================================
+     DESIGN TOKENS — Extreme Minimalism
+     ========================================================= */
+  :root {
+    --bg:           #FAFAFA;
+    --bg-pure:      #FFFFFF;
+    --ink:          #0A0A0A;
+    --ink-soft:     #1A1A1A;
+    --muted:        #6B7280;
+    --muted-soft:   #9CA3AF;
+    --hairline:     #E5E5E5;
+    --hairline-soft:#EFEFEF;
+    --accent:       #0A0A0A;          /* single monochrome accent */
+    --accent-dot:   #B89B72;          /* the single tiny warm dot */
+
+    --ease:         cubic-bezier(0.22, 0.61, 0.36, 1);
+    --dur:          420ms;
+    --dur-slow:     700ms;
+
+    --maxw:         1200px;
+    --readw:        720px;
+
+    --f-serif:      'Cormorant', 'Noto Serif SC', Georgia, serif;
+    --f-sans:       'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    --track-wide:   0.28em;
+    --track-mid:    0.14em;
+    --track-tight:  -0.02em;
+  }
+
+  /* =========================================================
+     RESET
+     ========================================================= */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--f-sans);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+    letter-spacing: 0.01em;
+  }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+  ::selection { background: var(--ink); color: var(--bg); }
+
+  /* focus-visible — thin elegant outline */
+  a:focus-visible, button:focus-visible {
+    outline: 1px solid var(--ink);
+    outline-offset: 4px;
+    border-radius: 1px;
+  }
+
+  /* =========================================================
+     LAYOUT PRIMITIVES
+     ========================================================= */
+  .wrap {
+    width: 100%;
+    max-width: var(--maxw);
+    margin-inline: auto;
+    padding-inline: clamp(24px, 6vw, 80px);
+  }
+  .read {
+    width: 100%;
+    max-width: var(--readw);
+  }
+
+  section {
+    padding-block: clamp(110px, 18vh, 200px);
+    position: relative;
+  }
+  .hairline {
+    border: 0;
+    border-top: 1px solid var(--hairline);
+    width: 100%;
+  }
+
+  /* tiny uppercase labels */
+  .eyebrow {
+    font-family: var(--f-sans);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--track-wide);
+    text-transform: uppercase;
+    color: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow .num {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 15px;
+    letter-spacing: 0;
+    color: var(--ink);
+    text-transform: none;
+  }
+  .eyebrow .bar {
+    width: 28px; height: 1px; background: var(--ink); opacity: 0.55;
+  }
+
+  .accent-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-dot);
+    display: inline-block;
+  }
+
+  /* =========================================================
+     NAV
+     ========================================================= */
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    transition: background var(--dur) var(--ease),
+                border-color var(--dur) var(--ease),
+                backdrop-filter var(--dur) var(--ease);
+    border-bottom: 1px solid transparent;
+  }
+  .nav.is-scrolled {
+    background: rgba(250,250,250,0.82);
+    backdrop-filter: saturate(140%) blur(12px);
+    -webkit-backdrop-filter: saturate(140%) blur(12px);
+    border-bottom-color: var(--hairline);
+  }
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 76px;
+  }
+  .brand {
+    font-family: var(--f-serif);
+    font-size: 19px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .brand small {
+    font-family: var(--f-sans);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: var(--track-wide);
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: clamp(20px, 3vw, 40px);
+  }
+  .nav__links a {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: var(--track-mid);
+    text-transform: uppercase;
+    color: var(--muted);
+    position: relative;
+    transition: color var(--dur) var(--ease);
+    padding-block: 4px;
+  }
+  .nav__links a::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 1px;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform var(--dur) var(--ease);
+  }
+  .nav__links a:hover { color: var(--ink); }
+  .nav__links a:hover::after { transform: scaleX(1); transform-origin: left center; }
+
+  .nav__back {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: var(--track-mid);
+    text-transform: uppercase;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.85;
+    transition: opacity var(--dur) var(--ease), gap var(--dur) var(--ease);
+  }
+  .nav__back:hover { opacity: 1; gap: 12px; }
+  .nav__back svg { width: 14px; height: 14px; }
+
+  /* desktop only cluster */
+  .nav__center { display: none; }
+  @media (min-width: 880px) {
+    .nav__center { display: flex; }
+  }
+
+  /* burger */
+  .burger {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 40px; height: 40px;
+    align-items: center;
+    border-radius: 50%;
+  }
+  .burger span {
+    width: 20px; height: 1px; background: var(--ink);
+    transition: transform var(--dur) var(--ease), opacity var(--dur) var(--ease);
+  }
+  @media (min-width: 880px) { .burger { display: none; } }
+  .burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(3px) rotate(45deg); }
+  .burger[aria-expanded="true"] span:nth-child(2) { transform: translateY(-3px) rotate(-45deg); }
+
+  /* mobile overlay */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(40px, 10vw, 80px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    transition: opacity var(--dur) var(--ease),
+                transform var(--dur) var(--ease),
+                visibility 0s linear var(--dur);
+  }
+  .overlay.is-open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity var(--dur-slow) var(--ease),
+                transform var(--dur-slow) var(--ease),
+                visibility 0s;
+  }
+  .overlay a {
+    font-family: var(--f-serif);
+    font-size: clamp(34px, 9vw, 64px);
+    font-weight: 300;
+    line-height: 1.25;
+    color: var(--ink);
+    padding-block: 10px;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 18px;
+    transition: color var(--dur) var(--ease), padding-left var(--dur) var(--ease);
+  }
+  .overlay a .onum {
+    font-family: var(--f-sans);
+    font-size: 12px;
+    letter-spacing: var(--track-wide);
+    color: var(--muted);
+    text-transform: uppercase;
+    font-weight: 500;
+    align-self: center;
+  }
+  .overlay a:hover { color: var(--muted); padding-left: 14px; }
+  .overlay__foot {
+    margin-top: clamp(40px, 8vw, 80px);
+    font-size: 12px;
+    letter-spacing: var(--track-mid);
+    text-transform: uppercase;
+    color: var(--muted-soft);
+  }
+
+  /* =========================================================
+     HERO
+     ========================================================= */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-block: clamp(120px, 16vh, 160px);
+  }
+  .hero__grid {
+    display: grid;
+    gap: clamp(40px, 6vh, 80px);
+    width: 100%;
+  }
+  .hero__label { opacity: 0; transform: translateY(14px); }
+  .hero__name {
+    font-family: var(--f-serif);
+    font-weight: 300;
+    font-size: clamp(54px, 13vw, 168px);
+    line-height: 0.98;
+    letter-spacing: var(--track-tight);
+    color: var(--ink);
+    margin-top: 4px;
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  .hero__name em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--muted);
+  }
+  .hero__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: clamp(12px, 2vw, 22px);
+    color: var(--muted);
+    font-size: clamp(14px, 1.4vw, 16px);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    margin-top: clamp(20px, 3vh, 36px);
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .hero__meta .sep {
+    width: 4px; height: 4px; border-radius: 50%;
+    background: var(--muted-soft);
+    display: inline-block;
+  }
+  .hero__meta strong { font-weight: 500; color: var(--ink); }
+
+  .hero__line {
+    margin-top: clamp(40px, 6vh, 72px);
+    height: 1px;
+    background: var(--hairline);
+    width: 100%;
+    transform-origin: left center;
+    transform: scaleX(0);
+  }
+
+  .hero__cta {
+    margin-top: clamp(28px, 4vh, 44px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(28px, 5vw, 64px);
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: var(--track-mid);
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-block: 6px;
+    position: relative;
+  }
+  .link-arrow svg {
+    width: 18px; height: 10px;
+    transition: transform var(--dur) var(--ease);
+  }
+  .link-arrow::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    height: 1px; width: 100%;
+    background: var(--ink);
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform var(--dur) var(--ease);
+  }
+  .link-arrow:hover svg { transform: translateX(8px); }
+  .link-arrow:hover::after { transform: scaleX(1); transform-origin: left center; }
+
+  .link-quiet {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: var(--track-mid);
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-block: 6px;
+    position: relative;
+    transition: color var(--dur) var(--ease);
+  }
+  .link-quiet::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    height: 1px; width: 100%;
+    background: var(--muted);
+    opacity: 0.5;
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform var(--dur) var(--ease);
+  }
+  .link-quiet:hover { color: var(--ink); }
+  .link-quiet:hover::after { transform: scaleX(1); transform-origin: left center; opacity: 1; }
+
+  /* hero scroll hint */
+  .hero__hint {
+    position: absolute;
+    left: clamp(24px, 6vw, 80px);
+    bottom: clamp(28px, 5vh, 48px);
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 10px;
+    letter-spacing: var(--track-wide);
+    text-transform: uppercase;
+    color: var(--muted-soft);
+    opacity: 0;
+  }
+  .hero__hint .vline {
+    width: 1px; height: 36px; background: var(--ink); opacity: 0.4;
+    animation: hintpulse 2.6s var(--ease) infinite;
+    transform-origin: top center;
+  }
+  @keyframes hintpulse {
+    0%, 100% { transform: scaleY(0.4); opacity: 0.2; }
+    50%      { transform: scaleY(1);   opacity: 0.5; }
+  }
+
+  /* =========================================================
+     SECTION HEAD (shared)
+     ========================================================= */
+  .shead {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(28px, 5vh, 56px);
+    margin-bottom: clamp(48px, 8vh, 96px);
+  }
+  @media (min-width: 880px) {
+    .shead { grid-template-columns: 0.34fr 0.66fr; align-items: start; }
+  }
+  .shead__title {
+    font-family: var(--f-serif);
+    font-weight: 300;
+    font-size: clamp(34px, 5.5vw, 64px);
+    line-height: 1.1;
+    letter-spacing: var(--track-tight);
+    color: var(--ink);
+  }
+  .shead__title em { font-style: italic; color: var(--muted); }
+  .shead__lead {
+    font-size: clamp(15px, 1.4vw, 18px);
+    line-height: 1.8;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 52ch;
+  }
+  .shead__lead strong { color: var(--ink); font-weight: 500; }
+
+  /* =========================================================
+     ABOUT — stats
+     ========================================================= */
+  .stats {
+    margin-top: clamp(56px, 9vh, 120px);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: clamp(40px, 6vw, 96px) clamp(24px, 4vw, 56px);
+  }
+  @media (min-width: 880px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+  .stat { display: flex; flex-direction: column; gap: 12px; }
+  .stat__num {
+    font-family: var(--f-serif);
+    font-weight: 300;
+    font-size: clamp(48px, 7vw, 96px);
+    line-height: 1;
+    letter-spacing: var(--track-tight);
+    color: var(--ink);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+  }
+  .stat__num sup {
+    font-family: var(--f-sans);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0;
+    vertical-align: super;
+  }
+  .stat__label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--track-wide);
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* =========================================================
+     SKILLS — thin progress lines
+     ========================================================= */
+  .skills {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .skill {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding-block: clamp(28px, 4vh, 44px);
+    border-top: 1px solid var(--hairline);
+    transition: padding-left var(--dur-slow) var(--ease);
+  }
+  .skill:last-child { border-bottom: 1px solid var(--hairline); }
+  @media (min-width: 720px) {
+    .skill { grid-template-columns: 0.4fr 0.45fr 0.15fr; align-items: center; gap: 32px; }
+  }
+  .skill:hover { padding-left: 8px; }
+  .skill__head { display: flex; flex-direction: column; gap: 4px; }
+  .skill__name {
+    font-family: var(--f-serif);
+    font-size: clamp(22px, 2.6vw, 32px);
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--ink);
+  }
+  .skill__sub {
+    font-size: 12px;
+    letter-spacing: var(--track-mid);
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .skill__bar {
+    position: relative;
+    height: 1px;
+    background: var(--hairline);
+    overflow: visible;
+  }
+  .skill__fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    height: 1px;
+    background: var(--ink);
+    width: 0;
+    transform-origin: left center;
+    transition: width 1.4s var(--ease);
+  }
+  .skill__fill::after {
+    content: "";
+    position: absolute;
+    right: -3px; top: 50%;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--ink);
+    transform: translateY(-50%) scale(0);
+    transition: transform var(--dur-slow) var(--ease) 1.1s;
+  }
+  .skill.is-in .skill__fill::after { transform: translateY(-50%) scale(1); }
+  .skill__pct {
+    font-family: var(--f-serif);
+    font-size: clamp(20px, 2.4vw, 28px);
+    font-weight: 400;
+    color: var(--ink);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .skill__pct span { color: var(--muted); font-size: 0.7em; }
+
+  /* =========================================================
+     WORKS — sparse grid
+     ========================================================= */
+  .works {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(1px, 0.1vw, 1px);
+  }
+  @media (min-width: 760px) { .works { grid-template-columns: 1fr 1fr; } }
+  .work {
+    position: relative;
+    padding: clamp(36px, 5vw, 72px) clamp(24px, 4vw, 56px);
+    border-top: 1px solid var(--hairline);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    min-height: clamp(280px, 40vh, 420px);
+    transition: background var(--dur) var(--ease);
+    overflow: hidden;
+  }
+  .work:nth-child(odd) { border-right: 1px solid var(--hairline); }
+  @media (max-width: 759px) { .work:nth-child(odd) { border-right: 0; } }
+  .work::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--bg-pure);
+    opacity: 0;
+    transition: opacity var(--dur) var(--ease);
+    z-index: 0;
+  }
+  .work > * { position: relative; z-index: 1; }
+  .work:hover::before { opacity: 1; }
+
+  .work__index {
+    font-family: var(--f-serif);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .work__index .bar { width: 22px; height: 1px; background: var(--ink); opacity: 0.4; }
+
+  .work__title {
+    font-family: var(--f-serif);
+    font-weight: 400;
+    font-size: clamp(28px, 3.6vw, 44px);
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: var(--track-tight);
+    transition: transform var(--dur) var(--ease);
+  }
+  .work:hover .work__title { transform: translateX(8px); }
+
+  .work__cat {
+    font-size: 11px;
+    letter-spacing: var(--track-wide);
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .work__desc {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--muted);
+    font-weight: 300;
+    max-width: 38ch;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity var(--dur-slow) var(--ease), transform var(--dur-slow) var(--ease);
+  }
+  .work:hover .work__desc { opacity: 1; transform: translateY(0); }
+
+  .work__more {
+    margin-top: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: var(--track-wide);
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: color var(--dur) var(--ease), gap var(--dur) var(--ease);
+  }
+  .work:hover .work__more { color: var(--ink); gap: 16px; }
+  .work__more svg { width: 16px; height: 9px; }
+
+  /* =========================================================
+     JOURNEY — minimal timeline
+     ========================================================= */
+  .journey {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding-block: clamp(28px, 4vh, 44px);
+    border-top: 1px solid var(--hairline);
+    position: relative;
+    transition: padding-left var(--dur-slow) var(--ease);
+  }
+  .step:last-child { border-bottom: 1px solid var(--hairline); }
+  @media (min-width: 760px) {
+    .step { grid-template-columns: 0.18fr 0.52fr 0.30fr; gap: clamp(24px, 4vw, 56px); align-items: baseline; }
+  }
+  .step:hover { padding-left: 10px; }
+  .step__year {
+    font-family: var(--f-serif);
+    font-size: clamp(22px, 2.4vw, 30px);
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .step__title {
+    font-family: var(--f-sans);
+    font-size: clamp(16px, 1.6vw, 20px);
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: 0;
+  }
+  .step__where {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+  }
+  .step__desc {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  /* =========================================================
+     CONTACT
+     ========================================================= */
+  .contact { text-align: left; }
+  .contact__line {
+    font-family: var(--f-serif);
+    font-weight: 300;
+    font-size: clamp(32px, 6vw, 84px);
+    line-height: 1.18;
+    letter-spacing: var(--track-tight);
+    color: var(--ink);
+    max-width: 18ch;
+  }
+  .contact__line em { font-style: italic; color: var(--muted); }
+  .contact__line a {
+    position: relative;
+    display: inline-block;
+    transition: color var(--dur) var(--ease);
+  }
+  .contact__line a::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0.08em;
+    width: 100%; height: 1px;
+    background: currentColor;
+    transform: scaleX(1);
+    transform-origin: left center;
+    transition: transform var(--dur) var(--ease);
+  }
+  .contact__line a:hover { color: var(--muted); }
+  .contact__line a:hover::after { transform-origin: right center; transform: scaleX(0); }
+
+  .contact__row {
+    margin-top: clamp(56px, 9vh, 110px);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: clamp(32px, 5vw, 64px);
+    padding-top: clamp(32px, 5vh, 56px);
+    border-top: 1px solid var(--hairline);
+  }
+  @media (min-width: 760px) { .contact__row { grid-template-columns: 0.4fr 0.6fr; } }
+  .contact__mail {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 10px;
+    font-family: var(--f-serif);
+    font-size: clamp(20px, 2.4vw, 30px);
+    font-weight: 400;
+    color: var(--ink);
+    position: relative;
+    padding-bottom: 4px;
+  }
+  .contact__mail::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 100%; height: 1px;
+    background: var(--ink);
+    transform: scaleX(1);
+    transform-origin: left;
+    transition: transform var(--dur) var(--ease);
+  }
+  .contact__mail:hover::after { transform-origin: right; transform: scaleX(0); }
+
+  .social {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .social a {
+    display: inline-flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--hairline);
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  }
+  .social a span:first-child {
+    font-family: var(--f-serif);
+    font-size: clamp(18px, 2vw, 24px);
+    font-weight: 400;
+  }
+  .social a .shandle { color: var(--muted); font-size: 13px; }
+  .social a:hover { color: var(--muted); border-color: var(--ink); }
+
+  /* =========================================================
+     FOOTER
+     ========================================================= */
+  .footer {
+    padding-block: clamp(48px, 7vh, 80px);
+    border-top: 1px solid var(--hairline);
+  }
+  .footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .footer__copy, .footer__back {
+    font-size: 11px;
+    letter-spacing: var(--track-wide);
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .footer__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: color var(--dur) var(--ease), gap var(--dur) var(--ease);
+  }
+  .footer__back:hover { color: var(--ink); gap: 12px; }
+  .footer__back svg { width: 13px; height: 13px; }
+
+  /* =========================================================
+     REVEAL animation
+     ========================================================= */
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 1.1s var(--ease), transform 1.1s var(--ease);
+    will-change: opacity, transform;
+  }
+  .reveal.is-in { opacity: 1; transform: translateY(0); }
+  .reveal.d1 { transition-delay: 0.08s; }
+  .reveal.d2 { transition-delay: 0.16s; }
+  .reveal.d3 { transition-delay: 0.24s; }
+  .reveal.d4 { transition-delay: 0.32s; }
+
+  /* hero serial entrance */
+  .hero.is-in .hero__label,
+  .hero.is-in .hero__name,
+  .hero.is-in .hero__meta,
+  .hero.is-in .hero__cta {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 1.4s var(--ease), transform 1.4s var(--ease);
+  }
+  .hero.is-in .hero__label { transition-delay: 0.05s; }
+  .hero.is-in .hero__name  { transition-delay: 0.20s; }
+  .hero.is-in .hero__meta  { transition-delay: 0.45s; }
+  .hero.is-in .hero__cta   { transition-delay: 0.62s; }
+  .hero.is-in .hero__line  { transform: scaleX(1); transition: transform 1.6s var(--ease) 0.35s; }
+  .hero.is-in .hero__hint  { opacity: 1; transition: opacity 1.4s var(--ease) 0.9s; }
+
+  /* progress fill trigger */
+  .skill.is-in .skill__fill { width: var(--w); }
+
+  /* =========================================================
+     REDUCED MOTION
+     ========================================================= */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .reveal { opacity: 1; transform: none; }
+    .hero__label, .hero__name, .hero__meta, .hero__cta, .hero__hint { opacity: 1; transform: none; }
+    .hero__line { transform: scaleX(1); }
+    .skill.is-in .skill__fill { width: var(--w); }
+  }
+
+  /* =========================================================
+     Misc
+     ========================================================= */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border: 0;
+  }
+  .skip {
+    position: fixed;
+    top: -100px; left: 24px;
+    z-index: 100;
+    background: var(--ink);
+    color: var(--bg);
+    padding: 12px 18px;
+    font-size: 12px;
+    letter-spacing: var(--track-mid);
+    text-transform: uppercase;
+    transition: top var(--dur) var(--ease);
+  }
+  .skip:focus { top: 16px; }
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip">跳到主要内容</a>
+
+<!-- ============================ NAV ============================ -->
+<header class="nav" id="nav">
+  <div class="wrap nav__inner">
+    <a href="#top" class="brand" aria-label="林墨白 — 返回首页">
+      林墨白 <small>LIN MOBAI</small>
+    </a>
+
+    <nav class="nav__center nav__links" aria-label="主导航">
+      <a href="#about">关于</a>
+      <a href="#skills">技能</a>
+      <a href="#works">作品</a>
+      <a href="#journey">历程</a>
+      <a href="#contact">联系</a>
+    </nav>
+
+    <div style="display:flex; align-items:center; gap:18px;">
+      <a href="../index.html" class="nav__back" aria-label="返回总览">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        总览
+      </a>
+      <button class="burger" id="burger" aria-label="打开菜单" aria-expanded="false" aria-controls="overlay">
+        <span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ OVERLAY MENU ============================ -->
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="移动端导航">
+  <nav aria-label="移动端主菜单">
+    <a href="#about" data-close><span class="onum">01</span>关于</a>
+    <a href="#skills" data-close><span class="onum">02</span>技能</a>
+    <a href="#works" data-close><span class="onum">03</span>作品</a>
+    <a href="#journey" data-close><span class="onum">04</span>历程</a>
+    <a href="#contact" data-close><span class="onum">05</span>联系</a>
+  </nav>
+  <div class="overlay__foot">杭州 · 中国 — hello@linmobai.studio</div>
+</div>
+
+<main id="main">
+
+  <span id="top"></span>
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero" id="hero" aria-labelledby="hero-name">
+    <div class="wrap hero__grid">
+      <span class="eyebrow hero__label">
+        <span class="num">01</span><span class="bar"></span> Introduction
+      </span>
+
+      <h1 class="hero__name" id="hero-name">
+        林墨白<em>.</em>
+      </h1>
+
+      <div class="hero__meta">
+        <span>全栈工程师</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span><strong>数字设计师</strong></span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>杭州，中国</span>
+        <span class="sep" aria-hidden="true"></span>
+        <span>五年实践</span>
+      </div>
+
+      <div class="hero__line" aria-hidden="true"></div>
+
+      <div class="hero__cta">
+        <a href="#works" class="link-arrow">
+          查看作品
+          <svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 6h22M17 1l5 5-5 5"/></svg>
+        </a>
+        <a href="#contact" class="link-quiet">
+          联系
+          <span class="accent-dot" aria-hidden="true"></span>
+        </a>
+      </div>
+    </div>
+
+    <span class="hero__hint" aria-hidden="true">
+      <span class="vline"></span>
+      Scroll
+    </span>
+  </section>
+
+  <!-- ============================ ABOUT 02 ============================ -->
+  <section id="about" aria-labelledby="about-title">
+    <div class="wrap">
+      <div class="shead">
+        <div>
+          <span class="eyebrow reveal"><span class="num">02</span><span class="bar"></span> About</span>
+          <h2 class="shead__title reveal d1" id="about-title" style="margin-top:24px;">
+            以留白，<em>塑造形态。</em>
+          </h2>
+        </div>
+        <p class="shead__lead reveal d2">
+          我是<strong>林墨白</strong>，一位常驻杭州的全栈工程师与数字设计师。过去五年间，我专注于在代码的精确与设计的克制之间，寻找一种安静的平衡——
+          相信「少即是多」，相信空白本身即是表达。每一次取舍，都为了让信息更清晰，让体验更安静。
+        </p>
+      </div>
+
+      <div class="stats" role="list">
+        <div class="stat reveal" role="listitem">
+          <span class="stat__num">5<sup>+</sup></span>
+          <span class="stat__label">年实践</span>
+        </div>
+        <div class="stat reveal d1" role="listitem">
+          <span class="stat__num">42</span>
+          <span class="stat__label">交付项目</span>
+        </div>
+        <div class="stat reveal d2" role="listitem">
+          <span class="stat__num">18</span>
+          <span class="stat__label">合作品牌</span>
+        </div>
+        <div class="stat reveal d3" role="listitem">
+          <span class="stat__num">99<sup>%</sup></span>
+          <span class="stat__label">满意反馈</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- ============================ SKILLS 03 ============================ -->
+  <section id="skills" aria-labelledby="skills-title">
+    <div class="wrap">
+      <div class="shead">
+        <div>
+          <span class="eyebrow reveal"><span class="num">03</span><span class="bar"></span> Skills</span>
+          <h2 class="shead__title reveal d1" id="skills-title" style="margin-top:24px;">
+            四种语言，<em>一种语法。</em>
+          </h2>
+        </div>
+        <p class="shead__lead reveal d2">
+          前端、设计、后端与三维——四条独立的脉络，最终汇向同一个目标：让复杂的事物，看起来毫不费力。
+        </p>
+      </div>
+
+      <div class="skills reveal d1">
+
+        <div class="skill" style="--w:92%;">
+          <div class="skill__head">
+            <span class="skill__name">前端开发</span>
+            <span class="skill__sub">Frontend Engineering</span>
+          </div>
+          <div class="skill__bar"><span class="skill__fill"></span></div>
+          <div class="skill__pct">92<span> / 100</span></div>
+        </div>
+
+        <div class="skill" style="--w:88%;">
+          <div class="skill__head">
+            <span class="skill__name">视觉设计</span>
+            <span class="skill__sub">Visual Design</span>
+          </div>
+          <div class="skill__bar"><span class="skill__fill"></span></div>
+          <div class="skill__pct">88<span> / 100</span></div>
+        </div>
+
+        <div class="skill" style="--w:85%;">
+          <div class="skill__head">
+            <span class="skill__name">后端架构</span>
+            <span class="skill__sub">Backend Architecture</span>
+          </div>
+          <div class="skill__bar"><span class="skill__fill"></span></div>
+          <div class="skill__pct">85<span> / 100</span></div>
+        </div>
+
+        <div class="skill" style="--w:76%;">
+          <div class="skill__head">
+            <span class="skill__name">三维表现</span>
+            <span class="skill__sub">3D / WebGL</span>
+          </div>
+          <div class="skill__bar"><span class="skill__fill"></span></div>
+          <div class="skill__pct">76<span> / 100</span></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- ============================ WORKS 04 ============================ -->
+  <section id="works" aria-labelledby="works-title">
+    <div class="wrap">
+      <div class="shead">
+        <div>
+          <span class="eyebrow reveal"><span class="num">04</span><span class="bar"></span> Works</span>
+          <h2 class="shead__title reveal d1" id="works-title" style="margin-top:24px;">
+            精选作品，<em>四件。</em>
+          </h2>
+        </div>
+        <p class="shead__lead reveal d2">
+          每一个项目，都是一次对「克制」的练习。悬浮以阅读更多。
+        </p>
+      </div>
+
+      <div class="works">
+
+        <article class="work reveal">
+          <span class="work__index"><span class="num" style="font-family:var(--f-serif); font-style:italic;">N°01</span><span class="bar"></span></span>
+          <h3 class="work__title">极光笔记</h3>
+          <span class="work__cat">Product · 极简写作工具</span>
+          <p class="work__desc">
+            一款以专注为核心理念的笔记应用，去除一切多余装饰，让文字回归思考本身。
+          </p>
+          <span class="work__more">
+            查看案例
+            <svg viewBox="0 0 24 9" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 4.5h21M17 1l4 3.5-4 3.5"/></svg>
+          </span>
+        </article>
+
+        <article class="work reveal d1">
+          <span class="work__index"><span class="num" style="font-family:var(--f-serif); font-style:italic;">N°02</span><span class="bar"></span></span>
+          <h3 class="work__title">像素工坊</h3>
+          <span class="work__cat">Brand · 设计系统</span>
+          <p class="work__desc">
+            为独立设计团队打造的协作平台，以像素为单位，重新定义团队的视觉语言。
+          </p>
+          <span class="work__more">
+            查看案例
+            <svg viewBox="0 0 24 9" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 4.5h21M17 1l4 3.5-4 3.5"/></svg>
+          </span>
+        </article>
+
+        <article class="work reveal d2">
+          <span class="work__index"><span class="num" style="font-family:var(--f-serif); font-style:italic;">N°03</span><span class="bar"></span></span>
+          <h3 class="work__title">数据之眼</h3>
+          <span class="work__cat">Data · 可视化看板</span>
+          <p class="work__desc">
+            将海量数据凝练为一条清晰的视线，让决策者在三秒之内，看见全貌。
+          </p>
+          <span class="work__more">
+            查看案例
+            <svg viewBox="0 0 24 9" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 4.5h21M17 1l4 3.5-4 3.5"/></svg>
+          </span>
+        </article>
+
+        <article class="work reveal d3">
+          <span class="work__index"><span class="num" style="font-family:var(--f-serif); font-style:italic;">N°04</span><span class="bar"></span></span>
+          <h3 class="work__title">声波画廊</h3>
+          <span class="work__cat">Experimental · 沉浸式体验</span>
+          <p class="work__desc">
+            一场声音与光影的实验，让每一段旋律，都成为可被凝视的雕塑。
+          </p>
+          <span class="work__more">
+            查看案例
+            <svg viewBox="0 0 24 9" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M0 4.5h21M17 1l4 3.5-4 3.5"/></svg>
+          </span>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- ============================ JOURNEY 05 ============================ -->
+  <section id="journey" aria-labelledby="journey-title">
+    <div class="wrap">
+      <div class="shead">
+        <div>
+          <span class="eyebrow reveal"><span class="num">05</span><span class="bar"></span> Journey</span>
+          <h2 class="shead__title reveal d1" id="journey-title" style="margin-top:24px;">
+            一条线，<em>五年。</em>
+          </h2>
+        </div>
+        <p class="shead__lead reveal d2">
+          简单的时间，简单的路径。
+        </p>
+      </div>
+
+      <div class="journey reveal d1">
+
+        <div class="step">
+          <span class="step__year">2024</span>
+          <div>
+            <span class="step__title">独立设计工作室</span>
+            <span class="step__where">Lin Mobai Studio · 杭州</span>
+          </div>
+          <p class="step__desc">创立个人工作室，专注于为品牌打造极简而克制的数字体验。</p>
+        </div>
+
+        <div class="step">
+          <span class="step__year">2022</span>
+          <div>
+            <span class="step__title">高级前端工程师</span>
+            <span class="step__where">某科技公司 · 杭州</span>
+          </div>
+          <p class="step__desc">主导多个核心产品的前端架构与设计系统建设。</p>
+        </div>
+
+        <div class="step">
+          <span class="step__year">2020</span>
+          <div>
+            <span class="step__title">全栈工程师</span>
+            <span class="step__where">某创业团队 · 杭州</span>
+          </div>
+          <p class="step__desc">从零搭建产品全链路，奠定工程与设计并重的思维方式。</p>
+        </div>
+
+        <div class="step">
+          <span class="step__year">2019</span>
+          <div>
+            <span class="step__title">启程</span>
+            <span class="step__where">毕业 · 杭州</span>
+          </div>
+          <p class="step__desc">第一次写下「Hello, World」之外的句子。</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="hairline" />
+
+  <!-- ============================ CONTACT 06 ============================ -->
+  <section id="contact" aria-labelledby="contact-title" class="contact">
+    <div class="wrap">
+      <span class="eyebrow reveal"><span class="num">06</span><span class="bar"></span> Contact</span>
+
+      <h2 class="contact__line reveal d1" id="contact-title" style="margin-top:28px;">
+        让我们，<br/>从一封<em>邮件</em><br/><a href="mailto:hello@linmobai.studio">开始 ↗</a>
+      </h2>
+
+      <div class="contact__row">
+        <div class="reveal">
+          <span class="eyebrow" style="margin-bottom:18px; display:inline-flex;"><span class="bar"></span> Email</span>
+          <a href="mailto:hello@linmobai.studio" class="contact__mail">
+            hello@linmobai.studio
+          </a>
+        </div>
+
+        <div class="social reveal d1">
+          <a href="#" aria-label="访问 Behance">
+            <span>Behance</span>
+            <span class="shandle">/linmobai</span>
+          </a>
+          <a href="#" aria-label="访问 Dribbble">
+            <span>Dribbble</span>
+            <span class="shandle">/linmobai</span>
+          </a>
+          <a href="#" aria-label="访问 GitHub">
+            <span>GitHub</span>
+            <span class="shandle">/linmobai</span>
+          </a>
+          <a href="#" aria-label="访问 微信公众号">
+            <span>WeChat</span>
+            <span class="shandle">林墨白</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="footer" id="overview">
+  <div class="wrap footer__inner">
+    <span class="footer__copy">© 2024 林墨白 · Lin Mobai Studio</span>
+    <a href="#top" class="footer__back">
+      返回总览
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </a>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    'use strict';
+
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // ---------- Nav scroll state ----------
+    var nav = document.getElementById('nav');
+    function onScroll() {
+      if (window.scrollY > 24) { nav.classList.add('is-scrolled'); }
+      else { nav.classList.remove('is-scrolled'); }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // ---------- Hero entrance ----------
+    var hero = document.getElementById('hero');
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { hero.classList.add('is-in'); });
+    });
+
+    // ---------- IntersectionObserver reveals ----------
+    if ('IntersectionObserver' in window && !prefersReduced) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.16, rootMargin: '0px 0px -8% 0px' });
+
+      document.querySelectorAll('.reveal, .skill').forEach(function (el) { io.observe(el); });
+    } else {
+      document.querySelectorAll('.reveal, .skill').forEach(function (el) { el.classList.add('is-in'); });
+    }
+
+    // ---------- Mobile menu ----------
+    var burger = document.getElementById('burger');
+    var overlay = document.getElementById('overlay');
+    var lastFocus = null;
+
+    function openMenu() {
+      lastFocus = document.activeElement;
+      overlay.classList.add('is-open');
+      burger.setAttribute('aria-expanded', 'true');
+      burger.setAttribute('aria-label', '关闭菜单');
+      document.body.style.overflow = 'hidden';
+      var first = overlay.querySelector('a');
+      if (first) { setTimeout(function () { first.focus(); }, 60); }
+    }
+    function closeMenu() {
+      overlay.classList.remove('is-open');
+      burger.setAttribute('aria-expanded', 'false');
+      burger.setAttribute('aria-label', '打开菜单');
+      document.body.style.overflow = '';
+      if (lastFocus) { lastFocus.focus(); }
+    }
+    burger.addEventListener('click', function () {
+      if (overlay.classList.contains('is-open')) { closeMenu(); } else { openMenu(); }
+    });
+    overlay.querySelectorAll('[data-close]').forEach(function (a) {
+      a.addEventListener('click', closeMenu);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && overlay.classList.contains('is-open')) { closeMenu(); }
+    });
+  })();
+</script>
+</body>
+</html>

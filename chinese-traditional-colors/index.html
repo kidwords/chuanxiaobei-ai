@@ -54,6 +54,30 @@ body[data-active-view="immersive"] .project-home-link { display: none; }
 /* === View System === */
 .view { display: none; min-height: 100vh; }
 .view.active { display: block; }
+.gallery-mode-stage { display:grid; align-items:start; min-width:0; }
+.gallery-browser-layout,
+.gallery-color-wall-mode { grid-area:1 / 1; width:100%; min-width:0; transition:opacity .42s ease, transform .48s cubic-bezier(.22,.8,.28,1); }
+.gallery-browser-layout { opacity:1; transform:translateX(0) scale(1); }
+.gallery-color-wall-mode { display:block; position:relative; isolation:isolate; margin-top:0; opacity:0; pointer-events:none; transform:translateX(24px) scale(.985); }
+#gallery.is-color-wall-mode .gallery-browser-layout { opacity:0; pointer-events:none; transform:translateX(-24px) scale(.985); }
+#gallery.is-color-wall-mode .gallery-color-wall-mode { opacity:1; pointer-events:auto; transform:translateX(0) scale(1); z-index:2; }
+#gallery.color-view-entering .gallery-browser-layout,
+#gallery.color-view-entering .gallery-color-wall-mode { will-change:opacity,transform; }
+#gallery.color-view-entering:not(.is-color-wall-mode) .gallery-filter-sidebar { animation:gallery-sidebar-enter .46s cubic-bezier(.22,.8,.28,1) .04s both; }
+#gallery.color-view-entering:not(.is-color-wall-mode) .gallery-browser-content { animation:gallery-content-enter .46s cubic-bezier(.22,.8,.28,1) .08s both; }
+#gallery.color-view-entering.is-color-wall-mode .gallery-color-wall-mode { animation:color-wall-view-enter .48s cubic-bezier(.22,.8,.28,1) both; }
+#gallery.color-view-entering.is-color-wall-mode .color-wall-browser { animation:color-wall-browser-enter .52s cubic-bezier(.22,.8,.28,1) .04s both; }
+#gallery.color-view-entering.is-color-wall-mode .color-wall-inspector { animation:color-wall-inspector-enter .44s cubic-bezier(.22,.8,.28,1) .08s both; }
+@keyframes color-wall-view-enter { from { opacity:.4; transform:translateX(18px) scale(.985); } to { opacity:1; transform:translateX(0) scale(1); } }
+@keyframes color-wall-browser-enter { from { opacity:.72; transform:translateX(-12px) scale(.975); } to { opacity:1; transform:translateX(0) scale(1); } }
+@keyframes color-wall-inspector-enter { from { opacity:.45; transform:translateX(16px) scale(.97); } to { opacity:1; transform:translateX(0) scale(1); } }
+@keyframes gallery-sidebar-enter { from { opacity:.72; transform:translateX(-12px) scale(.98); } to { opacity:1; transform:translateX(0) scale(1); } }
+@keyframes gallery-content-enter { from { opacity:.6; transform:translateX(14px) scale(.98); } to { opacity:1; transform:translateX(0) scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .gallery-browser-layout, .gallery-color-wall-mode, .gallery-filter-sidebar, .gallery-browser-content { transition: none; }
+  #gallery.color-view-entering .gallery-browser-layout, #gallery.color-view-entering .gallery-filter-sidebar, #gallery.color-view-entering .gallery-browser-content,
+  #gallery.color-view-entering .gallery-color-wall-mode, #gallery.color-view-entering .color-wall-browser, #gallery.color-view-entering .color-wall-inspector { animation: none; }
+}
 
 /* ============================== */
 /* VIEW 1: HOME                    */
@@ -368,7 +392,7 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
 /* 首页操作栏：将页面跳转与当前页工具分组，降低误触并保持移动端可用 */
 .home-actions-bar {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.8fr);
+  grid-template-columns: minmax(330px, 1.2fr) auto minmax(360px, 1.4fr);
   align-items: center;
   gap: 16px;
   width: 100%;
@@ -382,7 +406,8 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   -webkit-backdrop-filter: blur(12px);
 }
 .home-action-group { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.home-navigation-actions { justify-content: flex-start; }
+.home-navigation-actions { justify-content: flex-start; flex-wrap: nowrap; }
+.home-navigation-actions .entry-btn { white-space: nowrap; }
 .home-tool-actions { justify-content: flex-end; }
 .home-action-divider { width: 1px; height: 32px; background: rgba(0,0,0,0.1); }
 .home-actions-bar .entry-btn { padding: 12px 18px; }
@@ -641,6 +666,11 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   font-weight: 500; color: #555;
 }
 .gallery-index-btn:hover { background: rgba(0,0,0,0.05); border-color: rgba(0,0,0,0.25); }
+.gallery-color-wall-btn {
+  border-color: #4e4742; background: #4e4742; color: #fff;
+  box-shadow: 0 5px 12px rgba(78,71,66,.16);
+}
+.gallery-color-wall-btn:hover { border-color: #38322e; background: #38322e; color: #fff; transform: translateY(-1px); box-shadow: 0 8px 16px rgba(78,71,66,.22); }
 .gallery-browser-tools { display:grid; grid-template-columns:minmax(220px,1.4fr) auto minmax(150px,.7fr) auto auto; gap:10px; align-items:center; margin:0 0 1.5rem; padding:12px 14px; border:1px solid rgba(0,0,0,.07); border-radius:16px; background:rgba(255,255,255,.58); box-shadow:0 6px 18px rgba(42,34,38,.06); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); }
 .gallery-browser-layout { display:grid; grid-template-columns:minmax(360px,42%) minmax(0,1fr); gap:28px; align-items:start; }
 .gallery-filter-sidebar { position:sticky; top:84px; height:calc(100vh - 112px); max-height:none; overflow:hidden; display:flex; flex-direction:column; padding:18px; border:1px solid rgba(0,0,0,.08); border-radius:18px; background:rgba(255,255,255,.66); box-shadow:0 8px 24px rgba(42,34,38,.07); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); scrollbar-width:thin; }
@@ -693,7 +723,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .gallery-color-list-empty { grid-column:1/-1; padding:28px 12px; border:1px dashed rgba(0,0,0,.15); border-radius:12px; color:#8b817a; font-size:.72rem; line-height:1.5; text-align:center; }
 .gallery-color-list-card { display:flex; min-width:0; aspect-ratio:1; flex-direction:column; gap:5px; padding:6px; border:1px solid transparent; border-radius:9px; background:rgba(255,255,255,.48); color:#4a4541; font:inherit; text-align:left; cursor:pointer; transition:transform .2s ease,border-color .2s ease,background-color .2s ease,box-shadow .2s ease; }
 .gallery-color-list-card:hover,.gallery-color-list-card:focus-visible { transform:translateY(-1px); border-color:rgba(78,71,66,.2); background:#fff; box-shadow:0 5px 12px rgba(42,34,38,.09); outline:none; }
-.gallery-color-list-card[aria-selected="true"] { border-color:rgba(78,71,66,.45); background:#fff; box-shadow:0 0 0 2px rgba(78,71,66,.12),0 5px 12px rgba(42,34,38,.09); }
+.gallery-color-list-card[aria-pressed="true"] { border-color:rgba(78,71,66,.45); background:#fff; box-shadow:0 0 0 2px rgba(78,71,66,.12),0 5px 12px rgba(42,34,38,.09); }
 .gallery-color-list-swatch { position:relative; display:flex; width:100%; aspect-ratio:1.35; height:auto; align-items:flex-end; border-radius:6px; border:1px solid rgba(0,0,0,.1); box-shadow:inset 0 1px 0 rgba(255,255,255,.3); overflow:hidden; }
 .gallery-color-list-swatch-name { width:100%; padding:7px 7px 6px; color:var(--swatch-ink,#2f2925); font-size:.82rem; font-weight:800; line-height:1.2; text-shadow:0 1px 3px rgba(255,255,255,.45),0 1px 2px rgba(0,0,0,.18); }
 .gallery-color-list-card[data-tone="dark"] .gallery-color-list-swatch-name { text-shadow:0 1px 4px rgba(0,0,0,.65),0 1px 2px rgba(0,0,0,.4); }
@@ -1063,40 +1093,60 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
               opacity 0.5s ease;
 }
 .imm-auto-label {
+  --imm-auto-ink: #f8f7f4;
+  --imm-auto-muted: rgba(248,247,244,0.72);
+  --imm-auto-border: rgba(248,247,244,0.34);
+  --imm-auto-surface: rgba(23,23,23,0.36);
+  --imm-auto-shadow: rgba(0,0,0,0.3);
   position: fixed;
-  top: 15%;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   z-index: 210;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  width: min(560px, calc(100vw - 48px));
+  min-width: min(360px, calc(100vw - 48px));
+  box-sizing: border-box;
+  padding: 24px 30px;
+  border: 1px solid var(--imm-auto-border);
+  border-radius: 14px;
+  background: var(--imm-auto-surface);
+  color: var(--imm-auto-ink);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.16);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  text-align: center;
   pointer-events: none;
-  transition: top 0.6s ease, left 0.6s ease, opacity 0.4s ease;
+  transition: opacity 0.4s ease, color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
 }
 .imm-auto-name {
-  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-size: clamp(2.4rem, 6vw, 4rem);
   font-weight: 700;
-  color: #fff;
-  text-shadow: 0 2px 16px rgba(0,0,0,0.4);
+  color: var(--imm-auto-ink);
+  text-shadow: 0 2px 16px var(--imm-auto-shadow);
   letter-spacing: 4px;
   transition: opacity 0.3s, font-family 0.4s ease;
 }
 .imm-auto-meta {
-  font-size: clamp(0.72rem, 1.4vw, 0.85rem);
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
   font-weight: 500;
-  color: rgba(255,255,255,0.6);
-  text-shadow: 0 1px 8px rgba(0,0,0,0.3);
+  color: var(--imm-auto-muted);
+  text-shadow: 0 1px 8px var(--imm-auto-shadow);
 }
 .imm-auto-font {
-  font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+  font-size: clamp(1.25rem, 3vw, 1.85rem);
   font-weight: 600;
-  color: rgba(255,255,255,0.85);
-  text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+  color: var(--imm-auto-muted);
+  text-shadow: 0 2px 12px var(--imm-auto-shadow);
   letter-spacing: 2px;
   opacity: 0.9;
   transition: font-family 0.4s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .imm-auto-label, .imm-auto-name, .imm-auto-font { transition: none; }
 }
 .auto-playing .imm-nav { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
 .auto-playing .imm-left { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
@@ -1500,6 +1550,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   .home-actions-bar { grid-template-columns: 1fr; gap: 10px; }
   .home-action-divider { width: 100%; height: 1px; }
   .home-action-group { justify-content: stretch; }
+  .home-navigation-actions { flex-wrap: wrap; }
   .home-action-group .entry-btn,
   .home-action-group .project-home-link { flex: 1 1 0; min-width: 0; }
   .intro-box p { font-size: 0.82rem; line-height: 1.5; }
@@ -1508,9 +1559,16 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   .pal-toolbar-actions { width: 100%; gap: 6px; }
   .pal-toolbar-actions .imm-btn { min-height: 36px; flex: 1 1 auto; }
   .pal-count-label { font-size: 1rem; }
-  .imm-auto-name { font-size: clamp(1.8rem, 10vw, 2.6rem); letter-spacing: 2px; }
-  .imm-auto-font { font-size: clamp(1rem, 5vw, 1.35rem); }
-  .imm-auto-meta { font-size: 0.74rem; }
+  .imm-auto-label { width: calc(100vw - 32px); min-width: 0; padding: 20px 16px; }
+  .imm-auto-name { font-size: clamp(2rem, 12vw, 3.2rem); letter-spacing: 2px; }
+  .imm-auto-font { font-size: clamp(1.15rem, 6vw, 1.6rem); }
+  .imm-auto-meta { font-size: 0.86rem; }
+}
+
+@media (min-width: 769px) and (max-width: 900px) {
+  .home-actions-bar { grid-template-columns: 1fr; gap: 10px; }
+  .home-action-divider { width: 100%; height: 1px; }
+  .home-navigation-actions, .home-tool-actions { justify-content: stretch; }
 }
 
 @media (max-width: 480px) {
@@ -1529,9 +1587,839 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   .home-actions-bar .motion-toggle { min-width: 0; }
 }
 
+/* ============================== */
+/* COLOR ENTRANCE + COLOR CORRIDOR */
+/* ============================== */
+.color-entrance {
+  position: fixed; inset: 0; z-index: 500; display: none; overflow: hidden;
+  min-height: 100vh; min-height: 100dvh; color: #fff6d5; background: #bba888;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .42s ease, visibility .42s ease;
+}
+.color-entrance.active { display: block; opacity: 1; visibility: visible; pointer-events: auto; }
+.color-entrance::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at 50% 46%, rgba(255,244,193,.64), transparent 34%), linear-gradient(135deg, #d3c1a7 0%, #938c7f 42%, #4e5653 100%);
+}
+.color-entrance.is-dismissing { opacity: 0; visibility: hidden; pointer-events: none; }
+.color-entrance[hidden] { display: none; }
+.color-entrance-stage {
+  position: relative; width: 100%; height: 100%; min-height: 100vh; min-height: 100dvh;
+  display: grid; place-items: center; overflow: hidden; isolation: isolate; cursor: pointer;
+  padding: max(24px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(24px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+}
+.color-entrance-stage::before {
+  content: ''; position: absolute; inset: 6%; z-index: -1; border: 1px solid rgba(255,247,211,.3); border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgba(28,37,36,.18), 0 16px 50px rgba(31,35,31,.22);
+  pointer-events: none;
+}
+.color-entrance-stage::after {
+  content: ''; position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 34%, rgba(24,31,30,.22) 100%);
+}
+.color-entrance-ribbon {
+  position: absolute; z-index: 1; width: min(82vw, 980px); height: clamp(78px, 13vw, 150px);
+  border: 2px solid rgba(255,249,222,.7); border-radius: 14px;
+  background: linear-gradient(90deg, #003460 0%, #b8a36a 50%, #f8d7a8 100%);
+  box-shadow: 0 20px 50px rgba(34,39,36,.34), inset 0 2px 0 rgba(255,255,255,.5), inset 0 -12px 22px rgba(36,34,28,.16);
+  transform: rotate(0deg) scale(1); opacity: 1;
+  transition: transform 1.52s cubic-bezier(.16,1,.3,1), opacity 1.1s ease, border-radius 1.52s ease;
+}
+.color-entrance-ribbon::before, .color-entrance-ribbon::after { content: ''; position: absolute; pointer-events: none; }
+.color-entrance-ribbon::before { inset: 13% 0; border-top: 1px solid rgba(255,255,255,.4); border-bottom: 1px solid rgba(20,30,29,.22); }
+.color-entrance-ribbon::after { inset: 0 3%; background: repeating-linear-gradient(90deg, rgba(255,255,255,.26) 0 1px, transparent 1px 9px); mix-blend-mode: soft-light; }
+.color-entrance-shards { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
+.color-entrance-shard {
+  position: absolute; left: 50%; top: 50%; width: clamp(76px, 12vw, 176px); height: clamp(5px, .72vw, 9px);
+  border-radius: 4px; background: var(--shard-color); box-shadow: 0 1px 0 rgba(255,255,255,.35), 0 5px 12px rgba(21,27,27,.18);
+  transform: translate(-50%, -50%) rotate(0deg) translateY(0) scaleX(1); opacity: 0;
+}
+.color-entrance.is-unfolding .color-entrance-ribbon { transform: rotate(-13deg) scale(.72); border-radius: 50%; opacity: .12; }
+.color-entrance.is-unfolding .color-entrance-shard { animation: color-entrance-shard-unfold 1.56s cubic-bezier(.16,1,.3,1) var(--shard-delay) both; }
+@keyframes color-entrance-shard-unfold {
+  0% { transform: translate(-50%, -50%) rotate(0deg) translateY(0) scaleX(1); opacity: .9; }
+  44% { transform: translate(-50%, -50%) rotate(var(--shard-angle)) translateY(calc(var(--shard-radius) * .56)) rotate(90deg) scaleX(.62); opacity: .82; }
+  100% { transform: translate(-50%, -50%) rotate(var(--shard-angle)) translateY(var(--shard-radius)) rotate(90deg) scaleX(.38); opacity: .38; }
+}
+.color-entrance-spectrum {
+  position: absolute; z-index: 0; width: min(150vmax, 1680px); aspect-ratio: 1; border-radius: 50%;
+  border: 2px solid rgba(255,250,220,.52);
+  background: conic-gradient(from -90deg, #003460 0deg 360deg);
+  box-shadow: 0 0 0 12px rgba(255,248,218,.16), 0 0 0 28px rgba(22,31,30,.14), 0 30px 70px rgba(25,31,29,.35);
+  -webkit-mask: radial-gradient(circle, transparent 0 24%, #000 24.6% 80%, transparent 80.6%);
+  mask: radial-gradient(circle, transparent 0 24%, #000 24.6% 80%, transparent 80.6%);
+  transform: scale(.2) rotate(-48deg); opacity: 0;
+  transition: transform 1.72s cubic-bezier(.16,1,.3,1), opacity 1.22s ease;
+}
+.color-entrance-spectrum::before { content: ''; position: absolute; inset: 24.5%; border: 2px solid rgba(255,249,220,.62); border-radius: 50%; box-shadow: 0 0 0 14px rgba(30,39,37,.15), inset 0 0 0 1px rgba(255,255,255,.38); }
+.color-entrance-spectrum::after { content: ''; position: absolute; inset: 38%; border: 1px solid rgba(255,246,207,.48); border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(29,38,36,.2); }
+.color-entrance.is-final .color-entrance-ribbon { opacity: 0; transform: rotate(36deg) scale(.18); }
+.color-entrance.is-final .color-entrance-spectrum { transform: scale(1) rotate(0deg); opacity: .94; }
+.color-entrance.is-final .color-entrance-spectrum::before { animation: color-entrance-inner-turn 24s linear infinite; }
+@keyframes color-entrance-inner-turn { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+.color-entrance-core {
+  position: relative; z-index: 5; display: flex; width: min(100%, 720px); flex-direction: column; align-items: center; text-align: center;
+  color: #fff5c8; opacity: .1; transform: scale(.86); transition: opacity 1.15s ease, transform 1.5s cubic-bezier(.16,1,.3,1);
+  pointer-events: none; text-shadow: 0 3px 0 rgba(52,33,15,.42), 0 10px 24px rgba(22,28,27,.46);
+}
+.color-entrance.is-unfolding .color-entrance-core, .color-entrance.is-final .color-entrance-core { opacity: .98; transform: scale(1); }
+.color-entrance-eyebrow { color: #fff3b9; font-family: 'SF Mono','Consolas',monospace; font-size: .68rem; font-weight: 700; letter-spacing: .18em; }
+.color-entrance-title { display: flex; flex-direction: column; align-items: center; margin-top: 12px; color: #fff7d1; font-family: 'STKaiti','KaiTi','FZKai-Z03','DFKai-SB','Noto Serif SC',serif; font-size: clamp(3.5rem, 11vw, 8.5rem); font-weight: 900; letter-spacing: .14em; line-height: .92; }
+.color-entrance-title span, .color-entrance-title strong { display: block; background: linear-gradient(180deg, #fff8d9 0%, #f8e6a2 44%, #c99435 100%); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-stroke: 1px rgba(255,237,168,.56); filter: drop-shadow(0 6px 0 rgba(116,67,20,.34)) drop-shadow(0 14px 20px rgba(21,26,25,.32)); }
+.color-entrance-title strong { margin-top: .06em; font-size: 1.18em; letter-spacing: .05em; }
+.color-entrance-subtitle { max-width: 34rem; margin-top: 22px; color: rgba(255,247,210,.9); font-size: .84rem; letter-spacing: .16em; line-height: 1.6; }
+.color-entrance-meta { margin-top: 14px; color: rgba(255,241,191,.74); font-family: 'SF Mono','Consolas',monospace; font-size: .68rem; letter-spacing: .14em; }
+.color-entrance-hint { position: absolute; z-index: 6; left: 50%; bottom: max(26px, env(safe-area-inset-bottom)); transform: translateX(-50%); color: rgba(255,247,213,.78); font-size: .72rem; letter-spacing: .12em; white-space: nowrap; text-shadow: 0 2px 8px rgba(22,27,26,.48); pointer-events: none; }
+.color-entrance:focus { outline: 0; }
+.corridor-entry { flex-direction: column; gap: 2px; padding: 10px 18px !important; }
+.corridor-entry small { color: #857971; font-size: .62rem; line-height: 1.2; }
+.corridor-entry:hover small { color: inherit; opacity: .72; }
+@media (max-width: 600px) { .color-entrance-stage { padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left)); } .color-entrance-spectrum { width: 150vmax; } .color-entrance-ribbon { width: 86vw; height: clamp(64px, 20vw, 108px); } .color-entrance-title { font-size: clamp(3.25rem, 18vw, 6.5rem); } .color-entrance-subtitle { max-width: 86vw; margin-top: 16px; font-size: .72rem; } .color-entrance-hint { font-size: .62rem; } }
+@media (prefers-reduced-motion: reduce) {
+  .color-entrance, .color-entrance * { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+  .color-entrance-ribbon { transform: rotate(36deg) scale(.18); opacity: 0; }
+  .color-entrance-spectrum { transform: scale(1) rotate(0deg); opacity: .94; }
+  .color-entrance-core { opacity: .98; transform: scale(1); }
+}
+
+/* ============================== */
+/* VIEW 3: HEX COLOR WALL          */
+/* ============================== */
+.color-wall-bg { display:none; position:fixed; inset:0; z-index:0; pointer-events:none; background-color:#e7ede9; background-image:radial-gradient(ellipse at 12% 18%,rgba(255,255,255,.48),transparent 44%),radial-gradient(ellipse at 88% 82%,rgba(255,255,255,.24),transparent 46%),linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,0)); transition:background-color .75s ease; will-change:background-color; }
+#gallery.is-color-wall-mode #colorWallBg { display:block; }
+.color-wall-content { position:relative; z-index:1; display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,340px); gap:20px; align-items:start; }
+.color-wall-browser { min-width:0; padding:16px; border:none; border-radius:0; background:transparent; box-shadow:none; }
+.color-wall-tools { display:grid; grid-template-columns:minmax(220px,1fr) auto auto; gap:10px; align-items:end; margin-bottom:14px; }
+.color-wall-drag-status { margin:0 0 10px; color:#9a8c83; font-size:.68rem; line-height:1.4; }
+.color-wall-search { display:flex; flex-direction:column; gap:6px; color:#81766f; font-size:.68rem; font-weight:700; letter-spacing:.08em; }
+.color-wall-search input { box-sizing:border-box; width:100%; min-height:44px; padding:9px 12px; border:1px solid rgba(49,45,42,.16); border-radius:10px; background:#fff; color:#3d3733; font:inherit; font-size:.8rem; outline:none; }
+.color-wall-search input:focus { border-color:rgba(146,118,51,.62); box-shadow:0 0 0 3px rgba(146,118,51,.12); }
+.color-wall-tool-actions { display:flex; gap:8px; }
+.color-wall-reset { min-height:44px; padding:7px 12px; border:1px solid rgba(49,45,42,.14); border-radius:10px; background:rgba(255,255,255,.78); color:#5f554e; font:inherit; font-size:.74rem; cursor:pointer; transition:all .25s ease; }
+.color-wall-reset:hover { transform:translateY(-1px) scale(1.02); border-color:rgba(78,71,66,.42); background:#4e4742; color:#fff; box-shadow:0 5px 12px rgba(42,34,38,.1); }
+.color-wall-reset { background:transparent; }
+.color-wall-count { align-self:center; color:#81766f; font-family:'SF Mono','Consolas',monospace; font-size:.72rem; text-align:right; }
+.color-wall-grid { display:grid; grid-template-columns:repeat(16,minmax(0,1fr)); gap:7px; align-items:stretch; }
+#gallery.is-color-wall-mode .color-wall-search,
+#gallery.is-color-wall-mode .color-wall-drag-status,
+#gallery.is-color-wall-mode .color-wall-count,
+#gallery.is-color-wall-mode .color-wall-empty { color:var(--color-wall-ink,#171717); }
+#gallery.is-color-wall-mode .color-wall-reset:not(:hover) { border-color:var(--color-wall-control-border,rgba(23,23,23,.24)); background:var(--color-wall-control-surface,rgba(248,247,244,.72)); color:var(--color-wall-ink,#171717); }
+.color-wall-empty { grid-column:1/-1; padding:36px 16px; border:1px dashed rgba(49,45,42,.18); border-radius:14px; color:#81766f; font-size:.78rem; text-align:center; }
+.color-wall-cell { position:relative; display:block; width:100%; aspect-ratio:1; min-width:0; min-height:0; padding:0; overflow:visible; border:1px solid rgba(49,45,42,.12); border-radius:10px; background:var(--wall-color); color:var(--wall-ink); cursor:grab; touch-action:none; user-select:none; transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease,opacity .25s ease; }
+.color-wall-cell::after { content:''; position:absolute; inset:0; border-radius:inherit; box-shadow:inset 0 1px 0 rgba(255,255,255,.24); pointer-events:none; }
+.color-wall-cell:hover, .color-wall-cell:focus-visible { z-index:3; transform:translateY(-2px) scale(1.08); border-color:rgba(49,45,42,.56); outline:none; box-shadow:0 8px 18px rgba(42,34,38,.2); }
+.color-wall-cell:focus-visible { outline:3px solid #b3944b; outline-offset:2px; }
+.color-wall-cell[aria-pressed="true"] { z-index:2; border-color:#b3944b; box-shadow:0 0 0 2px rgba(179,148,75,.72),0 8px 18px rgba(42,34,38,.16); }
+.color-wall-cell.is-drag-source { z-index:6; cursor:grabbing; opacity:.28; transform:scale(.92); box-shadow:0 0 0 2px rgba(179,148,75,.46); }
+.color-wall-cell.is-drag-target { z-index:7; transform:translateY(-4px) scale(1.1); border-color:#b3944b; box-shadow:0 0 0 3px rgba(179,148,75,.84),0 12px 24px rgba(42,34,38,.2); }
+.color-wall-cell.is-multi-selected { z-index:2; border-color:#b3944b; box-shadow:0 0 0 2px rgba(179,148,75,.72),0 7px 16px rgba(42,34,38,.13); }
+.color-wall-cell-selected-mark { position:absolute; z-index:5; top:4px; right:4px; display:none; width:17px; height:17px; border:1px solid rgba(255,255,255,.82); border-radius:50%; background:#4e4742; color:#fff; font-size:.66rem; font-weight:700; line-height:15px; text-align:center; box-shadow:0 2px 5px rgba(42,34,38,.18); pointer-events:none; }
+.color-wall-cell.is-multi-selected .color-wall-cell-selected-mark { display:block; }
+.color-wall-cell.is-drop-before::before,
+.color-wall-cell.is-drop-after::before { content:''; position:absolute; z-index:8; top:-5px; bottom:-5px; width:3px; border-radius:3px; background:#b3944b; box-shadow:0 0 0 2px rgba(255,255,255,.74),0 4px 10px rgba(179,148,75,.35); pointer-events:none; }
+.color-wall-cell.is-drop-before::before { left:-6px; }
+.color-wall-cell.is-drop-after::before { right:-6px; }
+.color-wall-cell.is-reordered { animation:color-wall-swap-pop .42s cubic-bezier(.16,1,.3,1) both; }
+.color-wall-drag-ghost { position:fixed; z-index:260; width:48px; height:48px; margin:0; border:2px solid rgba(255,255,255,.86); border-radius:10px; background:var(--wall-color); box-shadow:0 14px 28px rgba(42,34,38,.26),0 0 0 4px rgba(179,148,75,.4); pointer-events:none; transform:translate(-50%,-50%) rotate(-3deg) scale(1.08); transform-origin:center; animation:color-wall-drag-pop .22s ease-out both; }
+.color-wall-drag-ghost::after { content:''; position:absolute; inset:0; border-radius:inherit; box-shadow:inset 0 1px 0 rgba(255,255,255,.35); }
+.color-wall-drag-count { position:absolute; right:-9px; top:-9px; display:grid; place-items:center; min-width:23px; height:23px; padding:0 5px; border:2px solid rgba(255,255,255,.88); border-radius:999px; background:#4e4742; color:#fff; font:600 .68rem/1 'SF Mono','Consolas',monospace; box-shadow:0 4px 10px rgba(42,34,38,.22); }
+@keyframes color-wall-drag-pop { from { opacity:.2; transform:translate(-50%,-50%) rotate(0deg) scale(.86); } to { opacity:.96; transform:translate(-50%,-50%) rotate(-3deg) scale(1.08); } }
+@keyframes color-wall-swap-pop { 0% { transform:scale(.94); } 58% { transform:translateY(-3px) scale(1.07); } 100% { transform:scale(1); } }
+.color-wall-cell-meta { position:absolute; z-index:4; left:50%; bottom:calc(100% + 7px); display:flex; min-width:112px; max-width:180px; flex-direction:column; gap:2px; padding:7px 9px; border:1px solid rgba(49,45,42,.18); border-radius:10px; background:rgba(250,249,246,.97); color:#3d3733; box-shadow:0 8px 20px rgba(42,34,38,.16); opacity:0; pointer-events:none; transform:translate(-50%,4px); transition:all .2s ease; }
+.color-wall-cell:hover .color-wall-cell-meta, .color-wall-cell:focus-visible .color-wall-cell-meta, .color-wall-cell[aria-pressed="true"] .color-wall-cell-meta { opacity:1; transform:translate(-50%,0); }
+.color-wall-cell-name { overflow:hidden; font-size:.68rem; font-weight:700; line-height:1.2; text-overflow:ellipsis; white-space:nowrap; }
+.color-wall-cell-hex { font-family:'SF Mono','Consolas',monospace; font-size:.62rem; }
+.color-wall-inspector { position:sticky; top:92px; min-height:620px; padding:20px; border:1px solid rgba(49,45,42,.12); border-radius:16px; background:rgba(250,249,246,.9); box-shadow:0 8px 24px rgba(75,65,54,.08); }
+.color-wall-inspector-kicker { color:#81766f; font-size:.68rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
+.color-wall-inspector-swatch { width:min(100%,260px); aspect-ratio:1; height:auto; margin:14px auto 0; border:1px solid rgba(49,45,42,.12); border-radius:14px; background:linear-gradient(135deg,#eee,#ddd); box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 10px 22px rgba(42,34,38,.12); }
+.color-wall-inspector-context { margin-top:16px; color:#9a8c83; font-size:.72rem; letter-spacing:.08em; }
+.color-wall-inspector h3 { margin-top:7px; color:#302c29; font-size:clamp(1.8rem,4vw,2.8rem); font-weight:600; line-height:1.15; }
+.color-wall-inspector-hex { display:inline-flex; min-height:44px; align-items:center; margin-top:8px; padding:0 12px; border:1px solid rgba(49,45,42,.14); border-radius:10px; background:#fff; color:#5f554e; font-family:'SF Mono','Consolas',monospace; font-size:.82rem; cursor:pointer; }
+.color-wall-inspector-hex:hover { transform:translateY(-1px) scale(1.02); background:#f5f2eb; }
+.color-wall-inspector-facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:16px; }
+.color-wall-inspector-facts div { padding:10px; border:1px solid rgba(49,45,42,.1); border-radius:10px; background:rgba(255,255,255,.62); }
+.color-wall-inspector-facts span, .color-wall-inspector-facts strong { display:block; }
+.color-wall-inspector-facts span { color:#81766f; font-size:.64rem; }
+.color-wall-inspector-facts strong { margin-top:4px; color:#4d453f; font-family:'SF Mono','Consolas',monospace; font-size:.72rem; font-weight:600; }
+.color-wall-inspector-note { margin-top:16px; color:#6f665f; font-size:.76rem; line-height:1.6; }
+@media (max-width: 900px) { .color-wall-content { grid-template-columns:1fr; } .color-wall-inspector { position:static; min-height:0; } .color-wall-inspector-swatch { width:min(100%,240px); height:auto; } .color-wall-grid { grid-template-columns:repeat(12,minmax(0,1fr)); } }
+@media (max-width: 640px) { .color-wall-tools { grid-template-columns:1fr auto; gap:10px; } .color-wall-search { grid-column:1/-1; } .color-wall-count { text-align:left; } .color-wall-tool-actions { grid-column:1/-1; width:100%; } .color-wall-tool-actions .color-wall-reset { flex:1 1 0; } .color-wall-grid { grid-template-columns:repeat(8,minmax(0,1fr)); gap:5px; } .color-wall-cell { border-radius:7px; } .color-wall-cell-meta { min-width:104px; } }
+@media (max-width: 420px) { .color-wall-grid { grid-template-columns:repeat(6,minmax(0,1fr)); } .color-wall-browser, .color-wall-inspector { padding:14px; } }
+@media (prefers-reduced-motion: reduce) { .color-wall-bg { transition:none; } .color-wall-cell-meta { transform:translate(-50%,0); } .color-wall-drag-ghost, .color-wall-cell.is-reordered { animation:none; } }
+
+/* ============================== */
+/* ENTRANCE V3: PHYSICAL COLOR CARDS */
+/* ============================== */
+#colorEntrance {
+  color:#f7f1e5;
+  background:#eef2e8;
+  isolation:isolate;
+}
+#colorEntrance::before {
+  background:
+    radial-gradient(ellipse at 50% 10%,rgba(255,255,255,.72),transparent 42%),
+    radial-gradient(circle at 12% 18%,var(--entrance-mix-1,rgba(255,235,188,.5)),transparent 42%),
+    radial-gradient(circle at 88% 18%,var(--entrance-mix-3,rgba(201,230,214,.46)),transparent 44%),
+    radial-gradient(circle at 88% 86%,var(--entrance-mix-5,rgba(239,204,196,.42)),transparent 45%),
+    radial-gradient(circle at 12% 86%,var(--entrance-mix-7,rgba(201,223,237,.46)),transparent 45%),
+    linear-gradient(132deg,#e6f1ee 0%,#f6f1de 52%,#f2e4e0 100%);
+}
+#colorEntrance .color-entrance-stage {
+  display:block;
+  padding:max(24px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));
+  cursor:pointer;
+}
+#colorEntrance .color-entrance-stage::before {
+  inset:5%;
+  border:1px solid rgba(247,240,224,.3);
+  border-radius:16px;
+  box-shadow:inset 0 0 0 1px rgba(37,48,45,.16),0 18px 54px rgba(33,41,39,.24);
+}
+#colorEntrance .color-entrance-stage::after {
+  z-index:8;
+  background:radial-gradient(ellipse at center,transparent 56%,rgba(36,47,43,.18) 100%);
+}
+#colorEntrance .color-entrance-spectrum,
+#colorEntrance .color-entrance-ribbon,
+#colorEntrance .color-entrance-shards { display:none !important; }
+#colorEntrance .color-entrance-physical {
+  position:absolute;
+  z-index:3;
+  top:56%;
+  left:50%;
+  width:min(98vw,1180px);
+  height:min(74vh,680px);
+  --entrance-card-width:clamp(164px,16vw,220px);
+  --entrance-card-height:clamp(360px,58vh,500px);
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+#colorEntrance .color-entrance-paper-fan {
+  position:absolute;
+  inset:0;
+  z-index:2;
+  transform:translateZ(0);
+}
+#colorEntrance .color-entrance-paper-fan::before {
+  content:'';
+  position:absolute;
+  z-index:100;
+  top:50%;
+  left:50%;
+  width:clamp(74px,8vw,110px);
+  height:clamp(22px,3vw,34px);
+  border:2px solid rgba(237,231,219,.92);
+  border-radius:8px;
+  background:linear-gradient(180deg,#f9f3e8,#dcd2c1);
+  box-shadow:2px 4px 0 rgba(205,195,177,.74),0 8px 14px rgba(31,39,36,.2);
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+#colorEntrance .color-entrance-table-shadow {
+  position:absolute;
+  z-index:1;
+  left:50%;
+  top:50%;
+  bottom:auto;
+  width:68%;
+  height:13%;
+  border-radius:50%;
+  background:rgba(28,37,34,.26);
+  filter:blur(18px);
+  opacity:.35;
+  transform:translateX(-50%);
+}
+#colorEntrance .color-entrance-pivot {
+  position:absolute;
+  z-index:8;
+  top:50%;
+  left:50%;
+  width:30px;
+  height:30px;
+  border:1px solid rgba(91,78,62,.5);
+  border-radius:50%;
+  background:radial-gradient(circle at 34% 28%,#fff,#b8aa95 34%,#70675a 72%,#403d36 100%);
+  box-shadow:0 2px 4px rgba(30,37,34,.34),inset 0 1px 1px rgba(255,255,255,.7);
+  opacity:.96;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+}
+#colorEntrance .color-entrance-pivot::before {
+  content:'';
+  position:absolute;
+  inset:6px;
+  border:1px solid rgba(58,54,48,.4);
+  border-radius:50%;
+}
+#colorEntrance .color-entrance-pivot-pin {
+  position:absolute;
+  inset:10px;
+  border-radius:50%;
+  background:#5b564c;
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.4);
+}
+#colorEntrance .color-entrance-paper-card {
+  position:absolute;
+  z-index:2;
+  left:50%;
+  top:50%;
+  bottom:auto;
+  display:block;
+  width:var(--entrance-card-width);
+  height:var(--entrance-card-height);
+  overflow:hidden;
+  border:2px solid #e9e3d7;
+  border-radius:3px 3px 2px 2px;
+  background:var(--paper-color);
+  box-shadow:2px 4px 0 rgba(222,213,198,.72),7px 12px 18px rgba(31,39,36,.22);
+  opacity:0;
+  transform:translate(-50%,-100%) rotate(0deg) translateY(var(--paper-stack-offset,0px)) scale(.985);
+  transform-origin:50% 100%;
+}
+#colorEntrance .color-entrance-paper-card::before {
+  content:'';
+  position:absolute;
+  inset:3px 1px;
+  border:1px solid rgba(255,255,255,.3);
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.13) 0 1px,transparent 1px 10px),linear-gradient(145deg,rgba(255,255,255,.2),transparent 48%),var(--paper-color);
+}
+#colorEntrance .color-entrance-paper-card::after {
+  content:'';
+  position:absolute;
+  top:34%;
+  right:1px;
+  left:1px;
+  bottom:1px;
+  border-top:2px solid rgba(255,255,255,.42);
+  background:linear-gradient(145deg,rgba(255,255,255,.1),transparent 48%),var(--paper-color);
+}
+#colorEntrance .color-entrance-paper-label {
+  position:absolute;
+  z-index:2;
+  top:8px;
+  left:50%;
+  color:#514b43;
+  font-family:'STKaiti','KaiTi','Noto Serif SC',serif;
+  max-width:82%;
+  overflow:hidden;
+  font-size:clamp(.48rem,.56vw,.68rem);
+  font-weight:600;
+  line-height:1.2;
+  letter-spacing:.02em;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  padding:3px 6px;
+  border-radius:2px;
+  background:rgba(255,250,239,.9);
+  box-shadow:0 1px 2px rgba(45,42,36,.12);
+  transform:translateX(-50%);
+}
+#colorEntrance .color-entrance-paper-code {
+  position:absolute;
+  z-index:2;
+  top:47%;
+  left:50%;
+  color:var(--paper-ink,#fff9ec);
+  font-family:'SF Mono','Consolas',monospace;
+  font-size:clamp(.34rem,.44vw,.46rem);
+  font-weight:600;
+  line-height:1;
+  letter-spacing:0;
+  white-space:nowrap;
+  text-shadow:0 1px 2px rgba(35,34,30,.32);
+  padding:2px 1px;
+  border-radius:2px;
+  background:rgba(43,42,36,.12);
+  transform:translateX(-50%);
+}
+#colorEntrance.is-unfolding .color-entrance-paper-card {
+  animation:color-entrance-paper-unfold 1.48s cubic-bezier(.16,1,.3,1) var(--paper-delay) both;
+}
+@keyframes color-entrance-paper-unfold {
+  0% { opacity:0; transform:translate(-50%,-100%) rotate(0deg) translateY(var(--paper-stack-offset,0px)) scale(.985); }
+  18% { opacity:1; transform:translate(-50%,-100%) rotate(0deg) translateY(calc(var(--paper-stack-offset,0px) * .6)) scale(.992); }
+  52% { opacity:1; transform:translate(-50%,-100%) rotate(calc(var(--paper-angle) * .68)) translateY(0) scale(.998); }
+  100% { opacity:1; transform:translate(-50%,-100%) rotate(var(--paper-angle)) scale(1); }
+}
+#colorEntrance .color-entrance-main-card {
+  position:absolute;
+  z-index:5;
+  left:50%;
+  top:50%;
+  bottom:auto;
+  width:var(--entrance-card-width);
+  height:var(--entrance-card-height);
+  opacity:1;
+  transform:translate(-50%,-100%) rotate(-1.2deg) scale(1);
+  transform-origin:50% 100%;
+  transition:none;
+}
+#colorEntrance .color-entrance-main-card::before,
+#colorEntrance .color-entrance-main-card::after {
+  content:'';
+  position:absolute;
+  inset:4px -7px -12px;
+  border:2px solid rgba(237,231,219,.9);
+  border-radius:4px;
+  background:#dcd4c5;
+  box-shadow:0 16px 24px rgba(31,39,36,.2);
+  transform:rotate(2.2deg);
+}
+#colorEntrance .color-entrance-main-card::after {
+  inset:1px -4px -9px;
+  background:#eee8dc;
+  transform:rotate(-1deg);
+}
+#colorEntrance .color-entrance-main-card-paper {
+  position:relative;
+  z-index:2;
+  display:flex;
+  height:100%;
+  box-sizing:border-box;
+  flex-direction:column;
+  padding:14px 13px 13px;
+  overflow:hidden;
+  border:3px solid #eee8db;
+  border-radius:4px;
+  background:#f6f0e5;
+  box-shadow:0 22px 30px rgba(29,37,34,.3),inset 0 0 0 1px rgba(148,128,93,.3);
+}
+#colorEntrance .color-entrance-main-card-topline,
+#colorEntrance .color-entrance-main-card-bottomline {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  color:#655946;
+  font-family:'SF Mono','Consolas',monospace;
+  font-size:.55rem;
+  font-weight:600;
+  letter-spacing:.08em;
+}
+#colorEntrance .color-entrance-main-card-art {
+  position:relative;
+  display:grid;
+  grid-template-rows:1.3fr .82fr .82fr .82fr .88fr;
+  gap:3px;
+  min-height:0;
+  flex:1;
+  margin:14px 0 13px;
+  padding:4px;
+  border:1px solid rgba(123,105,77,.22);
+  background:#ddd1bf;
+}
+#colorEntrance .color-entrance-main-card-art > span {
+  position:relative;
+  display:block;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.32);
+  background:var(--art-color,#b9a78e);
+}
+#colorEntrance .color-entrance-main-card-art > span > b {
+  position:absolute;
+  z-index:2;
+  right:6px;
+  bottom:5px;
+  color:rgba(255,248,226,.86);
+  font-family:'STKaiti','KaiTi','Noto Serif SC',serif;
+  font-size:.48rem;
+  font-weight:600;
+  letter-spacing:.12em;
+  text-shadow:0 1px 3px rgba(36,31,26,.28);
+}
+#colorEntrance .color-entrance-main-card-art .main-card-art-cover {
+  background:linear-gradient(180deg,#dfa72d 0 29%,#579596 29% 100%) !important;
+}
+#colorEntrance .color-entrance-main-card-art .main-card-art-cover::before {
+  content:'';
+  position:absolute;
+  top:-32%;
+  right:-22%;
+  width:78%;
+  height:68%;
+  border-radius:0 0 0 88%;
+  background:rgba(255,239,187,.42);
+  box-shadow:inset 0 -1px 0 rgba(114,75,38,.16);
+}
+#colorEntrance .color-entrance-main-card-art .main-card-art-cover::after {
+  content:'';
+  position:absolute;
+  right:9%;
+  bottom:8%;
+  left:9%;
+  height:49%;
+  border:1px solid rgba(255,247,215,.34);
+  border-radius:50% 48% 46% 52%;
+  background:
+    radial-gradient(ellipse at 21% 69%,#e5c36c 0 3px,transparent 3.8px),
+    radial-gradient(ellipse at 34% 47%,#e5c36c 0 3px,transparent 3.8px),
+    radial-gradient(ellipse at 47% 27%,#e5c36c 0 3px,transparent 3.8px),
+    radial-gradient(ellipse at 61% 40%,#e5c36c 0 3px,transparent 3.8px),
+    radial-gradient(ellipse at 76% 19%,#e5c36c 0 3px,transparent 3.8px);
+  opacity:.76;
+}
+#colorEntrance .main-card-art-cover-copy {
+  position:absolute;
+  z-index:3;
+  top:14%;
+  right:6%;
+  left:6%;
+  box-sizing:border-box;
+  display:flex !important;
+  flex-direction:column;
+  align-items:center;
+  gap:2px;
+  max-width:88%;
+  padding:0 2px;
+  overflow:hidden !important;
+  border:0 !important;
+  background:transparent !important;
+  color:#fff4d5;
+  text-align:center;
+  text-shadow:0 1px 3px rgba(45,47,39,.26);
+}
+#colorEntrance .main-card-art-cover-copy small,
+#colorEntrance .main-card-art-cover-copy strong,
+#colorEntrance .main-card-art-cover-copy em {
+  display:block;
+  margin:0;
+  color:inherit;
+}
+#colorEntrance .main-card-art-cover-copy small {
+  font-family:'SF Mono','Consolas',monospace;
+  font-size:.38rem;
+  letter-spacing:.12em;
+}
+#colorEntrance .main-card-art-title {
+  position:absolute;
+  z-index:4;
+  top:4%;
+  right:5%;
+  bottom:4%;
+  left:5%;
+  display:flex !important;
+  width:auto;
+  max-width:none;
+  flex-direction:row;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(4px,1vw,8px);
+  color:#fff7da;
+  font-family:'FZKai-Z03','STKaiti','KaiTi','Noto Serif SC','Songti SC',serif;
+  font-size:clamp(1.95rem,3.5vw,3rem);
+  font-weight:700;
+  line-height:.92;
+  letter-spacing:.08em;
+  padding:0;
+  pointer-events:none;
+  text-shadow:0 1px 0 rgba(255,255,255,.2),0 2px 3px rgba(39,58,54,.42),1px 0 0 rgba(161,112,46,.34);
+  -webkit-text-stroke:.25px rgba(125,88,40,.34);
+  paint-order:stroke fill;
+}
+#colorEntrance .main-card-art-title > span {
+  display:block;
+  max-width:none;
+  overflow:visible;
+  white-space:normal;
+  writing-mode:vertical-rl;
+  text-orientation:upright;
+}
+#colorEntrance .main-card-art-title > span.main-card-art-title-main {
+  display:flex;
+  width:auto;
+  height:100%;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:0;
+  writing-mode:horizontal-tb;
+  text-orientation:mixed;
+  font-size:1em;
+  letter-spacing:.12em;
+  text-shadow:0 1px 0 rgba(255,255,255,.22),0 3px 4px rgba(39,58,54,.48),1px 0 0 rgba(161,112,46,.34);
+}
+#colorEntrance .main-card-art-title-main i {
+  display:block;
+  font-style:normal;
+  line-height:.82;
+  transform-origin:50% 50%;
+}
+#colorEntrance .main-card-art-title-main i:nth-child(odd) { transform:translateX(-.16em) rotate(-2.5deg); }
+#colorEntrance .main-card-art-title-main i:nth-child(even) { transform:translateX(.16em) rotate(2.5deg); }
+#colorEntrance .main-card-art-title-main i:last-child { transform:translateX(-.02em) rotate(-1deg); }
+#colorEntrance .main-card-art-title-mark {
+  margin-top:0;
+  color:#f1d58b;
+  font-size:.44em;
+  font-family:'STKaiti','KaiTi','Noto Serif SC',serif;
+  letter-spacing:.18em;
+  text-shadow:0 1px 2px rgba(44,46,35,.42);
+}
+#colorEntrance .main-card-art-cover-copy em {
+  margin-top:2px;
+  font-family:'SF Mono','Consolas',monospace;
+  font-size:.29rem;
+  font-style:normal;
+  letter-spacing:.12em;
+}
+#colorEntrance .main-card-art-branch {
+  position:absolute;
+  z-index:2;
+  right:19%;
+  bottom:10%;
+  width:48%;
+  height:55%;
+  border-bottom:1px solid rgba(238,215,145,.7);
+  border-left:1px solid rgba(238,215,145,.7);
+  border-radius:0 0 0 85%;
+  transform:rotate(-24deg);
+}
+#colorEntrance .main-card-art-branch::before,
+#colorEntrance .main-card-art-branch::after {
+  content:'';
+  position:absolute;
+  width:12px;
+  height:6px;
+  border:1px solid rgba(238,215,145,.74);
+  border-radius:100% 0 100% 0;
+  transform:rotate(-32deg);
+}
+#colorEntrance .main-card-art-branch::before { top:18%; left:17%; box-shadow:14px 10px 0 -1px rgba(238,215,145,.72),28px 1px 0 -1px rgba(238,215,145,.68); }
+#colorEntrance .main-card-art-branch::after { top:51%; left:42%; transform:rotate(18deg); box-shadow:-13px 8px 0 -1px rgba(238,215,145,.7),12px -8px 0 -1px rgba(238,215,145,.66); }
+#colorEntrance .color-entrance-main-card-art .main-card-art-wave {
+  background:#b84e43 !important;
+}
+#colorEntrance .main-card-art-wave::before {
+  content:'';
+  position:absolute;
+  inset:-40% -12%;
+  background:repeating-radial-gradient(ellipse at 50% 112%,transparent 0 10px,rgba(255,234,201,.42) 11px 13px,transparent 14px 24px);
+  transform:rotate(-8deg) scale(1.16);
+}
+#colorEntrance .main-card-art-wave::after {
+  content:'';
+  position:absolute;
+  inset:12% 8%;
+  border-top:1px solid rgba(255,244,219,.38);
+  border-bottom:1px solid rgba(98,42,37,.18);
+  transform:skewY(-8deg);
+}
+#colorEntrance .color-entrance-main-card-art .main-card-art-flower {
+  background:#dcc3a1 !important;
+}
+#colorEntrance .main-card-art-flower::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 22% 28%,#a84845 0 4px,transparent 4.8px),
+    radial-gradient(ellipse at 29% 23%,#d59454 0 3px,transparent 3.8px),
+    radial-gradient(ellipse at 70% 66%,#a84845 0 4px,transparent 4.8px),
+    radial-gradient(ellipse at 78% 61%,#d59454 0 3px,transparent 3.8px),
+    linear-gradient(112deg,transparent 0 46%,rgba(94,93,59,.6) 47% 48%,transparent 49% 100%);
+  opacity:.9;
+}
+#colorEntrance .main-card-art-flower::after {
+  content:'';
+  position:absolute;
+  top:8%;
+  right:22%;
+  bottom:8%;
+  width:1px;
+  background:rgba(89,80,50,.5);
+  transform:rotate(24deg);
+}
+#colorEntrance .color-entrance-main-card-art .main-card-art-vermilion {
+  background:linear-gradient(135deg,#c44b3d 0 52%,#df9a39 53% 100%) !important;
+}
+#colorEntrance .main-card-art-vermilion::before {
+  content:'';
+  position:absolute;
+  inset:11%;
+  border:1px solid rgba(255,235,193,.45);
+  transform:rotate(45deg) scale(.76);
+}
+#colorEntrance .main-card-art-vermilion::after {
+  content:'';
+  position:absolute;
+  top:-20%;
+  right:34%;
+  width:1px;
+  height:150%;
+  background:rgba(255,227,169,.38);
+  box-shadow:18px 0 0 rgba(111,43,35,.2),36px 0 0 rgba(255,227,169,.28);
+  transform:rotate(38deg);
+}
+#colorEntrance .color-entrance-main-card-art .main-card-art-dark {
+  background:#1c5354 !important;
+}
+#colorEntrance .main-card-art-dark::before {
+  content:'';
+  position:absolute;
+  inset:8%;
+  background:
+    radial-gradient(ellipse at 26% 39%,#d8ad4b 0 5px,transparent 5.8px),
+    radial-gradient(ellipse at 36% 30%,#e2c871 0 4px,transparent 4.8px),
+    radial-gradient(ellipse at 59% 58%,#d8ad4b 0 5px,transparent 5.8px),
+    radial-gradient(ellipse at 69% 48%,#e2c871 0 4px,transparent 4.8px),
+    linear-gradient(132deg,transparent 0 49%,rgba(231,205,124,.7) 50% 51%,transparent 52% 100%);
+  opacity:.9;
+}
+#colorEntrance .main-card-art-dark::after {
+  content:'';
+  position:absolute;
+  inset:16% 14%;
+  border:1px solid rgba(232,207,128,.48);
+  border-radius:48% 52% 40% 58%;
+  transform:rotate(-13deg);
+}
+#colorEntrance .color-entrance-main-card-bottomline { margin-top:auto; padding-top:9px; border-top:1px solid rgba(123,105,77,.22); }
+#colorEntrance .color-entrance-main-card-rivet {
+  position:absolute;
+  right:9px;
+  bottom:8px;
+  width:11px;
+  height:11px;
+  border:1px solid rgba(75,67,57,.45);
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#a99d8b 38%,#605a50 100%);
+  box-shadow:0 1px 2px rgba(28,34,31,.32);
+  display:block;
+}
+#colorEntrance.is-unfolding .color-entrance-main-card,
+#colorEntrance.is-final .color-entrance-main-card { opacity:1; transform:translate(-50%,-100%) rotate(-1.2deg) scale(1); }
+#colorEntrance .color-entrance-core {
+  position:absolute;
+  z-index:7;
+  top:8%;
+  left:50%;
+  width:min(92vw,760px);
+  margin:0;
+  color:#f5efe1;
+  opacity:.1;
+  transform:translateX(-50%) translateY(10px) scale(.94);
+  text-shadow:0 2px 16px rgba(35,45,41,.35);
+  transition:opacity .9s ease,transform 1.1s cubic-bezier(.16,1,.3,1);
+}
+#colorEntrance .color-entrance-core { display:none !important; }
+#colorEntrance.is-unfolding .color-entrance-core,
+#colorEntrance.is-final .color-entrance-core { opacity:1; transform:translateX(-50%) translateY(0) scale(1); }
+#colorEntrance .color-entrance-eyebrow { color:#5d5548; font-size:.64rem; letter-spacing:.2em; text-shadow:0 1px 5px rgba(255,255,255,.62); }
+#colorEntrance .color-entrance-title {
+  display:flex;
+  flex-direction:row;
+  gap:.3em;
+  margin-top:10px;
+  color:#f8f0df;
+  font-family:'STKaiti','KaiTi','Noto Serif SC',serif;
+  font-size:clamp(2.4rem,5.6vw,4.8rem);
+  font-weight:700;
+  letter-spacing:.12em;
+  line-height:1.05;
+}
+#colorEntrance .color-entrance-title span,
+#colorEntrance .color-entrance-title strong {
+  background:none !important;
+  color:#f8f0df !important;
+  -webkit-text-stroke:0;
+  filter:none;
+  text-shadow:0 2px 12px rgba(31,43,39,.34);
+}
+#colorEntrance .color-entrance-subtitle { max-width:34rem; margin-top:11px; color:rgba(48,55,50,.84); font-size:.76rem; letter-spacing:.12em; text-shadow:0 1px 4px rgba(255,255,255,.52); }
+#colorEntrance .color-entrance-meta { margin-top:9px; color:rgba(48,55,50,.72); font-size:.62rem; letter-spacing:.16em; text-shadow:0 1px 3px rgba(255,255,255,.5); }
+#colorEntrance .color-entrance-controls {
+  position:absolute;
+  z-index:12;
+  right:max(24px,env(safe-area-inset-right));
+  bottom:max(24px,env(safe-area-inset-bottom));
+  left:max(24px,env(safe-area-inset-left));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:14px;
+}
+#colorEntrance .color-entrance-hint { position:static; color:rgba(245,239,225,.72); font-size:.66rem; letter-spacing:.1em; text-shadow:0 2px 8px rgba(26,34,32,.35); transform:none; }
+#colorEntrance .color-entrance-skip {
+  min-height:44px;
+  padding:0 14px;
+  border:1px solid rgba(245,239,225,.38);
+  border-radius:10px;
+  background:rgba(40,50,47,.2);
+  color:#f5efe1;
+  font:inherit;
+  font-size:.68rem;
+  cursor:pointer;
+  transition:all .25s ease;
+}
+#colorEntrance .color-entrance-skip:hover,
+#colorEntrance .color-entrance-skip:focus-visible { transform:translateY(-1px) scale(1.02); border-color:rgba(245,239,225,.7); background:rgba(40,50,47,.38); outline:0; box-shadow:0 6px 14px rgba(28,36,33,.18); }
+@media (max-width:600px) {
+  #colorEntrance .color-entrance-stage { padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left)); }
+  #colorEntrance .color-entrance-physical { top:58%; width:100vw; height:64vh; --entrance-card-width:clamp(124px,34vw,150px); --entrance-card-height:clamp(274px,46vh,350px); }
+  #colorEntrance .color-entrance-paper-label { top:6px; font-size:.46rem; padding:2px 4px; }
+  #colorEntrance .color-entrance-paper-code { font-size:.3rem; }
+  #colorEntrance .color-entrance-paper-fan::before { width:clamp(72px,24vw,104px); height:clamp(20px,7vw,28px); }
+  #colorEntrance .color-entrance-main-card { width:clamp(124px,34vw,150px); height:clamp(274px,46vh,350px); }
+  #colorEntrance .color-entrance-main-card-paper { padding:11px 10px 10px; border-width:2px; }
+  #colorEntrance .color-entrance-main-card-art { margin:9px 0 9px; }
+  #colorEntrance .color-entrance-core { top:7%; }
+  #colorEntrance .color-entrance-eyebrow { font-size:.54rem; letter-spacing:.13em; }
+  #colorEntrance .color-entrance-title { margin-top:8px; font-size:clamp(2rem,12vw,3.1rem); }
+  #colorEntrance .color-entrance-subtitle { max-width:88vw; margin-top:8px; font-size:.62rem; letter-spacing:.08em; }
+  #colorEntrance .color-entrance-meta { margin-top:6px; font-size:.54rem; }
+  #colorEntrance .color-entrance-controls { right:16px; bottom:max(16px,env(safe-area-inset-bottom)); left:16px; gap:9px; }
+  #colorEntrance .color-entrance-hint { font-size:.54rem; }
+  #colorEntrance .color-entrance-skip { padding:0 11px; font-size:.6rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #colorEntrance .color-entrance-paper-card { opacity:1; transform:translate(-50%,-100%) rotate(var(--paper-angle)) scale(1); }
+  #colorEntrance .color-entrance-main-card { opacity:1; transform:translate(-50%,-100%) rotate(-1.2deg) scale(1); }
+}
+
 </style>
 </head>
 <body>
+<div class="color-entrance" id="colorEntrance" role="dialog" aria-modal="true" aria-labelledby="mainCardArtTitle" aria-describedby="colorEntranceHint" aria-hidden="true" tabindex="-1">
+  <div class="color-entrance-stage">
+    <div class="color-entrance-spectrum" id="colorEntranceSpectrum" aria-hidden="true"></div>
+    <div class="color-entrance-ribbon" id="colorEntranceRibbon" aria-hidden="true"></div>
+    <div class="color-entrance-shards" id="colorEntranceShards" aria-hidden="true"></div>
+    <div class="color-entrance-physical" aria-hidden="true">
+      <div class="color-entrance-paper-fan" id="colorEntrancePaperFan"></div>
+      <div class="color-entrance-pivot"><span class="color-entrance-pivot-pin"></span></div>
+      <div class="color-entrance-table-shadow"></div>
+      <div class="color-entrance-main-card">
+        <div class="color-entrance-main-card-paper">
+          <div class="color-entrance-main-card-topline"><span>全新款</span><span>CS · 384</span></div>
+          <div class="color-entrance-main-card-art">
+            <span class="main-card-art-cover">
+              <span class="main-card-art-cover-copy"><small>全新款</small><em>TRADITIONAL COLORS</em></span>
+              <i class="main-card-art-branch" aria-hidden="true"></i>
+            </span>
+            <span class="main-card-art-wave"><b>流云</b></span>
+            <span class="main-card-art-flower"><b>花卉</b></span>
+            <span class="main-card-art-vermilion"><b>朱砂</b></span>
+            <span class="main-card-art-dark"><b>锦色</b></span>
+            <strong class="main-card-art-title" id="mainCardArtTitle" aria-label="中国传统色卡"><span class="main-card-art-title-main" aria-hidden="true"><i>中</i><i>国</i><i>传</i><i>统</i><i>色</i></span><span class="main-card-art-title-mark" aria-hidden="true">色卡</span></strong>
+          </div>
+          <div class="color-entrance-main-card-bottomline"><span>24 节气</span><span>384 色</span></div>
+          <span class="color-entrance-main-card-rivet"></span>
+        </div>
+      </div>
+    </div>
+    <div class="color-entrance-core">
+      <span class="color-entrance-eyebrow">COLLECTED COLOR CARDS · 384</span>
+      <h1 class="color-entrance-title" id="colorEntranceTitle" aria-label="中国传统色"><span>中国</span><span>传统色</span></h1>
+      <p class="color-entrance-subtitle">像翻开一册实物色卡，沿二十四节气认识中国传统色</p>
+      <span class="color-entrance-meta" id="colorEntranceMeta">24 节气 · 384 色 · HEX 色号长廊</span>
+    </div>
+    <div class="color-entrance-controls">
+      <span class="color-entrance-hint" id="colorEntranceHint">点击任意位置展开 · 约 5 秒后自动进入</span>
+      <button class="color-entrance-skip" id="colorEntranceSkip" type="button" onclick="dismissColorEntrance(true)">跳过展开</button>
+    </div>
+  </div>
+</div>
+<noscript><style>.color-entrance { display: none !important; }</style></noscript>
 <div class="export-dialog" id="exportDialog" role="dialog" aria-modal="true" aria-labelledby="exportDialogTitle" aria-hidden="true">
   <div class="export-dialog-card">
     <div class="export-dialog-head">
@@ -1561,9 +2449,10 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   <div class="home-reference-leaf-layer" id="homeReferenceLeafLayer" aria-hidden="true"></div>
   <div class="home-inner">
     <div class="home-actions-bar" role="toolbar" aria-label="首页操作">
-      <div class="home-action-group home-navigation-actions" aria-label="页面浏览">
-        <button class="entry-btn" onclick="startTour(0)">逐步览色</button>
-        <button class="entry-btn" onclick="showGallery()">全部浏览</button>
+        <div class="home-action-group home-navigation-actions" aria-label="页面浏览">
+          <button class="entry-btn" onclick="startTour(0)">逐步览色</button>
+          <button class="entry-btn" onclick="showGallery()">全部浏览</button>
+          <button class="entry-btn corridor-entry" onclick="showColorWall()"><span>色号长廊</span></button>
       </div>
       <div class="home-action-divider" aria-hidden="true"></div>
       <div class="home-action-group home-tool-actions" aria-label="首页操作">
@@ -1591,19 +2480,22 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   <button class="home-focus-exit" id="homeFocusExit" type="button" onclick="toggleHomeFocus(false)" aria-label="退出全屏动效">退出全屏</button>
 </div>
 <div id="gallery" class="view">
+  <div class="color-wall-bg" id="colorWallBg" aria-hidden="true"></div>
   <div class="gallery-inner">
     <div class="gallery-header">
       <div class="gallery-heading">
-        <h2>全部浏览</h2>
-        <span>左侧筛选与浏览 384 色 · 右侧查看单色详情与节气关联</span>
+        <h2 id="galleryTitle">全部浏览</h2>
+        <span id="gallerySubtitle">左侧筛选与浏览 384 色 · 右侧查看单色详情与节气关联</span>
       </div>
       <div id="gallerySolarInfo" class="solar-term-info" style="font-size:0.78rem;color:#555;margin-right:12px;"></div>
       <div class="gallery-actions" style="display:flex;gap:10px;align-items:center;">
+        <button type="button" class="back-btn gallery-color-wall-btn" id="galleryColorModeButton" onclick="toggleGalleryColorMode()" aria-pressed="false" aria-label="切换到色号长廊"><span id="galleryColorModeButtonLabel">色号长廊</span></button>
         <button class="back-btn" onclick="saveBackgroundAsImage()">保存背景</button>
         <button class="back-btn gallery-home-btn" onclick="showView('home')">&#8592; 返回首页</button>
         <a class="nav-project-link" href="../index.html">返回总览</a>
       </div>
     </div>
+    <div class="gallery-mode-stage" id="galleryModeStage">
     <div class="gallery-browser-layout">
       <aside class="gallery-filter-sidebar" id="galleryFilterSidebar" aria-label="色卡筛选">
         <div class="gallery-sidebar-title-row">
@@ -1644,7 +2536,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
           <span>色卡</span>
           <span id="galleryResultCount" class="gallery-result-count" aria-live="polite"></span>
         </div>
-        <div id="galleryColorList" class="gallery-color-list" role="listbox" aria-label="传统色列表"></div>
+        <div id="galleryColorList" class="gallery-color-list" aria-label="传统色列表"></div>
       </aside>
       <main class="gallery-browser-content">
         <section class="gallery-color-inspector" id="galleryColorInspector" aria-live="polite">
@@ -1690,6 +2582,40 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
         </section>
         <div id="solarSectionsInGallery" hidden></div>
       </main>
+    </div>
+    <div class="gallery-color-wall-mode" id="galleryColorWallMode" aria-hidden="true">
+      <div class="color-wall-content">
+        <main class="color-wall-browser" aria-labelledby="galleryTitle">
+          <div class="color-wall-tools">
+            <label class="color-wall-search" for="colorWallSearchInput">
+              <span>搜索颜色</span>
+              <input id="colorWallSearchInput" type="search" placeholder="颜色名或 HEX 色号" autocomplete="off" oninput="updateColorWallSearch(this.value)">
+            </label>
+            <div class="color-wall-count" id="colorWallCount" aria-live="polite">384 / 384 色</div>
+            <div class="color-wall-tool-actions">
+              <button type="button" class="color-wall-reset" onclick="resetColorWallFilters()">重置筛选</button>
+              <button type="button" class="color-wall-reset" onclick="resetColorWallOrder()">还原顺序</button>
+            </div>
+          </div>
+          <p class="color-wall-drag-status" id="colorWallDragStatus" aria-live="polite">拖动色卡整理 · 落在色块上交换，落在缝隙中插入 · Ctrl/Cmd+点击多选，Shift+点击选连续范围</p>
+          <div id="colorWallGrid" class="color-wall-grid" aria-label="按整体亮度由左上至右下排列的 384 个正方形色块"></div>
+        </main>
+        <aside class="color-wall-inspector" id="colorWallInspector" aria-live="polite" aria-labelledby="colorWallInspectorName">
+          <div class="color-wall-inspector-kicker">HEX 色号 · 当前选色</div>
+          <div class="color-wall-inspector-swatch" id="colorWallDetailSwatch" aria-hidden="true"></div>
+          <div class="color-wall-inspector-context" id="colorWallDetailContext"></div>
+          <h3 id="colorWallInspectorName">选择一个颜色</h3>
+          <button type="button" class="color-wall-inspector-hex" id="colorWallDetailHex" onclick="copyColorWallColor()" title="点击色值复制">从色块开始探索</button>
+          <div class="color-wall-inspector-facts">
+            <div><span>RGB</span><strong id="colorWallDetailRgb">—</strong></div>
+            <div><span>HSL</span><strong id="colorWallDetailHsl">—</strong></div>
+            <div><span>色阶</span><strong id="colorWallDetailTone">—</strong></div>
+            <div><span>来源</span><strong id="colorWallDetailTerm">—</strong></div>
+          </div>
+          <p class="color-wall-inspector-note" id="colorWallDetailNote">选择色块后，这里会显示色名、真实 HEX、色彩数值与来源信息。</p>
+        </aside>
+      </div>
+    </div>
     </div>
     <button class="back-to-top" id="backToTopBtn" onclick="scrollToTop()">&#8593;</button>
   </div>
@@ -2639,7 +3565,6 @@ function getSolarTermGradient(name) {
   return current ? current.gradient : 'linear-gradient(135deg, #f5f5f5, #e0e0e0)';
 }
 var defaultSolarBg = getSolarTermGradient(getCurrentSolarTerm().current);
-
 var currentView = 'home';
 var currentScene = -1;
 var currentMode = 'light';
@@ -3085,6 +4010,8 @@ document.addEventListener('keydown', function(event) {
 });
 
 function showView(name) {
+  if (name !== 'gallery' && typeof cancelGalleryModeTransition === 'function') cancelGalleryModeTransition();
+  if (name !== 'home' && typeof dismissColorEntrance === 'function' && colorEntranceState && colorEntranceState.active) dismissColorEntrance(true);
   if (name !== 'home') stopHomeSolarEffect();
   if (name !== 'home') setHomeFocusMode(false);
   document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
@@ -3093,8 +4020,8 @@ function showView(name) {
   document.body.dataset.activeView = name;
   window.scrollTo(0, 0);
   // 全部浏览页面背景固定不随滚动
-  document.body.style.backgroundAttachment = (name === 'gallery') ? 'fixed' : '';
-  document.body.style.backgroundRepeat = (name === 'gallery') ? 'no-repeat' : '';
+  document.body.style.backgroundAttachment = name === 'gallery' ? 'fixed' : '';
+  document.body.style.backgroundRepeat = name === 'gallery' ? 'no-repeat' : '';
   document.body.classList.toggle('gallery-fixed-background', name === 'gallery');
   if (name !== 'immersive') {
     document.body.style.background = defaultSolarBg;
@@ -3104,7 +4031,112 @@ function showView(name) {
 }
 
 function goHome() { if (isAutoPlaying) stopAutoPlay(); renderSolarHome(); renderSolarTermInfo(); showView('home'); isTourMode = false; var hb = document.getElementById('homeBg'); if (hb) { hb.style.background = defaultSolarBg; hb.style.backgroundSize = 'cover'; } var ic = getCurrentSolarTerm(); var cc = SOLAR_16_COLORS[ic.current]; updateHomeTextColors(cc[0].hex); }
-function showGallery() { showView('gallery'); renderSolarSectionsInGallery(); renderSolarTermInfo(); }
+var galleryDisplayMode = 'gallery';
+var galleryModeTransitionState = { token: 0, coverTimer: null, revealTimer: null, target: null };
+
+function cancelGalleryModeTransition() {
+  var state = galleryModeTransitionState;
+  state.token += 1;
+  if (state.coverTimer !== null && state.coverTimer !== undefined) window.clearTimeout(state.coverTimer);
+  if (state.revealTimer !== null && state.revealTimer !== undefined) window.clearTimeout(state.revealTimer);
+  state.coverTimer = null;
+  state.revealTimer = null;
+  state.target = null;
+  clearColorBrowseMotionClasses();
+}
+
+function setGalleryDisplayMode(mode) {
+  var isWall = mode === 'color-wall';
+  galleryDisplayMode = isWall ? 'color-wall' : 'gallery';
+  var gallery = document.getElementById('gallery');
+  var modeMount = document.getElementById('galleryColorWallMode');
+  var title = document.getElementById('galleryTitle');
+  var subtitle = document.getElementById('gallerySubtitle');
+  var button = document.getElementById('galleryColorModeButton');
+  var label = document.getElementById('galleryColorModeButtonLabel');
+  var wallBackground = document.getElementById('colorWallBg');
+  if (gallery) {
+    gallery.classList.toggle('is-color-wall-mode', isWall);
+    gallery.setAttribute('data-display-mode', galleryDisplayMode);
+  }
+  if (wallBackground) wallBackground.style.display = isWall ? 'block' : 'none';
+  if (title) title.textContent = isWall ? '色号长廊' : '全部浏览';
+  if (subtitle) subtitle.textContent = isWall ? '按整体亮度浏览 384 色 · 拖动色块整理顺序' : '左侧筛选与浏览 384 色 · 右侧查看单色详情与节气关联';
+  if (modeMount) modeMount.setAttribute('aria-hidden', isWall ? 'false' : 'true');
+  if (label) label.textContent = isWall ? '全部浏览' : '色号长廊';
+  if (button) {
+    button.setAttribute('aria-pressed', isWall ? 'true' : 'false');
+    button.setAttribute('aria-label', isWall ? '切换到全部浏览' : '切换到色号长廊');
+    button.title = isWall ? '切换到全部浏览' : '切换到色号长廊';
+  }
+}
+
+function renderGalleryViewDirect() {
+  if (currentView !== 'gallery') showView('gallery');
+  setGalleryDisplayMode('gallery');
+  renderSolarSectionsInGallery();
+  renderSolarTermInfo();
+}
+
+function renderColorWallViewDirect() {
+  if (currentView !== 'gallery') showView('gallery');
+  setGalleryDisplayMode('color-wall');
+  renderColorWallPage();
+  renderSolarTermInfo();
+  if (colorWallBackgroundValue) setColorWallBackground(colorWallBackgroundValue);
+}
+
+function clearColorBrowseMotionClasses() {
+  var gallery = document.getElementById('gallery');
+  if (gallery) gallery.classList.remove('color-view-exiting', 'color-view-entering');
+}
+
+function transitionColorBrowseView(target) {
+  var targetMode = target === 'color-wall' ? 'color-wall' : 'gallery';
+  var renderTarget = targetMode === 'color-wall' ? renderColorWallViewDirect : renderGalleryViewDirect;
+  var state = galleryModeTransitionState;
+  var hasCoverTimer = state.coverTimer !== null && state.coverTimer !== undefined;
+  var hasRevealTimer = state.revealTimer !== null && state.revealTimer !== undefined;
+  if ((hasCoverTimer || hasRevealTimer) && state.target === targetMode && currentView === 'gallery') return;
+  if (currentView === 'gallery' && galleryDisplayMode === targetMode && !hasCoverTimer && !hasRevealTimer) {
+    renderTarget();
+    return;
+  }
+  state.token += 1;
+  var token = state.token;
+  if (state.coverTimer !== null && state.coverTimer !== undefined) window.clearTimeout(state.coverTimer);
+  if (state.revealTimer !== null && state.revealTimer !== undefined) window.clearTimeout(state.revealTimer);
+  state.coverTimer = null;
+  state.revealTimer = null;
+  state.target = targetMode;
+  clearColorBrowseMotionClasses();
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // 两种布局始终留在同一个舞台中，先更新目标模式再做交叉过渡，避免中点出现空白帧。
+  renderTarget();
+  var incoming = document.getElementById('gallery');
+  if (!reduceMotion && incoming) {
+    void incoming.offsetWidth;
+    incoming.classList.add('color-view-entering');
+  }
+  if (reduceMotion) {
+    state.target = null;
+    return;
+  }
+  state.revealTimer = window.setTimeout(function() {
+    if (token !== state.token) return;
+    clearColorBrowseMotionClasses();
+    state.coverTimer = null;
+    state.revealTimer = null;
+    state.target = null;
+  }, 560);
+}
+
+function showGallery() { transitionColorBrowseView('gallery'); }
+function showColorWall() { transitionColorBrowseView('color-wall'); }
+function toggleGalleryColorMode() {
+  if (currentView === 'gallery' && galleryDisplayMode === 'color-wall') showGallery();
+  else showColorWall();
+}
 
 // === Tour ===
 function startTour(sceneIdx) {
@@ -3258,7 +4290,8 @@ function applyBlend() {
   if (cn) {
     var l1 = colors[1].name || '', l2 = colors[2].name || '';
     cn.textContent = '混色 ' + l1 + ' + ' + l2;
-    cn.style.color = getLuma(bgHex) < 160 ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)';
+    var blendInk = getReadableTextColor(bgHex);
+    cn.style.color = blendInk === '#f8f7f4' ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.5)';
   }
 }
 
@@ -3282,9 +4315,8 @@ function renderImmersive() {
   var bgHex = colors[0].hex;
 
   // 文字颜色判断基于背景色
-  var l = getLuma(bgHex);
-  var isDark = l < 160;
-  var tc = isDark ? '#f0f0f0' : '#1a1a1a';
+  var tc = getReadableTextColor(bgHex);
+  var isDark = tc === '#f8f7f4';
   var mc = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.6)';
 
   // Nav
@@ -3388,7 +4420,7 @@ function renderImmersive() {
   strip.innerHTML = '';
   for (var i = 0; i < colors.length; i++) {
     var c = colors[i];
-    var sl = getLuma(c.hex) > 160 ? '#1a1a1a' : '#ffffff';
+    var sl = getReadableTextColor(c.hex);
     strip.innerHTML += '<button type="button" class="imm-swatch" aria-label="应用' + (c.label || '颜色') + ' ' + (c.name || '') + ' ' + c.hex + '" onclick="applyColor(\'' + c.hex + '\')">' +
       '<div class="imm-swatch-inner" style="background:' + c.hex + '"></div>' +
       '<div class="imm-swatch-label" style="color:' + sl + '">' + (c.label || '') + '</div>' +
@@ -3611,44 +4643,64 @@ function getFontFamily(fontName) {
   if (fontName.indexOf('黑') !== -1 || fontName.indexOf('站酷') !== -1) return '"zcoolqingkehuangyou","YouSheBiaoTiHei",sans-serif';
   return 'sans-serif';
 }
+function updateAutoLabelColors(backgroundHex) {
+  var label = document.getElementById('immAutoLabel');
+  if (!label) return;
+  var ink = getReadableTextColor(backgroundHex || '#e7ede9');
+  var isLightInk = ink === '#f8f7f4';
+  var muted = isLightInk ? 'rgba(248,247,244,0.72)' : 'rgba(23,23,23,0.68)';
+  var border = isLightInk ? 'rgba(248,247,244,0.38)' : 'rgba(23,23,23,0.28)';
+  var surface = isLightInk ? 'rgba(23,23,23,0.38)' : 'rgba(248,247,244,0.72)';
+  var shadow = isLightInk ? 'rgba(0,0,0,0.3)' : 'rgba(255,255,255,0.18)';
+  label.style.setProperty('--imm-auto-ink', ink);
+  label.style.setProperty('--imm-auto-muted', muted);
+  label.style.setProperty('--imm-auto-border', border);
+  label.style.setProperty('--imm-auto-surface', surface);
+  label.style.setProperty('--imm-auto-shadow', shadow);
+  label.style.color = ink;
+  label.style.backgroundColor = surface;
+  label.style.borderColor = border;
+  var nameEl = document.getElementById('immAutoName');
+  var fontEl = document.getElementById('immAutoFont');
+  var metaEl = document.getElementById('immAutoMeta');
+  if (nameEl) nameEl.style.color = ink;
+  if (fontEl) fontEl.style.color = muted;
+  if (metaEl) metaEl.style.color = muted;
+}
 function updateAutoLabel() {
+  var label = document.getElementById('immAutoLabel');
+  if (!label) return;
   if (isPaletteAutoPlay) {
     var co = paletteAutoColors[paletteAutoIndex] || {name:'',hex:'#f5f5f5',solarTerm:''};
     document.getElementById('immAutoName').textContent = co.name;
-    document.getElementById('immAutoMeta').textContent = co.solarTerm + ' · ' + co.hex;
+    document.getElementById('immAutoMeta').textContent = co.solarTerm + ' · HEX ' + co.hex;
     var fontEl = document.getElementById('immAutoFont');
     if (fontEl) {
-      fontEl.textContent = '『' + co.name + '』' + co.hex;
+      fontEl.textContent = '字体：serif';
       fontEl.style.fontFamily = 'serif';
     }
-    var label = document.getElementById('immAutoLabel');
-    var topPct = 15 + Math.random() * 55;
-    var leftPct = 10 + Math.random() * 80;
-    label.style.top = topPct + '%';
-    label.style.left = leftPct + '%';
     var nameEl = document.getElementById('immAutoName');
     if (nameEl) nameEl.style.fontFamily = 'serif';
+    updateAutoLabelColors(co.hex);
     return;
   }
   var name = immersiveMode === 'scene' ? sceneNames[currentScene] : solarNames[currentSolarIdx];
   var data = immersiveMode === 'scene' ? SCENES[name] : SOLAR_SCENES[name];
+  var scheme = data[currentMode] || data.light;
+  var representativeHex = getBlendSpec(scheme.colors).first.hex;
   var modeLabel = currentMode === 'light' ? '浅色' : '深色';
   var typeLabel = immersiveMode === 'scene' ? '场景' : '节气';
   document.getElementById('immAutoName').textContent = name;
-  document.getElementById('immAutoMeta').textContent = typeLabel + ' · ' + modeLabel + ' · ' + (data.font || '');
+  document.getElementById('immAutoMeta').textContent = typeLabel + ' · ' + modeLabel + ' · HEX ' + representativeHex;
   var ff = getFontFamily(data.font || '');
   var nameEl = document.getElementById('immAutoName');
   var fontEl = document.getElementById('immAutoFont');
   if (nameEl) nameEl.style.fontFamily = ff;
   if (fontEl) {
     fontEl.style.fontFamily = ff;
-    fontEl.textContent = '中国传统色';
+    fontEl.textContent = '字体：' + (data.font || '中国传统色');
   }
-  var label = document.getElementById('immAutoLabel');
-  var topPct = 15 + Math.random() * 55;
-  var leftPct = 10 + Math.random() * 80;
-  label.style.top = topPct + '%';
-  label.style.left = leftPct + '%';
+  updateAutoLabelColors(representativeHex);
 }
 
 function schedulePaletteNext() {
@@ -3705,6 +4757,29 @@ var gallerySearchQuery = '';
 var gallerySelectedColor = null;
 var galleryColorRecords = null;
 var galleryBlendPreview = null;
+var colorWallSearchQuery = '';
+var colorWallBackgroundValue = '';
+var colorWallManualOrder = null;
+var colorWallDragState = null;
+var colorWallSuppressClickUntil = 0;
+var colorWallSwapPair = null;
+var colorWallSelectedUids = [];
+var colorWallSelectionAnchorUid = null;
+var colorWallReflowSnapshot = null;
+
+function compareGalleryColorsByHex(a, b) {
+  var aHex = String(a && a.hex || '').replace(/^#/, '');
+  var bHex = String(b && b.hex || '').replace(/^#/, '');
+  var aValue = parseInt(aHex, 16), bValue = parseInt(bHex, 16);
+  if (isNaN(aValue)) aValue = Number.MAX_SAFE_INTEGER;
+  if (isNaN(bValue)) bValue = Number.MAX_SAFE_INTEGER;
+  if (aValue !== bValue) return aValue - bValue;
+  return (a && a.globalIndex || a && a.uid || 0) - (b && b.globalIndex || b && b.uid || 0);
+}
+
+function getHexSortedGalleryRecords(records) {
+  return (records || []).slice().sort(compareGalleryColorsByHex);
+}
 
 function initGalleryBrowserControls() {
   var select = document.getElementById('galleryTermFilter');
@@ -3842,12 +4917,574 @@ function renderGalleryColorList(records) {
     var record = records[i];
     var listTextColor = getReadableTextColor(record.hex);
     var listTone = listTextColor === '#f8f7f4' ? 'dark' : 'light';
-    html += '<button type="button" class="gallery-color-list-card" role="option" data-tone="' + listTone + '" data-gallery-color-id="' + record.uid + '" aria-selected="' + (gallerySelectedColor && gallerySelectedColor.uid === record.uid ? 'true' : 'false') + '" title="' + record.name + ' ' + record.hex + '" onclick="selectGalleryColorByIndex(' + record.uid + ',this)">' +
+    html += '<button type="button" class="gallery-color-list-card" data-tone="' + listTone + '" data-gallery-color-id="' + record.uid + '" aria-pressed="' + (gallerySelectedColor && gallerySelectedColor.uid === record.uid ? 'true' : 'false') + '" aria-label="第' + String(record.globalIndex).padStart(3, '0') + '色 ' + record.name + ' ' + record.hex + '" title="' + record.name + ' ' + record.hex + '" onclick="selectGalleryColorByIndex(' + record.uid + ',this)">' +
       '<span class="gallery-color-list-swatch" style="--swatch-ink:' + listTextColor + ';background:' + record.hex + '"><span class="gallery-color-list-swatch-name">' + record.name + '</span></span>' +
       '<span class="gallery-color-list-copy"><span class="gallery-color-list-index">#' + record.globalIndex + '</span><span class="gallery-color-list-name">' + record.name + '</span><span class="gallery-color-list-meta"><span>' + record.term + '</span><span>' + record.hex + '</span></span></span>' +
     '</button>';
   }
   list.innerHTML = html;
+}
+
+function colorWallRecordMatches(record) {
+  if (!colorWallSearchQuery) return true;
+  return [record.name, record.hex, record.term, record.season, record.desc].join(' ').toLowerCase().indexOf(colorWallSearchQuery) !== -1;
+}
+
+function getColorWallVisibleRecords() {
+  var all = getGalleryColorRecords(), visible = [];
+  for (var i = 0; i < all.length; i++) if (colorWallRecordMatches(all[i])) visible.push(all[i]);
+  return visible;
+}
+
+function updateColorWallSearch(value) {
+  colorWallSearchQuery = String(value || '').trim().toLowerCase();
+  colorWallSwapPair = null;
+  renderColorWallPage();
+}
+
+function resetColorWallFilters() {
+  colorWallSearchQuery = '';
+  colorWallSwapPair = null;
+  var input = document.getElementById('colorWallSearchInput');
+  if (input) input.value = '';
+  renderColorWallPage();
+}
+
+function getColorWallVisualOrder(records) {
+  function compareColorTone(a, b) {
+    var lumaDiff = getLuma(b.hex) - getLuma(a.hex);
+    if (lumaDiff !== 0) return lumaDiff;
+    var aHsl = rgbToHslForGallery(hexToRgbForGallery(a.hex));
+    var bHsl = rgbToHslForGallery(hexToRgbForGallery(b.hex));
+    if (aHsl.l !== bHsl.l) return bHsl.l - aHsl.l;
+    if (aHsl.s !== bHsl.s) return bHsl.s - aHsl.s;
+    return compareGalleryColorsByHex(a, b);
+  }
+  /* 先建立全局唯一的明暗顺序，保证右下不会重新出现亮色。 */
+  return records.slice().sort(compareColorTone);
+}
+
+function getColorWallDisplayOrder(records) {
+  var allRecords = getGalleryColorRecords();
+  if (!colorWallManualOrder || colorWallManualOrder.length !== allRecords.length) {
+    colorWallManualOrder = getColorWallVisualOrder(allRecords).map(function(record) { return record.uid; });
+  }
+  var positions = Object.create(null);
+  for (var i = 0; i < colorWallManualOrder.length; i++) positions[colorWallManualOrder[i]] = i;
+  return records.slice().sort(function(a, b) {
+    return (positions[a.uid] === undefined ? Number.MAX_SAFE_INTEGER : positions[a.uid]) - (positions[b.uid] === undefined ? Number.MAX_SAFE_INTEGER : positions[b.uid]);
+  });
+}
+
+function getColorWallVisibleOrderedRecords() {
+  return getColorWallDisplayOrder(getColorWallVisibleRecords());
+}
+
+function pruneColorWallSelection(records) {
+  var visible = Object.create(null);
+  for (var i = 0; i < records.length; i++) visible[records[i].uid] = true;
+  colorWallSelectedUids = colorWallSelectedUids.filter(function(uid) { return visible[uid]; });
+  if (colorWallSelectionAnchorUid !== null && !visible[colorWallSelectionAnchorUid]) colorWallSelectionAnchorUid = null;
+}
+
+function updateColorWallCellSelectionState() {
+  var cells = document.querySelectorAll('#colorWallGrid .color-wall-cell');
+  for (var i = 0; i < cells.length; i++) {
+    var uid = Number(cells[i].getAttribute('data-gallery-color-id'));
+    var selected = colorWallSelectedUids.indexOf(uid) !== -1;
+    cells[i].classList.toggle('is-multi-selected', selected);
+    cells[i].setAttribute('data-multi-selected', selected ? 'true' : 'false');
+  }
+}
+
+function setColorWallSingleSelection(uid) {
+  colorWallSelectedUids = [uid];
+  colorWallSelectionAnchorUid = uid;
+}
+
+function toggleColorWallSelection(uid) {
+  var index = colorWallSelectedUids.indexOf(uid);
+  if (index === -1) colorWallSelectedUids.push(uid);
+  else colorWallSelectedUids.splice(index, 1);
+  colorWallSelectionAnchorUid = uid;
+}
+
+function selectColorWallRange(uid, records) {
+  var anchor = colorWallSelectionAnchorUid;
+  if (anchor === null || records.every(function(record) { return record.uid !== anchor; })) {
+    setColorWallSingleSelection(uid);
+    return;
+  }
+  var start = -1, end = -1;
+  for (var i = 0; i < records.length; i++) {
+    if (records[i].uid === anchor) start = i;
+    if (records[i].uid === uid) end = i;
+  }
+  if (start < 0 || end < 0) { setColorWallSingleSelection(uid); return; }
+  var from = Math.min(start, end), to = Math.max(start, end);
+  colorWallSelectedUids = records.slice(from, to + 1).map(function(record) { return record.uid; });
+}
+
+function resetColorWallOrder() {
+  colorWallManualOrder = null;
+  colorWallSwapPair = null;
+  setColorWallDragStatus('已还原为推荐色阶顺序');
+  renderColorWallPage();
+}
+
+function setColorWallForeground(backgroundHex) {
+  var gallery = document.getElementById('gallery');
+  if (!gallery) return;
+  var normalized = String(backgroundHex || '').trim();
+  if (!/^#[0-9a-f]{6}$/i.test(normalized)) normalized = '#e7ede9';
+  var ink = getReadableTextColor(normalized);
+  var isLightInk = ink === '#f8f7f4';
+  gallery.style.setProperty('--color-wall-ink', ink);
+  gallery.style.setProperty('--color-wall-control-surface', isLightInk ? 'rgba(23,23,23,.38)' : 'rgba(248,247,244,.72)');
+  gallery.style.setProperty('--color-wall-control-border', isLightInk ? 'rgba(248,247,244,.42)' : 'rgba(23,23,23,.24)');
+}
+
+function setColorWallBackground(value) {
+  var backgroundValue = String(value || '').trim();
+  colorWallBackgroundValue = backgroundValue;
+  setColorWallForeground(backgroundValue);
+  var layer = document.getElementById('colorWallBg');
+  if (!layer) return;
+  if (!backgroundValue) {
+    layer.removeAttribute('data-color-hex');
+    layer.style.backgroundColor = '';
+    return;
+  }
+  var normalized = backgroundValue.toUpperCase();
+  if (layer.getAttribute('data-color-hex') === normalized && layer.style.backgroundColor) return;
+  layer.setAttribute('data-color-hex', normalized);
+  layer.style.backgroundColor = backgroundValue;
+}
+
+function setColorWallDragStatus(text) {
+  var status = document.getElementById('colorWallDragStatus');
+  if (status) status.textContent = text;
+}
+
+function captureColorWallGridRects() {
+  var snapshot = Object.create(null);
+  var cells = document.querySelectorAll('#colorWallGrid .color-wall-cell');
+  for (var i = 0; i < cells.length; i++) {
+    var uid = cells[i].getAttribute('data-gallery-color-id');
+    var rect = getColorWallCellLayoutRect(cells[i]);
+    snapshot[uid] = {left:rect.left, top:rect.top};
+  }
+  return snapshot;
+}
+
+function animateColorWallReflow(previousRects) {
+  if (!previousRects) return;
+  var cells = document.querySelectorAll('#colorWallGrid .color-wall-cell');
+  var changed = [];
+  for (var i = 0; i < cells.length; i++) {
+    var uid = cells[i].getAttribute('data-gallery-color-id');
+    var previous = previousRects[uid];
+    if (!previous) continue;
+    var current = getColorWallCellLayoutRect(cells[i]);
+    var dx = previous.left - current.left;
+    var dy = previous.top - current.top;
+    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) continue;
+    cells[i].style.transition = 'none';
+    cells[i].style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+    changed.push(cells[i]);
+  }
+  if (!changed.length) return;
+  var schedule = window.requestAnimationFrame || function(callback) { return window.setTimeout(callback, 16); };
+  schedule(function() {
+    for (var j = 0; j < changed.length; j++) {
+      changed[j].style.transition = '';
+      changed[j].style.transform = '';
+    }
+  });
+}
+
+function renderColorWallGrid(records) {
+  var grid = document.getElementById('colorWallGrid');
+  if (!grid) return;
+  if (!records.length) {
+    grid.innerHTML = '<div class="color-wall-empty">没有找到匹配颜色，试试其他关键词或重置筛选。</div>';
+    colorWallReflowSnapshot = null;
+    colorWallSwapPair = null;
+    return;
+  }
+  var html = '';
+  var selectedUids = colorWallSelectedUids;
+  for (var i = 0; i < records.length; i++) {
+    var record = records[i];
+    var ink = getReadableTextColor(record.hex);
+    var tone = ink === '#f8f7f4' ? 'dark' : 'light';
+    var label = record.name + ' ' + record.hex;
+    var reorderClass = colorWallSwapPair && (colorWallSwapPair.source === record.uid || colorWallSwapPair.target === record.uid) ? ' is-reordered' : '';
+    var multiSelected = selectedUids.indexOf(record.uid) !== -1;
+    var selectionClass = multiSelected ? ' is-multi-selected' : '';
+    html += '<button type="button" class="color-wall-cell' + reorderClass + selectionClass + '" data-tone="' + tone + '" data-gallery-color-id="' + record.uid + '" aria-pressed="' + (gallerySelectedColor && gallerySelectedColor.uid === record.uid ? 'true' : 'false') + '" data-multi-selected="' + (multiSelected ? 'true' : 'false') + '" aria-label="色系第' + String(i + 1).padStart(3, '0') + ' 色 ' + label + '；可拖动，Ctrl 或 Command 点击可多选，Shift 点击可选连续范围" title="点击查看 · 拖动整理 · Ctrl/Cmd+点击多选 · Shift+点击选连续范围 · ' + label + '" style="--wall-color:' + record.hex + ';--wall-ink:' + ink + ';">' +
+      '<span class="color-wall-cell-selected-mark" aria-hidden="true">✓</span><span class="color-wall-cell-meta"><span class="color-wall-cell-name">' + record.name + '</span><span class="color-wall-cell-hex">' + record.hex + '</span></span>' +
+      '</button>';
+  }
+  grid.innerHTML = html;
+  bindColorWallDragCells(grid);
+  var previousRects = colorWallReflowSnapshot;
+  colorWallReflowSnapshot = null;
+  animateColorWallReflow(previousRects);
+  colorWallSwapPair = null;
+}
+
+function bindColorWallDragCells(grid) {
+  var cells = grid.querySelectorAll('.color-wall-cell');
+  for (var i = 0; i < cells.length; i++) {
+    var cell = cells[i];
+    cell.addEventListener('pointerdown', startColorWallDrag);
+    cell.addEventListener('pointermove', moveColorWallDrag);
+    cell.addEventListener('pointerup', finishColorWallDrag);
+    cell.addEventListener('pointercancel', cancelColorWallDrag);
+    cell.addEventListener('click', function(event) {
+      if (Date.now() < colorWallSuppressClickUntil) {
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      handleColorWallCellClick(event, this);
+    });
+  }
+}
+
+function handleColorWallCellClick(event, cell) {
+  var uid = Number(cell.getAttribute('data-gallery-color-id'));
+  var records = getColorWallVisibleOrderedRecords();
+  if (event.shiftKey) selectColorWallRange(uid, records);
+  else if (event.ctrlKey || event.metaKey) toggleColorWallSelection(uid);
+  else setColorWallSingleSelection(uid);
+  selectGalleryColorByIndex(uid, cell);
+  updateColorWallCellSelectionState();
+  if (colorWallSelectedUids.length > 1) setColorWallDragStatus('已选 ' + colorWallSelectedUids.length + ' 张色卡 · 拖动任意一张可整体移动');
+  else if (colorWallSelectedUids.length === 1) setColorWallDragStatus('已选 1 张色卡 · 落在色块上交换，落在缝隙中插入');
+  else setColorWallDragStatus('已取消多选 · 点击色卡查看，Ctrl/Cmd+点击可多选');
+}
+
+function getColorWallDragSelection(sourceUid, records) {
+  var sourceIsSelected = colorWallSelectedUids.indexOf(sourceUid) !== -1;
+  if (!sourceIsSelected || colorWallSelectedUids.length < 2) return [sourceUid];
+  return records.filter(function(record) { return colorWallSelectedUids.indexOf(record.uid) !== -1; }).map(function(record) { return record.uid; });
+}
+
+function startColorWallDrag(event) {
+  if (event.button !== 0) return;
+  var cell = event.currentTarget;
+  var sourceUid = Number(cell.getAttribute('data-gallery-color-id'));
+  var visibleRecords = getColorWallVisibleOrderedRecords();
+  colorWallDragState = {
+    source:cell,
+    sourceUids:getColorWallDragSelection(sourceUid, visibleRecords),
+    visibleRecords:visibleRecords,
+    cellRects:buildColorWallDragGeometry(),
+    dropIntent:null,
+    dropKey:'',
+    pointerId:event.pointerId,
+    startX:event.clientX,
+    startY:event.clientY,
+    moved:false,
+    ghost:null
+  };
+  if (cell.setPointerCapture) {
+    try { cell.setPointerCapture(event.pointerId); } catch (error) {}
+  }
+}
+
+function getColorWallCellLayoutRect(cell) {
+  var rect = cell.getBoundingClientRect();
+  var width = cell.offsetWidth || rect.width;
+  var height = cell.offsetHeight || rect.height;
+  var left = rect.left + Math.max(0, rect.width - width) / 2;
+  var top = rect.top + Math.max(0, rect.height - height) / 2;
+  if (window.getComputedStyle) {
+    var transform = window.getComputedStyle(cell).transform;
+    var matrix = transform && transform !== 'none' ? transform.match(/^matrix(?:3d)?\\(([^)]+)\\)$/) : null;
+    if (matrix) {
+      var values = matrix[1].split(',').map(function(value) { return Number(value.trim()); });
+      var tx = transform.indexOf('matrix3d') === 0 ? values[12] : values[4];
+      var ty = transform.indexOf('matrix3d') === 0 ? values[13] : values[5];
+      if (Number.isFinite(tx)) left -= tx;
+      if (Number.isFinite(ty)) top -= ty;
+    }
+  }
+  return {left:left, right:left + width, top:top, bottom:top + height, width:width, height:height};
+}
+
+function buildColorWallDragGeometry() {
+  var grid = document.getElementById('colorWallGrid');
+  if (!grid) return [];
+  var cells = Array.prototype.slice.call(grid.querySelectorAll('.color-wall-cell'));
+  return cells.map(function(cell, index) {
+    return {cell:cell, uid:Number(cell.getAttribute('data-gallery-color-id')), index:index, rect:getColorWallCellLayoutRect(cell)};
+  });
+}
+
+function createColorWallDragGhost(cell, x, y, count) {
+  var rect = cell.getBoundingClientRect();
+  var ghost = cell.cloneNode(true);
+  ghost.className = 'color-wall-drag-ghost';
+  ghost.removeAttribute('aria-pressed');
+  ghost.removeAttribute('data-gallery-color-id');
+  ghost.style.width = rect.width + 'px';
+  ghost.style.height = rect.height + 'px';
+  ghost.style.left = x + 'px';
+  ghost.style.top = y + 'px';
+  if (count > 1) {
+    var badge = document.createElement('span');
+    badge.className = 'color-wall-drag-count';
+    badge.textContent = '+' + count;
+    badge.setAttribute('aria-hidden', 'true');
+    ghost.appendChild(badge);
+  }
+  document.body.appendChild(ghost);
+  return ghost;
+}
+
+function getColorWallDropIntent(x, y, state) {
+  var grid = document.getElementById('colorWallGrid');
+  if (!grid) return null;
+  var geometry = state.cellRects && state.cellRects.length ? state.cellRects : buildColorWallDragGeometry();
+  var sourceSet = Object.create(null);
+  for (var i = 0; i < state.sourceUids.length; i++) sourceSet[state.sourceUids[i]] = true;
+  var gridRect = grid.getBoundingClientRect();
+  var hitPadding = Math.max(14, Math.min(22, Math.max(grid.clientWidth / 160, grid.clientHeight / 160)));
+  if (x < gridRect.left - hitPadding || x > gridRect.right + hitPadding || y < gridRect.top - hitPadding || y > gridRect.bottom + hitPadding) return null;
+
+  // 先用未变形的卡片主体判定交换，避免 hover scale 把相邻缝隙误报成卡片主体。
+  for (var i = 0; i < geometry.length; i++) {
+    var direct = geometry[i];
+    if (sourceSet[direct.uid]) continue;
+    if (x >= direct.rect.left - 1 && x <= direct.rect.right + 1 && y >= direct.rect.top - 1 && y <= direct.rect.bottom + 1) {
+      var directIndex = state.visibleRecords.findIndex(function(record) { return record.uid === direct.uid; });
+      return {mode:'swap', targetUid:direct.uid, targetIndex:directIndex, markerCell:direct.cell, key:'swap:' + direct.uid};
+    }
+  }
+
+  if (!geometry.length) return null;
+  var nearest = null, nearestDistance = Infinity;
+  for (var j = 0; j < geometry.length; j++) {
+    var candidate = geometry[j];
+    if (sourceSet[candidate.uid]) continue;
+    var rect = candidate.rect;
+    var dx = x < rect.left ? rect.left - x : x > rect.right ? x - rect.right : 0;
+    var dy = y < rect.top ? rect.top - y : y > rect.bottom ? y - rect.bottom : 0;
+    var distance = dx * dx + dy * dy;
+    if (distance < nearestDistance) { nearestDistance = distance; nearest = candidate; }
+  }
+  if (!nearest) return null;
+  var maxGapDistance = hitPadding * 1.65;
+  if (Math.sqrt(nearestDistance) > maxGapDistance) return null;
+  var leftDistance = Math.abs(x - nearest.rect.left);
+  var rightDistance = Math.abs(x - nearest.rect.right);
+  var topDistance = Math.abs(y - nearest.rect.top);
+  var bottomDistance = Math.abs(y - nearest.rect.bottom);
+  var insideX = x >= nearest.rect.left && x <= nearest.rect.right;
+  var insideY = y >= nearest.rect.top && y <= nearest.rect.bottom;
+  var markerSide;
+  if (insideX && !insideY) markerSide = y < nearest.rect.top ? 'before' : 'after';
+  else if (!insideX && insideY) markerSide = x < nearest.rect.left ? 'before' : 'after';
+  else markerSide = Math.min(leftDistance, rightDistance, topDistance, bottomDistance) === leftDistance || Math.min(leftDistance, rightDistance, topDistance, bottomDistance) === topDistance ? 'before' : 'after';
+  var insertIndex = markerSide === 'before' ? nearest.index : nearest.index + 1;
+  // 最近候选已排除拖动源，插入线必须绑定这张最近卡片；方向由 markerSide 决定。
+  return {mode:'insert', index:insertIndex, markerCell:nearest.cell, markerSide:markerSide, key:'insert:' + insertIndex};
+}
+
+function clearColorWallDropHints() {
+  var cells = document.querySelectorAll('#colorWallGrid .color-wall-cell');
+  for (var i = 0; i < cells.length; i++) cells[i].classList.remove('is-drag-target', 'is-drop-before', 'is-drop-after');
+}
+
+function applyColorWallDropIntent(state, intent) {
+  clearColorWallDropHints();
+  state.dropIntent = intent;
+  if (!intent) {
+    state.dropKey = '';
+    return;
+  }
+  if (intent.mode === 'swap') intent.markerCell.classList.add('is-drag-target');
+  else intent.markerCell.classList.add(intent.markerSide === 'after' ? 'is-drop-after' : 'is-drop-before');
+  if (state.dropKey === intent.key) return;
+  state.dropKey = intent.key;
+  var count = state.sourceUids.length;
+  if (intent.mode === 'swap' && count === 1) setColorWallDragStatus('松开后与这张色卡交换位置');
+  else if (intent.mode === 'swap') setColorWallDragStatus('已选 ' + count + ' 张 · 松开后插入到这张色卡之前');
+  else setColorWallDragStatus('松开后把 ' + count + ' 张色卡放到这个位置');
+}
+
+function moveColorWallDrag(event) {
+  var state = colorWallDragState;
+  if (!state || state.pointerId !== event.pointerId) return;
+  var dx = event.clientX - state.startX;
+  var dy = event.clientY - state.startY;
+  if (!state.moved && Math.sqrt(dx * dx + dy * dy) < 8) return;
+  if (!state.moved) {
+    state.moved = true;
+    var sourceCells = document.querySelectorAll('#colorWallGrid .color-wall-cell');
+    for (var i = 0; i < sourceCells.length; i++) {
+      if (state.sourceUids.indexOf(Number(sourceCells[i].getAttribute('data-gallery-color-id'))) !== -1) {
+        sourceCells[i].classList.add('is-drag-source');
+        sourceCells[i].setAttribute('aria-grabbed', 'true');
+      }
+    }
+    state.ghost = createColorWallDragGhost(state.source, event.clientX, event.clientY, state.sourceUids.length);
+  }
+  event.preventDefault();
+  if (state.ghost) {
+    state.ghost.style.left = event.clientX + 'px';
+    state.ghost.style.top = event.clientY + 'px';
+  }
+  applyColorWallDropIntent(state, getColorWallDropIntent(event.clientX, event.clientY, state));
+}
+
+function clearColorWallDragState() {
+  var state = colorWallDragState;
+  if (!state) return;
+  var sourceCells = document.querySelectorAll('#colorWallGrid .color-wall-cell');
+  for (var i = 0; i < sourceCells.length; i++) {
+    sourceCells[i].classList.remove('is-drag-source');
+    sourceCells[i].removeAttribute('aria-grabbed');
+  }
+  if (state.source && state.pointerId !== undefined && state.source.releasePointerCapture) {
+    try { state.source.releasePointerCapture(state.pointerId); } catch (error) {}
+  }
+  clearColorWallDropHints();
+  if (state.ghost && state.ghost.parentNode) state.ghost.parentNode.removeChild(state.ghost);
+  colorWallDragState = null;
+}
+
+function finishColorWallDrag(event) {
+  var state = colorWallDragState;
+  if (!state || state.pointerId !== event.pointerId) return;
+  var didMove = state.moved;
+  var sourceUids = state.sourceUids ? state.sourceUids.slice() : [];
+  var intent = state.dropIntent;
+  if (didMove) event.preventDefault();
+  clearColorWallDragState();
+  if (!didMove) return;
+  colorWallSuppressClickUntil = Date.now() + 420;
+  if (!intent) {
+    setColorWallDragStatus('没有落到色卡上，可以继续拖动整理');
+    return;
+  }
+  if (intent.mode === 'swap' && sourceUids.length === 1) swapColorWallCards(sourceUids[0], intent.targetUid);
+  else moveColorWallCardsToIndex(sourceUids, intent.mode === 'swap' ? intent.targetIndex : intent.index, state.visibleRecords, intent.mode === 'swap' ? intent.targetUid : -1);
+}
+
+function cancelColorWallDrag(event) {
+  var state = colorWallDragState;
+  if (!state || state.pointerId !== event.pointerId) return;
+  var didMove = state.moved;
+  clearColorWallDragState();
+  if (didMove) colorWallSuppressClickUntil = Date.now() + 420;
+}
+
+function swapColorWallCards(sourceUid, targetUid) {
+  if (!colorWallManualOrder) colorWallManualOrder = getColorWallDisplayOrder(getGalleryColorRecords()).map(function(record) { return record.uid; });
+  var sourceIndex = colorWallManualOrder.indexOf(sourceUid);
+  var targetIndex = colorWallManualOrder.indexOf(targetUid);
+  if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) return;
+  var temp = colorWallManualOrder[sourceIndex];
+  colorWallManualOrder[sourceIndex] = colorWallManualOrder[targetIndex];
+  colorWallManualOrder[targetIndex] = temp;
+  colorWallReflowSnapshot = captureColorWallGridRects();
+  colorWallSwapPair = {source:sourceUid, target:targetUid};
+  setColorWallDragStatus('已交换两张色卡，可以继续整理');
+  renderColorWallPage();
+}
+
+function moveColorWallCardsToIndex(sourceUids, targetIndex, visibleRecords, targetUid) {
+  var allOrder = getColorWallDisplayOrder(getGalleryColorRecords()).map(function(record) { return record.uid; });
+  var sourceSet = Object.create(null);
+  for (var i = 0; i < sourceUids.length; i++) sourceSet[sourceUids[i]] = true;
+  var orderedSources = visibleRecords.filter(function(record) { return sourceSet[record.uid]; }).map(function(record) { return record.uid; });
+  if (!orderedSources.length) return;
+  var visibleUids = visibleRecords.map(function(record) { return record.uid; });
+  var anchorUid = null;
+  for (var j = Math.max(0, targetIndex); j < visibleUids.length; j++) {
+    if (!sourceSet[visibleUids[j]]) { anchorUid = visibleUids[j]; break; }
+  }
+  var nextOrder = allOrder.filter(function(uid) { return !sourceSet[uid]; });
+  var insertAt;
+  if (anchorUid !== null) insertAt = nextOrder.indexOf(anchorUid);
+  else {
+    insertAt = nextOrder.length;
+    for (var k = visibleUids.length - 1; k >= 0; k--) {
+      if (!sourceSet[visibleUids[k]]) {
+        insertAt = nextOrder.indexOf(visibleUids[k]) + 1;
+        break;
+      }
+    }
+  }
+  if (insertAt < 0) insertAt = nextOrder.length;
+  nextOrder.splice.apply(nextOrder, [insertAt, 0].concat(orderedSources));
+  var unchanged = nextOrder.length === allOrder.length && nextOrder.every(function(uid, index) { return uid === allOrder[index]; });
+  if (unchanged) {
+    setColorWallDragStatus('位置没有变化，可以继续拖动整理');
+    return;
+  }
+  colorWallReflowSnapshot = captureColorWallGridRects();
+  colorWallManualOrder = nextOrder;
+  colorWallSwapPair = {source:orderedSources[0], target:targetUid};
+  setColorWallDragStatus(sourceUids.length > 1 ? '已整体移动 ' + sourceUids.length + ' 张色卡，可以继续整理' : '已重新排列色卡，可以继续整理');
+  renderColorWallPage();
+}
+
+function renderColorWallInspector(record) {
+  var swatch = document.getElementById('colorWallDetailSwatch');
+  var context = document.getElementById('colorWallDetailContext');
+  var title = document.getElementById('colorWallInspectorName');
+  var hexEl = document.getElementById('colorWallDetailHex');
+  var rgbEl = document.getElementById('colorWallDetailRgb');
+  var hslEl = document.getElementById('colorWallDetailHsl');
+  var toneEl = document.getElementById('colorWallDetailTone');
+  var termEl = document.getElementById('colorWallDetailTerm');
+  var noteEl = document.getElementById('colorWallDetailNote');
+  if (!record) {
+    if (swatch) swatch.style.background = 'linear-gradient(135deg,#eee,#ddd)';
+    if (context) context.textContent = '';
+    if (title) title.textContent = '选择一个颜色';
+    if (hexEl) hexEl.textContent = '从色块开始探索';
+    if (rgbEl) rgbEl.textContent = '—';
+    if (hslEl) hslEl.textContent = '—';
+    if (toneEl) toneEl.textContent = '—';
+    if (termEl) termEl.textContent = '—';
+    if (noteEl) noteEl.textContent = '选择色块后，这里会显示色名、真实 HEX、色彩数值与来源信息。';
+    return;
+  }
+  var rgb = hexToRgbForGallery(record.hex), hsl = rgbToHslForGallery(rgb);
+  if (swatch) swatch.style.background = record.hex;
+  if (context) context.textContent = 'HEX 顺序第 ' + String(record.globalIndex).padStart(3, '0') + ' 色 · 色块面积相同';
+  if (title) title.textContent = record.name;
+  if (hexEl) { hexEl.textContent = record.hex; hexEl.setAttribute('aria-label', '复制 ' + record.hex); }
+  if (rgbEl) rgbEl.textContent = rgb.r + ', ' + rgb.g + ', ' + rgb.b;
+  if (hslEl) hslEl.textContent = hsl.h + '°, ' + hsl.s + '%, ' + hsl.l + '%';
+  if (toneEl) toneEl.textContent = record.tone;
+  if (termEl) termEl.textContent = record.term;
+  if (noteEl) noteEl.textContent = record.desc || '点击色块查看色名与色值；原始节气来源保留在来源字段中。';
+}
+
+function renderColorWallPage() {
+  var visible = getColorWallVisibleRecords();
+  pruneColorWallSelection(visible);
+  var ordered = getColorWallDisplayOrder(visible);
+  if (ordered.length && (!gallerySelectedColor || ordered.every(function(record) { return record.uid !== gallerySelectedColor.uid; }))) {
+    gallerySelectedColor = ordered[0];
+    galleryBlendPreview = null;
+  }
+  renderColorWallGrid(ordered);
+  renderColorWallInspector(visible.length ? gallerySelectedColor : null);
+  var count = document.getElementById('colorWallCount');
+  if (count) count.textContent = visible.length + ' / 384 色 · 整体亮度由左上至右下';
+}
+
+function copyColorWallColor() {
+  if (!gallerySelectedColor) return;
+  copyText(gallerySelectedColor.hex);
 }
 
 function getGalleryHarmonyRecords(record) {
@@ -3965,13 +5602,19 @@ function selectGalleryColorByIndex(index, button) {
 }
 
 function selectGalleryColor(term, name, hex, button, record) {
+  var previousBackground = readBackgroundStyle(getBackgroundSource());
   var selected = record || {uid:-1, term:term, name:name, hex:hex, season:(SOLAR_SCENES[term] || {}).season || '', desc:(SOLAR_SCENES[term] || {}).desc || '', index:0, tone:'色阶'};
   gallerySelectedColor = selected;
   galleryBlendPreview = null;
-  setPageBackground(hex);
+  if (currentView === 'gallery' && galleryDisplayMode === 'color-wall') {
+    setColorWallBackground(hex);
+  } else if (previousBackground.trim().toLowerCase() !== String(hex).trim().toLowerCase()) {
+    setPageBackground(hex);
+  }
   var cards = document.querySelectorAll('[data-gallery-color-id]');
-  for (var i = 0; i < cards.length; i++) cards[i].setAttribute('aria-selected', cards[i].getAttribute('data-gallery-color-id') === String(selected.uid) ? 'true' : 'false');
+  for (var i = 0; i < cards.length; i++) cards[i].setAttribute('aria-pressed', cards[i].getAttribute('data-gallery-color-id') === String(selected.uid) ? 'true' : 'false');
   renderGalleryInspector(selected);
+  renderColorWallInspector(selected);
   var result = document.getElementById('galleryResultCount');
   if (result) result.textContent = '筛选 ' + getGalleryVisibleColorRecords().length + ' 色 · 当前第 ' + (selected.globalIndex || (selected.uid + 1)) + ' / 384 色';
 }
@@ -4699,6 +6342,201 @@ function initTitleColorFlow() {
   title.style.backgroundSize = '5200% 100%';
 }
 
+var colorEntranceState = {active:false, dismissed:false, timer:null, timers:[], previousFocus:null};
+function getEntranceColorLuma(hex) {
+  var value = parseInt(String(hex || '').replace('#',''), 16);
+  if (!isFinite(value)) return 1;
+  return (0.299 * ((value >> 16) & 255) + 0.587 * ((value >> 8) & 255) + 0.114 * (value & 255)) / 255;
+}
+function getEntranceTint(hex, alpha) {
+  var value = parseInt(String(hex || '').replace('#',''), 16);
+  if (!isFinite(value)) value = 0xffffff;
+  var red = (value >> 16) & 255, green = (value >> 8) & 255, blue = value & 255;
+  var lift = .72;
+  red = Math.round(red + (255 - red) * lift);
+  green = Math.round(green + (255 - green) * lift);
+  blue = Math.round(blue + (255 - blue) * lift);
+  return 'rgba(' + red + ',' + green + ',' + blue + ',' + alpha + ')';
+}
+function readColorEntranceSeen() {
+  try { return window.sessionStorage && window.sessionStorage.getItem('traditional-colors-entrance-seen-v3') === 'true'; } catch (error) { return false; }
+}
+function writeColorEntranceSeen() {
+  try { if (window.sessionStorage) window.sessionStorage.setItem('traditional-colors-entrance-seen-v3', 'true'); } catch (error) {}
+}
+function isColorEntrancePortalEntry() {
+  try {
+    var search = window.location && typeof window.location.search === 'string' ? window.location.search : '';
+    return typeof URLSearchParams === 'function' && new URLSearchParams(search).get('entrance') === '1';
+  } catch (error) { return false; }
+}
+function canPlayColorEntrance() {
+  var canvas = null;
+  try {
+    canvas = document.createElement('canvas');
+    var contextOptions = { failIfMajorPerformanceCaveat: true, preserveDrawingBuffer: false };
+    var gl = canvas.getContext('webgl2', contextOptions) || canvas.getContext('webgl', contextOptions) || canvas.getContext('experimental-webgl', contextOptions);
+    if (!gl) return false;
+    var debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    if (debugInfo) {
+      var renderer = String(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '').toLowerCase();
+      var vendor = String(gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || '').toLowerCase();
+      if (/(swiftshader|software|llvmpipe|softpipe|lavapipe|software rasterizer|microsoft basic render|basic render)/.test(renderer + ' ' + vendor)) return false;
+    }
+    return true;
+  } catch (error) { return false; }
+}
+function hideColorEntranceWithoutPlayback(root) {
+  colorEntranceState.active = false;
+  colorEntranceState.dismissed = true;
+  clearColorEntranceTimers();
+  if (!root) return;
+  root.hidden = true;
+  root.classList.remove('active', 'is-dismissing', 'is-unfolding', 'is-final');
+  root.setAttribute('aria-hidden', 'true');
+}
+function isValidColorEntranceFocusTarget(target, root) {
+  return !!(target && target !== document.body && target !== document.documentElement && target !== root && (!root || !root.contains(target)) && document.contains(target) && !target.disabled && !target.hidden && target.getAttribute('aria-hidden') !== 'true' && typeof target.focus === 'function');
+}
+function focusColorEntranceTarget(target) {
+  if (!target || typeof target.focus !== 'function') return;
+  try { target.focus({preventScroll:true}); } catch (error) { try { target.focus(); } catch (focusError) {} }
+}
+function clearColorEntranceTimers() {
+  if (colorEntranceState.timer) window.clearTimeout(colorEntranceState.timer);
+  for (var i = 0; i < (colorEntranceState.timers || []).length; i++) window.clearTimeout(colorEntranceState.timers[i]);
+  colorEntranceState.timer = null;
+  colorEntranceState.timers = [];
+}
+function dismissColorEntrance(immediate) {
+  var root = document.getElementById('colorEntrance');
+  if (colorEntranceState.dismissed) return;
+  colorEntranceState.dismissed = true;
+  colorEntranceState.active = false;
+  clearColorEntranceTimers();
+  writeColorEntranceSeen();
+  if (!root) return;
+  var restoreFocus = isValidColorEntranceFocusTarget(colorEntranceState.previousFocus, root) ? colorEntranceState.previousFocus : document.querySelector('#home .home-navigation-actions button, #home .home-action-group button');
+  root.classList.add('is-dismissing');
+  root.setAttribute('aria-hidden', 'true');
+  if (isValidColorEntranceFocusTarget(restoreFocus, root)) focusColorEntranceTarget(restoreFocus);
+  window.setTimeout(function() { root.hidden = true; root.classList.remove('active'); }, immediate ? 0 : (prefersReducedMotion() ? 80 : 520));
+}
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape' && typeof colorEntranceState !== 'undefined' && colorEntranceState.active) {
+    event.preventDefault();
+    dismissColorEntrance(true);
+  }
+});
+function initColorEntrance() {
+  var root = document.getElementById('colorEntrance');
+  var spectrum = document.getElementById('colorEntranceSpectrum');
+  var ribbon = document.getElementById('colorEntranceRibbon');
+  var shards = document.getElementById('colorEntranceShards');
+  var paperFan = document.getElementById('colorEntrancePaperFan');
+  if (!root || !spectrum || !ribbon || !shards || !paperFan) return;
+  var reducedMotion = false;
+  try { reducedMotion = !!prefersReducedMotion(); } catch (error) { reducedMotion = true; }
+  if (reducedMotion || !canPlayColorEntrance()) { hideColorEntranceWithoutPlayback(root); return; }
+  if (!isColorEntrancePortalEntry() && readColorEntranceSeen()) { root.hidden = true; root.setAttribute('aria-hidden', 'true'); colorEntranceState.dismissed = true; return; }
+  var records = getHexSortedGalleryRecords(getGalleryColorRecords());
+  if (!records || records.length !== 384) return;
+  var paletteRecords = [];
+  var seenHex = Object.create(null);
+  for (var paletteIndex = 0; paletteIndex < records.length; paletteIndex++) {
+    var paletteRecord = records[paletteIndex];
+    var paletteHex = String(paletteRecord.hex || '').toUpperCase();
+    if (!seenHex[paletteHex]) {
+      seenHex[paletteHex] = true;
+      paletteRecords.push(paletteRecord);
+    }
+  }
+  var brightPaletteRecords = [];
+  for (var brightIndex = 0; brightIndex < paletteRecords.length; brightIndex++) {
+    if (getEntranceColorLuma(paletteRecords[brightIndex].hex) >= .5) brightPaletteRecords.push(paletteRecords[brightIndex]);
+  }
+  if (brightPaletteRecords.length >= 96) paletteRecords = brightPaletteRecords;
+  if (!paletteRecords.length) paletteRecords = records.slice();
+  var step = records.length ? 360 / records.length : 360;
+  var conicStops = [], linearStops = [];
+  for (var i = 0; i < records.length; i++) {
+    var start = (i * step).toFixed(3), end = ((i + 1) * step).toFixed(3);
+    var left = ((i / Math.max(records.length - 1, 1)) * 100).toFixed(3);
+    conicStops.push(records[i].hex + ' ' + start + 'deg ' + end + 'deg');
+    linearStops.push(records[i].hex + ' ' + left + '%');
+  }
+  spectrum.style.background = 'conic-gradient(from -90deg,' + (conicStops.join(',') || '#003460 0deg 360deg') + ')';
+  ribbon.style.background = 'linear-gradient(90deg,' + (linearStops.join(',') || '#003460 0%,#fff7d1 100%') + ')';
+  for (var mixIndex = 0; mixIndex < 8; mixIndex++) {
+    var mixRecord = paletteRecords[Math.floor(mixIndex * paletteRecords.length / 8)];
+    root.style.setProperty('--entrance-mix-' + (mixIndex + 1), getEntranceTint(mixRecord.hex, mixIndex % 2 ? .42 : .58));
+  }
+  paperFan.innerHTML = '';
+  var paperCount = 96;
+  var paperFragment = document.createDocumentFragment();
+  for (var paperIndex = 0; paperIndex < paperCount; paperIndex++) {
+    var paper = document.createElement('span');
+    var cardIndex = Math.floor(paperIndex * paletteRecords.length / paperCount);
+    var paperRecord = paletteRecords[cardIndex];
+    var paperAngle = paperIndex * (360 / paperCount);
+    paper.className = 'color-entrance-paper-card';
+    paper.style.setProperty('--paper-color', paperRecord.hex);
+    var paperRgb = parseInt(String(paperRecord.hex || '#000000').replace('#',''), 16);
+    var paperLuma = (0.299 * ((paperRgb >> 16) & 255) + 0.587 * ((paperRgb >> 8) & 255) + 0.114 * (paperRgb & 255)) / 255;
+    paper.style.setProperty('--paper-ink', paperLuma > .58 ? '#4b453c' : '#fff9ec');
+    paper.style.setProperty('--paper-angle', paperAngle.toFixed(2) + 'deg');
+    paper.style.setProperty('--paper-stack-offset', (paperIndex * 0.14).toFixed(2) + 'px');
+    paper.style.setProperty('--paper-delay', (paperIndex * 0.024).toFixed(3) + 's');
+    paper.style.zIndex = String(paperCount - paperIndex);
+    paper.setAttribute('data-color-name', paperRecord.name);
+    paper.setAttribute('data-color-hex', paperRecord.hex);
+    paper.title = paperRecord.name + ' ' + paperRecord.hex;
+    var paperLabel = document.createElement('span');
+    paperLabel.className = 'color-entrance-paper-label';
+    paperLabel.textContent = paperRecord.name;
+    paper.appendChild(paperLabel);
+    var paperCode = document.createElement('span');
+    paperCode.className = 'color-entrance-paper-code';
+    paperCode.textContent = paperRecord.hex;
+    paper.appendChild(paperCode);
+    paperFragment.appendChild(paper);
+  }
+  paperFan.appendChild(paperFragment);
+  shards.innerHTML = '';
+  var shardCount = 24;
+  var shardFragment = document.createDocumentFragment();
+  for (var shardIndex = 0; shardIndex < shardCount; shardIndex++) {
+    var shard = document.createElement('span');
+    var record = records[Math.floor(shardIndex * records.length / shardCount)];
+    var angle = -90 + shardIndex * (360 / shardCount);
+    shard.className = 'color-entrance-shard';
+    shard.style.setProperty('--shard-color', record.hex);
+    shard.style.setProperty('--shard-angle', angle.toFixed(2) + 'deg');
+    shard.style.setProperty('--shard-radius', 'clamp(112px, 23vmin, 280px)');
+    shard.style.setProperty('--shard-delay', (shardIndex * 0.018).toFixed(3) + 's');
+    shardFragment.appendChild(shard);
+  };
+  shards.appendChild(shardFragment);
+  var activeElement = document.activeElement;
+  colorEntranceState.previousFocus = isValidColorEntranceFocusTarget(activeElement, root) ? activeElement : null;
+  root.hidden = false;
+  root.classList.add('active');
+  root.classList.remove('is-dismissing', 'is-unfolding', 'is-final');
+  root.setAttribute('aria-hidden', 'false');
+  colorEntranceState.active = true;
+  clearColorEntranceTimers();
+  if (!root.dataset.clickBound) {
+    root.dataset.clickBound = 'true';
+    root.addEventListener('click', function() { if (colorEntranceState.active) dismissColorEntrance(true); });
+  }
+  focusColorEntranceTarget(root);
+  var unfoldDelay = prefersReducedMotion() ? 40 : 120;
+  var finalDelay = prefersReducedMotion() ? 80 : 3900;
+  colorEntranceState.timers.push(window.setTimeout(function() { if (colorEntranceState.active) root.classList.add('is-unfolding'); }, unfoldDelay));
+  colorEntranceState.timers.push(window.setTimeout(function() { if (colorEntranceState.active) root.classList.add('is-final'); }, finalDelay));
+  colorEntranceState.timer = window.setTimeout(function() { dismissColorEntrance(false); }, finalDelay + 5000);
+}
+
 initTitleColorFlow();
 renderSolarHome();
 renderSolarTermInfo();
@@ -4711,6 +6549,7 @@ if (hb0) { hb0.style.background = defaultSolarBg; hb0.style.backgroundSize = 'co
 updateHomeTextColors(_initColors[0].hex);
 updateHomeMotionUi();
 startHomeSolarEffect();
+initColorEntrance();
 </script>
 </body>
 </html>

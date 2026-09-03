@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>拾光工作室 · 我们是一群相信慢工出细活的人</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ============ 设计系统变量 ============ */
+  :root {
+    --bg: #F5F5F7;
+    --card: #FFFFFF;
+    --ink: #1D1D1F;
+    --muted: #6B7280;
+    --muted-2: #86868B;
+    --line: rgba(0,0,0,0.06);
+    --accent: #0071E3;
+    --accent-soft: #EAF3FE;
+    --dark: #1D1D1F;
+    --pastel-rose: #FFE4E6;
+    --pastel-blue: #DBEAFE;
+    --pastel-green: #DCFCE7;
+    --pastel-amber: #FEF3C7;
+    --shadow: 0 4px 20px rgba(0,0,0,0.06);
+    --shadow-deep: 0 18px 50px rgba(0,0,0,0.12);
+    --radius: 26px;
+    --radius-sm: 16px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.6;
+    -webkit-font-smoothing: antialiased; padding: 32px 24px 80px;
+  }
+
+  /* ============ 顶部导航 ============ */
+  .topbar {
+    max-width: 1240px; margin: 0 auto 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 22px; background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--line); border-radius: 999px;
+    position: sticky; top: 16px; z-index: 50;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; }
+  .brand .logo {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: linear-gradient(135deg, #F59E0B, #EC4899);
+    display: grid; place-items: center; color: #fff;
+  }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500;
+    transition: color .25s var(--ease);
+  }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-links .join {
+    background: var(--ink); color: #fff; padding: 9px 18px; border-radius: 999px;
+    font-weight: 600;
+  }
+  .nav-links .join:hover { background: #000; color: #fff; }
+  @media (max-width: 720px) { .nav-links a:not(.join) { display: none; } }
+
+  /* ============ Bento Grid ============ */
+  .bento {
+    max-width: 1240px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: minmax(120px, auto); gap: 20px;
+  }
+  .card {
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 28px;
+    transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+    position: relative; overflow: hidden; border: 1px solid var(--line);
+  }
+  .card.clickable { cursor: pointer; }
+  .card.clickable:hover { transform: translateY(-4px); box-shadow: var(--shadow-deep); }
+  .card.dark { background: var(--dark); color: #fff; border-color: transparent; }
+  .card.dark .muted { color: rgba(255,255,255,0.65); }
+  .card.pastel-rose { background: var(--pastel-rose); }
+  .card.pastel-blue { background: var(--pastel-blue); }
+  .card.pastel-green { background: var(--pastel-green); }
+  .card.pastel-amber { background: var(--pastel-amber); }
+  .col-4 { grid-column: span 4; }
+  .col-3 { grid-column: span 3; }
+  .col-2 { grid-column: span 2; }
+  .row-2 { grid-row: span 2; }
+
+  /* ============ Hero 工作室 ============ */
+  .hero { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 28px; align-items: stretch; }
+  .hero-left { display: flex; flex-direction: column; gap: 22px; justify-content: space-between; }
+  .eyebrow { color: var(--accent); font-size: 13px; font-weight: 600; letter-spacing: 0.05em; }
+  .hero h1 {
+    font-size: clamp(30px, 4.5vw, 48px); font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.15;
+  }
+  .hero .tagline { color: var(--muted); font-size: 16px; max-width: 440px; }
+  .stat-row { display: flex; gap: 28px; flex-wrap: wrap; }
+  .stat-block .n { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+  .stat-block .l { color: var(--muted); font-size: 13px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 22px; border-radius: 999px; border: none;
+    font-size: 14.5px; font-weight: 600; cursor: pointer;
+    font-family: inherit; text-decoration: none;
+    transition: transform .25s var(--ease), background .25s var(--ease);
+  }
+  .btn-primary { background: var(--ink); color: #fff; }
+  .btn-primary:hover { background: #000; transform: translateY(-2px); }
+  .btn-ghost { background: rgba(0,0,0,0.05); color: var(--ink); }
+  .btn-ghost:hover { background: rgba(0,0,0,0.1); }
+  .group-photo {
+    border-radius: 20px; min-height: 280px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%);
+    display: flex; align-items: flex-end; padding: 22px;
+  }
+  .group-photo::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 70% 30%, rgba(255,255,255,0.3), transparent 55%);
+  }
+  .group-photo .avatars-stack { position: relative; display: flex; }
+  .group-photo .avatars-stack .av {
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 3px solid #fff; margin-left: -14px;
+    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 14px;
+  }
+  .group-photo .avatars-stack .av:first-child { margin-left: 0; }
+  .group-photo .photo-meta { position: relative; color: #fff; }
+  .group-photo .photo-meta .lbl {
+    background: rgba(255,255,255,0.22); backdrop-filter: blur(10px);
+    padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600;
+    width: fit-content; margin-bottom: 10px;
+  }
+  .group-photo .photo-meta .desc { font-size: 14px; opacity: 0.9; }
+  @media (max-width: 720px) { .hero { grid-template-columns: 1fr; } }
+
+  /* ============ 卡片标签 ============ */
+  .card-label {
+    font-size: 12.5px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px;
+  }
+  .card h3 { font-size: 19px; font-weight: 700; letter-spacing: -0.01em; }
+
+  /* Founder card */
+  .founder { display: flex; flex-direction: column; gap: 18px; height: 100%; }
+  .founder .top { display: flex; gap: 16px; align-items: center; }
+  .founder .av-lg {
+    width: 78px; height: 78px; border-radius: 22px;
+    background: linear-gradient(135deg, #F59E0B, #EC4899);
+    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 28px;
+    flex-shrink: 0;
+  }
+  .founder .nm { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .founder .role { color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .founder .creds { display: flex; flex-wrap: wrap; gap: 8px; }
+  .cred {
+    background: rgba(0,0,0,0.04); padding: 5px 11px; border-radius: 999px;
+    font-size: 12px; color: var(--muted); font-weight: 500;
+  }
+  .founder .bio { font-size: 14px; color: #4B5563; }
+  .founder .socials { display: flex; gap: 8px; margin-top: auto; }
+  .soc {
+    width: 36px; height: 36px; border-radius: 10px; background: rgba(0,0,0,0.04);
+    display: grid; place-items: center; color: var(--ink); cursor: pointer;
+    transition: background .25s var(--ease), transform .25s var(--ease), color .25s var(--ease);
+  }
+  .soc:hover { background: var(--accent-soft); color: var(--accent); transform: translateY(-2px); }
+
+  /* Member cards */
+  .member { display: flex; flex-direction: column; gap: 14px; height: 100%; }
+  .member .av {
+    width: 64px; height: 64px; border-radius: 50%;
+    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 22px;
+  }
+  .member .mname { font-size: 17px; font-weight: 700; }
+  .member .mrole { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .member .mfun {
+    font-size: 13px; color: var(--muted); margin-top: 8px;
+    padding-top: 12px; border-top: 1px solid var(--line);
+  }
+  .member .mfun b { color: var(--ink); font-weight: 600; }
+
+  /* 文化卡 */
+  .values { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .value-chip {
+    background: rgba(255,255,255,0.12); padding: 9px 14px; border-radius: 999px;
+    font-size: 13px; font-weight: 500; color: #fff;
+    display: inline-flex; align-items: center; gap: 7px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+
+  /* 办公地点 */
+  .location { display: flex; flex-direction: column; gap: 14px; height: 100%; }
+  .map {
+    border-radius: 14px; min-height: 110px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #DCFCE7, #10B981 90%);
+  }
+  .map::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .map .pin {
+    position: absolute; top: 45%; left: 50%; transform: translate(-50%,-100%);
+    color: #fff;
+  }
+  .map .pin .ring {
+    position: absolute; bottom: -6px; left: 50%; transform: translate(-50%,50%);
+    width: 36px; height: 12px; border-radius: 50%;
+    background: rgba(0,0,0,0.15); filter: blur(4px);
+  }
+  .loc-info { display: flex; gap: 10px; align-items: flex-start; }
+  .loc-info .ic { color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+  .loc-info .txt { font-size: 13.5px; color: #4B5563; }
+  .loc-info .txt b { color: var(--ink); }
+
+  /* 福利待遇 */
+  .perks { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+  .perk { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; color: #374151; }
+  .perk .ic-box {
+    width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+    display: grid; place-items: center;
+  }
+
+  /* 招聘 */
+  .jobs { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+  .job {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 14px; border-radius: var(--radius-sm);
+    background: rgba(255,255,255,0.08); cursor: pointer;
+    transition: background .25s var(--ease), transform .25s var(--ease);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .job:hover { background: rgba(255,255,255,0.14); transform: translateX(4px); }
+  .job .jtitle { font-weight: 600; font-size: 14.5px; color: #fff; }
+  .job .jmeta { color: rgba(255,255,255,0.55); font-size: 12px; margin-top: 3px; }
+  .job .jarrow { color: rgba(255,255,255,0.5); }
+
+  /* ============ 响应式 ============ */
+  @media (max-width: 1024px) {
+    .bento { grid-template-columns: repeat(4, 1fr); }
+    .col-4 { grid-column: span 4; }
+    .col-3 { grid-column: span 4; }
+    .col-2 { grid-column: span 2; }
+  }
+  @media (max-width: 720px) {
+    body { padding: 16px 14px 60px; }
+    .bento { grid-template-columns: 1fr; gap: 14px; }
+    .col-4, .col-3, .col-2 { grid-column: span 1; }
+    .row-2 { grid-row: span 1; }
+    .card { padding: 22px; }
+    .perks { grid-template-columns: 1fr; }
+  }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <nav class="topbar">
+    <div class="brand">
+      <span class="logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+      </span>
+      拾光工作室
+    </div>
+    <div class="nav-links">
+      <a href="#">作品</a>
+      <a href="#">服务</a>
+      <a href="#">团队</a>
+      <a href="#">日志</a>
+      <a href="#" class="join">加入我们</a>
+    </div>
+  </nav>
+
+  <!-- Bento Grid -->
+  <main class="bento">
+
+    <!-- Hero (4x2) -->
+    <section class="card col-4 row-2 reveal" style="padding:32px;">
+      <div class="hero">
+        <div class="hero-left">
+          <div>
+            <div class="eyebrow">EST. 2019 · 杭州独立设计工作室</div>
+            <h1 style="margin-top:10px;">拾光工作室</h1>
+            <p class="tagline" style="margin-top:14px;">我们是一群相信慢工出细活的人。为有想法的产品做设计、做开发、做有温度的数字体验。</p>
+          </div>
+          <div class="stat-row">
+            <div class="stat-block"><div class="n">2019</div><div class="l">成立年份</div></div>
+            <div class="stat-block"><div class="n">12</div><div class="l">团队成员</div></div>
+            <div class="stat-block"><div class="n">68</div><div class="l">交付项目</div></div>
+            <div class="stat-block"><div class="n">4.9<span style="font-size:18px;">★</span></div><div class="l">客户评分</div></div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <a href="#" class="btn btn-primary">
+              我们在招人
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+            <a href="#" class="btn btn-ghost">查看作品集</a>
+          </div>
+        </div>
+        <div class="group-photo">
+          <div class="photo-meta">
+            <div class="lbl">团队合影 · 2024 春</div>
+            <div class="avatars-stack" style="margin-bottom:10px;">
+              <div class="av" style="background:linear-gradient(135deg,#F59E0B,#EC4899);">沈</div>
+              <div class="av" style="background:linear-gradient(135deg,#6366F1,#06B6D4);">林</div>
+              <div class="av" style="background:linear-gradient(135deg,#10B981,#84CC16);">苏</div>
+              <div class="av" style="background:linear-gradient(135deg,#8B5CF6,#EC4899);">+9</div>
+            </div>
+            <div class="desc">在杭州西溪的一栋小楼里，<br>慢慢做喜欢的事。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Founder (2x2) -->
+    <section class="card col-2 row-2 reveal">
+      <div class="card-label">创始人</div>
+      <div class="founder">
+        <div class="top">
+          <div class="av-lg">沈</div>
+          <div>
+            <div class="nm">沈知秋</div>
+            <div class="role">创始人 · 创意总监</div>
+          </div>
+        </div>
+        <div class="creds">
+          <span class="cred">10 年设计经验</span>
+          <span class="cred">前 Frog Design</span>
+          <span class="cred">Awwwards SOTD ×3</span>
+        </div>
+        <p class="bio">相信好的设计是被使用、被记住、被喜爱的。创立拾光之前在 Frog 与字节跳动负责过多款百万级产品的体验设计，喜欢在咖啡和键盘之间找平衡。</p>
+        <div class="socials">
+          <span class="soc" title="GitHub"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.7-5.5 6 .5.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg></span>
+          <span class="soc" title="Twitter"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg></span>
+          <span class="soc" title="Dribbble"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm7.9 5.5c1.4 1.7 2.2 3.9 2.3 6.2-3.2-.7-6.2-.6-8.8-.1-.2-.5-.4-1-.7-1.5 3-1.2 5.3-3 6.5-4.6h.7zM12 2c2.4 0 4.6.9 6.3 2.3-1 1.4-3.1 3-5.8 4.1-1.3-2.3-2.7-4.2-3.7-5.4.9-.6 2.1-1 3.2-1zM6.7 3.4c1 1.1 2.4 3 3.7 5.3-3.4 1-6.6 1-8.2.9C2.7 6.6 4.5 4.5 6.7 3.4zM2 12v-.3c.5 0 4.4.2 8.8-1 .3.5.5 1 .7 1.5-3.9 1.2-7.1 4-8.7 7C2.3 17.3 2 14.7 2 12zm10 10c-2.4 0-4.6-.8-6.3-2.3 1.4-2.8 4.4-5.4 8-6.5 1 2.7 1.5 5.4 1.6 7-1 .5-2.1.8-3.3.8zm5.2-1.8c-.2-2-.6-4.2-1.4-6.4 2.3-.4 4.7-.3 7.1.3-.5 2.6-2.5 4.8-5.7 6.1z"/></svg></span>
+          <span class="soc" title="邮箱"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m22 7-10 6L2 7"/></svg></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Member: 林墨白 (前端) -->
+    <section class="card col-2 reveal pastel-blue clickable">
+      <div class="member">
+        <div class="av" style="background:linear-gradient(135deg,#6366F1,#06B6D4);">林</div>
+        <div>
+          <div class="mname">林墨白</div>
+          <div class="mrole">前端工程师</div>
+        </div>
+        <div class="mfun"><b>趣事</b>：写得一手好 CSS，也是博客作者。</div>
+      </div>
+    </section>
+
+    <!-- Member: 苏明远 (设计) -->
+    <section class="card col-2 reveal pastel-green clickable">
+      <div class="member">
+        <div class="av" style="background:linear-gradient(135deg,#10B981,#84CC16);">苏</div>
+        <div>
+          <div class="mname">苏明远</div>
+          <div class="mrole">视觉设计师</div>
+        </div>
+        <div class="mfun"><b>趣事</b>：相机从不离身，街头摄影爱好者。</div>
+      </div>
+    </section>
+
+    <!-- Member: 周也 (产品) -->
+    <section class="card col-2 reveal pastel-rose clickable">
+      <div class="member">
+        <div class="av" style="background:linear-gradient(135deg,#EC4899,#F43F5E);">周</div>
+        <div>
+          <div class="mname">周也</div>
+          <div class="mrole">产品经理</div>
+        </div>
+        <div class="mfun"><b>趣事</b>：原型图比谁都画得快，咖啡因依赖者。</div>
+      </div>
+    </section>
+
+    <!-- Member: 陆景行 (后端) -->
+    <section class="card col-2 reveal dark clickable">
+      <div class="member">
+        <div class="av" style="background:linear-gradient(135deg,#8B5CF6,#6366F1);">陆</div>
+        <div>
+          <div class="mname" style="color:#fff;">陆景行</div>
+          <div class="mrole" style="color:rgba(255,255,255,0.65);">后端工程师</div>
+        </div>
+        <div class="mfun" style="color:rgba(255,255,255,0.65);border-color:rgba(255,255,255,0.1);"><b style="color:#fff;">趣事</b>：开源贡献者，业余写 Rust。</div>
+      </div>
+    </section>
+
+    <!-- Member: 夏栀 (运营) - 较大 -->
+    <section class="card col-2 row-2 reveal pastel-amber clickable">
+      <div class="member">
+        <div class="av" style="background:linear-gradient(135deg,#F59E0B,#F97316);">夏</div>
+        <div>
+          <div class="mname">夏栀</div>
+          <div class="mrole">运营 & 内容</div>
+        </div>
+        <div class="mfun"><b>趣事</b>：把每一次发布都当成展览来筹备。负责工作室对外的一切声音——从公众号到Newsletter，让我们的作品被更多人看见。</div>
+        <div style="display:flex;gap:8px;margin-top:auto;">
+          <span class="soc" style="background:rgba(0,0,0,0.05);"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231z"/></svg></span>
+          <span class="soc" style="background:rgba(0,0,0,0.05);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="m22 7-10 6L2 7"/></svg></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 公司文化 (3x1) -->
+    <section class="card col-3 reveal dark">
+      <div class="card-label" style="color:rgba(255,255,255,0.5);">公司文化</div>
+      <h3 style="color:#fff;margin-bottom:4px;">我们相信的事</h3>
+      <div class="values">
+        <span class="value-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          慢即是快
+        </span>
+        <span class="value-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          细节即品格
+        </span>
+        <span class="value-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          诚实沟通
+        </span>
+        <span class="value-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          持续学习
+        </span>
+        <span class="value-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          不内卷
+        </span>
+      </div>
+    </section>
+
+    <!-- 办公地点 (3x1) -->
+    <section class="card col-3 reveal">
+      <div class="card-label">办公地点</div>
+      <h3 style="margin-bottom:14px;">杭州 · 西溪</h3>
+      <div class="location">
+        <div class="map">
+          <div class="pin">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="#fff" stroke="#1D1D1F" stroke-width="1.5"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#1D1D1F"/></svg>
+            <div class="ring"></div>
+          </div>
+        </div>
+        <div class="loc-info">
+          <span class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+          <div class="txt"><b>浙江省杭州市西湖区</b><br>西溪路 882 号 · 拾光创意园 3 楼</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 福利待遇 (3x1) -->
+    <section class="card col-3 reveal">
+      <div class="card-label">福利待遇</div>
+      <h3 style="margin-bottom:6px;">我们对彼此的好</h3>
+      <div class="perks">
+        <div class="perk">
+          <span class="ic-box" style="background:var(--pastel-blue);color:#2563EB;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4"/></svg></span>
+          <span>弹性工作<br><span style="color:var(--muted);font-size:12px;">不打卡，结果导向</span></span>
+        </div>
+        <div class="perk">
+          <span class="ic-box" style="background:var(--pastel-green);color:#16A34A;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 6v6c0 5 3.4 8.5 8 10 4.6-1.5 8-5 8-10V6z"/></svg></span>
+          <span>顶格五险一金<br><span style="color:var(--muted);font-size:12px;">+ 商业医疗补充</span></span>
+        </div>
+        <div class="perk">
+          <span class="ic-box" style="background:var(--pastel-amber);color:#D97706;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+          <span>购书预算<br><span style="color:var(--muted);font-size:12px;">每年 3000 元学习基金</span></span>
+        </div>
+        <div class="perk">
+          <span class="ic-box" style="background:var(--pastel-rose);color:#E11D48;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5s-7.5-4.5-7.5-10A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 7.5 4.5c0 5.5-7.5 10-7.5 10z"/></svg></span>
+          <span>带薪年假<br><span style="color:var(--muted);font-size:12px;">15 天起，逐年增加</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 招聘职位 (3x2) -->
+    <section class="card col-3 row-2 reveal dark">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div>
+          <div class="card-label" style="color:rgba(255,255,255,0.5);">开放职位</div>
+          <h3 style="color:#fff;">正在招人</h3>
+        </div>
+        <span style="color:#10B981;font-size:13px;font-weight:600;">3 个职位 · 急招</span>
+      </div>
+      <div class="jobs">
+        <div class="job">
+          <div>
+            <div class="jtitle">资深前端工程师</div>
+            <div class="jmeta">全职 · 杭州 · 25-40K · 3-5 年经验</div>
+          </div>
+          <svg class="jarrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="job">
+          <div>
+            <div class="jtitle">UI / 交互设计师</div>
+            <div class="jmeta">全职 · 杭州 · 18-30K · 接受优秀应届</div>
+          </div>
+          <svg class="jarrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="job">
+          <div>
+            <div class="jtitle">产品经理 (B 端方向)</div>
+            <div class="jmeta">全职 · 杭州 / 远程 · 20-35K</div>
+          </div>
+          <svg class="jarrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+      <a href="#" style="color:#fff;text-decoration:none;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;margin-top:8px;opacity:0.8;">查看全部职位 →</a>
+    </section>
+
+  </main>
+
+  <script>
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('in'), i * 60);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

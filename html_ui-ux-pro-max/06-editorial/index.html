@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>在像素与代码之间 — 林墨白 · 第 24 期</title>
+<meta name="description" content="林墨白 — 全栈工程师 / 数字设计师。杭州。一份编辑设计式的个人作品集。">
+
+<!-- Fonts: Playfair Display, Cormorant Garamond, Inter, Noto Serif SC, Noto Sans SC -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   EDITORIAL / MAGAZINE — 林墨白 · 第 24 期
+   Palette: paper #F4EFE6 · ink #1A1A1A · oxblood #8B2C2C
+   Type: Playfair / Noto Serif SC (display) · EB Garamond / Cormorant (body) · Inter (UI)
+   ========================================================= */
+
+:root{
+  --paper:      #F4EFE6;
+  --paper-2:    #EDE5D6;          /* deeper paper for layers */
+  --paper-3:    #E4DAC6;          /* deepest tone */
+  --ink:        #1A1A1A;
+  --ink-2:      #3A3530;          /* warm body text */
+  --ink-3:      #6B6258;          /* muted caption */
+  --ink-4:      #9A9085;          /* faint meta */
+  --rule:       #1A1A1A;
+  --rule-soft:  #C9BFAE;
+  --accent:     #8B2C2C;          /* dark red */
+  --accent-2:   #1B3A2F;          /* dark green */
+  --serif:      "EB Garamond", "Noto Serif SC", Georgia, serif;
+  --serif-cn:   "Noto Serif SC", "EB Garamond", serif;
+  --display:    "Playfair Display", "Noto Serif SC", Georgia, serif;
+  --display-cn: "Noto Serif SC", "Playfair Display", serif;
+  --ui:         "Inter", "Noto Sans SC", system-ui, sans-serif;
+  --maxw:       1240px;
+  --reading:    920px;
+  --gutter:     clamp(20px, 5vw, 72px);
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--serif-cn);
+  font-size:18px;
+  line-height:1.75;
+  font-weight:400;
+  overflow-x:hidden;
+  position:relative;
+  /* aged paper texture via layered subtle gradients */
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(139,44,44,0.025) 0, transparent 38%),
+    radial-gradient(circle at 88% 82%, rgba(27,58,47,0.022) 0, transparent 42%),
+    repeating-linear-gradient(135deg, rgba(120,90,60,0.018) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(45deg,  rgba(80,60,40,0.014) 0 1px, transparent 1px 6px),
+    linear-gradient(180deg, #F6F1E8 0%, #F2EBDF 100%);
+  background-attachment:fixed;
+}
+
+/* faint film grain layer */
+body::before{
+  content:"";
+  position:fixed; inset:0; z-index:1;
+  pointer-events:none;
+  opacity:.35;
+  background-image:
+    repeating-radial-gradient(circle at 30% 40%, rgba(60,40,20,.04) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg, rgba(60,40,20,.018) 0 1px, transparent 1px 2px);
+  mix-blend-mode:multiply;
+}
+
+img{ max-width:100%; display:block; }
+
+::selection{ background:var(--accent); color:var(--paper); }
+
+a{
+  color:var(--ink);
+  text-decoration:none;
+  transition:color .2s ease;
+}
+a:hover{ color:var(--accent); }
+
+:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+  border-radius:2px;
+}
+
+/* =========================================================
+   MASTHEAD
+   ========================================================= */
+.masthead{
+  position:sticky; top:0; z-index:50;
+  background:rgba(244,239,230,.92);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--rule);
+}
+.masthead-inner{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:14px var(--gutter);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:24px;
+}
+.brand{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:24px;
+  letter-spacing:.01em;
+  line-height:1;
+  display:flex; align-items:baseline; gap:8px;
+}
+.brand .brand-mark{
+  font-style:italic; font-weight:500; color:var(--accent);
+}
+.brand .brand-sub{
+  font-family:var(--ui);
+  font-size:10px; font-weight:600;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--ink-3);
+  padding-left:10px; border-left:1px solid var(--rule-soft);
+  margin-left:4px;
+}
+.nav-links{
+  display:flex; align-items:center; gap:28px;
+  font-family:var(--ui);
+  font-size:12px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase;
+}
+.nav-links a{
+  position:relative; padding:6px 0;
+  color:var(--ink);
+}
+.nav-links a::after{
+  content:""; position:absolute; left:0; bottom:0;
+  width:0; height:1px; background:var(--accent);
+  transition:width .25s ease;
+}
+.nav-links a:hover{ color:var(--accent); }
+.nav-links a:hover::after{ width:100%; }
+
+.back-link{
+  font-family:var(--ui);
+  font-size:12px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase;
+  display:inline-flex; align-items:center; gap:8px;
+  color:var(--ink-3);
+  padding:8px 14px;
+  border:1px solid var(--rule-soft);
+  border-radius:10px;
+  transition:all .2s ease;
+}
+.back-link:hover{
+  color:var(--accent); border-color:var(--accent);
+  background:rgba(139,44,44,.04);
+}
+.back-link svg{ transition:transform .2s ease; }
+.back-link:hover svg{ transform:translateX(-3px); }
+
+.menu-toggle{
+  display:none;
+  width:44px; height:44px;
+  background:none; border:1px solid var(--rule);
+  border-radius:10px; cursor:pointer;
+  align-items:center; justify-content:center;
+  color:var(--ink);
+}
+.menu-toggle span{
+  display:block; width:18px; height:1.5px; background:var(--ink);
+  position:relative; transition:.2s;
+}
+.menu-toggle span::before,.menu-toggle span::after{
+  content:""; position:absolute; left:0; width:18px; height:1.5px; background:var(--ink);
+  transition:.2s;
+}
+.menu-toggle span::before{ top:-6px; }
+.menu-toggle span::after{ top:6px; }
+.menu-toggle[aria-expanded="true"] span{ background:transparent; }
+.menu-toggle[aria-expanded="true"] span::before{ top:0; transform:rotate(45deg); }
+.menu-toggle[aria-expanded="true"] span::after{ top:0; transform:rotate(-45deg); }
+
+/* =========================================================
+   HERO — Magazine Cover
+   ========================================================= */
+.cover{
+  position:relative; z-index:2;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:clamp(48px,8vw,96px) var(--gutter) clamp(56px,8vw,96px);
+}
+.cover-meta{
+  display:flex; align-items:center; justify-content:space-between;
+  font-family:var(--ui);
+  font-size:11px; font-weight:600;
+  letter-spacing:.28em; text-transform:uppercase;
+  color:var(--ink-3);
+  padding-bottom:18px;
+  border-bottom:3px double var(--rule);
+  margin-bottom:48px;
+}
+.cover-meta .meta-issue{ color:var(--accent); }
+.cover-meta .meta-date{ letter-spacing:.2em; }
+
+.cover-rule-top{
+  border:0; border-top:1px solid var(--rule);
+  margin:0 0 14px;
+}
+
+.cover-eyebrow{
+  font-family:var(--ui);
+  font-size:12px; font-weight:600;
+  letter-spacing:.3em; text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:22px;
+  display:flex; align-items:center; gap:14px;
+}
+.cover-eyebrow::before,
+.cover-eyebrow::after{
+  content:""; flex:0 0 36px; height:1px; background:var(--accent);
+}
+.cover-eyebrow::after{ flex:1; }
+
+.cover-title{
+  font-family:var(--display-cn);
+  font-weight:900;
+  font-size:clamp(54px, 11vw, 156px);
+  line-height:.95;
+  letter-spacing:-.02em;
+  color:var(--ink);
+  margin-bottom:6px;
+}
+.cover-title .ital{
+  font-family:var(--display);
+  font-style:italic;
+  font-weight:500;
+  color:var(--accent);
+  display:block;
+  font-size:.42em;
+  letter-spacing:0;
+  margin-top:14px;
+}
+.cover-title .ital-en{
+  font-family:var(--display);
+  font-style:italic;
+  font-weight:400;
+  color:var(--ink-3);
+  display:block;
+  font-size:.22em;
+  letter-spacing:.02em;
+  margin-top:10px;
+}
+
+.cover-byline{
+  display:flex; flex-wrap:wrap; align-items:baseline;
+  gap:14px 24px;
+  margin:34px 0 30px;
+  font-family:var(--ui);
+  font-size:13px; font-weight:500;
+  letter-spacing:.06em;
+}
+.cover-byline .by-name{
+  font-family:var(--display);
+  font-style:italic;
+  font-size:26px;
+  font-weight:500;
+  color:var(--ink);
+  letter-spacing:0;
+}
+.cover-byline .by-sep{ color:var(--ink-4); }
+.cover-byline .by-role{ color:var(--ink-2); }
+.cover-byline .by-loc{ color:var(--ink-3); }
+.cover-byline .by-loc svg{
+  width:14px; height:14px; vertical-align:-2px; margin-right:4px;
+}
+
+.cover-deck{
+  font-family:var(--serif);
+  font-size:clamp(20px, 2.4vw, 28px);
+  line-height:1.55;
+  font-weight:400;
+  font-style:italic;
+  color:var(--ink-2);
+  max-width:42ch;
+  margin-bottom:40px;
+}
+
+.cover-foot{
+  display:flex; justify-content:space-between; align-items:flex-end;
+  gap:24px; flex-wrap:wrap;
+  padding-top:24px;
+  border-top:1px solid var(--rule);
+}
+.cover-foot .cf-left{
+  font-family:var(--ui);
+  font-size:11px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:var(--ink-3);
+}
+.cover-foot .cf-right{
+  font-family:var(--display);
+  font-style:italic;
+  font-size:15px;
+  color:var(--ink-3);
+}
+
+/* Cover decorative monogram */
+.cover-monogram{
+  position:absolute;
+  right:var(--gutter);
+  top:clamp(110px, 14vw, 180px);
+  font-family:var(--display);
+  font-style:italic;
+  font-weight:400;
+  font-size:clamp(120px, 20vw, 320px);
+  line-height:1;
+  color:var(--accent);
+  opacity:.07;
+  pointer-events:none;
+  user-select:none;
+  z-index:0;
+}
+
+/* =========================================================
+   SECTION SCAFFOLD
+   ========================================================= */
+.section{
+  position:relative; z-index:2;
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:clamp(56px,7vw,104px) var(--gutter);
+}
+.section-head{
+  display:flex; align-items:baseline; gap:20px;
+  margin-bottom:48px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--rule);
+}
+.section-num{
+  font-family:var(--display);
+  font-style:italic;
+  font-weight:400;
+  font-size:clamp(28px,4vw,44px);
+  color:var(--accent);
+  line-height:1;
+  white-space:nowrap;
+  letter-spacing:.02em;
+}
+.section-num .num-en{
+  font-family:var(--ui);
+  font-style:normal;
+  font-size:.4em;
+  font-weight:600;
+  letter-spacing:.2em;
+  vertical-align:middle;
+  margin-left:8px;
+  color:var(--ink-3);
+}
+.section-title{
+  font-family:var(--display-cn);
+  font-weight:700;
+  font-size:clamp(32px,5vw,56px);
+  line-height:1;
+  letter-spacing:-.01em;
+  color:var(--ink);
+}
+.section-title .t-en{
+  display:block;
+  font-family:var(--display);
+  font-style:italic;
+  font-weight:400;
+  font-size:.34em;
+  color:var(--ink-3);
+  margin-top:8px;
+  letter-spacing:.02em;
+}
+
+/* =========================================================
+   Nº 01 — FEATURE ARTICLE (multi-column + drop cap + pull quote)
+   ========================================================= */
+.article-grid{
+  display:grid;
+  grid-template-columns:1fr 1.55fr;
+  gap:clamp(36px,5vw,84px);
+  align-items:start;
+}
+.article-aside{
+  position:sticky; top:96px;
+  font-family:var(--ui);
+  font-size:12px; line-height:1.7;
+  color:var(--ink-3);
+}
+.aside-block{ margin-bottom:34px; }
+.aside-label{
+  font-weight:700;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink);
+  padding-bottom:8px;
+  border-bottom:1px solid var(--rule);
+  margin-bottom:10px;
+  font-size:11px;
+}
+.aside-block p{ font-family:var(--serif-cn); font-size:15px; line-height:1.7; color:var(--ink-2); }
+.aside-block ul{ list-style:none; }
+.aside-block li{
+  padding:8px 0; border-bottom:1px dotted var(--rule-soft);
+  font-family:var(--serif-cn); font-size:15px; color:var(--ink-2);
+}
+.aside-block li:last-child{ border-bottom:0; }
+
+.article-body{
+  font-family:var(--serif-cn);
+  font-size:18px;
+  line-height:1.85;
+  color:var(--ink-2);
+  column-count:2;
+  column-gap:48px;
+  column-rule:1px solid var(--rule-soft);
+  text-align:justify;
+  hyphens:auto;
+}
+.article-body p{ margin-bottom:1.1em; }
+.article-body p:first-of-type::first-letter{
+  font-family:var(--display);
+  font-weight:800;
+  font-size:4.6em;
+  line-height:.8;
+  float:left;
+  padding:6px 12px 0 0;
+  color:var(--accent);
+  font-style:normal;
+}
+.article-body em{ color:var(--ink); }
+.article-body strong{ font-weight:600; color:var(--ink); }
+
+.pullquote{
+  break-inside:avoid;
+  margin:1.4em 0;
+  padding:24px 0;
+  border-top:2px solid var(--ink);
+  border-bottom:1px solid var(--ink);
+  font-family:var(--display-cn);
+  font-style:normal;
+  font-weight:500;
+  font-size:clamp(20px,2.4vw,28px);
+  line-height:1.4;
+  color:var(--ink);
+  text-align:center;
+  letter-spacing:.01em;
+}
+.pullquote .pq-mark{
+  font-family:var(--display);
+  font-style:italic;
+  color:var(--accent);
+  font-size:1.6em;
+  line-height:0;
+  vertical-align:-.18em;
+  margin:0 .1em;
+}
+.pullquote .pq-attr{
+  display:block;
+  font-family:var(--ui);
+  font-style:normal;
+  font-weight:600;
+  font-size:.46em;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-3);
+  margin-top:14px;
+}
+
+/* =========================================================
+   Nº 02 — SKILLS
+   ========================================================= */
+.skills-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:0;
+  border-top:1px solid var(--rule);
+}
+.skill{
+  padding:36px 28px 36px 0;
+  border-bottom:1px solid var(--rule);
+  display:grid;
+  grid-template-columns:46px 1fr auto;
+  gap:22px;
+  align-items:center;
+}
+.skill:nth-child(odd){ border-right:1px solid var(--rule); padding-right:36px; }
+.skill:nth-child(even){ padding-left:36px; }
+.skill-index{
+  font-family:var(--display);
+  font-style:italic;
+  font-size:24px;
+  color:var(--accent);
+  line-height:1;
+}
+.skill-body{ min-width:0; }
+.skill-name{
+  font-family:var(--display-cn);
+  font-weight:600;
+  font-size:22px;
+  color:var(--ink);
+  line-height:1.2;
+  margin-bottom:14px;
+}
+.skill-name .sn-en{
+  font-family:var(--display);
+  font-style:italic;
+  font-weight:400;
+  font-size:.7em;
+  color:var(--ink-3);
+  margin-left:8px;
+}
+.skill-track{
+  height:1px; background:var(--rule-soft); position:relative; overflow:hidden;
+}
+.skill-fill{
+  position:absolute; left:0; top:0; height:1px;
+  background:var(--ink);
+  width:0;
+  transition:width 1.2s cubic-bezier(.16,.84,.44,1);
+}
+.skill.is-visible .skill-fill{ width:var(--lvl); }
+.skill-pct{
+  font-family:var(--display);
+  font-style:italic;
+  font-size:26px;
+  font-weight:500;
+  color:var(--ink);
+  line-height:1;
+}
+.skill-pct .pct-sym{
+  font-family:var(--ui);
+  font-style:normal;
+  font-size:.55em;
+  color:var(--ink-3);
+  vertical-align:.4em;
+  margin-left:2px;
+}
+.skill-meta{
+  font-family:var(--ui);
+  font-size:11px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3);
+  margin-top:10px;
+}
+
+/* =========================================================
+   Nº 03 — WORKS GALLERY
+   ========================================================= */
+.works-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:clamp(28px,4vw,52px) clamp(28px,4vw,52px);
+}
+.work{
+  display:block;
+  cursor:pointer;
+}
+.work-figure{
+  position:relative;
+  overflow:hidden;
+  aspect-ratio:4/5;
+  background:var(--paper-2);
+  border:1px solid var(--rule);
+}
+.work-figure img{
+  width:100%; height:100%; object-fit:cover;
+  filter:grayscale(.55) sepia(.12) contrast(1.02);
+  transition:filter .4s ease, transform .6s ease;
+}
+.work:hover .work-figure img{
+  filter:grayscale(0) sepia(0) contrast(1);
+  transform:scale(1.03);
+}
+.work-num{
+  position:absolute; top:16px; left:16px;
+  font-family:var(--display);
+  font-style:italic;
+  font-size:18px;
+  color:var(--paper);
+  background:var(--ink);
+  padding:4px 12px;
+  letter-spacing:.05em;
+}
+.work-overlay{
+  position:absolute; inset:0;
+  display:flex; align-items:flex-end;
+  padding:24px;
+  background:linear-gradient(0deg, rgba(26,26,26,.55) 0%, transparent 50%);
+  opacity:0; transition:opacity .3s ease;
+}
+.work:hover .work-overlay{ opacity:1; }
+.work-overlay span{
+  font-family:var(--ui);
+  font-size:11px; font-weight:600;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--paper);
+  display:inline-flex; align-items:center; gap:8px;
+}
+.work-caption{
+  padding-top:18px;
+  display:flex; align-items:baseline; justify-content:space-between;
+  gap:16px;
+  border-top:1px solid var(--rule);
+  margin-top:0;
+}
+.work-caption-main{
+  font-family:var(--display-cn);
+  font-weight:600;
+  font-size:24px;
+  color:var(--ink);
+  line-height:1.2;
+  transition:color .2s ease;
+}
+.work:hover .work-caption-main{ color:var(--accent); }
+.work-caption-main .wc-en{
+  display:block;
+  font-family:var(--display);
+  font-style:italic;
+  font-weight:400;
+  font-size:.62em;
+  color:var(--ink-3);
+  margin-top:4px;
+}
+.work-caption-meta{
+  font-family:var(--ui);
+  font-size:11px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-3);
+  text-align:right;
+  white-space:nowrap;
+}
+.work-desc{
+  font-family:var(--serif-cn);
+  font-style:italic;
+  font-size:15px;
+  color:var(--ink-3);
+  margin-top:8px;
+  line-height:1.6;
+}
+
+/* =========================================================
+   Nº 04 — JOURNEY (chronicle timeline)
+   ========================================================= */
+.chronicle{
+  position:relative;
+  max-width:var(--reading);
+  margin:0 auto;
+  padding-left:0;
+}
+.chronicle::before{
+  content:""; position:absolute;
+  left:140px; top:8px; bottom:8px;
+  width:1px; background:var(--rule);
+}
+.entry{
+  position:relative;
+  display:grid;
+  grid-template-columns:120px 1fr;
+  gap:48px;
+  padding:24px 0;
+  border-bottom:1px dotted var(--rule-soft);
+}
+.entry:last-child{ border-bottom:0; }
+.entry-year{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:30px;
+  color:var(--ink);
+  line-height:1;
+  text-align:right;
+  padding-top:4px;
+}
+.entry-year .ey-sep{
+  display:block;
+  font-family:var(--ui);
+  font-style:normal;
+  font-weight:600;
+  font-size:11px;
+  letter-spacing:.2em; text-transform:uppercase;
+  color:var(--ink-4);
+  margin-top:6px;
+}
+.entry-dot{
+  position:absolute;
+  left:134px; top:18px;
+  width:13px; height:13px;
+  border-radius:50%;
+  background:var(--paper);
+  border:1.5px solid var(--ink);
+  z-index:2;
+  transition:background .2s ease, transform .2s ease;
+}
+.entry:hover .entry-dot{
+  background:var(--accent);
+  border-color:var(--accent);
+  transform:scale(1.15);
+}
+.entry-body{
+  padding-left:24px;
+}
+.entry-title{
+  font-family:var(--display-cn);
+  font-weight:600;
+  font-size:22px;
+  color:var(--ink);
+  line-height:1.3;
+  margin-bottom:4px;
+}
+.entry-title .et-place{
+  font-family:var(--display);
+  font-style:italic;
+  font-weight:400;
+  font-size:.78em;
+  color:var(--accent);
+  margin-left:8px;
+}
+.entry-role{
+  font-family:var(--ui);
+  font-size:11px; font-weight:600;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:var(--ink-3);
+  margin-bottom:12px;
+}
+.entry-text{
+  font-family:var(--serif-cn);
+  font-size:16px;
+  line-height:1.75;
+  color:var(--ink-2);
+}
+
+/* =========================================================
+   Nº 05 — CONTACT / COLOPHON
+   ========================================================= */
+.contact{
+  text-align:center;
+  padding-top:clamp(72px,9vw,128px);
+  padding-bottom:clamp(72px,9vw,128px);
+  border-top:3px double var(--rule);
+}
+.contact-eyebrow{
+  font-family:var(--ui);
+  font-size:11px; font-weight:600;
+  letter-spacing:.3em; text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:28px;
+}
+.contact-title{
+  font-family:var(--display-cn);
+  font-weight:700;
+  font-size:clamp(40px,7vw,84px);
+  line-height:1.05;
+  color:var(--ink);
+  margin-bottom:24px;
+  letter-spacing:-.01em;
+}
+.contact-title .ital{
+  font-family:var(--display);
+  font-style:italic;
+  font-weight:500;
+  color:var(--accent);
+}
+.contact-deck{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:clamp(18px,2vw,22px);
+  line-height:1.6;
+  color:var(--ink-2);
+  max-width:36ch;
+  margin:0 auto 44px;
+}
+.contact-email{
+  display:inline-flex; align-items:center; gap:14px;
+  font-family:var(--display-cn);
+  font-weight:600;
+  font-size:clamp(22px,3vw,30px);
+  color:var(--ink);
+  padding:18px 40px;
+  border:1px solid var(--rule);
+  border-radius:14px;
+  transition:all .25s ease;
+  margin-bottom:48px;
+}
+.contact-email:hover{
+  color:var(--paper);
+  background:var(--accent);
+  border-color:var(--accent);
+  transform:translateY(-2px);
+  box-shadow:0 14px 30px -16px rgba(139,44,44,.5);
+}
+.contact-email svg{ width:22px; height:22px; }
+
+.socials{
+  display:flex; justify-content:center; gap:18px;
+  margin-bottom:8px;
+}
+.social{
+  width:52px; height:52px;
+  display:inline-flex; align-items:center; justify-content:center;
+  border:1px solid var(--rule);
+  border-radius:50%;
+  color:var(--ink);
+  transition:all .25s ease;
+}
+.social svg{ width:20px; height:20px; }
+.social:hover{
+  color:var(--paper);
+  background:var(--ink);
+  transform:translateY(-3px);
+  border-color:var(--ink);
+}
+
+/* =========================================================
+   FOOTER — COLOPHON
+   ========================================================= */
+.colophon{
+  position:relative; z-index:2;
+  background:var(--ink);
+  color:var(--paper);
+  padding:64px var(--gutter) 36px;
+}
+.colophon-inner{ max-width:var(--maxw); margin:0 auto; }
+.colophon-top{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:40px;
+  padding-bottom:40px;
+  border-bottom:1px solid rgba(244,239,230,.2);
+  margin-bottom:28px;
+}
+.colophon-brand{
+  font-family:var(--display);
+  font-weight:700;
+  font-size:34px;
+  line-height:1;
+  color:var(--paper);
+}
+.colophon-brand .cb-ital{
+  font-style:italic; font-weight:500; color:#C97B5E;
+}
+.colophon-brand .cb-sub{
+  display:block;
+  font-family:var(--ui);
+  font-size:11px; font-weight:500;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:rgba(244,239,230,.6);
+  margin-top:14px;
+}
+.colophon h4{
+  font-family:var(--ui);
+  font-size:11px; font-weight:700;
+  letter-spacing:.22em; text-transform:uppercase;
+  color:#C97B5E;
+  margin-bottom:14px;
+}
+.colophon ul{ list-style:none; }
+.colophon li{ margin-bottom:8px; }
+.colophon a{
+  font-family:var(--serif-cn);
+  font-size:15px;
+  color:rgba(244,239,230,.78);
+  transition:color .2s ease;
+}
+.colophon a:hover{ color:var(--paper); }
+.colophon-bottom{
+  display:flex; justify-content:space-between; align-items:center;
+  gap:24px; flex-wrap:wrap;
+  font-family:var(--ui);
+  font-size:11px; font-weight:500;
+  letter-spacing:.14em; text-transform:uppercase;
+  color:rgba(244,239,230,.55);
+}
+.colophon-bottom .cb-print{
+  font-family:var(--display);
+  font-style:italic;
+  font-size:13px;
+  text-transform:none;
+  letter-spacing:.02em;
+  color:rgba(244,239,230,.7);
+}
+.colophon-back{
+  display:inline-flex; align-items:center; gap:8px;
+  color:var(--paper);
+  padding:8px 14px;
+  border:1px solid rgba(244,239,230,.3);
+  border-radius:10px;
+  transition:all .2s ease;
+}
+.colophon-back:hover{
+  border-color:#C97B5E; color:#C97B5E;
+}
+.colophon-back svg{ transition:transform .2s ease; }
+.colophon-back:hover svg{ transform:translateX(-3px); }
+
+/* =========================================================
+   REVEAL ANIMATION
+   ========================================================= */
+.reveal{
+  opacity:0;
+  transform:translateY(28px);
+  transition:opacity .9s cubic-bezier(.16,.84,.44,1),
+             transform .9s cubic-bezier(.16,.84,.44,1);
+}
+.reveal.is-visible{ opacity:1; transform:none; }
+.reveal-d1{ transition-delay:.08s; }
+.reveal-d2{ transition-delay:.16s; }
+.reveal-d3{ transition-delay:.24s; }
+.reveal-d4{ transition-delay:.32s; }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 980px){
+  .article-grid{ grid-template-columns:1fr; gap:48px; }
+  .article-aside{ position:static; }
+  .article-body{ column-count:2; }
+  .works-grid{ grid-template-columns:1fr 1fr; }
+  .colophon-top{ grid-template-columns:1fr 1fr; }
+  .cover-monogram{ display:none; }
+}
+@media (max-width: 760px){
+  body{ font-size:17px; }
+
+  .nav-links{
+    position:fixed;
+    top:72px; left:0; right:0;
+    flex-direction:column; align-items:flex-start;
+    gap:0;
+    background:var(--paper);
+    border-bottom:1px solid var(--rule);
+    padding:8px var(--gutter) 24px;
+    transform:translateY(-130%);
+    transition:transform .3s ease;
+    box-shadow:0 20px 40px -20px rgba(0,0,0,.2);
+    z-index:40;
+  }
+  .nav-links.open{ transform:translateY(0); }
+  .nav-links a{
+    width:100%; padding:14px 0;
+    border-bottom:1px solid var(--rule-soft);
+    font-size:14px;
+  }
+  .nav-links a:last-child{ border-bottom:0; }
+  .menu-toggle{ display:inline-flex; }
+  .brand .brand-sub{ display:none; }
+  .back-link span{ display:none; }
+
+  .cover-meta{ flex-direction:column; gap:8px; align-items:flex-start; }
+  .article-body{ column-count:1; column-rule:0; text-align:left; }
+  .skills-grid{ grid-template-columns:1fr; }
+  .skill, .skill:nth-child(odd), .skill:nth-child(even){
+    border-right:0; padding:28px 0;
+  }
+  .works-grid{ grid-template-columns:1fr; }
+  .section-head{ flex-wrap:wrap; gap:12px; }
+  .chronicle::before{ left:8px; }
+  .entry{ grid-template-columns:1fr; gap:8px; }
+  .entry-year{ text-align:left; padding-left:32px; }
+  .entry-dot{ left:2px; }
+  .entry-body{ padding-left:32px; }
+  .colophon-top{ grid-template-columns:1fr; gap:32px; }
+  .colophon-bottom{ flex-direction:column; align-items:flex-start; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+  .reveal{ opacity:1 !important; transform:none !important; }
+  html{ scroll-behavior:auto; }
+}
+</style>
+</head>
+<body>
+
+<!-- ================= MASTHEAD ================= -->
+<header class="masthead" role="banner">
+  <div class="masthead-inner">
+    <a href="#cover" class="brand" aria-label="林墨白 · 刊首返回顶部">
+      <span class="brand-mark">Lin&nbsp;</span><span>墨白</span>
+      <span class="brand-sub">Editorial</span>
+    </a>
+
+    <nav class="nav-links" id="nav" aria-label="主导航">
+      <a href="#about">关于</a>
+      <a href="#skills">技艺</a>
+      <a href="#works">作品</a>
+      <a href="#journey">履历</a>
+      <a href="#contact">联系</a>
+    </nav>
+
+    <a href="../index.html" class="back-link" aria-label="返回总览">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      <span>总览</span>
+    </a>
+
+    <button class="menu-toggle" id="menuToggle" aria-label="打开菜单" aria-expanded="false" aria-controls="nav">
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ================= HERO / COVER ================= -->
+<section class="cover" id="cover" aria-labelledby="cover-title">
+  <div class="cover-monogram" aria-hidden="true">M</div>
+
+  <div class="cover-meta reveal is-visible">
+    <span class="meta-issue">第 24 期 · 2024 · Vol. XXIV</span>
+    <span class="meta-date">秋 · Autumn · 杭州</span>
+  </div>
+
+  <p class="cover-eyebrow reveal is-visible">A Personal Almanac · 个人年刊</p>
+
+  <h1 class="cover-title reveal is-visible" id="cover-title">
+    在像素与<br>代码之间
+    <span class="ital">— between pixel &amp; code —</span>
+    <span class="ital-en">an editorial portrait of</span>
+  </h1>
+
+  <div class="cover-byline reveal is-visible">
+    <span class="by-name">林墨白</span>
+    <span class="by-sep">／</span>
+    <span class="by-role">全栈工程师 · 数字设计师</span>
+    <span class="by-sep">／</span>
+    <span class="by-loc">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      杭州 · Hangzhou
+    </span>
+    <span class="by-sep">／</span>
+    <span class="by-role">五年从业</span>
+  </div>
+
+  <p class="cover-deck reveal is-visible">
+    他相信好的界面应当像一首被反复推敲的散文诗——克制、精确、在静默处藏有余韵。这是一份关于设计与工程的私人札记。
+  </p>
+
+  <div class="cover-foot reveal is-visible">
+    <span class="cf-left">本期收录 · 5 篇 · 约 12 分钟阅读</span>
+    <span class="cf-right">— 翻页继续，please turn the page —</span>
+  </div>
+</section>
+
+<!-- ================= Nº 01 — ABOUT ================= -->
+<section class="section" id="about" aria-labelledby="about-title">
+  <header class="section-head reveal">
+    <span class="section-num">Nº 01<span class="num-en">No. One</span></span>
+    <h2 class="section-title" id="about-title">
+      关于
+      <span class="t-en">— a few words about the maker</span>
+    </h2>
+  </header>
+
+  <div class="article-grid">
+    <aside class="article-aside reveal" aria-label="作者侧记">
+      <div class="aside-block">
+        <div class="aside-label">作者侧记</div>
+        <p>林墨白，1996 年生于浙江。白天写代码，夜里读旧书。常于西湖边的小馆临窗而坐，为一行 CSS 排版苦恼至深夜。</p>
+      </div>
+      <div class="aside-block">
+        <div class="aside-label">关键词</div>
+        <ul>
+          <li>排版 · Typography</li>
+          <li>动效 · Motion</li>
+          <li>系统设计 · Design System</li>
+          <li>无障碍 · A11y</li>
+          <li>古典文学</li>
+        </ul>
+      </div>
+      <div class="aside-block">
+        <div class="aside-label">座右铭</div>
+        <p style="font-family:var(--display);font-style:italic;font-size:18px;color:var(--ink);">"Simplicity is the ultimate sophistication."</p>
+      </div>
+    </aside>
+
+    <article class="article-body reveal">
+      <p>五年来，林墨白始终在一处微妙的地带工作——左手指尖敲打着冰冷的逻辑，右眼却盯着屏幕上每一处像素的呼吸。他相信，工程师与设计师从来不是两种职业，而是同一种专注的两个侧面：一种对秩序的痴迷，与一种对美的克制。</p>
+
+      <p>他的作品少而慢。一个按钮的圆角可以争论三天，一处字距的调整值得为一个项目重启七次。在他看来，所谓"用户友好"并不来自堆砌功能，而是来自一次次删减——删到只剩骨架，再轻轻覆上一层皮肤，让它能呼吸。</p>
+
+      <blockquote class="pullquote">
+        <span class="pq-mark">"</span>设计的尽头是克制，工程的尽头是优雅。<span class="pq-mark">"</span>
+        <span class="pq-attr">— 林墨白 · 设计手记</span>
+      </blockquote>
+
+      <p>他习惯用笔记本来记录灵感，纸页泛黄，钢笔字迹潦草。每一行代码上线前，他都会问自己三个问题：它是否诚实？它是否温柔？它是否经得起五年后的回望？若三者皆"是"，方才放手。</p>
+
+      <p>如今他定居杭州，在一家产品型公司担任全栈工程师与设计负责人。工作之外，他热衷于修复旧字体、研究活版印刷、并为开源社区贡献微小的工具。这些看似无用之事，恰恰是他灵感最深的泉眼。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ================= Nº 02 — SKILLS ================= -->
+<section class="section" id="skills" aria-labelledby="skills-title">
+  <header class="section-head reveal">
+    <span class="section-num">Nº 02<span class="num-en">No. Two</span></span>
+    <h2 class="section-title" id="skills-title">
+      技艺
+      <span class="t-en">— the craft, measured in years</span>
+    </h2>
+  </header>
+
+  <div class="skills-grid" role="list">
+    <div class="skill reveal" role="listitem" style="--lvl:92%">
+      <span class="skill-index">i.</span>
+      <div class="skill-body">
+        <div class="skill-name">前端工程<span class="sn-en">Frontend Engineering</span></div>
+        <div class="skill-track" aria-hidden="true"><span class="skill-fill"></span></div>
+        <div class="skill-meta">React · TypeScript · 动效</div>
+      </div>
+      <div class="skill-pct">92<span class="pct-sym">%</span></div>
+    </div>
+
+    <div class="skill reveal" role="listitem" style="--lvl:88%">
+      <span class="skill-index">ii.</span>
+      <div class="skill-body">
+        <div class="skill-name">视觉设计<span class="sn-en">Visual Design</span></div>
+        <div class="skill-track" aria-hidden="true"><span class="skill-fill"></span></div>
+        <div class="skill-meta">排版 · 配色 · 系统</div>
+      </div>
+      <div class="skill-pct">88<span class="pct-sym">%</span></div>
+    </div>
+
+    <div class="skill reveal" role="listitem" style="--lvl:80%">
+      <span class="skill-index">iii.</span>
+      <div class="skill-body">
+        <div class="skill-name">后端架构<span class="sn-en">Backend Architecture</span></div>
+        <div class="skill-track" aria-hidden="true"><span class="skill-fill"></span></div>
+        <div class="skill-meta">Node · Go · 数据库</div>
+      </div>
+      <div class="skill-pct">80<span class="pct-sym">%</span></div>
+    </div>
+
+    <div class="skill reveal" role="listitem" style="--lvl:75%">
+      <span class="skill-index">iv.</span>
+      <div class="skill-body">
+        <div class="skill-name">产品思维<span class="sn-en">Product Thinking</span></div>
+        <div class="skill-track" aria-hidden="true"><span class="skill-fill"></span></div>
+        <div class="skill-meta">研究 · 策略 · 取舍</div>
+      </div>
+      <div class="skill-pct">75<span class="pct-sym">%</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Nº 03 — WORKS ================= -->
+<section class="section" id="works" aria-labelledby="works-title">
+  <header class="section-head reveal">
+    <span class="section-num">Nº 03<span class="num-en">No. Three</span></span>
+    <h2 class="section-title" id="works-title">
+      作品
+      <span class="t-en">— selected works, four of them</span>
+    </h2>
+  </header>
+
+  <div class="works-grid">
+
+    <a class="work reveal" href="#contact" aria-label="极光笔记 · Aurora Notes">
+      <div class="work-figure">
+        <span class="work-num">№ 01</span>
+        <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?w=800&auto=format&fit=crop" alt="极光笔记应用界面，深色背景上的笔记列表" loading="lazy">
+        <div class="work-overlay"><span>查看案例 →</span></div>
+      </div>
+      <div class="work-caption">
+        <div class="work-caption-main">
+          极光笔记
+          <span class="wc-en">Aurora Notes</span>
+        </div>
+        <div class="work-caption-meta">2024 · App</div>
+      </div>
+      <p class="work-desc">一款极简的本地优先笔记应用，以活版印刷为灵感重塑写作界面。</p>
+    </a>
+
+    <a class="work reveal reveal-d1" href="#contact" aria-label="像素工坊 · Pixel Studio">
+      <div class="work-figure">
+        <span class="work-num">№ 02</span>
+        <img src="https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&auto=format&fit=crop" alt="像素工坊低代码搭建平台，可视化拖拽编辑界面" loading="lazy">
+        <div class="work-overlay"><span>查看案例 →</span></div>
+      </div>
+      <div class="work-caption">
+        <div class="work-caption-main">
+          像素工坊
+          <span class="wc-en">Pixel Studio</span>
+        </div>
+        <div class="work-caption-meta">2023 · Web</div>
+      </div>
+      <p class="work-desc">面向独立开发者的低代码可视化搭建平台，拖拽即可生成页面。</p>
+    </a>
+
+    <a class="work reveal" href="#contact" aria-label="数据之眼 · Data Eye">
+      <div class="work-figure">
+        <span class="work-num">№ 03</span>
+        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&auto=format&fit=crop" alt="数据之眼实时可视化看板，多维度图表与数据流" loading="lazy">
+        <div class="work-overlay"><span>查看案例 →</span></div>
+      </div>
+      <div class="work-caption">
+        <div class="work-caption-main">
+          数据之眼
+          <span class="wc-en">Data Eye</span>
+        </div>
+        <div class="work-caption-meta">2023 · Dashboard</div>
+      </div>
+      <p class="work-desc">实时数据可视化看板，支持百万级数据点的流畅渲染。</p>
+    </a>
+
+    <a class="work reveal reveal-d1" href="#contact" aria-label="声波画廊 · Sonic Gallery">
+      <div class="work-figure">
+        <span class="work-num">№ 04</span>
+        <img src="https://images.unsplash.com/photo-1506784983877-45594efa4cbe?w=800&auto=format&fit=crop" alt="声波画廊音频可视化作品，声波转化为绚烂图形" loading="lazy">
+        <div class="work-overlay"><span>查看案例 →</span></div>
+      </div>
+      <div class="work-caption">
+        <div class="work-caption-main">
+          声波画廊
+          <span class="wc-en">Sonic Gallery</span>
+        </div>
+        <div class="work-caption-meta">2022 · Creative</div>
+      </div>
+      <p class="work-desc">将音频转化为可视图形的创意项目，曾入选 Awwwards 周榜。</p>
+    </a>
+
+  </div>
+</section>
+
+<!-- ================= Nº 04 — JOURNEY ================= -->
+<section class="section" id="journey" aria-labelledby="journey-title">
+  <header class="section-head reveal">
+    <span class="section-num">Nº 04<span class="num-en">No. Four</span></span>
+    <h2 class="section-title" id="journey-title">
+      履历
+      <span class="t-en">— a chronicle, in five entries</span>
+    </h2>
+  </header>
+
+  <div class="chronicle">
+
+    <div class="entry reveal">
+      <div class="entry-year">2024<span class="ey-sep">至今</span></div>
+      <span class="entry-dot" aria-hidden="true"></span>
+      <div class="entry-body">
+        <div class="entry-title">设计负责人<span class="et-place">· 杭州</span></div>
+        <div class="entry-role">Lead Designer / Full-stack Engineer</div>
+        <p class="entry-text">主导一款 toC 产品的视觉体系重构与前端架构升级，团队从 3 人扩至 12 人。建立设计系统，统一字、色、间距与动效语言。</p>
+      </div>
+    </div>
+
+    <div class="entry reveal">
+      <div class="entry-year">2022<span class="ey-sep">秋</span></div>
+      <span class="entry-dot" aria-hidden="true"></span>
+      <div class="entry-body">
+        <div class="entry-title">独立顾问<span class="et-place">· 远程</span></div>
+        <div class="entry-role">Independent Consultant</div>
+        <p class="entry-text">为 6 家初创公司提供品牌视觉与产品体验咨询。期间完成《极光笔记》的从 0 到 1，登顶 App Store 效率榜。</p>
+      </div>
+    </div>
+
+    <div class="entry reveal">
+      <div class="entry-year">2020<span class="ey-sep">春</span></div>
+      <span class="entry-dot" aria-hidden="true"></span>
+      <div class="entry-body">
+        <div class="entry-title">高级前端工程师<span class="et-place">· 上海</span></div>
+        <div class="entry-role">Senior Frontend Engineer</div>
+        <p class="entry-text">在一家电商 SaaS 公司负责中后台可视化平台，沉淀出一套被内部十余个团队复用的组件库。</p>
+      </div>
+    </div>
+
+    <div class="entry reveal">
+      <div class="entry-year">2019<span class="ey-sep">夏</span></div>
+      <span class="entry-dot" aria-hidden="true"></span>
+      <div class="entry-body">
+        <div class="entry-title">初入行业<span class="et-place">· 杭州</span></div>
+        <div class="entry-role">Junior Developer &amp; Designer</div>
+        <p class="entry-text">毕业后加入第一家创业公司，身兼前端与设计两职，第一次明白"少即是多"的真正重量。</p>
+      </div>
+    </div>
+
+    <div class="entry reveal">
+      <div class="entry-year">2015<span class="ey-sep">秋</span></div>
+      <span class="entry-dot" aria-hidden="true"></span>
+      <div class="entry-body">
+        <div class="entry-title">求学<span class="et-place">· 杭州</span></div>
+        <div class="entry-role">Computer Science &amp; Design</div>
+        <p class="entry-text">在大学同时修读计算机与视觉传达。图书馆三层靠窗的座位，是他四年里最忠实的伙伴。</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ================= Nº 05 — CONTACT ================= -->
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <p class="contact-eyebrow reveal">Nº 05 · Closing — 结语</p>
+  <h2 class="contact-title reveal" id="contact-title">
+    若你愿<span class="ital">同行</span>，<br>请执笔来信。
+  </h2>
+  <p class="contact-deck reveal">
+    无论是合作、请教，还是只想聊聊一本好书、一缕茶香——墨白都乐意倾听。
+  </p>
+
+  <a class="contact-email reveal" href="mailto:linmobai@example.com" aria-label="发送邮件给林墨白">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+    linmobai@example.com
+  </a>
+
+  <div class="socials reveal" aria-label="社交媒体">
+    <a class="social" href="#" aria-label="GitHub 林墨白" title="GitHub">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.79 1.2 1.79 1.2 1.04 1.79 2.73 1.27 3.4.97.11-.76.41-1.27.74-1.56-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 015.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.41-5.25 5.69.42.36.79 1.08.79 2.18v3.23c0 .31.21.68.8.56A11.51 11.51 0 0023.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+    </a>
+    <a class="social" href="#" aria-label="Dribbble 林墨白" title="Dribbble">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8.5 2.5c4 5 6 9.5 6.5 18.5M21.5 9c-7 0-13 1.5-18 5M2.5 14c5.5-2 12-1.5 18 2"/></svg>
+    </a>
+    <a class="social" href="#" aria-label="Behance 林墨白" title="Behance">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.2 8.4c.5 0 .9 0 1.3.1.4.1.7.2 1 .4.3.2.5.4.6.8.1.3.2.7.2 1.2 0 .5-.1.9-.3 1.2-.2.3-.5.6-1 .8.6.2 1 .5 1.3.9.3.4.4.9.4 1.6 0 .5-.1.9-.3 1.3-.2.4-.5.7-.8.9-.3.2-.7.4-1.2.5-.4.1-.9.1-1.4.1H2V8.4h6.2zm-.3 3.7c.4 0 .7-.1.9-.3.2-.2.3-.5.3-.9 0-.2 0-.4-.1-.5l-.3-.3-.5-.2H4.6v2.2h3.3zm.2 3.9c.2 0 .4 0 .6-.1.2 0 .3-.1.5-.2.1-.1.2-.2.3-.4.1-.2.1-.4.1-.6 0-.5-.1-.8-.4-1-.3-.2-.6-.3-1.1-.3H4.6v2.7h3.5v-.1zM16.4 15.9c.3.3.8.5 1.4.5.4 0 .8-.1 1.1-.3.3-.2.5-.4.6-.7h2c-.3 1-.8 1.7-1.5 2.2-.7.4-1.5.7-2.4.7-.7 0-1.3-.1-1.8-.3-.5-.2-1-.5-1.3-.9-.4-.4-.6-.9-.8-1.4-.2-.5-.3-1.1-.3-1.8 0-.6.1-1.2.3-1.7.2-.5.5-1 .9-1.4.4-.4.8-.7 1.3-.9.5-.2 1.1-.3 1.7-.3.7 0 1.3.1 1.8.4.5.3.9.6 1.3 1.1.3.4.6 1 .7 1.6.1.6.1 1.2.1 1.9H16c0 .6.2 1.1.4 1.4zm2.4-3.9c-.3-.3-.7-.4-1.2-.4-.3 0-.6.1-.9.2-.2.1-.4.3-.5.4-.1.2-.2.3-.3.5v.4h3.2c0-.5-.2-.9-.3-1.1zM15.3 8.9h4V10h-4V8.9z"/></svg>
+    </a>
+    <a class="social" href="mailto:linmobai@example.com" aria-label="邮件 林墨白" title="Email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ================= FOOTER / COLOPHON ================= -->
+<footer class="colophon" role="contentinfo">
+  <div class="colophon-inner">
+    <div class="colophon-top">
+      <div>
+        <div class="colophon-brand">
+          <span class="cb-ital">Lin</span> 墨白
+          <span class="cb-sub">An Editorial Portrait · 第 24 期</span>
+        </div>
+      </div>
+      <div>
+        <h4>本期目录</h4>
+        <ul>
+          <li><a href="#about">关于</a></li>
+          <li><a href="#skills">技艺</a></li>
+          <li><a href="#works">作品</a></li>
+          <li><a href="#journey">履历</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>联络</h4>
+        <ul>
+          <li><a href="mailto:linmobai@example.com">邮件</a></li>
+          <li><a href="#" aria-label="GitHub">GitHub</a></li>
+          <li><a href="#" aria-label="Dribbble">Dribbble</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>版本</h4>
+        <ul>
+          <li><a href="#">Vol. XXIV</a></li>
+          <li><a href="#">2024 · 秋</a></li>
+          <li><a href="#cover">返回刊首</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="colophon-bottom">
+      <span>© 2024 林墨白 · All Rights Reserved</span>
+      <span class="cb-print">— Set in Playfair Display &amp; Noto Serif SC, printed in Hangzhou —</span>
+      <a href="../index.html" class="colophon-back" aria-label="返回总览">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+        返回总览
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Mobile menu ---------- */
+  var toggle = document.getElementById('menuToggle');
+  var nav    = document.getElementById('nav');
+  function closeMenu(){
+    nav.classList.remove('open');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','打开菜单');
+  }
+  toggle.addEventListener('click', function(){
+    var open = nav.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+  });
+  nav.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', closeMenu);
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeMenu();
+  });
+
+  /* ---------- IntersectionObserver reveal ---------- */
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var reveals = document.querySelectorAll('.reveal');
+  if(reduceMotion || !('IntersectionObserver' in window)){
+    reveals.forEach(function(el){ el.classList.add('is-visible'); });
+    document.querySelectorAll('.skill').forEach(function(el){ el.classList.add('is-visible'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.12, rootMargin:'0px 0px -8% 0px' });
+
+    reveals.forEach(function(el){ io.observe(el); });
+
+    /* Skills: animate progress fill when visible */
+    var skills = document.querySelectorAll('.skill');
+    var sio = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          sio.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.4 });
+    skills.forEach(function(el){ sio.observe(el); });
+  }
+
+  /* ---------- Smooth scroll offset for sticky header ---------- */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var id = a.getAttribute('href');
+      if(id.length <= 1) return;
+      var target = document.querySelector(id);
+      if(!target) return;
+      e.preventDefault();
+      var headerH = document.querySelector('.masthead').offsetHeight;
+      var y = target.getBoundingClientRect().top + window.pageYOffset - headerH - 16;
+      window.scrollTo({ top:y, behavior: reduceMotion ? 'auto' : 'smooth' });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1260 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>林墨白 · 全栈工程师 / 数字设计师</title>
+<meta name="description" content="林墨白 — 全栈工程师与数字设计师，杭州。空间感 3D 视角个人作品集。" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+  ============================================================ */
+  :root{
+    --bg-0:#0A0A1A;          /* deepest background */
+    --bg-1:#0D0D0D;          /* near black */
+    --bg-2:#12121F;          /* card dark */
+    --bg-3:#16162A;          /* card lighter */
+    --line:rgba(255,255,255,.08);
+    --line-strong:rgba(255,255,255,.16);
+    --fg:#F4F4F8;            /* main text */
+    --fg-soft:#B4B4C8;       /* secondary text */
+    --fg-mute:#6E6E85;       /* muted */
+    --accent-a:#6366F1;      /* indigo */
+    --accent-b:#EC4899;      /* pink */
+    --accent-grad:linear-gradient(135deg,#6366F1 0%,#A855F7 50%,#EC4899 100%);
+    --glow-indigo:rgba(99,102,241,.45);
+    --glow-pink:rgba(236,72,153,.40);
+    --radius-sm:10px;
+    --radius-md:14px;
+    --radius-lg:16px;
+    --shadow-soft:0 8px 30px rgba(0,0,0,.35);
+    --shadow-deep:0 30px 80px rgba(0,0,0,.55);
+    --ease:cubic-bezier(.2,.7,.2,1);
+    --persp:1400px;
+    --font-display:"Syne","Noto Sans SC",system-ui,sans-serif;
+    --font-body:"Inter","Noto Sans SC",system-ui,sans-serif;
+  }
+
+  /* ============================================================
+     RESET
+  ============================================================ */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--font-body);
+    background:var(--bg-0);
+    color:var(--fg);
+    line-height:1.6;
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  /* ambient color blobs in background */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+    background:
+      radial-gradient(60% 50% at 15% 10%,rgba(99,102,241,.18),transparent 60%),
+      radial-gradient(50% 50% at 85% 20%,rgba(236,72,153,.14),transparent 60%),
+      radial-gradient(60% 60% at 50% 100%,rgba(168,85,247,.10),transparent 60%),
+      var(--bg-0);
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  img,svg{display:block;max-width:100%}
+  :focus-visible{outline:2px solid var(--accent-a);outline-offset:3px;border-radius:6px}
+
+  /* ============================================================
+     PERSPECTIVE GRID FLOOR (fixed, behind everything)
+  ============================================================ */
+  .floor-grid{
+    position:fixed;
+    left:50%;bottom:-10vh;
+    width:240vw;height:90vh;
+    transform:translateX(-50%) perspective(600px) rotateX(70deg);
+    transform-origin:center top;
+    background-image:
+      linear-gradient(to right,rgba(99,102,241,.22) 1px,transparent 1px),
+      linear-gradient(to bottom,rgba(236,72,153,.18) 1px,transparent 1px);
+    background-size:60px 60px;
+    mask-image:radial-gradient(ellipse 70% 80% at 50% 30%,#000 0%,transparent 75%);
+    -webkit-mask-image:radial-gradient(ellipse 70% 80% at 50% 30%,#000 0%,transparent 75%);
+    z-index:-1;
+    opacity:.7;
+    animation:floor-pan 22s linear infinite;
+  }
+  @keyframes floor-pan{
+    from{background-position:0 0,0 0}
+    to{background-position:0 60px,60px 0}
+  }
+
+  /* ============================================================
+     LAYOUT HELPERS
+  ============================================================ */
+  .container{
+    width:min(1200px,92vw);
+    margin-inline:auto;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--font-display);
+    font-size:13px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--fg-soft);
+    padding:6px 14px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:rgba(255,255,255,.03);
+    backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+  }
+  .eyebrow .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--accent-grad);
+    box-shadow:0 0 12px var(--glow-pink);
+  }
+  .section-head{margin-bottom:48px}
+  .section-title{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(28px,4.5vw,46px);
+    line-height:1.15;
+    letter-spacing:-.01em;
+    margin-top:18px;
+  }
+  .section-title em{
+    font-style:normal;
+    background:var(--accent-grad);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .section-sub{
+    color:var(--fg-soft);max-width:60ch;margin-top:14px;font-size:15px;
+  }
+  section{padding:96px 0;position:relative}
+
+  /* ============================================================
+     NAV (floating glass)
+  ============================================================ */
+  .nav{
+    position:fixed;top:18px;left:50%;
+    transform:translateX(-50%);
+    z-index:100;
+    width:min(1180px,92vw);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:10px 12px 10px 20px;
+    border:1px solid var(--line-strong);
+    border-radius:999px;
+    background:rgba(18,18,31,.55);
+    backdrop-filter:blur(18px) saturate(140%);
+    -webkit-backdrop-filter:blur(18px) saturate(140%);
+    box-shadow:0 10px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);
+    transition:transform .4s var(--ease),background .4s var(--ease);
+  }
+  .nav.scrolled{transform:translateX(-50%) translateY(-2px);background:rgba(12,12,22,.78)}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:16px;letter-spacing:.02em}
+  .brand .mark{
+    width:30px;height:30px;border-radius:9px;
+    background:var(--accent-grad);
+    display:grid;place-items:center;color:#fff;font-size:14px;font-weight:800;
+    box-shadow:0 6px 18px var(--glow-indigo);
+    transform:rotate(-8deg);
+  }
+  .nav-links{display:flex;align-items:center;gap:6px}
+  .nav-links a{
+    padding:8px 14px;border-radius:999px;font-size:14px;color:var(--fg-soft);
+    transition:color .25s var(--ease),background .25s var(--ease);
+  }
+  .nav-links a:hover{color:var(--fg);background:rgba(255,255,255,.06)}
+  .nav-back{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:9px 16px;border-radius:999px;font-size:14px;font-weight:500;
+    border:1px solid var(--line-strong);
+    background:rgba(255,255,255,.04);
+    transition:all .25s var(--ease);
+  }
+  .nav-back:hover{background:rgba(99,102,241,.18);border-color:rgba(99,102,241,.5)}
+  .nav-toggle{display:none}
+
+  /* ============================================================
+     HERO
+  ============================================================ */
+  .hero{
+    min-height:100vh;
+    display:flex;align-items:center;
+    padding:140px 0 80px;
+    position:relative;
+  }
+  .hero-stage{
+    perspective:var(--persp);
+    perspective-origin:50% 40%;
+  }
+  .hero-inner{
+    display:grid;
+    grid-template-columns:1.15fr .85fr;
+    gap:48px;align-items:center;
+    transform-style:preserve-3d;
+  }
+  .hero-card{
+    position:relative;
+    padding:44px 44px 40px;
+    border-radius:var(--radius-lg);
+    border:1px solid var(--line-strong);
+    background:
+      linear-gradient(160deg,rgba(28,28,48,.85),rgba(13,13,26,.85));
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    box-shadow:var(--shadow-deep),inset 0 1px 0 rgba(255,255,255,.08);
+    transform-style:preserve-3d;
+    transform:rotateX(6deg) rotateY(-10deg);
+    transition:transform .3s var(--ease);
+    will-change:transform;
+  }
+  .hero-card::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(120deg,rgba(99,102,241,.25),transparent 40%,rgba(236,72,153,.18));
+    opacity:.55;mix-blend-mode:screen;
+  }
+  .status{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:13px;font-weight:500;color:#9AE6C8;
+    padding:6px 14px;border-radius:999px;
+    border:1px solid rgba(154,230,200,.25);
+    background:rgba(46,204,140,.08);
+    margin-bottom:24px;
+  }
+  .status .pulse{
+    width:8px;height:8px;border-radius:50%;background:#2ECC8C;
+    box-shadow:0 0 0 0 rgba(46,204,140,.6);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(46,204,140,.6)}
+    70%{box-shadow:0 0 0 10px rgba(46,204,140,0)}
+    100%{box-shadow:0 0 0 0 rgba(46,204,140,0)}
+  }
+  .hero-name{
+    font-family:var(--font-display);
+    font-weight:800;
+    font-size:clamp(44px,7vw,86px);
+    line-height:1.02;
+    letter-spacing:-.02em;
+    margin-bottom:14px;
+    background:linear-gradient(180deg,#fff 0%,#C9C9E0 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero-role{
+    font-size:clamp(17px,2vw,21px);
+    font-weight:500;color:var(--fg-soft);
+    margin-bottom:8px;
+  }
+  .hero-role span{
+    background:var(--accent-grad);
+    -webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600;
+  }
+  .hero-loc{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--fg-mute);font-size:14px;margin-bottom:28px;
+  }
+  .hero-loc svg{width:16px;height:16px;color:var(--accent-b)}
+  .hero-desc{
+    color:var(--fg-soft);font-size:15px;max-width:46ch;margin-bottom:30px;
+  }
+  .hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:26px}
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:14px 24px;border-radius:var(--radius-md);
+    font-weight:600;font-size:15px;
+    transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .25s var(--ease);
+    transform:translateZ(0);
+  }
+  .btn svg{width:18px;height:18px}
+  .btn-primary{
+    background:var(--accent-grad);color:#fff;
+    box-shadow:0 10px 30px var(--glow-indigo);
+  }
+  .btn-primary:hover{transform:translateZ(20px) scale(1.02);box-shadow:0 16px 44px var(--glow-pink)}
+  .btn-ghost{
+    border:1px solid var(--line-strong);
+    background:rgba(255,255,255,.04);color:var(--fg);
+  }
+  .btn-ghost:hover{background:rgba(255,255,255,.1);transform:translateZ(12px)}
+  .hero-meta{
+    display:flex;gap:30px;flex-wrap:wrap;
+    padding-top:24px;border-top:1px solid var(--line);
+  }
+  .hero-meta div{display:flex;flex-direction:column;gap:2px}
+  .hero-meta .k{font-size:12px;color:var(--fg-mute);text-transform:uppercase;letter-spacing:.12em}
+  .hero-meta .v{font-family:var(--font-display);font-weight:700;font-size:20px}
+
+  /* ROTATING CUBE */
+  .hero-3d{
+    display:grid;place-items:center;
+    min-height:380px;
+    perspective:900px;
+    transform-style:preserve-3d;
+  }
+  .cube-scene{width:200px;height:200px;perspective:900px;transform-style:preserve-3d}
+  .cube{
+    width:100%;height:100%;position:relative;transform-style:preserve-3d;
+    animation:cube-spin 18s linear infinite;
+  }
+  @keyframes cube-spin{
+    from{transform:rotateX(-20deg) rotateY(0deg)}
+    to{transform:rotateX(-20deg) rotateY(360deg)}
+  }
+  .face{
+    position:absolute;inset:0;
+    border:1px solid var(--line-strong);
+    border-radius:18px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    background:linear-gradient(135deg,rgba(28,28,52,.85),rgba(15,15,30,.85));
+    backdrop-filter:blur(6px);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+    overflow:hidden;
+  }
+  .face::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 30% 20%,rgba(99,102,241,.35),transparent 60%);
+    opacity:.6;
+  }
+  .face .ico{width:38px;height:38px;color:#fff;z-index:1;filter:drop-shadow(0 4px 12px var(--glow-indigo))}
+  .face .lbl{font-family:var(--font-display);font-size:13px;font-weight:600;color:#fff;z-index:1;letter-spacing:.05em}
+  .face.f1{transform:translateZ(100px)}
+  .face.f2{transform:rotateY(90deg) translateZ(100px)}
+  .face.f3{transform:rotateY(180deg) translateZ(100px)}
+  .face.f4{transform:rotateY(-90deg) translateZ(100px)}
+  .face.f5{transform:rotateX(90deg) translateZ(100deg);transform:rotateX(90deg) translateZ(100px)}
+  .face.f6{transform:rotateX(-90deg) translateZ(100px)}
+
+  /* small floating accent panels around the cube */
+  .float-chip{
+    position:absolute;padding:8px 12px;border-radius:10px;
+    border:1px solid var(--line-strong);
+    background:rgba(18,18,31,.7);backdrop-filter:blur(8px);
+    font-size:12px;color:var(--fg-soft);font-weight:500;
+    display:flex;align-items:center;gap:7px;
+    box-shadow:var(--shadow-soft);
+  }
+  .float-chip svg{width:14px;height:14px;color:var(--accent-a)}
+  .chip-1{top:6%;left:-6%;animation:bob 6s ease-in-out infinite}
+  .chip-2{bottom:10%;right:-4%;animation:bob 7s ease-in-out infinite .8s}
+  .chip-3{top:48%;right:-12%;animation:bob 8s ease-in-out infinite 1.4s}
+  @keyframes bob{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-12px)}
+  }
+
+  /* scroll hint */
+  .scroll-hint{
+    position:absolute;left:50%;bottom:24px;transform:translateX(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    color:var(--fg-mute);font-size:12px;letter-spacing:.2em;text-transform:uppercase;
+  }
+  .scroll-hint .mouse{
+    width:24px;height:38px;border:1.5px solid var(--line-strong);border-radius:12px;
+    position:relative;
+  }
+  .scroll-hint .mouse::after{
+    content:"";position:absolute;left:50%;top:7px;transform:translateX(-50%);
+    width:4px;height:7px;border-radius:3px;background:var(--accent-b);
+    animation:scroll-dot 1.8s ease-in-out infinite;
+  }
+  @keyframes scroll-dot{
+    0%{opacity:0;transform:translate(-50%,0)}
+    40%{opacity:1}
+    100%{opacity:0;transform:translate(-50%,12px)}
+  }
+
+  /* ============================================================
+     STATS — 4 cards at different Z depths
+  ============================================================ */
+  .stats-stage{perspective:var(--persp)}
+  .stats-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:22px;
+    transform-style:preserve-3d;
+  }
+  .stat{
+    position:relative;
+    padding:30px 26px;border-radius:var(--radius-lg);
+    border:1px solid var(--line-strong);
+    background:linear-gradient(160deg,rgba(24,24,42,.9),rgba(13,13,26,.9));
+    backdrop-filter:blur(10px);
+    box-shadow:var(--shadow-soft),inset 0 1px 0 rgba(255,255,255,.06);
+    transform-style:preserve-3d;
+    transition:transform .4s var(--ease),box-shadow .4s var(--ease);
+    overflow:hidden;
+  }
+  .stat::after{
+    content:"";position:absolute;top:0;right:0;width:120px;height:120px;
+    background:radial-gradient(circle,rgba(99,102,241,.25),transparent 70%);
+    pointer-events:none;opacity:.7;
+  }
+  .stat:nth-child(1){transform:translateZ(20px) rotateY(-6deg)}
+  .stat:nth-child(2){transform:translateZ(60px) rotateY(-2deg)}
+  .stat:nth-child(3){transform:translateZ(60px) rotateY(2deg)}
+  .stat:nth-child(4){transform:translateZ(20px) rotateY(6deg)}
+  .stat:hover{transform:translateZ(90px) rotateY(0deg);box-shadow:var(--shadow-deep)}
+  .stat .num{
+    font-family:var(--font-display);font-weight:800;
+    font-size:clamp(38px,5vw,56px);line-height:1;
+    background:var(--accent-grad);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .stat .label{margin-top:10px;color:var(--fg-soft);font-size:14px;font-weight:500}
+  .stat .desc{margin-top:4px;color:var(--fg-mute);font-size:12px}
+
+  /* ============================================================
+     ABOUT — 3D tilted panel
+  ============================================================ */
+  .about-stage{perspective:var(--persp)}
+  .about-panel{
+    position:relative;
+    display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;
+    padding:48px;border-radius:var(--radius-lg);
+    border:1px solid var(--line-strong);
+    background:linear-gradient(155deg,rgba(26,26,46,.9),rgba(13,13,26,.92));
+    backdrop-filter:blur(14px);
+    box-shadow:var(--shadow-deep),inset 0 1px 0 rgba(255,255,255,.07);
+    transform:rotateY(-8deg) rotateX(4deg);
+    transform-style:preserve-3d;
+    transition:transform .5s var(--ease);
+  }
+  .about-panel:hover{transform:rotateY(-3deg) rotateX(2deg)}
+  .about-panel::before{
+    content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+    background:linear-gradient(120deg,rgba(236,72,153,.18),transparent 50%);
+    opacity:.6;
+  }
+  .about-portrait{
+    position:relative;border-radius:var(--radius-md);overflow:hidden;
+    border:1px solid var(--line-strong);
+    background:linear-gradient(160deg,rgba(99,102,241,.25),rgba(236,72,153,.2));
+    min-height:280px;
+    display:grid;place-items:center;
+    transform:translateZ(40px);
+  }
+  .about-portrait .mono{
+    font-family:var(--font-display);font-weight:800;font-size:120px;
+    background:linear-gradient(180deg,#fff,#9aa);-webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 10px 40px rgba(0,0,0,.4);
+    opacity:.9;
+  }
+  .about-portrait .badge{
+    position:absolute;bottom:14px;left:14px;
+    padding:6px 12px;border-radius:999px;font-size:12px;
+    background:rgba(0,0,0,.5);backdrop-filter:blur(6px);
+    border:1px solid var(--line-strong);color:var(--fg-soft);
+  }
+  .about-body h3{
+    font-family:var(--font-display);font-weight:700;
+    font-size:clamp(24px,3vw,34px);line-height:1.2;margin-bottom:18px;
+  }
+  .about-body p{color:var(--fg-soft);font-size:15px;margin-bottom:14px}
+  .about-body p strong{color:var(--fg);font-weight:600}
+  .tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  .tag{
+    padding:7px 14px;border-radius:999px;font-size:13px;
+    border:1px solid var(--line-strong);
+    background:rgba(255,255,255,.04);color:var(--fg-soft);
+    transition:all .25s var(--ease);
+  }
+  .tag:hover{color:#fff;border-color:rgba(99,102,241,.5);background:rgba(99,102,241,.15);transform:translateZ(15px) scale(1.05)}
+
+  /* ============================================================
+     SKILLS — 3D extruded bars
+  ============================================================ */
+  .skills-stage{perspective:var(--persp)}
+  .skills-list{display:flex;flex-direction:column;gap:28px;transform-style:preserve-3d}
+  .skill{
+    display:grid;grid-template-columns:160px 1fr 60px;align-items:center;gap:24px;
+    transform:rotateX(8deg);transform-origin:left center;
+    transition:transform .4s var(--ease);
+  }
+  .skill:hover{transform:rotateX(4deg) translateZ(20px)}
+  .skill-name{font-family:var(--font-display);font-weight:600;font-size:18px;display:flex;align-items:center;gap:10px}
+  .skill-name .ico{width:22px;height:22px;color:var(--accent-a)}
+  .skill-track{
+    position:relative;height:34px;
+    transform-style:preserve-3d;
+  }
+  /* the visible top face */
+  .skill-fill{
+    position:absolute;left:0;top:0;height:100%;
+    border-radius:10px;
+    background:var(--accent-grad);
+    box-shadow:0 0 30px var(--glow-indigo),inset 0 1px 0 rgba(255,255,255,.3);
+    transform-style:preserve-3d;
+    width:0;
+    transition:width 1.4s var(--ease);
+  }
+  /* depth / extrusion using layered pseudo-element */
+  .skill-fill::after{
+    content:"";position:absolute;left:0;top:100%;width:100%;height:14px;
+    background:linear-gradient(180deg,rgba(99,102,241,.5),rgba(236,72,153,.15) 60%,transparent);
+    transform-origin:top;transform:rotateX(60deg);
+    border-radius:0 0 10px 10px;
+    opacity:.7;
+  }
+  .skill-rail{
+    position:absolute;inset:0;border-radius:10px;
+    border:1px solid var(--line);
+    background:rgba(255,255,255,.03);
+  }
+  .skill-val{
+    font-family:var(--font-display);font-weight:700;font-size:22px;
+    background:var(--accent-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+    text-align:right;
+  }
+
+  /* ============================================================
+     WORKS — 3D tilt-on-hover cards
+  ============================================================ */
+  .works-stage{perspective:var(--persp)}
+  .works-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:28px;
+    transform-style:preserve-3d;
+  }
+  .work{
+    position:relative;
+    border-radius:var(--radius-lg);overflow:hidden;
+    border:1px solid var(--line-strong);
+    background:linear-gradient(160deg,rgba(24,24,42,.92),rgba(13,13,26,.92));
+    backdrop-filter:blur(10px);
+    box-shadow:var(--shadow-soft);
+    transform-style:preserve-3d;
+    transform:translateZ(0);
+    transition:transform .4s var(--ease),box-shadow .4s var(--ease);
+    cursor:pointer;
+  }
+  .work:hover{
+    transform:translateY(-8px) translateZ(40px) rotateX(4deg) rotateY(-4deg);
+    box-shadow:var(--shadow-deep);
+  }
+  .work-cover{
+    position:relative;height:190px;overflow:hidden;
+    display:grid;place-items:center;
+    border-bottom:1px solid var(--line);
+  }
+  .work-cover svg.illust{width:84px;height:84px;color:#fff;opacity:.95;filter:drop-shadow(0 8px 24px rgba(0,0,0,.5));transform:translateZ(30px)}
+  .work-cover::before{
+    content:"";position:absolute;inset:0;z-index:0;
+  }
+  .w1 .work-cover::before{background:radial-gradient(circle at 30% 30%,#6366F1,transparent 70%),linear-gradient(135deg,#1a1a3a,#0a0a1a)}
+  .w2 .work-cover::before{background:radial-gradient(circle at 70% 30%,#EC4899,transparent 70%),linear-gradient(135deg,#2a1530,#0a0a1a)}
+  .w3 .work-cover::before{background:radial-gradient(circle at 50% 40%,#A855F7,transparent 70%),linear-gradient(135deg,#1d1838,#0a0a1a)}
+  .w4 .work-cover::before{background:radial-gradient(circle at 40% 60%,#3B82F6,transparent 70%),linear-gradient(135deg,#102040,#0a0a1a)}
+  .work-tag{
+    position:absolute;top:14px;left:14px;z-index:2;
+    padding:5px 11px;border-radius:999px;font-size:11px;font-weight:600;
+    background:rgba(0,0,0,.4);backdrop-filter:blur(6px);
+    border:1px solid var(--line-strong);color:#fff;letter-spacing:.05em;
+  }
+  .work-body{padding:22px 24px 26px;transform:translateZ(20px)}
+  .work-body h4{font-family:var(--font-display);font-weight:700;font-size:22px;margin-bottom:8px}
+  .work-body p{color:var(--fg-soft);font-size:14px;margin-bottom:16px}
+  .work-foot{display:flex;align-items:center;justify-content:space-between}
+  .work-foot .stack{display:flex;gap:8px;flex-wrap:wrap}
+  .work-foot .stack span{
+    font-size:11px;padding:4px 9px;border-radius:6px;
+    border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--fg-mute);
+  }
+  .work-foot .arrow{
+    width:36px;height:36px;border-radius:10px;
+    display:grid;place-items:center;
+    background:rgba(255,255,255,.05);border:1px solid var(--line-strong);
+    transition:all .25s var(--ease);
+  }
+  .work-foot .arrow svg{width:16px;height:16px;transition:transform .25s var(--ease)}
+  .work:hover .arrow{background:var(--accent-grad);border-color:transparent}
+  .work:hover .arrow svg{transform:translate(2px,-2px)}
+
+  /* ============================================================
+     JOURNEY — 3D perspective timeline
+  ============================================================ */
+  .journey-stage{perspective:var(--persp)}
+  .timeline{
+    position:relative;
+    transform:rotateX(20deg) rotateY(-6deg);
+    transform-style:preserve-3d;
+    padding-left:8px;
+  }
+  .timeline::before{
+    content:"";position:absolute;left:18px;top:6px;bottom:6px;width:2px;
+    background:linear-gradient(180deg,var(--accent-a),var(--accent-b));
+    box-shadow:0 0 18px var(--glow-indigo);
+  }
+  .tl-item{
+    position:relative;padding:0 0 38px 60px;
+    transform-style:preserve-3d;
+    transition:transform .35s var(--ease);
+  }
+  .tl-item:hover{transform:translateZ(30px)}
+  .tl-item:last-child{padding-bottom:0}
+  .tl-node{
+    position:absolute;left:8px;top:4px;width:22px;height:22px;border-radius:50%;
+    background:var(--bg-0);border:2px solid var(--accent-a);
+    display:grid;place-items:center;
+    box-shadow:0 0 0 4px rgba(99,102,241,.15);
+  }
+  .tl-node::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent-grad)}
+  .tl-card{
+    padding:18px 22px;border-radius:var(--radius-md);
+    border:1px solid var(--line-strong);
+    background:linear-gradient(140deg,rgba(24,24,42,.9),rgba(13,13,26,.9));
+    backdrop-filter:blur(8px);
+    box-shadow:var(--shadow-soft);
+  }
+  .tl-year{font-family:var(--font-display);font-weight:700;font-size:14px;color:var(--accent-b);letter-spacing:.05em}
+  .tl-card h4{font-family:var(--font-display);font-weight:600;font-size:19px;margin:4px 0 6px}
+  .tl-card p{color:var(--fg-soft);font-size:14px}
+
+  /* ============================================================
+     CONTACT — 3D CTA card + social
+  ============================================================ */
+  .contact-stage{perspective:var(--persp)}
+  .contact-card{
+    position:relative;
+    padding:64px 48px;border-radius:var(--radius-lg);
+    text-align:center;
+    border:1px solid var(--line-strong);
+    background:
+      radial-gradient(120% 120% at 50% 0%,rgba(99,102,241,.35),transparent 60%),
+      linear-gradient(160deg,rgba(24,24,42,.95),rgba(13,13,26,.95));
+    backdrop-filter:blur(14px);
+    box-shadow:var(--shadow-deep);
+    transform:rotateX(10deg);
+    transform-style:preserve-3d;
+    overflow:hidden;
+  }
+  .contact-card::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(120deg,transparent,rgba(236,72,153,.18) 50%,transparent);
+  }
+  .contact-card h3{
+    font-family:var(--font-display);font-weight:800;
+    font-size:clamp(30px,5vw,52px);line-height:1.1;margin-bottom:16px;
+    background:linear-gradient(180deg,#fff,#C9C9E0);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    transform:translateZ(40px);
+  }
+  .contact-card p{color:var(--fg-soft);max-width:54ch;margin:0 auto 32px;font-size:15px;transform:translateZ(30px)}
+  .contact-actions{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:36px;transform:translateZ(50px)}
+  .socials{display:flex;gap:14px;justify-content:center;transform:translateZ(20px)}
+  .social{
+    width:48px;height:48px;border-radius:var(--radius-md);
+    display:grid;place-items:center;
+    border:1px solid var(--line-strong);
+    background:rgba(255,255,255,.04);
+    color:var(--fg-soft);
+    transition:all .25s var(--ease);
+  }
+  .social svg{width:20px;height:20px}
+  .social:hover{color:#fff;background:var(--accent-grad);border-color:transparent;transform:translateZ(15px) translateY(-4px);box-shadow:0 12px 30px var(--glow-indigo)}
+
+  /* ============================================================
+     FOOTER
+  ============================================================ */
+  footer{
+    border-top:1px solid var(--line);
+    padding:40px 0 60px;margin-top:48px;
+  }
+  .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+  .footer-inner p{color:var(--fg-mute);font-size:14px}
+  .footer-back{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;border-radius:999px;font-size:14px;font-weight:500;
+    border:1px solid var(--line-strong);background:rgba(255,255,255,.04);
+    transition:all .25s var(--ease);
+  }
+  .footer-back:hover{background:rgba(99,102,241,.18);border-color:rgba(99,102,241,.5)}
+
+  /* ============================================================
+     REVEAL ANIMATION
+  ============================================================ */
+  .reveal{opacity:0;transform:translateY(40px) translateZ(-80px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .reveal.in{opacity:1;transform:translateY(0) translateZ(0)}
+
+  /* ============================================================
+     RESPONSIVE
+  ============================================================ */
+  @media (max-width:980px){
+    .hero-inner{grid-template-columns:1fr;gap:60px}
+    .hero-card{transform:rotateX(3deg) rotateY(-4deg)}
+    .hero-3d{min-height:300px}
+    .stats-grid{grid-template-columns:repeat(2,1fr)}
+    .stat:nth-child(1),.stat:nth-child(2),.stat:nth-child(3),.stat:nth-child(4){transform:none}
+    .stat:hover{transform:translateY(-6px)}
+    .about-panel{grid-template-columns:1fr;transform:rotateY(-4deg) rotateX(2deg);padding:32px}
+    .about-portrait{min-height:200px}
+    .works-grid{grid-template-columns:1fr}
+    .skill{grid-template-columns:120px 1fr 50px;gap:16px}
+    .timeline{transform:rotateX(8deg);padding-left:0}
+    .nav-links{display:none}
+    .nav-toggle{
+      display:inline-flex;align-items:center;justify-content:center;
+      width:40px;height:40px;border-radius:999px;
+      border:1px solid var(--line-strong);background:rgba(255,255,255,.04);
+    }
+    .nav-toggle svg{width:20px;height:20px}
+    .nav.menu-open .nav-links{
+      display:flex;flex-direction:column;align-items:stretch;gap:4px;
+      position:absolute;top:64px;left:0;right:0;
+      padding:14px;border-radius:18px;
+      background:rgba(12,12,22,.95);backdrop-filter:blur(20px);
+      border:1px solid var(--line-strong);box-shadow:var(--shadow-deep);
+    }
+    .nav.menu-open .nav-links a{padding:12px 16px}
+    section{padding:72px 0}
+  }
+  @media (max-width:560px){
+    .hero{padding:120px 0 60px}
+    .hero-card{padding:32px 26px}
+    .stats-grid{grid-template-columns:1fr 1fr;gap:14px}
+    .stat{padding:22px 18px}
+    .about-panel{padding:24px}
+    .work-body{padding:18px}
+    .contact-card{padding:44px 24px}
+    .footer-inner{flex-direction:column;text-align:center}
+  }
+
+  /* ============================================================
+     REDUCED MOTION
+  ============================================================ */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+      animation-duration:.001ms !important;animation-iteration-count:1 !important;
+      transition-duration:.001ms !important;scroll-behavior:auto !important;
+    }
+    .cube{animation:none}
+    .floor-grid{animation:none}
+    .reveal{opacity:1;transform:none}
+    .hero-card{transform:none}
+    .timeline{transform:none}
+    .contact-card{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- PERSPECTIVE FLOOR GRID -->
+<div class="floor-grid" aria-hidden="true"></div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <a href="#top" class="brand" aria-label="林墨白 首页">
+    <span class="mark" aria-hidden="true">墨</span>
+    <span>林墨白</span>
+  </a>
+  <nav class="nav-links" aria-label="主导航">
+    <a href="#about">关于</a>
+    <a href="#skills">技能</a>
+    <a href="#works">作品</a>
+    <a href="#journey">经历</a>
+    <a href="#contact">联系</a>
+  </nav>
+  <a href="../index.html" class="nav-back" aria-label="返回总览">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    总览
+  </a>
+  <button class="nav-toggle" id="navToggle" aria-label="展开菜单" aria-expanded="false">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+</header>
+
+<!-- HERO -->
+<main id="top">
+<section class="hero" aria-label="介绍">
+  <div class="container hero-stage">
+    <div class="hero-inner">
+      <!-- Hero card -->
+      <article class="hero-card" id="heroCard" aria-label="个人信息卡片">
+        <span class="status"><span class="pulse" aria-hidden="true"></span>可接新项目</span>
+        <h1 class="hero-name">林墨白</h1>
+        <p class="hero-role">全栈工程师 / <span>数字设计师</span></p>
+        <p class="hero-loc">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          杭州 · 中国
+        </p>
+        <p class="hero-desc">在代码与像素之间构建可感知的空间。专注 WebGL、交互系统与品牌视觉，5 年里把抽象的想法变成可触摸的数字产品。</p>
+        <div class="hero-cta">
+          <a href="#works" class="btn btn-primary">
+            查看作品
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a href="#contact" class="btn btn-ghost">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+            取得联系
+          </a>
+        </div>
+        <div class="hero-meta">
+          <div><span class="k">经验</span><span class="v">5+ 年</span></div>
+          <div><span class="k">交付</span><span class="v">42 项目</span></div>
+          <div><span class="k">合作</span><span class="v">18 团队</span></div>
+        </div>
+      </article>
+
+      <!-- 3D rotating cube + floating chips -->
+      <div class="hero-3d" aria-hidden="true">
+        <div class="cube-scene">
+          <div class="cube">
+            <div class="face f1">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+              <span class="lbl">CODE</span>
+            </div>
+            <div class="face f2">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2a10 10 0 1010 10c0-1.5-1-2-2-2h-2a2 2 0 010-4h.5a2.5 2.5 0 000-5H12z"/></svg>
+              <span class="lbl">DESIGN</span>
+            </div>
+            <div class="face f3">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+              <span class="lbl">3D</span>
+            </div>
+            <div class="face f4">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+              <span class="lbl">BUILD</span>
+            </div>
+            <div class="face f5">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+              <span class="lbl">SHIP</span>
+            </div>
+            <div class="face f6">
+              <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+              <span class="lbl">WORLD</span>
+            </div>
+          </div>
+        </div>
+        <span class="float-chip chip-1">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+          WebGL
+        </span>
+        <span class="float-chip chip-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
+          React · Three
+        </span>
+        <span class="float-chip chip-3">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg>
+          Spatial UI
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <span class="mouse"></span>
+    <span>滚动探索</span>
+  </div>
+</section>
+
+<!-- STATS -->
+<section aria-label="数据">
+  <div class="container stats-stage">
+    <div class="stats-grid">
+      <div class="stat reveal" tabindex="0">
+        <div class="num">5+</div>
+        <div class="label">年从业经验</div>
+        <div class="desc">从原型到上线全链路</div>
+      </div>
+      <div class="stat reveal" tabindex="0">
+        <div class="num">42</div>
+        <div class="label">交付项目</div>
+        <div class="desc">Web 应用 / 品牌站点</div>
+      </div>
+      <div class="stat reveal" tabindex="0">
+        <div class="num">18</div>
+        <div class="label">合作团队</div>
+        <div class="desc">初创到上市公司</div>
+      </div>
+      <div class="stat reveal" tabindex="0">
+        <div class="num">99%</div>
+        <div class="label">满意度</div>
+        <div class="desc">来自长期复购客户</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" aria-label="关于">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>About</span>
+      <h2 class="section-title">在<em>三维空间</em>里写字</h2>
+      <p class="section-sub">我相信好的界面是可被感知的——它有重量、有深度、有呼吸。</p>
+    </div>
+    <div class="about-stage">
+      <div class="about-panel reveal">
+        <div class="about-portrait">
+          <span class="mono" aria-hidden="true">墨</span>
+          <span class="badge">EST. 2019 · 杭州</span>
+        </div>
+        <div class="about-body">
+          <h3>把代码当作材料，把设计当作结构。</h3>
+          <p>我是 <strong>林墨白</strong>，一名在杭州的全栈工程师与数字设计师。过去 5 年，我专注于<strong>空间感界面</strong>与<strong>实时图形</strong>——从 WebGL 着色器到品牌系统，把概念变成可以交付的产品。</p>
+          <p>我擅长在工程师的严谨与设计师的敏感之间寻找平衡：性能不会为美学让步，美学也不会止步于功能。当下我着迷于 VisionOS 风格的空间 UI 与生成式视觉。</p>
+          <div class="tags">
+            <span class="tag">WebGL / Three.js</span>
+            <span class="tag">React / TypeScript</span>
+            <span class="tag">Node · Go</span>
+            <span class="tag">品牌系统</span>
+            <span class="tag">动效设计</span>
+            <span class="tag">空间 UI</span>
+            <span class="tag">Figma</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" aria-label="技能">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Skills</span>
+      <h2 class="section-title">能力<em>立体</em>图</h2>
+      <p class="section-sub">四块在 Z 轴上延伸的能力条——数值会随滚动到位而生长。</p>
+    </div>
+    <div class="skills-stage">
+      <div class="skills-list">
+        <div class="skill reveal">
+          <div class="skill-name">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+            前端
+          </div>
+          <div class="skill-track">
+            <div class="skill-rail" aria-hidden="true"></div>
+            <div class="skill-fill" data-val="92" role="progressbar" aria-valuenow="92" aria-valuemin="0" aria-valuemax="100" aria-label="前端 92"></div>
+          </div>
+          <div class="skill-val">92</div>
+        </div>
+        <div class="skill reveal">
+          <div class="skill-name">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="10.5" r="2.5"/><circle cx="8.5" cy="7.5" r="2.5"/><circle cx="6.5" cy="12.5" r="2.5"/><path d="M12 22a10 10 0 010-20"/></svg>
+            设计
+          </div>
+          <div class="skill-track">
+            <div class="skill-rail" aria-hidden="true"></div>
+            <div class="skill-fill" data-val="88" role="progressbar" aria-valuenow="88" aria-valuemin="0" aria-valuemax="100" aria-label="设计 88"></div>
+          </div>
+          <div class="skill-val">88</div>
+        </div>
+        <div class="skill reveal">
+          <div class="skill-name">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            后端
+          </div>
+          <div class="skill-track">
+            <div class="skill-rail" aria-hidden="true"></div>
+            <div class="skill-fill" data-val="85" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="后端 85"></div>
+          </div>
+          <div class="skill-val">85</div>
+        </div>
+        <div class="skill reveal">
+          <div class="skill-name">
+            <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05M12 22.08V12"/></svg>
+            三维
+          </div>
+          <div class="skill-track">
+            <div class="skill-rail" aria-hidden="true"></div>
+            <div class="skill-fill" data-val="76" role="progressbar" aria-valuenow="76" aria-valuemin="0" aria-valuemax="100" aria-label="三维 76"></div>
+          </div>
+          <div class="skill-val">76</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section id="works" aria-label="作品">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Works</span>
+      <h2 class="section-title">最近的<em>作品</em></h2>
+      <p class="section-sub">将鼠标悬停在卡片上——它们会在三维空间里向你倾斜。</p>
+    </div>
+    <div class="works-stage">
+      <div class="works-grid">
+        <article class="work w1 reveal" tabindex="0" aria-label="极光笔记">
+          <div class="work-cover">
+            <span class="work-tag">PRODUCT</span>
+            <svg class="illust" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/><path d="M8 7h8M8 11h6"/></svg>
+          </div>
+          <div class="work-body">
+            <h4>极光笔记</h4>
+            <p>一款以空间层级组织知识的多端笔记应用，支持 3D 思维导图与实时协作。</p>
+            <div class="work-foot">
+              <div class="stack"><span>React</span><span>WebGPU</span><span>CRDT</span></div>
+              <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="work w2 reveal" tabindex="0" aria-label="像素工坊">
+          <div class="work-cover">
+            <span class="work-tag">TOOL</span>
+            <svg class="illust" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+          </div>
+          <div class="work-body">
+            <h4>像素工坊</h4>
+            <p>面向独立设计师的浏览器内像素艺术与精灵图编辑器，导出无缝接入引擎流水线。</p>
+            <div class="work-foot">
+              <div class="stack"><span>Canvas</span><span>WASM</span><span>PWA</span></div>
+              <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="work w3 reveal" tabindex="0" aria-label="数据之眼">
+          <div class="work-cover">
+            <span class="work-tag">DASHBOARD</span>
+            <svg class="illust" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+          </div>
+          <div class="work-body">
+            <h4>数据之眼</h4>
+            <p>实时三维数据可视化看板，将百万级事件流映射为可漫游的空间场景。</p>
+            <div class="work-foot">
+              <div class="stack"><span>Three.js</span><span>D3</span><span>WebSocket</span></div>
+              <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="work w4 reveal" tabindex="0" aria-label="声波画廊">
+          <div class="work-cover">
+            <span class="work-tag">EXPERIENCE</span>
+            <svg class="illust" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12h2M20 12h2M6 12v0M10 6v12M14 9v6M18 6v12"/></svg>
+          </div>
+          <div class="work-body">
+            <h4>声波画廊</h4>
+            <p>沉浸式音频可视化展览，频谱驱动粒子在空间中流动，支持空间音频耳机。</p>
+            <div class="work-foot">
+              <div class="stack"><span>Web Audio</span><span>GLSL</span><span>WebXR</span></div>
+              <span class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section id="journey" aria-label="经历">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow"><span class="dot" aria-hidden="true"></span>Journey</span>
+      <h2 class="section-title">一条向远处<em>延伸</em>的路</h2>
+      <p class="section-sub">时间线在透视中向后退去——就像回望来时的轨迹。</p>
+    </div>
+    <div class="journey-stage">
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <span class="tl-node" aria-hidden="true"></span>
+          <div class="tl-card">
+            <div class="tl-year">2024 — 至今</div>
+            <h4>独立工作室主理人</h4>
+            <p>成立个人工作室，为初创团队提供空间 UI 与品牌站点的一体化交付。</p>
+          </div>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-node" aria-hidden="true"></span>
+          <div class="tl-card">
+            <div class="tl-year">2022 — 2024</div>
+            <h4>高级前端工程师 · 视觉技术公司</h4>
+            <p>主导 Web 端三维渲染管线重构，首屏性能提升 60%，团队从 4 人扩张至 12 人。</p>
+          </div>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-node" aria-hidden="true"></span>
+          <div class="tl-card">
+            <div class="tl-year">2020 — 2022</div>
+            <h4>全栈工程师 · 互联网产品公司</h4>
+            <p>从 0 到 1 搭建多个 To C 产品，覆盖百万级用户，深入设计系统与组件库建设。</p>
+          </div>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-node" aria-hidden="true"></span>
+          <div class="tl-card">
+            <div class="tl-year">2019</div>
+            <h4>起点 · 设计与开发的交汇</h4>
+            <p>毕业于计算机科学专业，同时自学视觉设计，开始把两件事合成一件。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" aria-label="联系">
+  <div class="container">
+    <div class="contact-stage">
+      <div class="contact-card reveal">
+        <h3>有一个想法？<br/>让我们把它放进空间里。</h3>
+        <p>无论是空间感的品牌站点、实时图形体验，还是一个需要从原型打磨到上线的全栈产品——我都乐意聊聊。</p>
+        <div class="contact-actions">
+          <a href="mailto:hi@linmobai.studio" class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+            hi@linmobai.studio
+          </a>
+          <a href="#works" class="btn btn-ghost">先看看作品</a>
+        </div>
+        <div class="socials">
+          <a href="#" class="social" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.4.5 0 5.9 0 12.5c0 5.3 3.4 9.8 8.2 11.4.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 016 0C17.3 4.7 18.3 5 18.3 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0024 12.5C24 5.9 18.6.5 12 .5z"/></svg>
+          </a>
+          <a href="#" class="social" aria-label="Dribbble">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8.6 20.7c1-3.5 2.5-7 4.4-10.3 1-1.7 2.1-3.3 3.3-4.8M2.3 10c5 0 11-1 14.7-3.6M21.3 16c-4-2.3-9.7-2.5-14 0"/></svg>
+          </a>
+          <a href="#" class="social" aria-label="X / Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" class="social" aria-label="邮箱">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16v16H4z" opacity="0"/><path d="M22 6l-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <p>© 2024 林墨白 · 用代码与像素构建空间。</p>
+    <a href="#top" class="footer-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      返回总览
+    </a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var isMobile = window.matchMedia("(max-width: 980px)").matches;
+
+  /* ---------- NAV scroll state + mobile toggle ---------- */
+  var nav = document.getElementById("nav");
+  var navToggle = document.getElementById("navToggle");
+  window.addEventListener("scroll", function(){
+    if(window.scrollY > 30){ nav.classList.add("scrolled"); }
+    else{ nav.classList.remove("scrolled"); }
+  }, {passive:true});
+
+  if(navToggle){
+    navToggle.addEventListener("click", function(){
+      var open = nav.classList.toggle("menu-open");
+      navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+    nav.querySelectorAll(".nav-links a").forEach(function(a){
+      a.addEventListener("click", function(){
+        nav.classList.remove("menu-open");
+        navToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
+
+  /* ---------- HERO mouse-parallax tilt ---------- */
+  var heroCard = document.getElementById("heroCard");
+  var heroStage = document.querySelector(".hero-stage");
+  if(heroCard && heroStage && !reduceMotion && !isMobile){
+    var maxTilt = 10; // degrees
+    var rect;
+    var rafId = null;
+    var targetRX = 6, targetRY = -10;
+    var curRX = 6, curRY = -10;
+
+    function updateRect(){ rect = heroStage.getBoundingClientRect(); }
+    updateRect();
+    window.addEventListener("resize", updateRect);
+
+    function onMove(e){
+      // include touch position via clientX/Y
+      var cx = e.clientX, cy = e.clientY;
+      var relX = (cx - rect.left) / rect.width - 0.5;   // -0.5..0.5
+      var relY = (cy - rect.top) / rect.height - 0.5;
+      targetRY = -10 + (-relX * maxTilt * 2);   // base tilt + parallax
+      targetRX = 6 + (relY * maxTilt * 2);
+      if(!rafId) rafId = requestAnimationFrame(apply);
+    }
+    function apply(){
+      curRX += (targetRX - curRX) * 0.12;
+      curRY += (targetRY - curRY) * 0.12;
+      heroCard.style.transform =
+        "rotateX(" + curRX.toFixed(2) + "deg) rotateY(" + curRY.toFixed(2) + "deg)";
+      if(Math.abs(targetRX - curRX) > 0.05 || Math.abs(targetRY - curRY) > 0.05){
+        rafId = requestAnimationFrame(apply);
+      } else { rafId = null; }
+    }
+    function onLeave(){
+      targetRX = 6; targetRY = -10;
+      if(!rafId) rafId = requestAnimationFrame(apply);
+    }
+    heroStage.addEventListener("mousemove", onMove);
+    heroStage.addEventListener("mouseleave", onLeave);
+  }
+
+  /* ---------- WORK cards: subtle pointer tilt ---------- */
+  if(!reduceMotion && !isMobile){
+    document.querySelectorAll(".work").forEach(function(card){
+      var cover = card;
+      cover.addEventListener("mousemove", function(e){
+        var r = cover.getBoundingClientRect();
+        var px = (e.clientX - r.left)/r.width - 0.5;
+        var py = (e.clientY - r.top)/r.height - 0.5;
+        cover.style.transform =
+          "translateY(-8px) translateZ(40px) rotateX(" + (-py*8).toFixed(2) + "deg) rotateY(" + (px*10).toFixed(2) + "deg)";
+      });
+      cover.addEventListener("mouseleave", function(){
+        cover.style.transform = "";
+      });
+    });
+  }
+
+  /* ---------- IntersectionObserver reveal ---------- */
+  var reveals = document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.add("in");
+          // animate skill bars when their skill row enters
+          if(en.target.classList.contains("skill")){
+            var fill = en.target.querySelector(".skill-fill");
+            if(fill){ fill.style.width = fill.getAttribute("data-val") + "%"; }
+          }
+          io.unobserve(en.target);
+        }
+      });
+    }, {threshold:0.15, rootMargin:"0px 0px -8% 0px"});
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){
+      el.classList.add("in");
+      var f = el.querySelector && el.querySelector(".skill-fill");
+      if(f){ f.style.width = f.getAttribute("data-val") + "%"; }
+    });
+  }
+
+  /* ---------- Smooth-scroll for in-page anchors (graceful fallback) ---------- */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener("click", function(e){
+      var href = a.getAttribute("href");
+      if(href.length > 1){
+        var t = document.querySelector(href);
+        if(t){ e.preventDefault(); t.scrollIntoView({behavior: reduceMotion ? "auto" : "smooth", block:"start"}); }
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

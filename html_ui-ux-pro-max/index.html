@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLM UI Test · 二十种风格个人网站集</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0B;
+    --bg-2:#131316;
+    --surface:#1A1A1F;
+    --surface-2:#22222A;
+    --border:rgba(255,255,255,0.07);
+    --border-strong:rgba(255,255,255,0.14);
+    --text:#F5F5F7;
+    --muted:#8B8B95;
+    --muted-2:#5A5A63;
+    --accent:#6366F1;
+    --accent-2:#A855F7;
+    --accent-3:#EC4899;
+    --green:#10B981;
+    --radius:18px;
+    --radius-sm:12px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Space Grotesk','Noto Sans SC',sans-serif;
+    background:var(--bg);
+    color:var(--text);
+    min-height:100vh;
+    overflow-x:hidden;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* 流动光晕背景 */
+  .aurora{
+    position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
+  }
+  .aurora::before,.aurora::after{
+    content:'';position:absolute;width:60vw;height:60vw;border-radius:50%;
+    filter:blur(120px);opacity:.28;animation:float 22s ease-in-out infinite;
+  }
+  .aurora::before{background:var(--accent);top:-15%;left:-10%}
+  .aurora::after{background:var(--accent-3);bottom:-20%;right:-10%;animation-delay:-11s}
+  @keyframes float{
+    0%,100%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(8%,5%) scale(1.12)}
+  }
+  .wrap{position:relative;z-index:1;max-width:1320px;margin:0 auto;padding:0 32px}
+
+  /* ============ 顶部导航 ============ */
+  header{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(18px) saturate(160%);
+    -webkit-backdrop-filter:blur(18px) saturate(160%);
+    background:rgba(10,10,11,0.72);
+    border-bottom:1px solid var(--border);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;padding:18px 0}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:700;font-size:17px;letter-spacing:-.01em}
+  .brand .logo{
+    width:34px;height:34px;border-radius:10px;
+    background:linear-gradient(135deg,var(--accent),var(--accent-3));
+    display:grid;place-items:center;font-family:'JetBrains Mono';font-size:15px;color:#fff;
+    box-shadow:0 8px 24px rgba(99,102,241,.35);
+  }
+  .brand .badge{
+    font-size:11px;font-weight:500;color:var(--muted);
+    padding:3px 9px;border:1px solid var(--border-strong);border-radius:999px;
+    background:rgba(255,255,255,.03);
+  }
+  .nav-links{display:flex;gap:6px;align-items:center}
+  .nav-links a{
+    color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;
+    padding:8px 14px;border-radius:8px;transition:all .2s;cursor:pointer;
+  }
+  .nav-links a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+  @media(max-width:720px){.nav-links{display:none}}
+
+  /* ============ Hero ============ */
+  .hero{padding:90px 0 50px;text-align:center}
+  .hero .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12.5px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--accent);padding:6px 14px;border-radius:999px;
+    background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.25);
+    margin-bottom:28px;
+  }
+  .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green)}
+  .hero h1{
+    font-size:clamp(40px,7vw,76px);font-weight:700;line-height:1.05;letter-spacing:-.03em;
+    margin-bottom:22px;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(120deg,var(--accent) 0%,var(--accent-2) 50%,var(--accent-3) 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .hero p.lead{
+    font-size:clamp(15px,1.8vw,19px);color:var(--muted);max-width:640px;margin:0 auto 36px;
+  }
+  .hero-stats{
+    display:flex;justify-content:center;gap:48px;flex-wrap:wrap;margin-top:8px;
+  }
+  .hero-stat{text-align:center}
+  .hero-stat .num{font-family:'JetBrains Mono';font-size:32px;font-weight:600;color:var(--text)}
+  .hero-stat .num .plus{color:var(--accent)}
+  .hero-stat .lbl{font-size:12.5px;color:var(--muted);margin-top:4px;letter-spacing:.05em}
+
+  /* ============ 工具栏 ============ */
+  .toolbar{
+    display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    margin:40px 0 28px;
+  }
+  .toolbar h2{font-size:22px;font-weight:600;letter-spacing:-.01em}
+  .toolbar h2 .count{color:var(--muted);font-weight:400;font-size:15px;margin-left:8px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{
+    font-size:13px;font-weight:500;padding:7px 14px;border-radius:999px;
+    border:1px solid var(--border-strong);background:transparent;color:var(--muted);
+    cursor:pointer;transition:all .2s;font-family:inherit;
+  }
+  .chip:hover{color:var(--text);border-color:rgba(255,255,255,.3)}
+  .chip.active{
+    background:var(--text);color:var(--bg);border-color:var(--text);
+  }
+
+  /* ============ 风格卡片网格 ============ */
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:20px;padding-bottom:80px;
+  }
+  .card{
+    position:relative;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;cursor:pointer;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .25s,box-shadow .35s;
+    text-decoration:none;color:inherit;display:flex;flex-direction:column;
+  }
+  .card:hover{
+    transform:translateY(-6px);border-color:var(--border-strong);
+    box-shadow:0 24px 50px -12px rgba(0,0,0,.5);
+  }
+  /* 卡片预览区 */
+  .preview{height:172px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+  .preview .num{
+    position:absolute;top:14px;left:16px;z-index:3;
+    font-family:'JetBrains Mono';font-size:12px;font-weight:600;
+    color:#fff;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);
+    padding:4px 9px;border-radius:6px;letter-spacing:.05em;
+  }
+  .preview .tag{
+    position:absolute;top:14px;right:16px;z-index:3;
+    font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+    padding:4px 9px;border-radius:6px;
+  }
+  .card-body{padding:20px;flex:1;display:flex;flex-direction:column}
+  .card-body h3{
+    font-size:18px;font-weight:600;letter-spacing:-.01em;margin-bottom:6px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .card-body h3 .star{color:var(--accent-3);font-size:13px}
+  .card-body p{font-size:13.5px;color:var(--muted);line-height:1.55;flex:1}
+  .card-foot{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-top:16px;padding-top:16px;border-top:1px solid var(--border);
+  }
+  .palette{display:flex;gap:5px}
+  .palette i{width:14px;height:14px;border-radius:4px;display:block;border:1px solid rgba(255,255,255,.1)}
+  .enter{
+    font-size:12px;font-weight:600;color:var(--muted);
+    display:flex;align-items:center;gap:6px;transition:color .2s,transform .2s;
+  }
+  .card:hover .enter{color:var(--accent);transform:translateX(4px)}
+  .enter svg{width:14px;height:14px}
+
+  /* === 各风格预览缩略图（纯CSS） === */
+  .pv-neu{background:#E3EDF5;display:grid;place-items:center}
+  .pv-neu .b{
+    width:88px;height:88px;border-radius:50%;
+    background:linear-gradient(145deg,#F0F6FC,#C9D8E6);
+    box-shadow:6px 6px 14px #B8C8D6,-6px -6px 14px #F2F8FE;
+  }
+  .pv-glass{
+    background:linear-gradient(135deg,#FF6B9D 0%,#A855F7 50%,#6366F1 100%);
+    display:grid;place-items:center;
+  }
+  .pv-glass .b{
+    width:110px;height:78px;border-radius:14px;
+    background:rgba(255,255,255,.22);backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,.4);
+    box-shadow:0 8px 32px rgba(0,0,0,.18);
+  }
+  .pv-swiss{background:#fff;display:grid;grid-template-columns:repeat(4,1fr);padding:18px;gap:0}
+  .pv-swiss i{background:#000;display:block}
+  .pv-swiss i:nth-child(1){grid-column:span 2;height:30px}
+  .pv-swiss i:nth-child(2){grid-column:span 2;background:#DA251D;height:30px}
+  .pv-swiss i:nth-child(3){grid-column:span 4;height:8px;margin-top:8px}
+  .pv-brutal{background:#FFEB3B;display:grid;place-items:center;padding:18px}
+  .pv-brutal .b{
+    width:130px;height:80px;background:#fff;border:3px solid #000;
+    box-shadow:8px 8px 0 #000;
+  }
+  .pv-neon{background:#0A0A0A;display:grid;place-items:center;position:relative}
+  .pv-neon .b{
+    width:120px;height:34px;border-radius:8px;
+    background:transparent;border:2px solid #00FFC8;
+    box-shadow:0 0 18px #00FFC8,inset 0 0 12px rgba(0,255,200,.3);
+  }
+  .pv-editorial{background:#F4EFE6;display:flex;flex-direction:column;justify-content:center;padding:16px}
+  .pv-editorial .h{font-family:'Noto Serif SC',serif;font-weight:900;font-size:24px;color:#1A1A1A;line-height:1}
+  .pv-editorial .s{height:1px;background:#1A1A1A;margin:8px 0;width:60%}
+  .pv-editorial .p{display:flex;gap:6px}
+  .pv-editorial .p i{width:30%;height:6px;background:#888}
+  .pv-bento{background:#F5F5F7;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:16px}
+  .pv-bento i{border-radius:10px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+  .pv-bento i:nth-child(1){grid-row:span 2;background:#1D1D1F}
+  .pv-bento i:nth-child(2){background:#6366F1}
+  .pv-terminal{background:#0C0C0C;font-family:'JetBrains Mono';font-size:11px;color:#10B981;padding:16px;display:flex;flex-direction:column;gap:5px;justify-content:center}
+  .pv-terminal .l1{color:#10B981}
+  .pv-terminal .l2{color:#8B8B95}
+  .pv-terminal .l3{color:#FFD600}
+  .pv-terminal .l4{color:#fff}
+  .pv-vapor{background:linear-gradient(180deg,#FF71CE 0%,#01CDFE 50%,#05FFA1 100%);position:relative;display:grid;place-items:center}
+  .pv-vapor .grid-lines{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.4) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.4) 1px,transparent 1px);background-size:30px 30px;transform:perspective(220px) rotateX(60deg);transform-origin:bottom}
+  .pv-vapor .sun{position:relative;z-index:2;width:60px;height:60px;border-radius:50%;background:linear-gradient(180deg,#FFD600,#FF71CE);box-shadow:0 0 30px rgba(255,113,206,.7)}
+  .pv-minimal{background:#FAFAFA;display:grid;place-items:center}
+  .pv-minimal .b{width:1px;height:60px;background:#000}
+  .pv-minimal .dot{position:absolute;width:8px;height:8px;border-radius:50%;background:#000}
+  .pv-sketchy{background:#FDF6E3;display:grid;place-items:center}
+  .pv-sketchy .b{width:120px;height:70px;border:2px dashed #3A3A3A;border-radius:20px 12px 22px 10px / 10px 22px 12px 20px}
+  .pv-fluid{background:#0F0E17;position:relative;overflow:hidden}
+  .pv-fluid .blob{position:absolute;border-radius:42% 58% 70% 30% / 45% 45% 55% 55%;filter:blur(8px);opacity:.8}
+  .pv-fluid .blob:nth-child(1){width:90px;height:90px;background:#FF8906;top:20%;left:15%}
+  .pv-fluid .blob:nth-child(2){width:80px;height:80px;background:#F25F4C;bottom:10%;right:20%;border-radius:60% 40% 30% 70% / 60% 30% 70% 40%}
+  .pv-split{display:grid;grid-template-columns:1fr 1fr}
+  .pv-split .l{background:#1A1A2E;display:grid;place-items:center}
+  .pv-split .l i{width:30px;height:30px;background:#E94560;border-radius:50%}
+  .pv-split .r{background:#F5F5F5;display:grid;place-items:center}
+  .pv-split .r i{width:50px;height:4px;background:#1A1A2E}
+  .pv-parallax{background:linear-gradient(180deg,#2E294E,#1B1B3A);position:relative;display:grid;place-items:center}
+  .pv-parallax i{position:absolute;background:rgba(255,255,255,.5);border-radius:50%}
+  .pv-parallax i:nth-child(1){width:40px;height:40px;top:20%;left:20%;opacity:.3}
+  .pv-parallax i:nth-child(2){width:20px;height:20px;top:50%;right:30%;opacity:.6}
+  .pv-parallax i:nth-child(3){width:60px;height:60px;bottom:15%;left:50%;opacity:.2}
+  .pv-3d{background:#0D0D0D;display:grid;place-items:center;perspective:400px}
+  .pv-3d .cube{width:70px;height:70px;background:linear-gradient(135deg,#6366F1,#EC4899);transform:rotateX(45deg) rotateZ(45deg);box-shadow:0 0 30px rgba(99,102,241,.5)}
+  .pv-horizontal{background:#FAFAFA;display:flex;align-items:center;gap:8px;padding:0 16px;overflow:hidden}
+  .pv-horizontal i{flex-shrink:0;width:50px;height:100px;border-radius:8px;background:#000}
+  .pv-horizontal i:nth-child(2){background:#6366F1;height:80px}
+  .pv-horizontal i:nth-child(3){background:#EC4899;height:110px}
+  .pv-sticky{background:#fff;display:flex}
+  .pv-sticky .l{width:45%;background:#1A1A1A}
+  .pv-sticky .r{flex:1;display:flex;flex-direction:column}
+  .pv-sticky .r i{height:50%;border-bottom:2px solid #000}
+  .pv-sticky .r i:last-child{background:#FFE600;border-bottom:none}
+  .pv-gallery{background:#000;display:grid;grid-template-columns:1fr 1fr;gap:3px}
+  .pv-gallery i{background:linear-gradient(135deg,#444,#222)}
+  .pv-gallery i:nth-child(1){background:linear-gradient(135deg,#6366F1,#1D1D1F)}
+  .pv-gallery i:nth-child(4){background:linear-gradient(135deg,#EC4899,#222)}
+  .pv-riso{background:#F5E6D3;display:grid;place-items:center;position:relative;overflow:hidden}
+  .pv-riso .c1{position:absolute;width:90px;height:90px;border-radius:50%;background:#FF4D5E;mix-blend-mode:multiply;opacity:.85;left:25%;top:20%}
+  .pv-riso .c2{position:absolute;width:90px;height:90px;border-radius:50%;background:#2D7DD2;mix-blend-mode:multiply;opacity:.85;right:25%;bottom:20%}
+  .pv-cyber{background:#0A0014;display:grid;place-items:center;position:relative;overflow:hidden}
+  .pv-cyber .glitch{font-family:'JetBrains Mono';font-weight:700;font-size:22px;color:#00F0FF;text-shadow:2px 0 #FF006E,-2px 0 #00F0FF;letter-spacing:.1em}
+
+  /* ============ 页脚 ============ */
+  footer{
+    border-top:1px solid var(--border);padding:40px 0;margin-top:40px;
+    text-align:center;color:var(--muted-2);font-size:13.5px;
+  }
+  footer .line{margin-bottom:8px}
+  footer a{color:var(--muted);text-decoration:none;cursor:pointer}
+  footer a:hover{color:var(--accent)}
+
+  /* 滚动条 */
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:#2A2A33;border-radius:5px}
+  ::-webkit-scrollbar-thumb:hover{background:#3A3A45}
+
+  /* 入场动画 */
+  .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s,transform .6s}
+  .reveal.in{opacity:1;transform:none}
+
+  /* 深度探索卡片 */
+  .dd-card{transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s,border-color .25s}
+  .dd-card:hover{transform:translateY(-6px);border-color:var(--border-strong)!important;box-shadow:0 24px 50px -12px rgba(0,0,0,.5)}
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<div class="aurora"></div>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand">
+      <div class="logo">G</div>
+      <span>GLM UI Test</span>
+      <span class="badge">v1.0 · 20 Styles</span>
+    </div>
+    <nav class="nav-links">
+      <a href="#showcase">作品集</a>
+      <a href="#deepdive" style="color:var(--accent-3)">深度探索</a>
+      <a href="#about">关于项目</a>
+      <a href="#footer">说明</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- Hero -->
+  <section class="hero">
+    <span class="eyebrow"><span class="dot"></span>同一人物 · 二十种设计语言</span>
+    <h1>二十种风格迥异的<br><span class="grad">个人网站设计实验</span></h1>
+    <p class="lead">
+      围绕同一虚拟人物「林墨白 · 全栈工程师 / 数字设计师」，
+      用二十套完全独立的设计系统，呈现同一份内容。
+      从新拟态到赛博朋克，探索视觉与交互的边界。
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">20<span class="plus">+</span></div><div class="lbl">独立设计系统</div></div>
+      <div class="hero-stat"><div class="num">100%</div><div class="lbl">原生 HTML / CSS</div></div>
+      <div class="hero-stat"><div class="num">0</div><div class="lbl">外部框架依赖</div></div>
+      <div class="hero-stat"><div class="num">ZH-CN</div><div class="lbl">完整简体中文</div></div>
+    </div>
+  </section>
+
+  <!-- 工具栏 -->
+  <section id="showcase">
+    <div class="toolbar">
+      <h2>作品集总览 <span class="count">· 共 20 个站点</span></h2>
+      <div class="filters">
+        <button class="chip active" data-filter="all">全部</button>
+        <button class="chip" data-filter="soft">柔和质感</button>
+        <button class="chip" data-filter="bold">强烈视觉</button>
+        <button class="chip" data-filter="modern">现代主义</button>
+        <button class="chip" data-filter="experimental">实验交互</button>
+      </div>
+    </div>
+
+    <div class="grid" id="grid"><!-- 卡片由 JS 注入 --></div>
+  </section>
+
+  <!-- 关于 -->
+  <section id="about" style="padding:60px 0 30px">
+    <div style="display:grid;grid-template-columns:1fr;gap:32px;max-width:900px">
+      <div>
+        <h2 style="font-size:28px;font-weight:600;letter-spacing:-.02em;margin-bottom:16px">关于这个项目</h2>
+        <p style="color:var(--muted);font-size:15.5px;line-height:1.8">
+          这是一个 UI/UX 设计实验合集。每个站点都拥有独立的色彩体系、字体方案、布局结构与交互逻辑——
+          绝非简单的换肤。你可以从总览页直接进入任意一个站点，感受同一份个人信息在不同设计语言下的表达差异。
+        </p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px">
+        <div style="padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:14px">
+          <div style="font-family:'JetBrains Mono';font-size:13px;color:var(--accent);margin-bottom:8px">01 · 02</div>
+          <div style="font-weight:600;margin-bottom:4px">重点风格</div>
+          <div style="font-size:13px;color:var(--muted)">新拟态 / 毛玻璃极简</div>
+        </div>
+        <div style="padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:14px">
+          <div style="font-family:'JetBrains Mono';font-size:13px;color:var(--accent-2);margin-bottom:8px">03 — 20</div>
+          <div style="font-weight:600;margin-bottom:4px">多元探索</div>
+          <div style="font-size:13px;color:var(--muted)">瑞士 / 野兽派 / 暗黑 / 终端…</div>
+        </div>
+        <div style="padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:14px">
+          <div style="font-family:'JetBrains Mono';font-size:13px;color:var(--accent-3);margin-bottom:8px">技术栈</div>
+          <div style="font-weight:600;margin-bottom:4px">纯静态</div>
+          <div style="font-size:13px;color:var(--muted)">单文件 HTML 即开即用</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 深度探索 -->
+  <section id="deepdive" style="padding:50px 0 30px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:24px">
+      <div>
+        <div style="font-size:12.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-3);margin-bottom:8px">Deep Dive · 深度示例库</div>
+        <h2 style="font-size:28px;font-weight:600;letter-spacing:-.02em">两种风格的<span style="color:var(--accent)">深度扩展</span></h2>
+        <p style="color:var(--muted);font-size:14.5px;margin-top:8px;max-width:560px">
+          从 20 种风格中精选两类，每个画廊提供 10 个完整示例页面，附带六维度自评分与可一键复制的标准化 AI 提示词——发给任意 AI 工具即可复现 99%+ 内容。
+        </p>
+      </div>
+      <div style="display:flex;gap:24px;flex-shrink:0">
+        <div style="text-align:center">
+          <div style="font-family:'JetBrains Mono';font-size:28px;font-weight:600;color:var(--accent)">10<span style="font-size:16px;color:var(--muted)">×2</span></div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">深度示例</div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-family:'JetBrains Mono';font-size:28px;font-weight:600;color:var(--accent-3)">99%+</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">复现保真度</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px">
+      <!-- 新拟态画廊 -->
+      <a href="showcase-neumorphism/index.html" class="dd-card reveal" style="position:relative;text-decoration:none;color:inherit;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);display:flex;flex-direction:column;background:#E3EDF5;min-height:340px">
+        <div style="padding:28px;flex:1;display:flex;flex-direction:column;color:#3A4A5C">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <span style="font-family:'JetBrains Mono';font-size:12px;font-weight:600;color:#5B7A99;background:rgba(91,122,153,.12);padding:4px 10px;border-radius:6px">DEEP · 01</span>
+            <span style="width:54px;height:54px;border-radius:50%;background:linear-gradient(145deg,#F0F6FC,#C9D8E6);box-shadow:6px 6px 14px #B8C8D6,-6px -6px 14px #F2F8FE"></span>
+          </div>
+          <h3 style="font-size:24px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px;color:#2A3A4C">新拟态</h3>
+          <div style="font-size:13px;color:#6B7A8C;margin-bottom:12px;font-family:'JetBrains Mono'">Neumorphism / Soft UI</div>
+          <p style="font-size:13.5px;line-height:1.6;color:#4A5A6C;flex:1">
+            柔和凸起与凹陷的双向阴影，单色粉彩画布上的触摸式 3D 质感。10 个示例：音乐播放器、计算器、智能家居、天气、登录、日历、健康仪表盘、钱包、语音助手、设置面板。
+          </p>
+          <div style="margin-top:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="font-size:11px;padding:3px 9px;border-radius:999px;background:#fff;color:#5B7A99;box-shadow:3px 3px 6px #C9D8E6,-3px -3px 6px #F2F8FE;font-weight:500">10 示例</span>
+            <span style="font-size:11px;padding:3px 9px;border-radius:999px;background:#fff;color:#5B7A99;box-shadow:3px 3px 6px #C9D8E6,-3px -3px 6px #F2F8FE;font-weight:500">六维评分</span>
+            <span style="font-size:11px;padding:3px 9px;border-radius:999px;background:#fff;color:#5B7A99;box-shadow:3px 3px 6px #C9D8E6,-3px -3px 6px #F2F8FE;font-weight:500">AI 提示词</span>
+          </div>
+          <div style="margin-top:18px;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:#3A5A7C">
+            进入深度探索
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </a>
+
+      <!-- 便当盒画廊 -->
+      <a href="showcase-bento/index.html" class="dd-card reveal" style="position:relative;text-decoration:none;color:inherit;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);display:flex;flex-direction:column;background:#F5F5F7;min-height:340px">
+        <div style="padding:28px;flex:1;display:flex;flex-direction:column;color:#1D1D1F">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <span style="font-family:'JetBrains Mono';font-size:12px;font-weight:600;color:#fff;background:#1D1D1F;padding:4px 10px;border-radius:6px">DEEP · 07</span>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;width:54px">
+              <i style="height:14px;border-radius:3px;background:#1D1D1F"></i>
+              <i style="height:14px;border-radius:3px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.1)"></i>
+              <i style="height:14px;border-radius:3px;background:#6366F1"></i>
+              <i style="height:14px;border-radius:3px;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.1);grid-column:span 2"></i>
+              <i style="height:14px;border-radius:3px;background:#EC4899"></i>
+            </div>
+          </div>
+          <h3 style="font-size:24px;font-weight:700;letter-spacing:-.01em;margin-bottom:6px">便当盒网格</h3>
+          <div style="font-size:13px;color:#86868B;margin-bottom:12px;font-family:'JetBrains Mono'">Bento Grid</div>
+          <p style="font-size:13.5px;line-height:1.6;color:#4A4A4A;flex:1">
+            Apple 式模块化卡片网格，大小不一的圆角块组合出杂志般的视觉节奏。10 个示例：作品集、SaaS 落地页、数据仪表盘、播客、摄影师、课程、博客、应用特性、团队、社交主页。
+          </p>
+          <div style="margin-top:18px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="font-size:11px;padding:3px 9px;border-radius:999px;background:#fff;color:#1D1D1F;box-shadow:0 2px 6px rgba(0,0,0,.08);font-weight:500">10 示例</span>
+            <span style="font-size:11px;padding:3px 9px;border-radius:999px;background:#fff;color:#1D1D1F;box-shadow:0 2px 6px rgba(0,0,0,.08);font-weight:500">六维评分</span>
+            <span style="font-size:11px;padding:3px 9px;border-radius:999px;background:#fff;color:#1D1D1F;box-shadow:0 2px 6px rgba(0,0,0,.08);font-weight:500">AI 提示词</span>
+          </div>
+          <div style="margin-top:18px;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:#0071E3">
+            进入深度探索
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer id="footer">
+  <div class="wrap">
+    <div class="line">GLM UI Test · 个人网站设计实验合集</div>
+    <div class="line">所有内容均为虚构演示数据 · <a href="index.html">回到顶部</a></div>
+  </div>
+</footer>
+
+<script>
+const STYLES = [
+  {n:'01',d:'01-neumorphism/index.html',cat:'soft',name:'新拟态',en:'Neumorphism',desc:'柔和的凸起与凹陷，单色粉彩，触摸式的立体感。',star:true,cls:'pv-neu',tag:'柔和',tagBg:'rgba(99,102,241,.15)',tagColor:'#A5B4FC',pal:['#E3EDF5','#C9D8E6','#5B7A99']},
+  {n:'02',d:'02-glassmorphism/index.html',cat:'soft',name:'毛玻璃极简',en:'Glassmorphism',desc:'磨砂半透明叠加在鲜艳渐变之上，模糊与折射的层次感。',star:true,cls:'pv-glass',tag:'柔和',tagBg:'rgba(236,72,153,.15)',tagColor:'#F9A8D4',pal:['#FF6B9D','#A855F7','#6366F1']},
+  {n:'03',d:'03-swiss-grid/index.html',cat:'modern',name:'瑞士国际主义',en:'Swiss Grid',desc:'严谨的网格、Helvetica 无衬线、黑白红的现代主义秩序。',star:false,cls:'pv-swiss',tag:'现代',tagBg:'rgba(218,37,29,.15)',tagColor:'#FCA5A5',pal:['#FFFFFF','#000000','#DA251D']},
+  {n:'04',d:'04-brutalism/index.html',cat:'bold',name:'野兽派',en:'Brutalism',desc:'粗犷的原生网页美学，撞色、硬边框、不对称的反精致。',star:false,cls:'pv-brutal',tag:'强烈',tagBg:'rgba(255,235,59,.18)',tagColor:'#FDE68A',pal:['#FFEB3B','#000000','#FFFFFF']},
+  {n:'05',d:'05-dark-neon/index.html',cat:'bold',name:'暗黑霓虹',en:'Dark Neon',desc:'纯黑画布上的霓虹辉光，深邃、未来、克制的发光美学。',star:false,cls:'pv-neon',tag:'强烈',tagBg:'rgba(0,255,200,.15)',tagColor:'#6EE7B7',pal:['#0A0A0A','#00FFC8','#5B21B6']},
+  {n:'06',d:'06-editorial/index.html',cat:'modern',name:'杂志编辑',en:'Editorial',desc:'印刷品般的分栏排版，衬线大标题，浓郁的纸媒气质。',star:false,cls:'pv-editorial',tag:'现代',tagBg:'rgba(120,113,108,.2)',tagColor:'#D6D3D1',pal:['#F4EFE6','#1A1A1A','#8B7355']},
+  {n:'07',d:'07-bento-grid/index.html',cat:'modern',name:'便当盒网格',en:'Bento Grid',desc:'Apple 式的模块化卡片，错落有致的尺寸，信息密度。',star:false,cls:'pv-bento',tag:'现代',tagBg:'rgba(99,102,241,.15)',tagColor:'#A5B4FC',pal:['#F5F5F7','#FFFFFF','#1D1D1F']},
+  {n:'08',d:'08-terminal/index.html',cat:'experimental',name:'终端黑客',en:'Terminal',desc:'命令行界面，等宽字体，逐行打印的极客仪式感。',star:false,cls:'pv-terminal',tag:'实验',tagBg:'rgba(16,185,129,.15)',tagColor:'#6EE7B7',pal:['#0C0C0C','#10B981','#FFD600']},
+  {n:'09',d:'09-vaporwave/index.html',cat:'bold',name:'蒸汽波复古',en:'Vaporwave',desc:'80 年代的美学，粉紫青绿渐变，扫描线与日落网格。',star:false,cls:'pv-vapor',tag:'强烈',tagBg:'rgba(255,113,206,.18)',tagColor:'#F9A8D4',pal:['#FF71CE','#01CDFE','#05FFA1']},
+  {n:'10',d:'10-minimalism/index.html',cat:'modern',name:'极简留白',en:'Minimalism',desc:'大量的呼吸空间，克制的元素，少即是多。',star:false,cls:'pv-minimal',tag:'现代',tagBg:'rgba(120,113,108,.2)',tagColor:'#D6D3D1',pal:['#FAFAFA','#000000','#888888']},
+  {n:'11',d:'11-sketchy/index.html',cat:'soft',name:'手绘涂鸦',en:'Sketchy',desc:'手写体与不规则描边，纸质感，温暖随性的个人印记。',star:false,cls:'pv-sketchy',tag:'柔和',tagBg:'rgba(217,119,6,.18)',tagColor:'#FCD34D',pal:['#FDF6E3','#3A3A3A','#D97706']},
+  {n:'12',d:'12-fluid-gradient/index.html',cat:'experimental',name:'流体渐变',en:'Fluid Gradient',desc:'流动变形的色块，有机的形状，沉浸式的色彩漩涡。',star:false,cls:'pv-fluid',tag:'实验',tagBg:'rgba(255,137,6,.18)',tagColor:'#FDBA74',pal:['#0F0E17','#FF8906','#F25F4C']},
+  {n:'13',d:'13-split-screen/index.html',cat:'modern',name:'分屏对置',en:'Split Screen',desc:'左右垂直分屏的强对比布局，内容与视觉的并置。',star:false,cls:'pv-split',tag:'现代',tagBg:'rgba(233,69,96,.18)',tagColor:'#FCA5A5',pal:['#1A1A2E','#E94560','#F5F5F5']},
+  {n:'14',d:'14-parallax/index.html',cat:'experimental',name:'视差滚动',en:'Parallax',desc:'多层景深的滚动叙事，元素以不同速度运动的纵深。',star:false,cls:'pv-parallax',tag:'实验',tagBg:'rgba(255,255,255,.15)',tagColor:'#E5E5E5',pal:['#1B1B3A','#2E294E','#9D8DF1']},
+  {n:'15',d:'15-3d-perspective/index.html',cat:'experimental',name:'三维透视',en:'3D Perspective',desc:'CSS 3D 变换构建的立体空间，旋转、倾斜、深度。',star:false,cls:'pv-3d',tag:'实验',tagBg:'rgba(99,102,241,.15)',tagColor:'#A5B4FC',pal:['#0D0D0D','#6366F1','#EC4899']},
+  {n:'16',d:'16-horizontal/index.html',cat:'experimental',name:'横向滚动',en:'Horizontal',desc:'打破纵向惯性，侧向滚动浏览的横向叙事节奏。',star:false,cls:'pv-horizontal',tag:'实验',tagBg:'rgba(120,113,108,.2)',tagColor:'#D6D3D1',pal:['#FAFAFA','#000000','#6366F1']},
+  {n:'17',d:'17-sticky-pin/index.html',cat:'experimental',name:'粘性钉住',en:'Sticky Pin',desc:'固定段落随滚动依次揭示，电影感的章节切换。',star:false,cls:'pv-sticky',tag:'实验',tagBg:'rgba(255,230,0,.18)',tagColor:'#FDE68A',pal:['#FFFFFF','#1A1A1A','#FFE600']},
+  {n:'18',d:'18-gallery/index.html',cat:'modern',name:'沉浸画廊',en:'Gallery',desc:'图像主导的全屏沉浸体验，作品即舞台主角。',star:false,cls:'pv-gallery',tag:'现代',tagBg:'rgba(120,113,108,.2)',tagColor:'#D6D3D1',pal:['#000000','#6366F1','#EC4899']},
+  {n:'19',d:'19-risograph/index.html',cat:'bold',name:'复古印刷',en:'Risograph',desc:'双色叠印的孔版印刷质感，颗粒噪点与套色偏移。',star:false,cls:'pv-riso',tag:'强烈',tagBg:'rgba(255,77,94,.18)',tagColor:'#FCA5A5',pal:['#F5E6D3','#FF4D5E','#2D7DD2']},
+  {n:'20',d:'20-cyberpunk/index.html',cat:'bold',name:'赛博朋克',en:'Cyberpunk',desc:'故障艺术、霓虹与机械感，2077 式的未来废土美学。',star:false,cls:'pv-cyber',tag:'强烈',tagBg:'rgba(0,240,255,.18)',tagColor:'#67E8F9',pal:['#0A0014','#00F0FF','#FF006E']},
+];
+
+const grid = document.getElementById('grid');
+function render(filter='all'){
+  grid.innerHTML = '';
+  STYLES.filter(s=> filter==='all' || s.cat===filter).forEach((s,i)=>{
+    const card = document.createElement('a');
+    card.className = 'card reveal';
+    card.href = s.d;
+    card.style.transitionDelay = (i*30)+'ms';
+    card.innerHTML = `
+      <div class="preview ${s.cls}">
+        <span class="num">${s.n}</span>
+        <span class="tag" style="background:${s.tagBg};color:${s.tagColor}">${s.tag}</span>
+        ${s.cls==='pv-neu'?'<div class="b"></div>':''}
+        ${s.cls==='pv-glass'?'<div class="b"></div>':''}
+        ${s.cls==='pv-swiss'?'<i></i><i></i><i></i>':''}
+        ${s.cls==='pv-brutal'?'<div class="b"></div>':''}
+        ${s.cls==='pv-neon'?'<div class="b"></div>':''}
+        ${s.cls==='pv-editorial'?'<div class="h">M</div><div class="s"></div><div class="p"><i></i><i></i><i></i></div>':''}
+        ${s.cls==='pv-bento'?'<i></i><i></i><i></i><i></i><i></i>':''}
+        ${s.cls==='pv-terminal'?'<div class="l1">$ whoami</div><div class="l2">林墨白</div><div class="l3">→ ready</div><div class="l4">_</div>':''}
+        ${s.cls==='pv-vapor'?'<div class="grid-lines"></div><div class="sun"></div>':''}
+        ${s.cls==='pv-minimal'?'<div class="b"></div><div class="dot" style="top:30%;left:50%"></div>':''}
+        ${s.cls==='pv-sketchy'?'<div class="b"></div>':''}
+        ${s.cls==='pv-fluid'?'<div class="blob"></div><div class="blob"></div>':''}
+        ${s.cls==='pv-split'?'<div class="l"><i></i></div><div class="r"><i></i></div>':''}
+        ${s.cls==='pv-parallax'?'<i></i><i></i><i></i>':''}
+        ${s.cls==='pv-3d'?'<div class="cube"></div>':''}
+        ${s.cls==='pv-horizontal'?'<i></i><i></i><i></i>':''}
+        ${s.cls==='pv-sticky'?'<div class="l"></div><div class="r"><i></i><i></i></div>':''}
+        ${s.cls==='pv-gallery'?'<i></i><i></i><i></i><i></i>':''}
+        ${s.cls==='pv-riso'?'<div class="c1"></div><div class="c2"></div>':''}
+        ${s.cls==='pv-cyber'?'<div class="glitch">CYBER</div>':''}
+      </div>
+      <div class="card-body">
+        <h3>${s.name} ${s.star?'<span class="star" title="重点风格">★</span>':''}</h3>
+        <p>${s.desc}</p>
+        <div class="card-foot">
+          <div class="palette">${s.pal.map(c=>`<i style="background:${c}"></i>`).join('')}</div>
+          <span class="enter">进入 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 5l7 7-7 7"/></svg></span>
+        </div>
+      </div>`;
+    grid.appendChild(card);
+  });
+  // 触发入场动画
+  requestAnimationFrame(()=>{
+    document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+  });
+}
+render();
+
+// 筛选
+document.querySelectorAll('.chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    render(btn.dataset.filter);
+  });
+});
+</script>
+</body>
+</html>

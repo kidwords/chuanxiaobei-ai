@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>// 林墨白 · CYBERPUNK_PROTOCOL</title>
+<meta name="description" content="林墨白 — 全栈工程师 / 数字设计师 · 杭州 · CYBERPUNK PORTFOLIO" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Chakra+Petch:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ========================================================================
+     CYBERPUNK / GLITCH — DESIGN SYSTEM
+     ======================================================================== */
+  :root {
+    --bg-deep: #050008;
+    --bg: #0A0014;
+    --bg-2: #11001F;
+    --panel: rgba(20, 4, 36, 0.55);
+    --panel-solid: #0E0120;
+
+    --cyan: #00F0FF;
+    --magenta: #FF006E;
+    --yellow: #FFE600;
+    --toxic: #39FF14;
+
+    --text: #E8E6F5;
+    --text-dim: #9A8FB8;
+    --text-mute: #5A4F78;
+    --line: rgba(0, 240, 255, 0.18);
+    --line-soft: rgba(154, 143, 184, 0.14);
+
+    --glitch-r: #FF0048;
+    --glitch-b: #00E5FF;
+
+    --ff-display: 'Orbitron', 'Chakra Petch', sans-serif;
+    --ff-tech: 'Chakra Petch', sans-serif;
+    --ff-mono: 'Share Tech Mono', 'Courier New', monospace;
+    --ff-sc: 'Noto Sans SC', sans-serif;
+
+    --radius: 0px; /* cyberpunk prefers angular */
+    --cut: polygon(0 14px, 14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+    --cut-btn: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    --ease: cubic-bezier(.7,0,.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--ff-sc), var(--ff-tech);
+    font-size: 16px;
+    line-height: 1.65;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+  }
+
+  /* atmospheric background layers */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    background:
+      radial-gradient(ellipse 80% 60% at 15% 0%, rgba(255, 0, 110, 0.12), transparent 60%),
+      radial-gradient(ellipse 70% 60% at 90% 10%, rgba(0, 240, 255, 0.10), transparent 60%),
+      radial-gradient(ellipse 90% 60% at 50% 110%, rgba(57, 255, 20, 0.06), transparent 60%),
+      var(--bg-deep);
+    pointer-events: none;
+  }
+
+  /* perspective grid floor */
+  body::after {
+    content: "";
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: 45vh;
+    z-index: -2;
+    background-image:
+      linear-gradient(rgba(0, 240, 255, 0.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.18) 1px, transparent 1px);
+    background-size: 48px 48px;
+    transform: perspective(380px) rotateX(68deg);
+    transform-origin: bottom;
+    mask-image: linear-gradient(to top, #000 0%, transparent 90%);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 90%);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* SCANLINES overlay */
+  .scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0.18) 3px,
+      rgba(0, 0, 0, 0) 4px
+    );
+    mix-blend-mode: multiply;
+    animation: flicker 5s infinite steps(60);
+  }
+
+  /* subtle moving scan glow */
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(rgba(0,240,255,0.04), rgba(255,0,110,0.04));
+    animation: scanMove 8s linear infinite;
+  }
+
+  @keyframes flicker {
+    0%, 96%, 100% { opacity: 1; }
+    97% { opacity: 0.78; }
+    98% { opacity: 1; }
+    98.5% { opacity: 0.62; }
+    99% { opacity: 1; }
+  }
+  @keyframes scanMove {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100%); }
+  }
+
+  /* ========================================================================
+     TYPOGRAPHY
+     ======================================================================== */
+  h1, h2, h3 { font-family: var(--ff-display); font-weight: 700; line-height: 1.15; margin: 0; letter-spacing: 0.04em; }
+  p { margin: 0; }
+  a { color: inherit; text-decoration: none; }
+
+  .label {
+    font-family: var(--ff-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cyan);
+  }
+
+  .section-title {
+    font-family: var(--ff-display);
+    font-size: clamp(1.7rem, 4vw, 2.6rem);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    position: relative;
+    display: inline-block;
+  }
+  .section-title::before {
+    content: "// ";
+    color: var(--magenta);
+    font-family: var(--ff-mono);
+  }
+
+  /* ========================================================================
+     LAYOUT
+     ======================================================================== */
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+  section { padding: 96px 0; position: relative; }
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap; margin-bottom: 48px;
+  }
+  .section-head .meta { font-family: var(--ff-mono); font-size: 0.78rem; color: var(--text-dim); letter-spacing: 0.18em; }
+
+  /* ========================================================================
+     HUD PANEL — corner-bracket frame + clip-path
+     ======================================================================== */
+  .panel {
+    position: relative;
+    background:
+      linear-gradient(180deg, rgba(20,4,36,0.65), rgba(10,0,20,0.85));
+    border: 1px solid var(--line);
+    clip-path: var(--cut);
+    padding: 28px;
+    transition: border-color .25s var(--ease), transform .25s var(--ease), box-shadow .25s var(--ease);
+  }
+  .panel::before, .panel::after {
+    content: ""; position: absolute; width: 14px; height: 14px;
+    border-color: var(--cyan); border-style: solid; pointer-events: none;
+  }
+  .panel::before { top: 6px; left: 6px; border-width: 2px 0 0 2px; }
+  .panel::after { bottom: 6px; right: 6px; border-width: 0 2px 2px 0; }
+  .panel:hover {
+    border-color: rgba(0,240,255,0.55);
+    box-shadow: 0 0 0 1px rgba(0,240,255,0.15), 0 14px 40px rgba(0,240,255,0.10), inset 0 0 60px rgba(255,0,110,0.04);
+    transform: translateY(-4px);
+  }
+
+  /* corner-bracket variant using only pseudo works on .panel; for cards needing 4 brackets use helper */
+  .brackets { position: relative; }
+  .brackets > .b { position: absolute; width: 12px; height: 12px; border: solid var(--cyan); pointer-events: none; opacity: 0.85; }
+  .brackets > .b.tl { top: 0; left: 0; border-width: 2px 0 0 2px; }
+  .brackets > .b.tr { top: 0; right: 0; border-width: 2px 2px 0 0; }
+  .brackets > .b.bl { bottom: 0; left: 0; border-width: 0 0 2px 2px; }
+  .brackets > .b.br { bottom: 0; right: 0; border-width: 0 2px 2px 0; }
+
+  /* ========================================================================
+     NAV
+     ======================================================================== */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    background: rgba(5, 0, 8, 0.65);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    max-width: 1200px; margin: 0 auto; padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .brand {
+    font-family: var(--ff-display); font-weight: 700; letter-spacing: 0.1em;
+    color: var(--cyan); text-transform: uppercase; font-size: 1rem;
+    text-shadow: 0 0 12px rgba(0,240,255,0.45);
+  }
+  .brand .br { color: var(--magenta); }
+  .nav-links { display: flex; align-items: center; gap: 8px; }
+  .nav-link {
+    font-family: var(--ff-mono); font-size: 0.82rem; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--text-dim);
+    padding: 8px 12px; position: relative; cursor: pointer;
+    transition: color .2s var(--ease);
+  }
+  .nav-link::before { content: "> "; opacity: 0; transition: opacity .2s var(--ease); color: var(--cyan); }
+  .nav-link:hover, .nav-link:focus-visible { color: var(--cyan); outline: none; }
+  .nav-link:hover::before, .nav-link:focus-visible::before { opacity: 1; }
+
+  .nav-cta {
+    font-family: var(--ff-mono); font-size: 0.78rem; letter-spacing: 0.14em;
+    color: var(--yellow); text-transform: uppercase; cursor: pointer;
+    padding: 8px 14px; border: 1px solid rgba(255,230,0,0.4);
+    clip-path: var(--cut-btn); transition: all .2s var(--ease);
+  }
+  .nav-cta:hover { background: rgba(255,230,0,0.08); color: var(--text); }
+
+  .menu-btn {
+    display: none; background: transparent; border: 1px solid var(--line);
+    color: var(--cyan); width: 42px; height: 42px; cursor: pointer;
+    align-items: center; justify-content: center; padding: 0;
+  }
+  .menu-btn svg { width: 20px; height: 20px; }
+  .menu-btn:hover, .menu-btn:focus-visible { border-color: var(--cyan); outline: none; }
+
+  /* ========================================================================
+     BUTTONS (angular clipped)
+     ======================================================================== */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--ff-mono); font-size: 0.85rem; letter-spacing: 0.16em;
+    text-transform: uppercase; padding: 14px 26px; cursor: pointer;
+    clip-path: var(--cut-btn); position: relative;
+    transition: transform .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
+  }
+  .btn svg { width: 16px; height: 16px; }
+  .btn-primary {
+    background: var(--cyan); color: #001016; font-weight: 700;
+    box-shadow: 0 0 30px rgba(0,240,255,0.25);
+  }
+  .btn-primary:hover { background: var(--magenta); color: #fff; box-shadow: 0 0 40px rgba(255,0,110,0.4); transform: translateY(-2px); }
+  .btn-ghost {
+    background: transparent; color: var(--text); border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,240,255,0.06); }
+
+  /* ========================================================================
+     HERO
+     ======================================================================== */
+  .hero {
+    min-height: 100vh; padding: 120px 0 60px;
+    display: flex; align-items: center; position: relative;
+  }
+  .hero-grid {
+    display: grid; grid-template-columns: 1.4fr 0.9fr; gap: 48px; align-items: center; width: 100%;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--ff-mono); font-size: 0.8rem; letter-spacing: 0.2em;
+    color: var(--toxic); text-transform: uppercase; margin-bottom: 24px;
+    padding: 8px 14px; border: 1px solid rgba(57,255,20,0.3);
+    clip-path: var(--cut-btn); background: rgba(57,255,20,0.04);
+  }
+  .hero-tag .dot {
+    width: 8px; height: 8px; background: var(--toxic); border-radius: 50%;
+    box-shadow: 0 0 10px var(--toxic); animation: pulse 1.4s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  .glitch {
+    font-family: var(--ff-display); font-weight: 900;
+    font-size: clamp(3.2rem, 12vw, 8.5rem); line-height: 0.95;
+    letter-spacing: 0.02em; position: relative; color: var(--text);
+    text-shadow: 0 0 30px rgba(0,240,255,0.25);
+    margin-bottom: 18px; text-transform: uppercase;
+  }
+  /* classic RGB-split glitch via pseudo elements */
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+    overflow: hidden;
+  }
+  .glitch::before {
+    color: var(--glitch-r);
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    animation: glitchTop 2.6s infinite linear alternate-reverse;
+    text-shadow: -2px 0 var(--glitch-r);
+  }
+  .glitch::after {
+    color: var(--glitch-b);
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    animation: glitchBottom 2s infinite linear alternate-reverse;
+    text-shadow: 2px 0 var(--glitch-b);
+  }
+  @keyframes glitchTop {
+    0% { transform: translate(0,0); }
+    20% { transform: translate(-3px,-1px); }
+    40% { transform: translate(2px,1px); }
+    60% { transform: translate(-2px,0); }
+    80% { transform: translate(3px,-1px); }
+    100% { transform: translate(0,0); }
+  }
+  @keyframes glitchBottom {
+    0% { transform: translate(0,0); }
+    25% { transform: translate(2px,1px); }
+    50% { transform: translate(-3px,-1px); }
+    75% { transform: translate(1px,1px); }
+    100% { transform: translate(0,0); }
+  }
+  .glitch:hover::before { animation-duration: 0.4s; }
+  .glitch:hover::after { animation-duration: 0.35s; }
+
+  .hero-role {
+    font-family: var(--ff-tech); font-weight: 500; font-size: clamp(1.05rem, 2.4vw, 1.5rem);
+    color: var(--text); letter-spacing: 0.04em; margin-bottom: 10px;
+  }
+  .hero-role .pre { color: var(--magenta); font-family: var(--ff-mono); margin-right: 8px; }
+  .hero-loc {
+    font-family: var(--ff-mono); color: var(--text-dim); font-size: 0.9rem;
+    letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 22px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .hero-loc svg { width: 14px; height: 14px; color: var(--cyan); }
+  .hero-desc {
+    color: var(--text-dim); max-width: 520px; margin-bottom: 28px;
+    font-family: var(--ff-sc);
+  }
+  .hero-status {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--ff-mono); font-size: 0.82rem; letter-spacing: 0.16em;
+    color: var(--cyan); margin-bottom: 32px; padding: 8px 16px;
+    border: 1px solid var(--line); clip-path: var(--cut-btn);
+    background: rgba(0,240,255,0.04);
+  }
+  .hero-status .blink {
+    width: 8px; height: 8px; background: var(--cyan); border-radius: 50%;
+    box-shadow: 0 0 12px var(--cyan); animation: pulse 1s infinite;
+  }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  /* HUD side panel */
+  .hud-panel {
+    position: relative; padding: 26px;
+    background: linear-gradient(160deg, rgba(0,240,255,0.06), rgba(255,0,110,0.06));
+    border: 1px solid var(--line); clip-path: var(--cut);
+  }
+  .hud-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px dashed var(--line-soft);
+  }
+  .hud-head .t { font-family: var(--ff-mono); font-size: 0.74rem; letter-spacing: 0.2em; color: var(--cyan); text-transform: uppercase; }
+  .hud-head .id { font-family: var(--ff-mono); font-size: 0.74rem; color: var(--text-mute); }
+  .hud-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 9px 0; font-family: var(--ff-mono); font-size: 0.8rem;
+    border-bottom: 1px dotted var(--line-soft);
+  }
+  .hud-row:last-of-type { border-bottom: none; }
+  .hud-row .k { color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; }
+  .hud-row .v { color: var(--text); }
+  .hud-row .v.c { color: var(--cyan); }
+  .hud-row .v.m { color: var(--magenta); }
+  .hud-row .v.y { color: var(--yellow); }
+  .hud-row .v.g { color: var(--toxic); }
+
+  .hud-bar { margin-top: 16px; }
+  .hud-bar .lbl { display: flex; justify-content: space-between; font-family: var(--ff-mono); font-size: 0.72rem; color: var(--text-dim); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .hud-bar .track { height: 6px; background: rgba(0,240,255,0.08); position: relative; overflow: hidden; clip-path: polygon(0 0,100% 0, calc(100% - 4px) 100%, 0 100%); }
+  .hud-bar .fill { height: 100%; background: linear-gradient(90deg, var(--cyan), var(--magenta)); }
+
+  .hex-stream {
+    margin-top: 16px; font-family: var(--ff-mono); font-size: 0.72rem; color: var(--toxic);
+    opacity: 0.6; line-height: 1.4; word-break: break-all; height: 3.6em; overflow: hidden;
+  }
+
+  /* ========================================================================
+     STATS
+     ======================================================================== */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .stat {
+    position: relative; padding: 30px 24px;
+    background: linear-gradient(180deg, rgba(20,4,36,0.6), rgba(10,0,20,0.85));
+    border: 1px solid var(--line); clip-path: var(--cut);
+    transition: all .25s var(--ease); cursor: default;
+  }
+  .stat::before {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(0,240,255,0.03) 4px);
+    pointer-events: none;
+  }
+  .stat:hover { border-color: rgba(255,0,110,0.5); transform: translateY(-4px); box-shadow: 0 14px 40px rgba(255,0,110,0.12); }
+  .stat .num {
+    font-family: var(--ff-display); font-weight: 800; font-size: clamp(2.2rem, 5vw, 3.4rem);
+    color: var(--cyan); line-height: 1; text-shadow: 0 0 24px rgba(0,240,255,0.3);
+  }
+  .stat:nth-child(2) .num { color: var(--magenta); text-shadow: 0 0 24px rgba(255,0,110,0.3); }
+  .stat:nth-child(3) .num { color: var(--yellow); text-shadow: 0 0 24px rgba(255,230,0,0.25); }
+  .stat:nth-child(4) .num { color: var(--toxic); text-shadow: 0 0 24px rgba(57,255,20,0.3); }
+  .stat .num .u { font-size: 0.5em; color: var(--text-dim); font-weight: 500; margin-left: 4px; }
+  .stat .lbl {
+    font-family: var(--ff-mono); font-size: 0.78rem; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--text-dim); margin-top: 12px;
+  }
+  .stat .tag { position: absolute; top: 12px; right: 12px; font-family: var(--ff-mono); font-size: 0.65rem; color: var(--text-mute); letter-spacing: 0.15em; }
+
+  /* ========================================================================
+     ABOUT
+     ======================================================================== */
+  .about-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 28px; }
+  .about-bio p { color: var(--text); font-family: var(--ff-sc); margin-bottom: 16px; }
+  .about-bio p:last-child { margin-bottom: 0; color: var(--text-dim); }
+  .tag-stream { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .code-tag {
+    font-family: var(--ff-mono); font-size: 0.78rem; letter-spacing: 0.06em;
+    color: var(--cyan); padding: 5px 10px;
+    border: 1px solid var(--line); background: rgba(0,240,255,0.04);
+    clip-path: polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px);
+    transition: all .2s var(--ease);
+  }
+  .code-tag:hover { color: var(--magenta); border-color: rgba(255,0,110,0.4); }
+  .code-tag .pre { color: var(--text-mute); }
+
+  .about-side { display: flex; flex-direction: column; gap: 14px; }
+  .data-line {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--ff-mono); font-size: 0.82rem;
+    padding: 12px 14px; border: 1px solid var(--line-soft);
+    background: rgba(20,4,36,0.4);
+    clip-path: polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);
+  }
+  .data-line .k { color: var(--text-dim); letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.74rem; }
+  .data-line .v { color: var(--text); }
+  .data-line .v.cy { color: var(--cyan); }
+
+  /* ========================================================================
+     SKILLS
+     ======================================================================== */
+  .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px; }
+  .skill { padding: 22px 24px; }
+  .skill-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .skill-name { font-family: var(--ff-tech); font-weight: 600; font-size: 1.05rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text); }
+  .skill-name .pre { color: var(--magenta); font-family: var(--ff-mono); margin-right: 6px; }
+  .skill-val { font-family: var(--ff-display); font-weight: 700; color: var(--cyan); font-size: 1.3rem; }
+  .skill-track {
+    height: 10px; background: rgba(0,240,255,0.06);
+    position: relative; overflow: hidden;
+    clip-path: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+  }
+  .skill-fill {
+    height: 100%; width: 0;
+    background: linear-gradient(90deg, var(--magenta), var(--cyan));
+    position: relative; transition: width 1.2s var(--ease);
+  }
+  .skill-fill::after {
+    content: ""; position: absolute; right: 0; top: 0; bottom: 0; width: 4px;
+    background: var(--yellow); box-shadow: 0 0 12px var(--yellow);
+    animation: flicker 3s infinite;
+  }
+  .skill-meta { display: flex; justify-content: space-between; margin-top: 10px; font-family: var(--ff-mono); font-size: 0.72rem; color: var(--text-mute); letter-spacing: 0.1em; }
+
+  /* ========================================================================
+     WORKS
+     ======================================================================== */
+  .works-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .work {
+    position: relative; padding: 0;
+    background: linear-gradient(180deg, rgba(20,4,36,0.7), rgba(10,0,20,0.9));
+    border: 1px solid var(--line); clip-path: var(--cut);
+    overflow: hidden; cursor: pointer;
+    transition: all .3s var(--ease);
+  }
+  .work:hover {
+    border-color: rgba(0,240,255,0.6); transform: translateY(-6px);
+    box-shadow: 0 18px 50px rgba(0,240,255,0.12);
+  }
+  .work-img {
+    height: 180px; position: relative; overflow: hidden;
+    background: #0E0120;
+  }
+  .work-img svg { width: 100%; height: 100%; display: block; }
+  .work-img::after {
+    content: ""; position: absolute; inset: 0;
+    background: repeating-linear-gradient(to bottom, transparent 0, transparent 2px, rgba(0,0,0,0.25) 3px);
+    pointer-events: none;
+  }
+  .work-body { padding: 22px 24px; position: relative; }
+  .work-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .work-id { font-family: var(--ff-mono); font-size: 0.72rem; color: var(--cyan); letter-spacing: 0.18em; }
+  .work-status { font-family: var(--ff-mono); font-size: 0.7rem; color: var(--toxic); letter-spacing: 0.14em; }
+  .work-status::before { content: "● "; }
+  .work-title { font-family: var(--ff-display); font-weight: 700; font-size: 1.35rem; color: var(--text); margin-bottom: 8px; letter-spacing: 0.03em; }
+  .work-desc { color: var(--text-dim); font-family: var(--ff-sc); font-size: 0.92rem; margin-bottom: 16px; }
+  .work-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .work-tag {
+    font-family: var(--ff-mono); font-size: 0.72rem; color: var(--magenta);
+    padding: 3px 8px; border: 1px solid rgba(255,0,110,0.25);
+    background: rgba(255,0,110,0.04);
+  }
+
+  /* glitchy hover on work title */
+  .work:hover .work-title { animation: textGlitch 0.4s steps(2) 1; }
+  @keyframes textGlitch {
+    0% { text-shadow: 0 0 0 transparent; transform: translateX(0); }
+    25% { text-shadow: -2px 0 var(--glitch-r), 2px 0 var(--glitch-b); transform: translateX(-2px); }
+    50% { text-shadow: 2px 0 var(--glitch-r), -2px 0 var(--glitch-b); transform: translateX(2px); }
+    100% { text-shadow: 0 0 0 transparent; transform: translateX(0); }
+  }
+
+  /* ========================================================================
+     JOURNEY / TIMELINE
+     ======================================================================== */
+  .timeline { position: relative; padding-left: 8px; }
+  .timeline::before {
+    content: ""; position: absolute; left: 8px; top: 0; bottom: 0; width: 1px;
+    background: linear-gradient(to bottom, var(--cyan), var(--magenta), transparent);
+  }
+  .tl-item { position: relative; padding: 0 0 36px 40px; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-node {
+    position: absolute; left: 0; top: 4px; width: 18px; height: 18px;
+    background: var(--bg); border: 2px solid var(--cyan);
+    transform: rotate(45deg); transition: all .25s var(--ease);
+    box-shadow: 0 0 0 4px rgba(0,240,255,0.08);
+  }
+  .tl-item:hover .tl-node {
+    border-color: var(--magenta); box-shadow: 0 0 0 4px rgba(255,0,110,0.15), 0 0 16px var(--magenta);
+    animation: nodeGlitch 0.3s steps(2) 1;
+  }
+  @keyframes nodeGlitch {
+    0%,100% { transform: rotate(45deg) translate(0,0); }
+    50% { transform: rotate(45deg) translate(2px,-2px); }
+  }
+  .tl-year { font-family: var(--ff-mono); font-size: 0.78rem; color: var(--cyan); letter-spacing: 0.18em; margin-bottom: 4px; }
+  .tl-title { font-family: var(--ff-tech); font-weight: 600; font-size: 1.1rem; color: var(--text); margin-bottom: 4px; }
+  .tl-org { font-family: var(--ff-mono); font-size: 0.8rem; color: var(--magenta); margin-bottom: 8px; letter-spacing: 0.06em; }
+  .tl-desc { color: var(--text-dim); font-family: var(--ff-sc); font-size: 0.92rem; }
+
+  /* ========================================================================
+     CONTACT
+     ======================================================================== */
+  .contact-wrap {
+    position: relative; padding: 56px 40px; text-align: center;
+    background:
+      radial-gradient(ellipse at center, rgba(255,0,110,0.08), transparent 70%),
+      linear-gradient(180deg, rgba(20,4,36,0.7), rgba(10,0,20,0.9));
+    border: 1px solid var(--line); clip-path: var(--cut);
+  }
+  .contact-wrap .label { margin-bottom: 16px; }
+  .contact-title {
+    font-family: var(--ff-display); font-weight: 800;
+    font-size: clamp(1.8rem, 5vw, 3rem); text-transform: uppercase;
+    letter-spacing: 0.04em; margin-bottom: 16px; line-height: 1.2;
+    background: linear-gradient(90deg, var(--cyan), var(--magenta));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .contact-desc { color: var(--text-dim); max-width: 540px; margin: 0 auto 28px; font-family: var(--ff-sc); }
+  .contact-email {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--ff-mono); font-size: 1rem; color: var(--cyan);
+    padding: 12px 22px; border: 1px dashed var(--line);
+    margin-bottom: 28px; clip-path: var(--cut-btn);
+    cursor: pointer; transition: all .2s var(--ease);
+  }
+  .contact-email:hover { border-color: var(--cyan); background: rgba(0,240,255,0.06); color: var(--text); }
+  .contact-email svg { width: 16px; height: 16px; }
+  .socials { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .social {
+    width: 52px; height: 52px; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--line); background: rgba(0,240,255,0.03); color: var(--cyan);
+    cursor: pointer; transition: all .25s var(--ease);
+    clip-path: polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);
+  }
+  .social svg { width: 22px; height: 22px; }
+  .social:hover {
+    border-color: var(--cyan); color: var(--text); background: rgba(0,240,255,0.12);
+    box-shadow: 0 0 24px rgba(0,240,255,0.25); transform: translateY(-3px);
+  }
+
+  /* ========================================================================
+     FOOTER
+     ======================================================================== */
+  .footer {
+    border-top: 1px solid var(--line); padding: 36px 0;
+    background: rgba(5,0,8,0.6);
+  }
+  .footer-inner {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .footer-text { font-family: var(--ff-mono); font-size: 0.78rem; color: var(--text-dim); letter-spacing: 0.12em; }
+  .footer-text .hl { color: var(--cyan); }
+  .footer-link {
+    font-family: var(--ff-mono); font-size: 0.78rem; color: var(--yellow); letter-spacing: 0.14em;
+    cursor: pointer; transition: color .2s var(--ease);
+  }
+  .footer-link:hover { color: var(--text); }
+
+  /* ========================================================================
+     REVEAL ANIMATION
+     ======================================================================== */
+  .reveal { opacity: 0; transform: translateY(30px) skewX(-2deg); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+  .reveal.visible { opacity: 1; transform: translateY(0) skewX(0); }
+
+  /* ========================================================================
+     FOCUS
+     ======================================================================== */
+  a:focus-visible, button:focus-visible, .work:focus-visible, .stat:focus-visible {
+    outline: 2px solid var(--cyan); outline-offset: 3px;
+  }
+
+  /* ========================================================================
+     MOBILE MENU
+     ======================================================================== */
+  .mobile-menu {
+    position: fixed; inset: 0; z-index: 999;
+    background: rgba(5,0,8,0.96);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 8px; opacity: 0; pointer-events: none; transition: opacity .3s var(--ease);
+  }
+  .mobile-menu.open { opacity: 1; pointer-events: all; }
+  .mobile-menu a {
+    font-family: var(--ff-display); font-size: 1.4rem; letter-spacing: 0.1em;
+    color: var(--text); padding: 14px; text-transform: uppercase;
+    cursor: pointer; transition: color .2s var(--ease);
+  }
+  .mobile-menu a:hover { color: var(--cyan); }
+  .mobile-menu .close {
+    position: absolute; top: 18px; right: 24px;
+    background: transparent; border: 1px solid var(--line); color: var(--cyan);
+    width: 42px; height: 42px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mobile-menu .close svg { width: 20px; height: 20px; }
+
+  /* ========================================================================
+     RESPONSIVE
+     ======================================================================== */
+  @media (max-width: 960px) {
+    .hero-grid, .about-grid { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .skills-grid, .works-grid { grid-template-columns: 1fr; }
+    .nav-links { display: none; }
+    .nav-cta { display: none; }
+    .menu-btn { display: flex; }
+  }
+  @media (max-width: 560px) {
+    section { padding: 72px 0; }
+    .container { padding: 0 18px; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .glitch { font-size: clamp(2.8rem, 16vw, 5rem); }
+    .contact-wrap { padding: 40px 20px; }
+    .hero { padding-top: 110px; }
+  }
+
+  /* ========================================================================
+     REDUCED MOTION
+     ======================================================================== */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .scanlines, .scanlines::after { animation: none !important; }
+    .glitch::before, .glitch::after { display: none; }
+    .hero-tag .dot, .hero-status .blink { animation: none !important; }
+    .reveal { opacity: 1; transform: none; }
+    .skill-fill { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Scanlines overlay -->
+<div class="scanlines" aria-hidden="true"></div>
+
+<!-- ===================== NAV ===================== -->
+<header class="nav" role="banner">
+  <div class="nav-inner">
+    <a href="#top" class="brand" aria-label="林墨白 - 返回顶部">
+      <span class="br">[</span>林墨白<span class="br">]</span>
+    </a>
+    <nav class="nav-links" aria-label="主导航">
+      <a class="nav-link" href="#about">SECTOR_01</a>
+      <a class="nav-link" href="#skills">SECTOR_02</a>
+      <a class="nav-link" href="#works">SECTOR_03</a>
+      <a class="nav-link" href="#journey">SECTOR_04</a>
+      <a class="nav-link" href="#contact">SECTOR_05</a>
+    </nav>
+    <a href="../index.html" class="nav-cta" aria-label="返回总览">// 返回总览</a>
+    <button class="menu-btn" id="menuBtn" aria-label="打开菜单" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="移动端菜单" aria-modal="true">
+  <button class="close" id="closeMenu" aria-label="关闭菜单">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <a href="#about" data-close>SECTOR_01</a>
+  <a href="#skills" data-close>SECTOR_02</a>
+  <a href="#works" data-close>SECTOR_03</a>
+  <a href="#journey" data-close>SECTOR_04</a>
+  <a href="#contact" data-close>SECTOR_05</a>
+  <a href="../index.html" data-close style="color: var(--yellow);">// 返回总览</a>
+</div>
+
+<main id="top">
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="reveal">
+          <div class="hero-tag"><span class="dot"></span> NODE_ONLINE · ID: MOBAI-LIN</div>
+          <h1 class="glitch" id="heroTitle" data-text="林墨白" tabindex="0">林墨白</h1>
+          <p class="hero-role"><span class="pre">//</span>全栈工程师 / 数字设计师</p>
+          <p class="hero-loc">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s-8-7.6-8-13a8 8 0 0 1 16 0c0 5.4-8 13-8 13z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            杭州 · HANGZHOU / CN
+          </p>
+          <p class="hero-desc">
+            在代码与像素的夹缝中构建数字界面。专注前端工程、交互设计与三维可视化，
+            用 5 年时间把每一个 0 与 1 编织成可被感知的体验。
+          </p>
+          <div class="hero-status"><span class="blink"></span> [ SYSTEM ONLINE · 可接新项目 ]</div>
+          <div class="hero-cta">
+            <a href="#works" class="btn btn-primary">
+              查看作品
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a href="#contact" class="btn btn-ghost">
+              建立连接
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z M4 8l8 5 8-5"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- HUD side panel -->
+        <div class="hud-panel reveal" aria-hidden="true">
+          <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+          <div class="hud-head">
+            <span class="t">// SYS_DIAGNOSTIC</span>
+            <span class="id">#0xCF-2077</span>
+          </div>
+          <div class="hud-row"><span class="k">STATUS</span><span class="v g">ACTIVE</span></div>
+          <div class="hud-row"><span class="k">UPTIME</span><span class="v">5Y · 24/7</span></div>
+          <div class="hud-row"><span class="k">LOCATION</span><span class="v cy">30.27°N · 120.15°E</span></div>
+          <div class="hud-row"><span class="k">CORE</span><span class="v m">FULLSTACK</span></div>
+          <div class="hud-row"><span class="k">PROTOCOL</span><span class="v y">CYBERPUNK</span></div>
+
+          <div class="hud-bar">
+            <div class="lbl"><span>CPU_LOAD</span><span>73%</span></div>
+            <div class="track"><div class="fill" style="width:73%"></div></div>
+          </div>
+          <div class="hud-bar">
+            <div class="lbl"><span>MEMORY</span><span>88%</span></div>
+            <div class="track"><div class="fill" style="width:88%"></div></div>
+          </div>
+          <div class="hud-bar">
+            <div class="lbl"><span>CREATIVITY</span><span>99%</span></div>
+            <div class="track"><div class="fill" style="width:99%"></div></div>
+          </div>
+
+          <div class="hex-stream" id="hexStream">
+            0xA3F1 0xB7E2 0x00FF 0xC4D9 0xFE10 0x7781 0xABCD 0x1234 0xDEAD 0xBEEF
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STATS ===================== -->
+  <section aria-label="数据读数">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat reveal" tabindex="0">
+          <span class="tag">[01]</span>
+          <div class="num" data-count="5" data-suffix="+">5<span class="u">+</span></div>
+          <div class="lbl">YEARS_ACTIVE</div>
+        </div>
+        <div class="stat reveal" tabindex="0">
+          <span class="tag">[02]</span>
+          <div class="num" data-count="42">42</div>
+          <div class="lbl">PROJECTS_SHIPPED</div>
+        </div>
+        <div class="stat reveal" tabindex="0">
+          <span class="tag">[03]</span>
+          <div class="num" data-count="18">18</div>
+          <div class="lbl">CLIENTS_LINKED</div>
+        </div>
+        <div class="stat reveal" tabindex="0">
+          <span class="tag">[04]</span>
+          <div class="num" data-count="99" data-suffix="%">99<span class="u">%</span></div>
+          <div class="lbl">UPTIME_GUARANTEE</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section id="about" aria-labelledby="aboutTitle">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title" id="aboutTitle">SECTOR_01 · 关于</h2>
+        <span class="meta">FILE: about.log · STATUS: DECRYPTED</span>
+      </div>
+      <div class="about-grid">
+        <div class="panel about-bio reveal">
+          <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+          <p>我是 <strong style="color:var(--cyan);">林墨白</strong>，一名常驻杭州的全栈工程师与数字设计师。我相信代码即美学，工程即诗——把抽象的逻辑折叠成可触摸的界面。</p>
+          <p>过去 5 年里，我穿梭于前端框架、设计系统与三维渲染管线之间，为创业团队、独立工作室与品牌交付了 40+ 数字产品。我的工作从不只停在「能用」，而是追求「能被记住」。</p>
+          <p>当前状态：在线 · 持续学习 WebGL / Shader / AI 工程，欢迎随时握手。</p>
+          <div class="tag-stream">
+            <span class="code-tag"><span class="pre">$</span> fullstack</span>
+            <span class="code-tag"><span class="pre">$</span> design_system</span>
+            <span class="code-tag"><span class="pre">$</span> webgl</span>
+            <span class="code-tag"><span class="pre">$</span> motion</span>
+            <span class="code-tag"><span class="pre">$</span> shader_art</span>
+            <span class="code-tag"><span class="pre">$</span> indie_hacker</span>
+            <span class="code-tag"><span class="pre">$</span> open_source</span>
+          </div>
+        </div>
+        <div class="about-side reveal">
+          <div class="data-line"><span class="k">// CALLSIGN</span><span class="v cy">MOBAI</span></div>
+          <div class="data-line"><span class="k">// BASE</span><span class="v">HANGZHOU</span></div>
+          <div class="data-line"><span class="k">// ROLE</span><span class="v">FULLSTACK × DESIGN</span></div>
+          <div class="data-line"><span class="k">// EXP</span><span class="v cy">5+ YEARS</span></div>
+          <div class="data-line"><span class="k">// STACK</span><span class="v">TS · REACT · THREE</span></div>
+          <div class="data-line"><span class="k">// AVAILABILITY</span><span class="v cy">OPEN</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SKILLS ===================== -->
+  <section id="skills" aria-labelledby="skillsTitle">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title" id="skillsTitle">SECTOR_02 · 能力矩阵</h2>
+        <span class="meta">FILE: skills.dat · LIVE</span>
+      </div>
+      <div class="skills-grid">
+        <div class="panel skill reveal">
+          <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+          <div class="skill-head">
+            <span class="skill-name"><span class="pre">//</span>前端工程</span>
+            <span class="skill-val">92</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-w="92"></div></div>
+          <div class="skill-meta"><span>FRONTEND</span><span>React · Vue · TS</span></div>
+        </div>
+        <div class="panel skill reveal">
+          <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+          <div class="skill-head">
+            <span class="skill-name"><span class="pre">//</span>视觉设计</span>
+            <span class="skill-val" style="color:var(--magenta);">88</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-w="88"></div></div>
+          <div class="skill-meta"><span>DESIGN</span><span>UI · UX · Brand</span></div>
+        </div>
+        <div class="panel skill reveal">
+          <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+          <div class="skill-head">
+            <span class="skill-name"><span class="pre">//</span>后端架构</span>
+            <span class="skill-val" style="color:var(--yellow);">85</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-w="85"></div></div>
+          <div class="skill-meta"><span>BACKEND</span><span>Node · Go · DB</span></div>
+        </div>
+        <div class="panel skill reveal">
+          <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+          <div class="skill-head">
+            <span class="skill-name"><span class="pre">//</span>三维渲染</span>
+            <span class="skill-val" style="color:var(--toxic);">76</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-w="76"></div></div>
+          <div class="skill-meta"><span>3D / WEBGL</span><span>Three · GLSL</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== WORKS ===================== -->
+  <section id="works" aria-labelledby="worksTitle">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title" id="worksTitle">SECTOR_03 · 项目档案</h2>
+        <span class="meta">FILE: works.archive · 4 ENTRIES</span>
+      </div>
+      <div class="works-grid">
+        <!-- Work 1 -->
+        <article class="work reveal" tabindex="0" aria-label="极光笔记">
+          <div class="work-img">
+            <svg viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#00F0FF"/><stop offset="1" stop-color="#FF006E"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="180" fill="#0E0120"/>
+              <path d="M0 120 Q100 60 200 110 T400 90" stroke="url(#g1)" stroke-width="3" fill="none" opacity="0.9"/>
+              <path d="M0 140 Q120 90 220 130 T400 110" stroke="#00F0FF" stroke-width="1.5" fill="none" opacity="0.5"/>
+              <circle cx="80" cy="50" r="3" fill="#FFE600"/><circle cx="320" cy="40" r="2" fill="#39FF14"/>
+              <text x="20" y="30" fill="#00F0FF" font-family="monospace" font-size="10" opacity="0.6">AURORA_NOTES_v2.1</text>
+              <text x="20" y="170" fill="#FF006E" font-family="monospace" font-size="9" opacity="0.5">// note_sync_active</text>
+            </svg>
+          </div>
+          <div class="work-body">
+            <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+            <div class="work-head">
+              <span class="work-id">PRJ_001</span>
+              <span class="work-status">SHIPPED</span>
+            </div>
+            <h3 class="work-title">极光笔记</h3>
+            <p class="work-desc">端到端加密的跨平台笔记应用，支持 Markdown、白板与实时协作，本地优先架构。</p>
+            <div class="work-tags">
+              <span class="work-tag">React</span>
+              <span class="work-tag">CRDT</span>
+              <span class="work-tag">Tauri</span>
+              <span class="work-tag">E2EE</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Work 2 -->
+        <article class="work reveal" tabindex="0" aria-label="像素工坊">
+          <div class="work-img">
+            <svg viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="180" fill="#0E0120"/>
+              <g fill="#FF006E">
+                <rect x="40" y="60" width="20" height="20"/><rect x="60" y="60" width="20" height="20"/><rect x="80" y="80" width="20" height="20"/>
+                <rect x="100" y="80" width="20" height="20"/><rect x="120" y="100" width="20" height="20"/>
+              </g>
+              <g fill="#00F0FF">
+                <rect x="200" y="40" width="16" height="16"/><rect x="216" y="40" width="16" height="16"/>
+                <rect x="232" y="56" width="16" height="16"/><rect x="248" y="56" width="16" height="16"/>
+                <rect x="264" y="72" width="16" height="16"/><rect x="280" y="72" width="16" height="16"/>
+              </g>
+              <g fill="#FFE600">
+                <rect x="60" y="120" width="14" height="14"/><rect x="74" y="120" width="14" height="14"/>
+                <rect x="88" y="134" width="14" height="14"/><rect x="300" y="120" width="14" height="14"/>
+                <rect x="314" y="120" width="14" height="14"/>
+              </g>
+              <text x="20" y="30" fill="#00F0FF" font-family="monospace" font-size="10" opacity="0.6">PIXEL_FORGE_v1.4</text>
+              <text x="20" y="170" fill="#39FF14" font-family="monospace" font-size="9" opacity="0.5">// render_engine_ok</text>
+            </svg>
+          </div>
+          <div class="work-body">
+            <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+            <div class="work-head">
+              <span class="work-id">PRJ_002</span>
+              <span class="work-status">LIVE</span>
+            </div>
+            <h3 class="work-title">像素工坊</h3>
+            <p class="work-desc">浏览器端像素艺术编辑器，支持图层、动画时间轴与 GIF 导出，社区作品超 1.2 万。</p>
+            <div class="work-tags">
+              <span class="work-tag">Canvas</span>
+              <span class="work-tag">PixiJS</span>
+              <span class="work-tag">PWA</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Work 3 -->
+        <article class="work reveal" tabindex="0" aria-label="数据之眼">
+          <div class="work-img">
+            <svg viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="180" fill="#0E0120"/>
+              <g stroke="#00F0FF" fill="none" opacity="0.7">
+                <rect x="120" y="40" width="160" height="100"/>
+                <line x1="120" y1="70" x2="280" y2="70"/><line x1="120" y1="100" x2="280" y2="100"/>
+                <line x1="160" y1="40" x2="160" y2="140"/><line x1="200" y1="40" x2="200" y2="140"/><line x1="240" y1="40" x2="240" y2="140"/>
+              </g>
+              <g fill="#FF006E">
+                <rect x="125" y="90" width="30" height="50" opacity="0.8"/>
+                <rect x="165" y="60" width="30" height="80" opacity="0.8"/>
+                <rect x="205" y="75" width="30" height="65" opacity="0.8"/>
+                <rect x="245" y="50" width="30" height="90" opacity="0.8"/>
+              </g>
+              <circle cx="200" cy="90" r="38" stroke="#FFE600" fill="none" stroke-width="1" opacity="0.5"/>
+              <text x="20" y="30" fill="#00F0FF" font-family="monospace" font-size="10" opacity="0.6">DATA_EYE_v3.0</text>
+              <text x="20" y="170" fill="#FF006E" font-family="monospace" font-size="9" opacity="0.5">// stream_connected</text>
+            </svg>
+          </div>
+          <div class="work-body">
+            <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+            <div class="work-head">
+              <span class="work-id">PRJ_003</span>
+              <span class="work-status">LIVE</span>
+            </div>
+            <h3 class="work-title">数据之眼</h3>
+            <p class="work-desc">实时数据可视化大屏框架，对接 20+ 数据源，被多家企业用于监控中心。</p>
+            <div class="work-tags">
+              <span class="work-tag">D3.js</span>
+              <span class="work-tag">WebSocket</span>
+              <span class="work-tag">ECharts</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Work 4 -->
+        <article class="work reveal" tabindex="0" aria-label="声波画廊">
+          <div class="work-img">
+            <svg viewBox="0 0 400 180" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <rect width="400" height="180" fill="#0E0120"/>
+              <g stroke="#39FF14" fill="none">
+                <path d="M0 90 Q20 40 40 90 T80 90 T120 90 T160 90 T200 90 T240 90 T280 90 T320 90 T360 90 T400 90" stroke-width="1.5"/>
+              </g>
+              <g stroke="#00F0FF" fill="none" opacity="0.7">
+                <path d="M0 110 Q25 70 50 110 T100 110 T150 110 T200 110 T250 110 T300 110 T350 110 T400 110" stroke-width="1"/>
+              </g>
+              <g stroke="#FF006E" fill="none" opacity="0.7">
+                <path d="M0 70 Q15 30 30 70 T60 70 T90 70 T120 70 T150 70 T180 70 T210 70 T240 70 T270 70 T300 70 T330 70 T360 70 T400 70" stroke-width="1"/>
+              </g>
+              <g fill="#FFE600"><circle cx="60" cy="90" r="2"/><circle cx="140" cy="90" r="2"/><circle cx="220" cy="90" r="2"/><circle cx="300" cy="90" r="2"/><circle cx="380" cy="90" r="2"/></g>
+              <text x="20" y="30" fill="#00F0FF" font-family="monospace" font-size="10" opacity="0.6">SONIC_GALLERY_v0.9</text>
+              <text x="20" y="170" fill="#39FF14" font-family="monospace" font-size="9" opacity="0.5">// audio_buffer_loaded</text>
+            </svg>
+          </div>
+          <div class="work-body">
+            <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+            <div class="work-head">
+              <span class="work-id">PRJ_004</span>
+              <span class="work-status">BETA</span>
+            </div>
+            <h3 class="work-title">声波画廊</h3>
+            <p class="work-desc">基于 WebAudio + WebGL 的可视化音频装置，把声音实时生成可漫游的三维场景。</p>
+            <div class="work-tags">
+              <span class="work-tag">Three.js</span>
+              <span class="work-tag">WebAudio</span>
+              <span class="work-tag">GLSL</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== JOURNEY ===================== -->
+  <section id="journey" aria-labelledby="journeyTitle">
+    <div class="container">
+      <div class="section-head">
+        <h2 class="section-title" id="journeyTitle">SECTOR_04 · 职业日志</h2>
+        <span class="meta">FILE: career.log · TIMESTAMPED</span>
+      </div>
+      <div class="timeline">
+        <div class="tl-item reveal">
+          <span class="tl-node"></span>
+          <div class="tl-year">// 2024 — NOW</div>
+          <div class="tl-title">独立全栈 / 数字设计师</div>
+          <div class="tl-org">[ FREELANCE · HANGZHOU ]</div>
+          <p class="tl-desc">承接品牌站点、交互装置与 SaaS 产品，主导从设计系统到部署上线的全链路交付。</p>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-node"></span>
+          <div class="tl-year">// 2022 — 2024</div>
+          <div class="tl-title">高级前端工程师</div>
+          <div class="tl-org">[ NEBULA_LAB · 远程 ]</div>
+          <p class="tl-desc">负责可视化平台的前端架构，搭建组件库与三维渲染层，支撑日均百万级请求。</p>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-node"></span>
+          <div class="tl-year">// 2020 — 2022</div>
+          <div class="tl-title">前端工程师 / UI 设计</div>
+          <div class="tl-org">[ PIXEL_STUDIO · 杭州 ]</div>
+          <p class="tl-desc">在设计与工程之间双向流动，为 10+ 客户交付落地页、小程序与品牌视觉。</p>
+        </div>
+        <div class="tl-item reveal">
+          <span class="tl-node"></span>
+          <div class="tl-year">// 2019 — 2020</div>
+          <div class="tl-title">入门 · 第一行代码</div>
+          <div class="tl-org">[ BOOT · 自学起步 ]</div>
+          <p class="tl-desc">从一行 console.log 开始，爱上把想法变成可点击界面的瞬间。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section id="contact" aria-labelledby="contactTitle">
+    <div class="container">
+      <div class="contact-wrap reveal">
+        <div class="brackets"><span class="b tl"></span><span class="b tr"></span><span class="b bl"></span><span class="b br"></span></div>
+        <div class="label">// ESTABLISH_CONNECTION</div>
+        <h2 class="contact-title" id="contactTitle">建立连接</h2>
+        <p class="contact-desc">有项目想法、合作意向，或只是想聊聊代码与设计？频道始终开放，信号随时接入。</p>
+        <a href="mailto:mobai@lin.dev" class="contact-email" aria-label="发送邮件给林墨白">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z M4 8l8 5 8-5"/></svg>
+          mobai@lin.dev
+        </a>
+        <div class="socials">
+          <a class="social" href="#" aria-label="GitHub" title="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 .1.8 1.7 2.6 1.2.1-.7.4-1.2.7-1.5-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 5 18 5.3 18 5.3c.6 1.6.2 2.8.1 3.1.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.3 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+          </a>
+          <a class="social" href="#" aria-label="X / Twitter" title="X">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zM17.083 19.77h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a class="social" href="#" aria-label="Dribbble" title="Dribbble">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm7.93 5.53a10.16 10.16 0 0 1 2.3 6.36c-.34-.07-3.7-.75-7.08-.33-.08-.18-.15-.36-.23-.55-.21-.5-.45-1-.69-1.49 3.74-1.52 5.44-3.72 5.7-3.99zM12 1.78c2.6 0 4.98.98 6.78 2.58-.22.31-1.74 2.37-5.35 3.72-1.66-3.05-3.5-5.55-3.78-5.93.75-.23 1.55-.37 2.35-.37zM7.6 2.92c.27.37 2.08 2.87 3.76 5.86-4.74 1.26-8.92 1.24-9.37 1.24.66-3.15 2.74-5.77 5.61-7.1zM1.77 12.01v-.31c.44.01 5.34.07 10.4-1.44.29.57.57 1.15.82 1.73-.13.04-.27.08-.4.12-5.22 1.69-7.99 6.3-8.22 6.69a10.16 10.16 0 0 1-2.6-6.79zm10.23 10.21c-2.32 0-4.46-.78-6.17-2.09.18-.37 2.2-4.26 7.93-6.26l.07-.02c1.43 3.71 2.02 6.82 2.17 7.71a10.12 10.12 0 0 1-3.93.66zm5.66-1.59c-.1-.62-.64-3.59-1.97-7.25 3.19-.51 5.98.32 6.33.43a10.18 10.18 0 0 1-4.36 6.82z"/></svg>
+          </a>
+          <a class="social" href="#" aria-label="Email" title="Email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z M4 8l8 5 8-5"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-text">// © 2024 <span class="hl">林墨白</span> · CYBERPUNK_PROTOCOL</div>
+      <a href="../index.html" class="footer-link">// 返回总览</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* Mobile menu */
+  const menuBtn = document.getElementById('menuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const closeMenu = document.getElementById('closeMenu');
+  function openMenu() { mobileMenu.classList.add('open'); menuBtn.setAttribute('aria-expanded','true'); document.body.style.overflow='hidden'; }
+  function shutMenu() { mobileMenu.classList.remove('open'); menuBtn.setAttribute('aria-expanded','false'); document.body.style.overflow=''; }
+  menuBtn.addEventListener('click', openMenu);
+  closeMenu.addEventListener('click', shutMenu);
+  document.querySelectorAll('[data-close]').forEach(a => a.addEventListener('click', shutMenu));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') shutMenu(); });
+
+  /* prefers-reduced-motion aware */
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* IntersectionObserver reveal */
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (en.isIntersecting) {
+        en.target.classList.add('visible');
+        /* trigger skill bars */
+        en.target.querySelectorAll('.skill-fill').forEach(f => {
+          const w = f.getAttribute('data-w');
+          if (w) requestAnimationFrame(() => { f.style.width = w + '%'; });
+        });
+        io.unobserve(en.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  /* If reduced motion, just show everything */
+  if (reduce) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+    document.querySelectorAll('.skill-fill').forEach(f => { const w = f.getAttribute('data-w'); if (w) f.style.width = w + '%'; });
+  }
+
+  /* Hex stream randomizer (data decoration) */
+  if (!reduce) {
+    const hex = document.getElementById('hexStream');
+    if (hex) {
+      const chars = '0123456789ABCDEF';
+      setInterval(() => {
+        let out = '';
+        for (let i = 0; i < 8; i++) {
+          out += '0x' + chars[Math.floor(Math.random()*16)] + chars[Math.floor(Math.random()*16)] + chars[Math.floor(Math.random()*16)] + chars[Math.floor(Math.random()*16)] + ' ';
+        }
+        hex.textContent = out.trim();
+      }, 900);
+    }
+  }
+
+  /* Stat count-up */
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      const numEl = en.target.querySelector('.num');
+      if (!numEl || numEl.dataset.done) return;
+      numEl.dataset.done = '1';
+      if (reduce) return;
+      const target = parseInt(numEl.getAttribute('data-count'), 10);
+      const suffix = numEl.getAttribute('data-suffix') || '';
+      const unit = suffix ? `<span class="u">${suffix}</span>` : '';
+      let cur = 0;
+      const step = Math.max(1, Math.ceil(target / 40));
+      const tick = () => {
+        cur += step;
+        if (cur >= target) { numEl.innerHTML = target + unit; }
+        else { numEl.innerHTML = cur + unit; requestAnimationFrame(tick); }
+      };
+      tick();
+      statObserver.unobserve(en.target);
+    });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('.stat').forEach(s => statObserver.observe(s));
+</script>
+</body>
+</html>

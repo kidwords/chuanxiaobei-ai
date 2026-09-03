@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="林墨白 — 全栈工程师 / 数字设计师，杭州。沉浸式视差滚动个人站点。" />
+<title>林墨白 · 视差宇宙</title>
+
+<!-- Fonts: Syne (display) + Inter (body) + Noto Sans SC -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root{
+  /* Cosmic depth palette — each scene transitions through these */
+  --c-bg-1:#1B1B3A;
+  --c-bg-2:#2E294E;
+  --c-bg-3:#1A1A2E;
+  --c-bg-4:#0D1B2A;
+
+  /* Accents */
+  --c-lavender:#9D8DF1;
+  --c-coral:#FF6B6B;
+  --c-teal:#4ECDC4;
+
+  /* Neutrals */
+  --c-white:#F5F5FA;
+  --c-mist:rgba(245,245,250,0.72);
+  --c-soft:rgba(245,245,250,0.55);
+  --c-faint:rgba(245,245,250,0.32);
+  --c-line:rgba(245,245,250,0.12);
+  --c-glass:rgba(245,245,250,0.06);
+  --c-glass-strong:rgba(245,245,250,0.10);
+
+  /* Radii */
+  --r-sm:10px;
+  --r-md:14px;
+  --r-lg:16px;
+
+  /* Shadows (soft, layered) */
+  --sh-1:0 4px 24px rgba(0,0,0,0.28);
+  --sh-2:0 12px 40px rgba(0,0,0,0.40);
+  --sh-glow:0 0 40px rgba(157,141,241,0.18);
+
+  /* Type */
+  --f-display:'Syne','Bricolage Grotesque','Noto Sans SC',sans-serif;
+  --f-body:'Inter','Noto Sans SC',system-ui,sans-serif;
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--f-body);
+  background:var(--c-bg-3);
+  color:var(--c-white);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+img,svg{display:block;max-width:100%}
+ul{list-style:none}
+
+/* Shared scroll behaviour */
+:focus-visible{outline:2px solid var(--c-lavender);outline-offset:3px;border-radius:4px}
+
+/* ============================================================
+   PROGRESS INDICATOR (top of page)
+   ============================================================ */
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:0%;
+  background:linear-gradient(90deg,var(--c-lavender),var(--c-teal),var(--c-coral));
+  z-index:100;transition:width 80ms linear;
+}
+
+/* ============================================================
+   FLOATING GLASS NAV
+   ============================================================ */
+.nav{
+  position:fixed;top:16px;left:16px;right:16px;
+  z-index:90;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px 10px 18px;
+  background:var(--c-glass);
+  backdrop-filter:blur(18px) saturate(140%);
+  -webkit-backdrop-filter:blur(18px) saturate(140%);
+  border:1px solid var(--c-line);
+  border-radius:var(--r-lg);
+  box-shadow:var(--sh-1);
+}
+.nav__brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:1rem;letter-spacing:.02em}
+.nav__brand .dot{width:10px;height:10px;border-radius:50%;background:var(--c-lavender);box-shadow:0 0 12px var(--c-lavender);flex:none}
+.nav__brand small{font-family:var(--f-body);font-weight:400;color:var(--c-soft);font-size:.78rem;letter-spacing:0}
+.nav__links{display:flex;align-items:center;gap:6px}
+.nav__links a{
+  padding:8px 14px;border-radius:var(--r-sm);
+  font-size:.88rem;color:var(--c-mist);font-weight:500;
+  transition:all .25s ease;
+}
+.nav__links a:hover{color:var(--c-white);background:var(--c-glass-strong)}
+.nav__back{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 14px;border-radius:var(--r-sm);
+  font-size:.86rem;font-weight:500;color:var(--c-white);
+  background:rgba(157,141,241,0.16);
+  border:1px solid rgba(157,141,241,0.28);
+  transition:all .25s ease;
+}
+.nav__back:hover{background:rgba(157,141,241,0.26);transform:translateX(-2px)}
+.nav__back svg{width:14px;height:14px;flex:none}
+.nav__burger{display:none;width:42px;height:42px;border-radius:var(--r-sm);align-items:center;justify-content:center;cursor:pointer}
+.nav__burger svg{width:22px;height:22px;color:var(--c-white)}
+
+/* Mobile menu panel */
+.mobile-menu{
+  position:fixed;inset:0 0 0 auto;
+  width:min(82vw,340px);
+  z-index:95;
+  background:rgba(13,18,34,0.92);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-left:1px solid var(--c-line);
+  padding:84px 24px 24px;
+  transform:translateX(100%);
+  transition:transform .35s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;gap:8px;
+}
+.mobile-menu.open{transform:translateX(0)}
+.mobile-menu a{
+  padding:14px 16px;border-radius:var(--r-md);
+  font-size:1.05rem;color:var(--c-mist);font-weight:500;
+  transition:all .25s ease;
+}
+.mobile-menu a:hover{background:var(--c-glass);color:var(--c-white)}
+.mobile-menu .nav__back{margin-top:auto}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:94;opacity:0;visibility:hidden;transition:all .3s ease}
+.backdrop.show{opacity:1;visibility:visible}
+
+/* ============================================================
+   SCENE SCAFFOLD
+   ============================================================ */
+.scene{
+  position:relative;
+  min-height:100vh;
+  width:100%;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  isolation:isolate;
+}
+.layer{
+  position:absolute;inset:-15% -5%;
+  will-change:transform;
+  pointer-events:none;
+}
+.layer.content{
+  position:relative;inset:auto;
+  z-index:5;
+  width:100%;max-width:1200px;
+  padding:120px 24px 100px;
+  pointer-events:auto;
+}
+
+/* Section eyebrow + heading rhythm */
+.eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.78rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--c-lavender);
+  padding:6px 12px;border-radius:99px;
+  background:rgba(157,141,241,0.10);
+  border:1px solid rgba(157,141,241,0.22);
+}
+.eyebrow .pill{width:6px;height:6px;border-radius:50%;background:var(--c-lavender);box-shadow:0 0 8px var(--c-lavender)}
+.section-title{
+  font-family:var(--f-display);
+  font-weight:700;
+  line-height:1.08;
+  letter-spacing:-0.01em;
+  font-size:clamp(2.2rem,5.5vw,4rem);
+  margin:18px 0 14px;
+}
+.section-sub{color:var(--c-soft);font-size:1.02rem;max-width:60ch}
+
+/* ============================================================
+   SCENE 1 — HERO  (#1B1B3A → #2E294E)
+   ============================================================ */
+#hero{
+  background:
+    radial-gradient(120% 80% at 70% 20%, rgba(157,141,241,0.18), transparent 55%),
+    radial-gradient(90% 60% at 20% 90%, rgba(78,205,196,0.10), transparent 60%),
+    linear-gradient(180deg, var(--c-bg-1) 0%, var(--c-bg-2) 100%);
+}
+.hero-center{text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px}
+.hero-tag{
+  font-size:.84rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--c-soft);
+  display:inline-flex;align-items:center;gap:10px;
+}
+.hero-tag .live{
+  width:8px;height:8px;border-radius:50%;background:var(--c-teal);
+  box-shadow:0 0 10px var(--c-teal);
+  animation:pulse 2.4s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.4)}}
+.hero-name{
+  font-family:var(--f-display);
+  font-weight:800;
+  font-size:clamp(3.4rem,12vw,9rem);
+  line-height:.95;letter-spacing:-0.03em;
+  background:linear-gradient(120deg,#F5F5FA 0%, var(--c-lavender) 45%, var(--c-teal) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 60px rgba(157,141,241,0.18);
+}
+.hero-role{font-size:clamp(1rem,2vw,1.25rem);color:var(--c-mist);font-weight:400}
+.hero-role b{color:var(--c-coral);font-weight:600}
+.hero-meta{
+  display:inline-flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;
+  font-size:.9rem;color:var(--c-soft);font-weight:500;
+}
+.hero-meta span{display:inline-flex;align-items:center;gap:6px}
+.hero-meta svg{width:14px;height:14px;color:var(--c-lavender)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:14px}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 26px;border-radius:var(--r-md);
+  font-size:.95rem;font-weight:600;cursor:pointer;
+  transition:all .25s ease;
+}
+.btn svg{width:16px;height:16px;flex:none}
+.btn--primary{
+  background:linear-gradient(120deg,var(--c-lavender),#7c6cf0);
+  color:#fff;box-shadow:0 8px 28px rgba(157,141,241,0.35);
+}
+.btn--primary:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(157,141,241,0.5)}
+.btn--ghost{
+  background:var(--c-glass);color:var(--c-white);
+  border:1px solid var(--c-line);backdrop-filter:blur(10px);
+}
+.btn--ghost:hover{background:var(--c-glass-strong);transform:translateY(-2px)}
+
+/* Scroll hint */
+.scroll-hint{
+  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  color:var(--c-soft);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;
+  z-index:6;
+}
+.scroll-hint .mouse{
+  width:22px;height:36px;border:2px solid var(--c-faint);border-radius:12px;
+  position:relative;
+}
+.scroll-hint .mouse::after{
+  content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:4px;height:7px;border-radius:2px;background:var(--c-lavender);
+  animation:wheel 1.8s ease-in-out infinite;
+}
+@keyframes wheel{0%{opacity:0;transform:translate(-50%,0)}40%{opacity:1}100%{opacity:0;transform:translate(-50%,12px)}}
+
+/* Parallax decoration */
+.stars{position:absolute;inset:0}
+.star{position:absolute;border-radius:50%;background:#fff;opacity:.6}
+.float-shape{position:absolute;opacity:.85;filter:drop-shadow(0 0 24px rgba(157,141,241,0.25))}
+
+/* ============================================================
+   SCENE 2 — ABOUT (#2E294E → #1A1A2E)
+   ============================================================ */
+#about{
+  background:
+    radial-gradient(80% 60% at 15% 30%, rgba(255,107,107,0.10), transparent 55%),
+    radial-gradient(70% 50% at 85% 80%, rgba(78,205,196,0.10), transparent 60%),
+    linear-gradient(180deg, var(--c-bg-2) 0%, var(--c-bg-3) 100%);
+}
+.about-grid{
+  display:grid;grid-template-columns:1.05fr 1fr;gap:60px;align-items:center;
+}
+.about-text p{color:var(--c-mist);font-size:1.05rem;margin-top:14px;max-width:48ch}
+.about-text p b{color:var(--c-teal);font-weight:600}
+.stats{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+}
+.stat-card{
+  background:var(--c-glass);
+  border:1px solid var(--c-line);
+  border-radius:var(--r-lg);
+  padding:24px 22px;
+  backdrop-filter:blur(14px);
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.stat-card:hover{transform:translateY(-4px);box-shadow:var(--sh-2);border-color:rgba(157,141,241,0.4)}
+.stat-card .num{
+  font-family:var(--f-display);font-weight:700;
+  font-size:clamp(2.2rem,4vw,3rem);line-height:1;
+  background:linear-gradient(120deg,var(--c-lavender),var(--c-teal));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.stat-card .label{margin-top:8px;color:var(--c-soft);font-size:.85rem;font-weight:500}
+
+/* ============================================================
+   SCENE 3 — SKILLS (#1A1A2E dominant)
+   ============================================================ */
+#skills{
+  background:
+    radial-gradient(60% 60% at 50% 50%, rgba(157,141,241,0.14), transparent 60%),
+    linear-gradient(180deg, var(--c-bg-3) 0%, #14142b 100%);
+}
+.skills-head{text-align:center;margin-bottom:48px;display:flex;flex-direction:column;align-items:center}
+.skills-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+}
+.skill-card{
+  background:var(--c-glass);
+  border:1px solid var(--c-line);
+  border-radius:var(--r-lg);
+  padding:26px 22px;
+  position:relative;overflow:hidden;
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.skill-card::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg, rgba(157,141,241,0.08), transparent 60%);
+  opacity:0;transition:opacity .3s ease;
+}
+.skill-card:hover{transform:translateY(-6px);box-shadow:var(--sh-2);border-color:rgba(157,141,241,0.4)}
+.skill-card:hover::before{opacity:1}
+.skill-ico{
+  width:44px;height:44px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(157,141,241,0.14);color:var(--c-lavender);
+  margin-bottom:16px;
+}
+.skill-ico svg{width:22px;height:22px}
+.skill-card h3{font-family:var(--f-display);font-weight:600;font-size:1.15rem;margin-bottom:4px}
+.skill-card .desc{color:var(--c-soft);font-size:.82rem;margin-bottom:16px}
+.skill-bar{
+  height:6px;border-radius:99px;background:rgba(245,245,250,0.10);overflow:hidden;
+}
+.skill-bar > span{
+  display:block;height:100%;border-radius:99px;
+  background:linear-gradient(90deg,var(--c-lavender),var(--c-teal));
+  width:0;transition:width 1.4s cubic-bezier(.2,.8,.2,1);
+}
+.skill-meta{display:flex;justify-content:space-between;align-items:baseline;margin-top:10px}
+.skill-meta .pct{font-family:var(--f-display);font-weight:700;font-size:1.4rem;color:var(--c-white)}
+.skill-meta small{color:var(--c-faint);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+
+/* ============================================================
+   SCENE 4 — WORKS (#1A1A2E → #0D1B2A)
+   ============================================================ */
+#works{
+  background:
+    radial-gradient(70% 50% at 80% 20%, rgba(255,107,107,0.10), transparent 55%),
+    radial-gradient(60% 40% at 10% 80%, rgba(78,205,196,0.08), transparent 60%),
+    linear-gradient(180deg, #14142b 0%, var(--c-bg-4) 100%);
+}
+.works-head{margin-bottom:44px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:18px}
+.works-head .section-title{margin-bottom:0}
+.works-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.work-card{
+  position:relative;overflow:hidden;
+  border-radius:var(--r-lg);
+  border:1px solid var(--c-line);
+  background:var(--c-glass);
+  padding:0;
+  cursor:pointer;
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.work-card:hover{transform:translateY(-4px);box-shadow:var(--sh-2);border-color:rgba(157,141,241,0.4)}
+.work-visual{
+  height:200px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.work-visual .glyph{
+  width:64px;height:64px;color:rgba(255,255,255,0.5);
+  transition:transform .5s ease, color .3s ease;
+}
+.work-card:hover .work-visual .glyph{transform:scale(1.1) rotate(-4deg);color:#fff}
+.work-body{padding:22px}
+.work-cat{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--c-lavender);font-weight:600}
+.work-card h3{font-family:var(--f-display);font-weight:600;font-size:1.3rem;margin:6px 0 8px}
+.work-card p{color:var(--c-soft);font-size:.9rem}
+.work-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.work-tags span{
+  font-size:.72rem;padding:4px 10px;border-radius:99px;
+  background:var(--c-glass);color:var(--c-mist);
+  border:1px solid var(--c-line);
+}
+.work-link{
+  display:inline-flex;align-items:center;gap:6px;margin-top:14px;
+  font-size:.84rem;color:var(--c-lavender);font-weight:600;
+}
+.work-link svg{width:14px;height:14px;transition:transform .25s ease}
+.work-card:hover .work-link svg{transform:translateX(4px)}
+
+/* per-card gradients */
+.wv-1{background:linear-gradient(135deg,#3a2a6b,#1b1b3a)}
+.wv-2{background:linear-gradient(135deg,#1f4a4f,#0d1b2a)}
+.wv-3{background:linear-gradient(135deg,#5a2a3a,#1a1a2e)}
+.wv-4{background:linear-gradient(135deg,#2a3a6b,#0d1b2a)}
+
+/* ============================================================
+   SCENE 5 — JOURNEY (#0D1B2A dominant)
+   ============================================================ */
+#journey{
+  background:
+    radial-gradient(60% 50% at 50% 0%, rgba(157,141,241,0.10), transparent 60%),
+    linear-gradient(180deg, var(--c-bg-4) 0%, #07111d 100%);
+}
+.timeline{
+  position:relative;max-width:780px;margin:0 auto;padding:10px 0;
+}
+.timeline::before{
+  content:"";position:absolute;left:18px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--c-lavender),var(--c-teal),transparent);
+}
+.tl-item{position:relative;padding:0 0 36px 56px}
+.tl-item::before{
+  content:"";position:absolute;left:11px;top:6px;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--c-bg-4);border:2px solid var(--c-lavender);
+  box-shadow:0 0 12px var(--c-lavender);
+}
+.tl-year{font-family:var(--f-display);font-weight:700;font-size:1.05rem;color:var(--c-teal)}
+.tl-item h3{font-family:var(--f-display);font-weight:600;font-size:1.2rem;margin:4px 0 6px}
+.tl-item p{color:var(--c-soft);font-size:.92rem;max-width:52ch}
+.tl-card{
+  background:var(--c-glass);border:1px solid var(--c-line);
+  border-radius:var(--r-md);padding:16px 18px;
+  backdrop-filter:blur(10px);
+  transition:transform .3s ease, border-color .3s ease;
+}
+.tl-item:hover .tl-card{transform:translateX(4px);border-color:rgba(157,141,241,0.35)}
+
+/* ============================================================
+   SCENE 6 — CONTACT
+   ============================================================ */
+#contact{
+  background:
+    radial-gradient(100% 80% at 50% 0%, rgba(157,141,241,0.20), transparent 55%),
+    radial-gradient(70% 60% at 50% 100%, rgba(78,205,196,0.10), transparent 60%),
+    linear-gradient(180deg, #07111d 0%, var(--c-bg-1) 100%);
+}
+.contact-wrap{text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px}
+.contact-title{
+  font-family:var(--f-display);font-weight:700;
+  font-size:clamp(2.4rem,7vw,5.2rem);line-height:1.05;letter-spacing:-0.02em;
+  max-width:14ch;
+}
+.contact-sub{color:var(--c-mist);font-size:1.1rem;max-width:46ch}
+.contact-cta{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:8px}
+.socials{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap;justify-content:center}
+.social{
+  width:46px;height:46px;border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;
+  background:var(--c-glass);border:1px solid var(--c-line);
+  color:var(--c-mist);
+  transition:all .25s ease;
+}
+.social svg{width:20px;height:20px}
+.social:hover{color:#fff;background:var(--c-glass-strong);border-color:rgba(157,141,241,0.4);transform:translateY(-3px)}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{
+  padding:30px 24px;text-align:center;
+  background:#070d1a;border-top:1px solid var(--c-line);
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  color:var(--c-soft);font-size:.85rem;
+}
+.footer a{
+  display:inline-flex;align-items:center;gap:8px;
+  color:var(--c-lavender);font-weight:500;
+  padding:8px 16px;border-radius:var(--r-sm);
+  border:1px solid rgba(157,141,241,0.25);
+  transition:all .25s ease;
+}
+.footer a:hover{background:rgba(157,141,241,0.12);transform:translateY(-2px)}
+.footer a svg{width:14px;height:14px}
+
+/* ============================================================
+   REVEAL ANIMATION
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .9s cubic-bezier(.2,.8,.2,1), transform .9s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}
+.reveal.d2{transition-delay:.16s}
+.reveal.d3{transition-delay:.24s}
+.reveal.d4{transition-delay:.32s}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width:980px){
+  .about-grid{grid-template-columns:1fr;gap:36px}
+  .skills-grid{grid-template-columns:repeat(2,1fr)}
+  .works-grid{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .nav__links{display:none}
+  .nav__back{display:none}
+  .nav__burger{display:flex}
+  .layer.content{padding:110px 20px 80px}
+  .stats{grid-template-columns:1fr 1fr}
+  .skills-grid{grid-template-columns:1fr}
+}
+@media (max-width:460px){
+  .stats{grid-template-columns:1fr}
+  .hero-meta{font-size:.82rem}
+}
+
+/* ============================================================
+   REDUCED MOTION — disable all parallax / decorative motion
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+  .layer{transform:none !important;inset:0}
+  .reveal{opacity:1;transform:none}
+  .scroll-hint,.float-shape,.stars{display:none}
+  .skill-bar > span{width:var(--w) !important}
+}
+</style>
+</head>
+<body>
+
+<!-- progress -->
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ============================== NAV ============================== -->
+<nav class="nav" aria-label="主导航">
+  <a href="#hero" class="nav__brand" aria-label="返回顶部 · 林墨白">
+    <span class="dot" aria-hidden="true"></span>
+    林墨白
+    <small>· Mo Lin</small>
+  </a>
+  <div class="nav__links">
+    <a href="#about">关于</a>
+    <a href="#skills">技能</a>
+    <a href="#works">作品</a>
+    <a href="#journey">历程</a>
+    <a href="#contact">联系</a>
+  </div>
+  <a href="../index.html" class="nav__back" id="overviewBack">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    总览
+  </a>
+  <button class="nav__burger" id="burger" aria-label="打开菜单" aria-expanded="false" aria-controls="mobileMenu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+  </button>
+</nav>
+
+<!-- mobile menu -->
+<aside class="mobile-menu" id="mobileMenu" aria-label="移动端菜单">
+  <a href="#about">关于</a>
+  <a href="#skills">技能</a>
+  <a href="#works">作品</a>
+  <a href="#journey">历程</a>
+  <a href="#contact">联系</a>
+  <a href="../index.html" class="nav__back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    总览
+  </a>
+</aside>
+<div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+<main>
+
+<!-- ============================== SCENE 1 · HERO ============================== -->
+<section class="scene" id="hero" aria-labelledby="hero-name">
+  <!-- far layer: stars -->
+  <div class="layer" data-speed="0.08" aria-hidden="true">
+    <div class="stars" id="starsHero"></div>
+  </div>
+  <!-- mid layer: floating shapes -->
+  <div class="layer" data-speed="0.22" aria-hidden="true">
+    <svg class="float-shape" style="top:18%;left:12%;width:90px;height:90px" viewBox="0 0 100 100" fill="none">
+      <polygon points="50,5 95,80 5,80" stroke="#9D8DF1" stroke-width="1.5" opacity="0.55"/>
+    </svg>
+    <svg class="float-shape" style="top:62%;right:14%;width:120px;height:120px;color:#4ECDC4" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="1.2" opacity="0.4"/>
+      <circle cx="50" cy="50" r="28" stroke="currentColor" stroke-width="1.2" opacity="0.3"/>
+    </svg>
+    <svg class="float-shape" style="top:30%;right:24%;width:60px;height:60px;color:#FF6B6B" viewBox="0 0 100 100" fill="none">
+      <rect x="14" y="14" width="72" height="72" rx="14" stroke="currentColor" stroke-width="1.4" opacity="0.5" transform="rotate(20 50 50)"/>
+    </svg>
+    <svg class="float-shape" style="bottom:20%;left:20%;width:54px;height:54px;color:#9D8DF1" viewBox="0 0 100 100" fill="none">
+      <path d="M50 8 L62 38 L94 40 L68 60 L78 92 L50 72 L22 92 L32 60 L6 40 L38 38 Z" stroke="currentColor" stroke-width="1.2" opacity="0.45"/>
+    </svg>
+  </div>
+
+  <!-- content -->
+  <div class="layer content">
+    <div class="hero-center">
+      <span class="hero-tag"><span class="live" aria-hidden="true"></span>AVAILABLE · 可接新项目</span>
+      <h1 class="hero-name reveal" id="hero-name">林墨白</h1>
+      <p class="hero-role reveal d1">全栈工程师 / <b>数字设计师</b></p>
+      <div class="hero-meta reveal d2">
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          杭州 · Hangzhou
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          5 年经验
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></svg>
+          远程协作
+        </span>
+      </div>
+      <div class="hero-cta reveal d3">
+        <a href="#works" class="btn btn--primary">
+          浏览作品
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+        <a href="#contact" class="btn btn--ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16v16H4z" opacity="0"/><path d="m22 6-10 7L2 6"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>
+          开始合作
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint" aria-hidden="true">
+    <span class="mouse"></span>
+    <span>SCROLL</span>
+  </div>
+</section>
+
+<!-- ============================== SCENE 2 · ABOUT ============================== -->
+<section class="scene" id="about" aria-labelledby="about-title">
+  <!-- decoration far -->
+  <div class="layer" data-speed="0.10" aria-hidden="true">
+    <svg class="float-shape" style="top:14%;right:8%;width:200px;height:200px;color:#9D8DF1" viewBox="0 0 200 200" fill="none">
+      <circle cx="100" cy="100" r="90" stroke="currentColor" stroke-width="1" opacity="0.18"/>
+      <circle cx="100" cy="100" r="60" stroke="currentColor" stroke-width="1" opacity="0.14"/>
+    </svg>
+  </div>
+  <!-- decoration mid -->
+  <div class="layer" data-speed="0.28" aria-hidden="true">
+    <svg class="float-shape" style="bottom:12%;left:6%;width:120px;height:120px;color:#4ECDC4" viewBox="0 0 100 100" fill="none">
+      <path d="M10 50 Q50 10 90 50 T10 50" stroke="currentColor" stroke-width="1.2" opacity="0.4"/>
+    </svg>
+    <svg class="float-shape" style="top:24%;left:42%;width:46px;height:46px;color:#FF6B6B" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="1.4" opacity="0.5"/>
+    </svg>
+  </div>
+
+  <div class="layer content">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <span class="eyebrow"><span class="pill" aria-hidden="true"></span>ABOUT</span>
+        <h2 class="section-title" id="about-title">在像素与代码<br/>之间游走的人</h2>
+        <p>我是<b>林墨白</b>，一名常驻杭州的全栈工程师与数字设计师。过去五年里，我把审美的敏感度带进了工程实现，也把严谨的工程思维注入了每一次设计决策。</p>
+        <p>我相信好的产品诞生于「可用」与「动人」的交集——技术细节决定下限，体验细节决定上限。我擅长用前端与三维可视化构建有沉浸感的界面，也乐于在后端把数据流向理顺。</p>
+      </div>
+
+      <div class="stats" id="statsGrid">
+        <div class="stat-card reveal d1" data-depth="0.5">
+          <div class="num" data-count="5" data-suffix="+">5+</div>
+          <div class="label">年从业经验</div>
+        </div>
+        <div class="stat-card reveal d2" data-depth="0.7">
+          <div class="num" data-count="42" data-suffix="">42</div>
+          <div class="label">交付项目</div>
+        </div>
+        <div class="stat-card reveal d3" data-depth="0.9">
+          <div class="num" data-count="18" data-suffix="">18</div>
+          <div class="label">行业奖项</div>
+        </div>
+        <div class="stat-card reveal d4" data-depth="1.1">
+          <div class="num" data-count="99" data-suffix="%">99%</div>
+          <div class="label">客户满意度</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== SCENE 3 · SKILLS ============================== -->
+<section class="scene" id="skills" aria-labelledby="skills-title">
+  <div class="layer" data-speed="0.06" aria-hidden="true">
+    <div class="stars" id="starsSkills" style="opacity:.4"></div>
+  </div>
+  <div class="layer" data-speed="0.24" aria-hidden="true">
+    <svg class="float-shape" style="top:18%;left:10%;width:80px;height:80px;color:#FF6B6B" viewBox="0 0 100 100" fill="none">
+      <path d="M50 5 L95 80 L5 80 Z" stroke="currentColor" stroke-width="1.4" opacity="0.4"/>
+    </svg>
+    <svg class="float-shape" style="bottom:22%;right:8%;width:100px;height:100px;color:#9D8DF1" viewBox="0 0 100 100" fill="none">
+      <rect x="14" y="14" width="72" height="72" rx="16" stroke="currentColor" stroke-width="1.2" opacity="0.35" transform="rotate(15 50 50)"/>
+    </svg>
+  </div>
+
+  <div class="layer content">
+    <div class="skills-head reveal">
+      <span class="eyebrow"><span class="pill" aria-hidden="true"></span>SKILLS</span>
+      <h2 class="section-title" id="skills-title">四条腿走路</h2>
+      <p class="section-sub">从设计稿到三维渲染管线，覆盖产品交付的完整链路。</p>
+    </div>
+
+    <div class="skills-grid" id="skillsGrid">
+      <article class="skill-card reveal d1">
+        <div class="skill-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+        </div>
+        <h3>前端工程</h3>
+        <p class="desc">React / Vue / TypeScript / 动效</p>
+        <div class="skill-bar"><span data-w="92" style="--w:92%"></span></div>
+        <div class="skill-meta"><span class="pct">92</span><small>PROFICIENCY</small></div>
+      </article>
+
+      <article class="skill-card reveal d2">
+        <div class="skill-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2Z"/></svg>
+        </div>
+        <h3>视觉设计</h3>
+        <p class="desc">品牌 / UI / 排版 / 配色</p>
+        <div class="skill-bar"><span data-w="88" style="--w:88%"></span></div>
+        <div class="skill-meta"><span class="pct">88</span><small>PROFICIENCY</small></div>
+      </article>
+
+      <article class="skill-card reveal d3">
+        <div class="skill-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0 0 18 0V5"/><path d="M3 12a9 3 0 0 0 18 0"/></svg>
+        </div>
+        <h3>后端开发</h3>
+        <p class="desc">Node / Python / 数据库 / API</p>
+        <div class="skill-bar"><span data-w="85" style="--w:85%"></span></div>
+        <div class="skill-meta"><span class="pct">85</span><small>PROFICIENCY</small></div>
+      </article>
+
+      <article class="skill-card reveal d4">
+        <div class="skill-ico">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 2 2 7l10 5 10-5-10-5Z"/><path d="m2 17 10 5 10-5"/><path d="m2 12 10 5 10-5"/></svg>
+        </div>
+        <h3>三维可视化</h3>
+        <p class="desc">Three.js / WebGL / Shader</p>
+        <div class="skill-bar"><span data-w="76" style="--w:76%"></span></div>
+        <div class="skill-meta"><span class="pct">76</span><small>PROFICIENCY</small></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== SCENE 4 · WORKS ============================== -->
+<section class="scene" id="works" aria-labelledby="works-title">
+  <div class="layer" data-speed="0.08" aria-hidden="true">
+    <svg class="float-shape" style="top:12%;left:6%;width:160px;height:160px;color:#9D8DF1" viewBox="0 0 200 200" fill="none">
+      <path d="M20 100 Q100 20 180 100 T20 100" stroke="currentColor" stroke-width="1" opacity="0.16"/>
+    </svg>
+  </div>
+  <div class="layer" data-speed="0.26" aria-hidden="true">
+    <svg class="float-shape" style="bottom:10%;right:10%;width:90px;height:90px;color:#4ECDC4" viewBox="0 0 100 100" fill="none">
+      <polygon points="50,10 90,90 10,90" stroke="currentColor" stroke-width="1.2" opacity="0.32"/>
+    </svg>
+  </div>
+
+  <div class="layer content">
+    <div class="works-head reveal">
+      <div>
+        <span class="eyebrow"><span class="pill" aria-hidden="true"></span>SELECTED WORKS</span>
+        <h2 class="section-title" id="works-title">近期作品</h2>
+      </div>
+      <p class="section-sub">四个不同方向的项目，展示从概念到落地的完整能力。</p>
+    </div>
+
+    <div class="works-grid">
+      <article class="work-card reveal d1" tabindex="0">
+        <div class="work-visual wv-1">
+          <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="m9 16-3-3 7-7 3 3-7 7z"/><path d="M14 7l1.5-1.5"/><path d="M3 21l3-3"/></svg>
+        </div>
+        <div class="work-body">
+          <span class="work-cat">效率工具 · Web App</span>
+          <h3>极光笔记</h3>
+          <p>支持双向链接、白板与 AI 摘要的多模态笔记应用，主打沉浸式写作流。</p>
+          <div class="work-tags"><span>React</span><span>CRDT</span><span>WebGPU</span></div>
+          <span class="work-link">查看案例
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </span>
+        </div>
+      </article>
+
+      <article class="work-card reveal d2" tabindex="0">
+        <div class="work-visual wv-2">
+          <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18M3 9h18M3 15h18"/></svg>
+        </div>
+        <div class="work-body">
+          <span class="work-cat">设计平台 · SaaS</span>
+          <h3>像素工坊</h3>
+          <p>面向独立设计师的协作画板，支持矢量、组件库与实时多人编辑。</p>
+          <div class="work-tags"><span>Canvas</span><span>WebSocket</span><span>Vite</span></div>
+          <span class="work-link">查看案例
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </span>
+        </div>
+      </article>
+
+      <article class="work-card reveal d3" tabindex="0">
+        <div class="work-visual wv-3">
+          <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M2 12h4l3-9 6 18 3-9h4"/></svg>
+        </div>
+        <div class="work-body">
+          <span class="work-cat">数据可视化 · Dashboard</span>
+          <h3>数据之眼</h3>
+          <p>面向运营团队的可视化分析平台，支持自定义图表与实时数据流。</p>
+          <div class="work-tags"><span>D3.js</span><span>Streaming</span><span>NestJS</span></div>
+          <span class="work-link">查看案例
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </span>
+        </div>
+      </article>
+
+      <article class="work-card reveal d4" tabindex="0">
+        <div class="work-visual wv-4">
+          <svg class="glyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 12h2l2-7 3 14 3-10 2 5h6"/></svg>
+        </div>
+        <div class="work-body">
+          <span class="work-cat">交互艺术 · Installation</span>
+          <h3>声波画廊</h3>
+          <p>基于实时音频频谱的三维粒子装置，将声音转化为可漫游的视觉空间。</p>
+          <div class="work-tags"><span>Three.js</span><span>Web Audio</span><span>GLSL</span></div>
+          <span class="work-link">查看案例
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+          </span>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== SCENE 5 · JOURNEY ============================== -->
+<section class="scene" id="journey" aria-labelledby="journey-title">
+  <div class="layer" data-speed="0.07" aria-hidden="true">
+    <div class="stars" id="starsJourney" style="opacity:.35"></div>
+  </div>
+  <div class="layer" data-speed="0.20" aria-hidden="true">
+    <svg class="float-shape" style="top:14%;right:12%;width:120px;height:120px;color:#9D8DF1" viewBox="0 0 100 100" fill="none">
+      <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="1" opacity="0.25"/>
+    </svg>
+  </div>
+
+  <div class="layer content">
+    <div class="skills-head reveal" style="margin-bottom:44px">
+      <span class="eyebrow"><span class="pill" aria-hidden="true"></span>JOURNEY</span>
+      <h2 class="section-title" id="journey-title">一路走来</h2>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item reveal d1">
+        <div class="tl-card">
+          <div class="tl-year">2024 — 至今</div>
+          <h3>独立工作室主理人</h3>
+          <p>成立个人工作室，承接品牌数字化、交互装置与前端工程化项目，已交付 12+ 案例。</p>
+        </div>
+      </div>
+      <div class="tl-item reveal d2">
+        <div class="tl-card">
+          <div class="tl-year">2022 — 2024</div>
+          <h3>高级前端工程师 · 流光科技</h3>
+          <p>主导设计系统与可视化中台建设，团队规模 8 人，推动首屏性能优化提升 40%。</p>
+        </div>
+      </div>
+      <div class="tl-item reveal d3">
+        <div class="tl-card">
+          <div class="tl-year">2020 — 2022</div>
+          <h3>全栈工程师 · 拾象网络</h3>
+          <p>从 0 到 1 构建多款 SaaS 产品，横跨前后端与数据层，沉淀内部组件库一套。</p>
+        </div>
+      </div>
+      <div class="tl-item reveal d4">
+        <div class="tl-card">
+          <div class="tl-year">2019</div>
+          <h3>毕业 · 浙江大学</h3>
+          <p>数字媒体技术专业，毕业设计获评校级优秀，方向为实时图形与人机交互。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== SCENE 6 · CONTACT ============================== -->
+<section class="scene" id="contact" aria-labelledby="contact-title">
+  <div class="layer" data-speed="0.10" aria-hidden="true">
+    <div class="stars" id="starsContact" style="opacity:.5"></div>
+  </div>
+  <div class="layer" data-speed="0.30" aria-hidden="true">
+    <svg class="float-shape" style="top:18%;left:14%;width:70px;height:70px;color:#4ECDC4" viewBox="0 0 100 100" fill="none">
+      <polygon points="50,8 92,80 8,80" stroke="currentColor" stroke-width="1.4" opacity="0.45"/>
+    </svg>
+    <svg class="float-shape" style="bottom:20%;right:16%;width:90px;height:90px;color:#9D8DF1" viewBox="0 0 100 100" fill="none">
+      <rect x="14" y="14" width="72" height="72" rx="16" stroke="currentColor" stroke-width="1.2" opacity="0.4" transform="rotate(18 50 50)"/>
+    </svg>
+  </div>
+
+  <div class="layer content">
+    <div class="contact-wrap">
+      <span class="eyebrow reveal"><span class="pill" aria-hidden="true"></span>LET'S TALK</span>
+      <h2 class="contact-title reveal d1" id="contact-title">把你的下一个想法，<br/>交给我来落地。</h2>
+      <p class="contact-sub reveal d2">无论是产品 MVP、品牌官网，还是一段想要可视化的数据——欢迎聊聊。</p>
+      <div class="contact-cta reveal d3">
+        <a href="mailto:hello@linmobai.studio" class="btn btn--primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg>
+          hello@linmobai.studio
+        </a>
+        <a href="#hero" class="btn btn--ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+          回到顶部
+        </a>
+      </div>
+      <div class="socials reveal d4">
+        <a class="social" href="#" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.8-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.4-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5Z"/></svg>
+        </a>
+        <a class="social" href="#" aria-label="Dribbble">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8.6 20.7c1-3.5 2.5-7 4.4-10.3 1.9-3.3 4.2-6.3 6.8-9"/><path d="M2.3 10.6c5.7.5 11.4-.4 16.7-2.4"/><path d="M5.6 19.6c2.7-3.9 6.7-6.7 11.3-7.9"/></svg>
+        </a>
+        <a class="social" href="#" aria-label="Behance">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8.2 10.9c.7-.5 1.1-1.2 1.1-2.2 0-2.2-1.7-3-3.6-3H1v12.4h4.9c2 0 3.9-1 3.9-3.2 0-1.4-.7-2.4-1.6-3Zm-4.6-3.1h2c.8 0 1.4.4 1.4 1.2 0 .8-.6 1.2-1.4 1.2h-2V7.8Zm2.2 7.7H3.6v-2.7h2.2c.9 0 1.6.4 1.6 1.4 0 1-.7 1.3-1.6 1.3ZM22.5 11.6c-.4-2.2-2-3.6-4.3-3.6-2.7 0-4.5 2-4.5 4.7 0 2.6 1.7 4.7 4.5 4.7 2 0 3.5-1 4.2-2.9h-2.2c-.3.7-1 1-1.8 1-1.2 0-2-.7-2.1-2h6.2c.1-.6.1-1.3 0-1.9Zm-6.2-.5c.2-1 .9-1.6 1.9-1.6s1.7.6 1.8 1.6h-3.7ZM15 7.2h5v1.3h-5z"/></svg>
+        </a>
+        <a class="social" href="#" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2ZM8 19H5v-9h3v9Zm-1.5-10.3a1.75 1.75 0 1 1 0-3.5 1.75 1.75 0 0 1 0 3.5ZM19 19h-3v-4.5c0-1.2-.5-2-1.5-2s-1.5.6-1.5 2V19h-3v-9h3v1.2c.5-.8 1.5-1.4 2.7-1.4 2.1 0 3.3 1.4 3.3 4V19Z"/></svg>
+        </a>
+        <a class="social" href="mailto:hello@linmobai.studio" aria-label="Email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================== FOOTER ============================== -->
+<footer class="footer">
+  <a href="#" id="footerOverview">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+    返回总览
+  </a>
+  <p>© 2024 林墨白 · Lin Mobai Studio · 杭州 · 用代码与设计编织宇宙</p>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isMobile = window.matchMedia('(max-width: 760px)').matches;
+  const isCoarse  = window.matchMedia('(pointer: coarse)').matches;
+
+  /* ---------- 1. STAR FIELD GENERATION ---------- */
+  function seedStars(el, count){
+    if(!el) return;
+    const frag = document.createDocumentFragment();
+    for(let i=0;i<count;i++){
+      const s = document.createElement('span');
+      s.className = 'star';
+      const size = Math.random()*2 + 0.6;
+      s.style.cssText =
+        'left:'+ (Math.random()*100).toFixed(2) +'%;'+
+        'top:'+ (Math.random()*100).toFixed(2) +'%;'+
+        'width:'+ size +'px;height:'+ size +'px;'+
+        'opacity:'+ (Math.random()*0.6 + 0.25).toFixed(2) +';';
+      frag.appendChild(s);
+    }
+    el.appendChild(frag);
+  }
+  const starCount = isMobile ? 28 : 60;
+  seedStars(document.getElementById('starsHero'), starCount);
+  seedStars(document.getElementById('starsSkills'), Math.floor(starCount*0.6));
+  seedStars(document.getElementById('starsJourney'), Math.floor(starCount*0.6));
+  seedStars(document.getElementById('starsContact'), Math.floor(starCount*0.7));
+
+  /* ---------- 2. PARALLAX ENGINE ---------- */
+  const layers = Array.from(document.querySelectorAll('.layer[data-speed]'));
+  // Reduce parallax intensity on mobile / when reduced motion requested
+  const mobileFactor = isMobile ? 0.4 : 1;
+
+  if(!reduceMotion){
+    let ticking = false;
+    function applyParallax(){
+      const y = window.scrollY || window.pageYOffset;
+      for(let i=0;i<layers.length;i++){
+        const el = layers[i];
+        const speed = parseFloat(el.dataset.speed) || 0;
+        // Translate opposite to scroll for depth illusion
+        const offset = y * speed * mobileFactor * -1;
+        el.style.transform = 'translate3d(0,'+ offset.toFixed(2) +'px,0)';
+      }
+      // progress bar
+      const h = document.documentElement;
+      const scrolled = h.scrollTop;
+      const total = h.scrollHeight - h.clientHeight;
+      const pct = total > 0 ? (scrolled/total)*100 : 0;
+      progress.style.width = pct + '%';
+      ticking = false;
+    }
+    const progress = document.getElementById('progress');
+    window.addEventListener('scroll', function(){
+      if(!ticking){
+        window.requestAnimationFrame(applyParallax);
+        ticking = true;
+      }
+    }, { passive:true });
+    applyParallax();
+  } else {
+    // Reduced motion: still update progress bar statically
+    const progress = document.getElementById('progress');
+    window.addEventListener('scroll', function(){
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight || 1)) * 100;
+      progress.style.width = pct + '%';
+    }, { passive:true });
+  }
+
+  /* ---------- 3. INTERSECTION OBSERVER REVEALS ---------- */
+  const revealEls = document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window && !reduceMotion){
+    const io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold:0.15, rootMargin:'0px 0px -8% 0px' });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ---------- 4. SKILL BAR FILL ON VIEW ---------- */
+  const skillBars = document.querySelectorAll('.skill-bar > span');
+  if('IntersectionObserver' in window && !reduceMotion){
+    const sio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          const w = e.target.dataset.w || '0';
+          e.target.style.width = w + '%';
+          sio.unobserve(e.target);
+        }
+      });
+    }, { threshold:0.4 });
+    skillBars.forEach(function(b){ sio.observe(b); });
+  } else {
+    skillBars.forEach(function(b){ b.style.width = (b.dataset.w||'0') + '%'; });
+  }
+
+  /* ---------- 5. COUNTER ANIMATION ---------- */
+  const counters = document.querySelectorAll('.num[data-count]');
+  function animateCounter(el){
+    const target = parseInt(el.dataset.count, 10);
+    const suffix = el.dataset.suffix || '';
+    if(reduceMotion || isNaN(target)){ el.textContent = target + suffix; return; }
+    const dur = 1400;
+    const start = performance.now();
+    function tick(now){
+      const p = Math.min((now - start) / dur, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(target * eased) + suffix;
+      if(p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+  if('IntersectionObserver' in window){
+    const cio = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ animateCounter(e.target); cio.unobserve(e.target); }
+      });
+    }, { threshold:0.6 });
+    counters.forEach(function(c){ cio.observe(c); });
+  } else {
+    counters.forEach(animateCounter);
+  }
+
+  /* ---------- 6. MOBILE MENU ---------- */
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobileMenu');
+  const backdrop = document.getElementById('backdrop');
+
+  function closeMenu(){
+    menu.classList.remove('open');
+    backdrop.classList.remove('show');
+    burger.setAttribute('aria-expanded','false');
+  }
+  function openMenu(){
+    menu.classList.add('open');
+    backdrop.classList.add('show');
+    burger.setAttribute('aria-expanded','true');
+  }
+  burger.addEventListener('click', function(){
+    menu.classList.contains('open') ? closeMenu() : openMenu();
+  });
+  backdrop.addEventListener('click', closeMenu);
+  menu.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeMenu); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && menu.classList.contains('open')) closeMenu();
+  });
+
+  /* ---------- 7. "总览" BACK LINKS ---------- */
+  // These are placeholders — replace href with the real overview URL.
+  document.querySelectorAll('#overviewBack, #footerOverview, .mobile-menu .nav__back').forEach(function(el){
+    el.addEventListener('click', function(e){
+      // Default anchor behaviour kept; no special handling needed.
+    });
+  });
+
+  /* ---------- 8. SMOOTH SCROLL FOR NAV (anchor fallback) ---------- */
+  // Native CSS scroll-behavior handles this; nothing else required.
+})();
+</script>
+</body>
+</html>

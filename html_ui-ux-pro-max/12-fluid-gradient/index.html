@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>林墨白 — 全栈工程师 / 数字设计师</title>
+<meta name="description" content="林墨白，杭州的全栈工程师与数字设计师，5 年经验，可接新项目。" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+  /* ============== DESIGN TOKENS ============== */
+  :root{
+    --bg: #0F0E17;
+    --bg-soft: #16151F;
+    --text: #FFFFFE;
+    --text-muted: #B7B5C9;
+    --text-dim: #8A88A0;
+
+    --orange: #FF8906;
+    --coral:  #F25F4C;
+    --pink:   #E53170;
+    --purple: #7F5AF0;
+    --green:  #2CB67D;
+
+    --glass-bg: rgba(22, 21, 31, 0.55);
+    --glass-bg-strong: rgba(22, 21, 31, 0.72);
+    --glass-border: rgba(255, 255, 254, 0.12);
+    --glass-border-hi: rgba(255, 255, 254, 0.22);
+    --glass-hi: rgba(255, 255, 254, 0.06);
+
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 16px;
+
+    --shadow-soft: 0 10px 40px rgba(0,0,0,0.35);
+    --shadow-lift: 0 24px 70px rgba(0,0,0,0.55);
+
+    --maxw: 1180px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body::selection, *::selection{ background: rgba(127,90,240,0.45); color:#fff; }
+
+  h1,h2,h3,h4,.display{
+    font-family: "Space Grotesk", "Noto Sans SC", system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  a{ color: inherit; text-decoration: none; }
+  button{ font-family: inherit; }
+  svg{ display:block; }
+
+  /* ============== FLUID BACKGROUND ============== */
+  .bg-stage{
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 120% at 80% 0%, rgba(127,90,240,0.18), transparent 55%),
+      radial-gradient(120% 120% at 0% 100%, rgba(44,182,125,0.12), transparent 55%),
+      var(--bg);
+  }
+  .blob{
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(70px);
+    opacity: 0.55;
+    mix-blend-mode: screen;
+    will-change: transform, border-radius;
+    pointer-events: none;
+  }
+  .blob.b1{
+    width: 48vw; height: 48vw; max-width: 720px; max-height: 720px;
+    background: radial-gradient(circle at 30% 30%, var(--orange), var(--coral) 60%, transparent 75%);
+    top: -8%; left: -6%;
+    animation: drift1 22s var(--ease) infinite alternate, morph1 18s ease-in-out infinite;
+  }
+  .blob.b2{
+    width: 42vw; height: 42vw; max-width: 620px; max-height: 620px;
+    background: radial-gradient(circle at 40% 40%, var(--pink), var(--purple) 65%, transparent 78%);
+    top: 6%; right: -10%;
+    animation: drift2 26s var(--ease) infinite alternate, morph2 20s ease-in-out infinite;
+  }
+  .blob.b3{
+    width: 40vw; height: 40vw; max-width: 600px; max-height: 600px;
+    background: radial-gradient(circle at 50% 50%, var(--purple), var(--pink) 60%, transparent 75%);
+    bottom: -12%; left: 12%;
+    animation: drift3 24s var(--ease) infinite alternate, morph3 22s ease-in-out infinite;
+  }
+  .blob.b4{
+    width: 36vw; height: 36vw; max-width: 540px; max-height: 540px;
+    background: radial-gradient(circle at 50% 50%, var(--green), var(--purple) 60%, transparent 78%);
+    bottom: 6%; right: 4%;
+    animation: drift4 28s var(--ease) infinite alternate, morph4 19s ease-in-out infinite;
+    opacity: 0.42;
+  }
+  .blob.b5{
+    width: 30vw; height: 30vw; max-width: 440px; max-height: 440px;
+    background: radial-gradient(circle at 50% 50%, var(--coral), var(--orange) 60%, transparent 78%);
+    top: 40%; left: 38%;
+    animation: drift5 30s var(--ease) infinite alternate, morph5 24s ease-in-out infinite;
+    opacity: 0.38;
+  }
+
+  @keyframes drift1{
+    0%{ transform: translate(0,0) scale(1); }
+    100%{ transform: translate(8vw, 6vh) scale(1.12); }
+  }
+  @keyframes drift2{
+    0%{ transform: translate(0,0) scale(1.05); }
+    100%{ transform: translate(-7vw, 9vh) scale(0.92); }
+  }
+  @keyframes drift3{
+    0%{ transform: translate(0,0) scale(1); }
+    100%{ transform: translate(10vw, -7vh) scale(1.1); }
+  }
+  @keyframes drift4{
+    0%{ transform: translate(0,0) scale(0.95); }
+    100%{ transform: translate(-9vw, -10vh) scale(1.08); }
+  }
+  @keyframes drift5{
+    0%{ transform: translate(0,0) scale(1); }
+    100%{ transform: translate(-6vw, 6vh) scale(1.15); }
+  }
+
+  @keyframes morph1{
+    0%,100%{ border-radius: 60% 40% 55% 45% / 55% 45% 55% 45%; }
+    50%{ border-radius: 40% 60% 45% 55% / 45% 60% 40% 55%; }
+  }
+  @keyframes morph2{
+    0%,100%{ border-radius: 45% 55% 60% 40% / 50% 50% 55% 45%; }
+    50%{ border-radius: 60% 40% 40% 60% / 40% 60% 50% 50%; }
+  }
+  @keyframes morph3{
+    0%,100%{ border-radius: 55% 45% 45% 55% / 60% 40% 60% 40%; }
+    50%{ border-radius: 40% 60% 55% 45% / 45% 55% 45% 55%; }
+  }
+  @keyframes morph4{
+    0%,100%{ border-radius: 50% 50% 45% 55% / 55% 45% 55% 45%; }
+    50%{ border-radius: 45% 55% 60% 40% / 40% 60% 40% 60%; }
+  }
+  @keyframes morph5{
+    0%,100%{ border-radius: 60% 40% 50% 50% / 45% 55% 45% 55%; }
+    50%{ border-radius: 45% 55% 40% 60% / 60% 40% 60% 40%; }
+  }
+
+  /* faint grain/vignette to seat the gradient */
+  .bg-stage::after{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(120% 100% at 50% 50%, transparent 55%, rgba(15,14,23,0.55) 100%);
+    pointer-events:none;
+  }
+
+  /* ============== LAYOUT ============== */
+  .wrap{
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ============== NAV ============== */
+  .nav{
+    position: fixed;
+    top: 18px; left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    width: calc(100% - 32px);
+    max-width: 1080px;
+  }
+  .nav-inner{
+    display:flex; align-items:center; justify-content:space-between;
+    gap: 16px;
+    padding: 10px 10px 10px 20px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 999px;
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    box-shadow: var(--shadow-soft);
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:"Space Grotesk","Noto Sans SC",sans-serif;
+    font-weight:600; font-size: 16px;
+    text-shadow: 0 1px 10px rgba(0,0,0,0.4);
+  }
+  .brand .mark{
+    width: 28px; height: 28px; border-radius: 8px;
+    background: conic-gradient(from 120deg, var(--orange), var(--pink), var(--purple), var(--green), var(--orange));
+    box-shadow: 0 4px 16px rgba(229,49,112,0.4), inset 0 0 0 1px rgba(255,255,254,0.25);
+  }
+  .nav-links{
+    display:flex; align-items:center; gap: 4px;
+  }
+  .nav-links a{
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14px; font-weight: 500;
+    color: var(--text-muted);
+    transition: color .25s var(--ease), background .25s var(--ease);
+  }
+  .nav-links a:hover{ color: var(--text); background: var(--glass-hi); }
+  .nav-back{
+    display:inline-flex; align-items:center; gap:6px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 14px; font-weight: 500;
+    color: var(--text);
+    background: rgba(255,255,254,0.06);
+    border: 1px solid var(--glass-border);
+    transition: all .25s var(--ease);
+  }
+  .nav-back:hover{ background: rgba(255,255,254,0.14); border-color: var(--glass-border-hi); }
+  .nav-back svg{ width:14px; height:14px; }
+
+  .nav-toggle{
+    display:none;
+    width:42px; height:42px;
+    border-radius: 12px;
+    background: rgba(255,255,254,0.06);
+    border: 1px solid var(--glass-border);
+    align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .nav-toggle svg{ width:20px; height:20px; }
+
+  /* ============== HERO ============== */
+  .hero{
+    position: relative;
+    padding: 168px 0 90px;
+    text-align: center;
+  }
+  .status{
+    display:inline-flex; align-items:center; gap:8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    margin-bottom: 28px;
+  }
+  .status .dot{
+    width:8px; height:8px; border-radius:50%;
+    background: var(--green);
+    box-shadow: 0 0 0 0 rgba(44,182,125,0.6);
+    animation: pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow: 0 0 0 0 rgba(44,182,125,0.55); }
+    70%{ box-shadow: 0 0 0 10px rgba(44,182,125,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(44,182,125,0); }
+  }
+
+  .hero h1{
+    font-size: clamp(56px, 11vw, 156px);
+    font-weight: 700;
+    line-height: 0.95;
+    margin-bottom: 22px;
+    letter-spacing: -0.04em;
+    text-shadow: 0 6px 40px rgba(0,0,0,0.45);
+    background: linear-gradient(180deg, #FFFFFE 0%, #E7E5F2 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .hero .role{
+    font-family:"Space Grotesk","Noto Sans SC",sans-serif;
+    font-size: clamp(18px, 2.2vw, 24px);
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 12px;
+    text-shadow: 0 2px 18px rgba(0,0,0,0.5);
+  }
+  .hero .role .sep{ color: var(--orange); margin: 0 12px; }
+  .hero .loc{
+    display:inline-flex; align-items:center; gap:8px;
+    color: var(--text-muted);
+    font-size: 15px;
+    text-shadow: 0 1px 12px rgba(0,0,0,0.5);
+    margin-bottom: 40px;
+  }
+  .hero .loc svg{ width:16px; height:16px; color: var(--pink); }
+
+  .cta-row{
+    display:flex; gap: 14px; justify-content:center; flex-wrap: wrap;
+  }
+  .btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding: 15px 28px;
+    border-radius: var(--radius-md);
+    font-size: 15px; font-weight: 600;
+    cursor: pointer;
+    transition: all .28s var(--ease);
+    border: 1px solid transparent;
+  }
+  .btn svg{ width:18px; height:18px; }
+  .btn-primary{
+    background: #FFFFFE; color: #0F0E17;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), inset 0 0 0 1px rgba(255,255,254,0.4);
+  }
+  .btn-primary:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 18px 50px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,254,0.6);
+  }
+  .btn-ghost{
+    background: var(--glass-bg);
+    color: var(--text);
+    border-color: var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .btn-ghost:hover{
+    transform: translateY(-2px);
+    background: var(--glass-bg-strong);
+    border-color: var(--glass-border-hi);
+  }
+
+  /* ============== SECTION ============== */
+  section{ position: relative; z-index: 2; padding: 64px 0; }
+  .sec-head{
+    display:flex; flex-direction: column; gap: 8px;
+    margin-bottom: 36px;
+  }
+  .sec-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    width: fit-content;
+    font-family:"Space Grotesk",sans-serif;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--orange);
+  }
+  .sec-tag::before{
+    content:""; width: 22px; height:1px; background: var(--orange); opacity:.7;
+  }
+  .sec-title{
+    font-size: clamp(30px, 5vw, 48px);
+    text-shadow: 0 3px 22px rgba(0,0,0,0.45);
+  }
+
+  /* ============== STATS ============== */
+  .stats{
+    display:grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .stat{
+    padding: 28px 22px;
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    box-shadow: var(--shadow-soft);
+    transition: transform .3s var(--ease), border-color .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .stat:hover{
+    transform: translateY(-4px);
+    border-color: var(--glass-border-hi);
+    box-shadow: var(--shadow-lift);
+  }
+  .stat .num{
+    font-family:"Space Grotesk",sans-serif;
+    font-size: clamp(34px, 4.5vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 8px;
+    background: linear-gradient(120deg, #FFFFFE 0%, #FF8906 90%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 4px 30px rgba(0,0,0,0.3);
+  }
+  .stat .label{ color: var(--text-muted); font-size: 14px; }
+
+  /* ============== ABOUT ============== */
+  .about{
+    display:grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .glass-panel{
+    padding: 36px;
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    box-shadow: var(--shadow-soft);
+  }
+  .about-bio p{
+    color: var(--text-muted);
+    font-size: 16px;
+    margin-bottom: 14px;
+  }
+  .about-bio p strong{ color: var(--text); font-weight: 600; }
+  .tags{
+    display:flex; flex-wrap:wrap; gap: 10px; margin-top: 22px;
+  }
+  .tag{
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 13px; font-weight: 500;
+    color: var(--text);
+    background: rgba(255,255,254,0.05);
+    border: 1px solid var(--glass-border);
+    transition: all .25s var(--ease);
+  }
+  .tag:hover{ background: rgba(255,255,254,0.12); border-color: var(--glass-border-hi); }
+
+  .about-side{
+    display:flex; flex-direction: column; gap: 16px;
+  }
+  .mini{
+    padding: 20px 22px;
+    border-radius: var(--radius-md);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .mini .k{ color: var(--text-dim); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 6px; }
+  .mini .v{ font-family:"Space Grotesk",sans-serif; font-size: 18px; font-weight: 600; }
+  .mini.accent .v{ color: var(--orange); }
+
+  /* ============== SKILLS ============== */
+  .skills{
+    display:grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  }
+  .skill{
+    padding: 26px 26px 28px;
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    transition: transform .3s var(--ease), border-color .3s var(--ease);
+  }
+  .skill:hover{ transform: translateY(-3px); border-color: var(--glass-border-hi); }
+  .skill-top{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 14px; }
+  .skill-name{ font-family:"Space Grotesk","Noto Sans SC",sans-serif; font-size: 17px; font-weight: 600; }
+  .skill-val{ font-family:"Space Grotesk",sans-serif; font-size: 14px; font-weight: 600; color: var(--text-muted); }
+  .track{
+    height: 8px; border-radius: 999px;
+    background: rgba(255,255,254,0.07);
+    overflow: hidden;
+    position: relative;
+  }
+  .fill{
+    height:100%; width: 0;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--orange), var(--pink) 50%, var(--purple));
+    box-shadow: 0 0 18px rgba(229,49,112,0.5);
+    transition: width 1.4s var(--ease);
+  }
+  .skill:nth-child(2) .fill{ background: linear-gradient(90deg, var(--coral), var(--pink) 55%, var(--purple)); }
+  .skill:nth-child(3) .fill{ background: linear-gradient(90deg, var(--green), var(--purple) 60%, var(--pink)); }
+  .skill:nth-child(4) .fill{ background: linear-gradient(90deg, var(--purple), var(--pink) 55%, var(--orange)); }
+  .skill-sub{ margin-top: 12px; color: var(--text-dim); font-size: 13px; }
+
+  /* ============== WORKS ============== */
+  .works{
+    display:grid; grid-template-columns: repeat(2, 1fr); gap: 18px;
+  }
+  .work{
+    position: relative;
+    padding: 26px;
+    border-radius: var(--radius-lg);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    overflow:hidden;
+    transition: transform .3s var(--ease), border-color .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .work::before{
+    content:""; position:absolute; inset:0;
+    background: var(--sheen, linear-gradient(135deg, rgba(255,137,6,0.16), transparent 60%));
+    opacity:.6; transition: opacity .4s var(--ease); pointer-events:none;
+  }
+  .work:hover{
+    transform: translateY(-5px);
+    border-color: var(--glass-border-hi);
+    box-shadow: var(--shadow-lift);
+  }
+  .work:hover::before{ opacity: 1; }
+  .work-top{ position: relative; display:flex; align-items:center; justify-content:space-between; margin-bottom: 18px; }
+  .work-ico{
+    width: 46px; height: 46px; border-radius: 12px;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(255,255,254,0.06);
+    border: 1px solid var(--glass-border);
+    color: var(--text);
+  }
+  .work-ico svg{ width:22px; height:22px; }
+  .work-cat{ font-size: 12px; color: var(--text-dim); letter-spacing:0.1em; text-transform:uppercase; }
+  .work h3{ font-size: 22px; margin-bottom: 10px; }
+  .work p{ color: var(--text-muted); font-size: 14.5px; margin-bottom: 18px; }
+  .work-meta{ display:flex; gap: 8px; flex-wrap: wrap; }
+  .chip{
+    padding: 6px 11px;
+    border-radius: 999px;
+    font-size: 12px; color: var(--text-muted);
+    background: rgba(255,255,254,0.05);
+    border: 1px solid var(--glass-border);
+  }
+
+  /* ============== JOURNEY ============== */
+  .timeline{
+    position: relative;
+    padding: 8px 0;
+  }
+  .tl-item{
+    position: relative;
+    padding: 18px 26px 18px 56px;
+    border-radius: var(--radius-md);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    transition: transform .3s var(--ease), border-color .3s var(--ease);
+  }
+  .tl-item:hover{ transform: translateX(4px); border-color: var(--glass-border-hi); }
+  .tl-item + .tl-item{ margin-top: 14px; }
+  .tl-dot{
+    position:absolute; left: 22px; top: 26px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    box-shadow: 0 0 0 4px rgba(229,49,112,0.15), 0 0 16px rgba(229,49,112,0.6);
+  }
+  .tl-item:nth-child(2) .tl-dot{ background: linear-gradient(135deg, var(--pink), var(--purple)); box-shadow: 0 0 0 4px rgba(127,90,240,0.15), 0 0 16px rgba(127,90,240,0.6); }
+  .tl-item:nth-child(3) .tl-dot{ background: linear-gradient(135deg, var(--purple), var(--green)); box-shadow: 0 0 0 4px rgba(44,182,125,0.15), 0 0 16px rgba(44,182,125,0.6); }
+  .tl-item:nth-child(4) .tl-dot{ background: linear-gradient(135deg, var(--green), var(--orange)); box-shadow: 0 0 0 4px rgba(255,137,6,0.15), 0 0 16px rgba(255,137,6,0.6); }
+  .tl-line{
+    position: absolute;
+    left: 28px; top: 40px; bottom: -14px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--glass-border-hi), transparent);
+  }
+  .tl-item:last-child .tl-line{ display:none; }
+  .tl-year{ font-family:"Space Grotesk",sans-serif; font-size: 13px; font-weight:600; color: var(--orange); letter-spacing: 0.08em; margin-bottom: 4px; }
+  .tl-item:nth-child(2) .tl-year{ color: var(--pink); }
+  .tl-item:nth-child(3) .tl-year{ color: var(--purple); }
+  .tl-item:nth-child(4) .tl-year{ color: var(--green); }
+  .tl-title{ font-family:"Space Grotesk","Noto Sans SC",sans-serif; font-size: 17px; font-weight:600; margin-bottom: 4px; }
+  .tl-org{ color: var(--text-muted); font-size: 14px; }
+
+  /* ============== CONTACT ============== */
+  .contact-card{
+    position: relative;
+    padding: 56px 48px;
+    border-radius: 20px;
+    text-align: center;
+    background: var(--glass-bg-strong);
+    border: 1px solid var(--glass-border-hi);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    box-shadow: var(--shadow-lift);
+    overflow:hidden;
+  }
+  .contact-card::before{
+    content:""; position:absolute; inset:0;
+    background:
+      radial-gradient(60% 80% at 20% 10%, rgba(255,137,6,0.22), transparent 60%),
+      radial-gradient(60% 80% at 80% 90%, rgba(127,90,240,0.25), transparent 60%);
+    pointer-events:none;
+  }
+  .contact-card > *{ position:relative; }
+  .contact-card h2{
+    font-size: clamp(28px, 4.5vw, 44px);
+    margin-bottom: 14px;
+    text-shadow: 0 3px 22px rgba(0,0,0,0.45);
+  }
+  .contact-card p{
+    color: var(--text-muted);
+    max-width: 540px; margin: 0 auto 28px;
+    font-size: 16px;
+  }
+  .social-row{
+    display:flex; gap: 12px; justify-content:center; flex-wrap: wrap; margin-top: 26px;
+  }
+  .social{
+    display:inline-flex; align-items:center; gap:10px;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    background: rgba(255,255,254,0.05);
+    border: 1px solid var(--glass-border);
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    transition: all .28s var(--ease);
+  }
+  .social svg{ width:18px; height:18px; }
+  .social:hover{ background: rgba(255,255,254,0.12); border-color: var(--glass-border-hi); transform: translateY(-2px); }
+
+  /* ============== FOOTER ============== */
+  footer{
+    position: relative; z-index:2;
+    padding: 40px 0 60px;
+    text-align: center;
+  }
+  .foot-inner{
+    display:flex; align-items:center; justify-content:space-between; gap: 16px;
+    flex-wrap: wrap;
+    padding-top: 24px;
+    border-top: 1px solid var(--glass-border);
+    color: var(--text-dim);
+    font-size: 13px;
+  }
+  .foot-back{
+    display:inline-flex; align-items:center; gap:6px;
+    color: var(--text-muted);
+    transition: color .25s var(--ease);
+  }
+  .foot-back:hover{ color: var(--text); }
+  .foot-back svg{ width:14px; height:14px; }
+
+  /* ============== REVEAL ============== */
+  .reveal{ opacity:0; transform: translateY(24px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+  .reveal.in{ opacity:1; transform: none; }
+
+  /* ============== FOCUS ============== */
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid var(--purple);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+
+  /* ============== MOBILE ============== */
+  @media (max-width: 880px){
+    .stats{ grid-template-columns: repeat(2, 1fr); }
+    .about{ grid-template-columns: 1fr; }
+    .skills{ grid-template-columns: 1fr; }
+    .works{ grid-template-columns: 1fr; }
+    .nav-links{
+      position:absolute; top: 64px; left:0; right:0;
+      flex-direction: column; align-items: stretch; gap: 6px;
+      padding: 16px;
+      background: var(--glass-bg-strong);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      opacity:0; visibility:hidden; transform: translateY(-8px);
+      transition: all .3s var(--ease);
+    }
+    .nav-links.open{ opacity:1; visibility:visible; transform: none; }
+    .nav-links a{ padding: 12px 16px; font-size: 15px; }
+    .nav-toggle{ display:flex; }
+    .nav-back span.lbl{ display:none; }
+    .nav-back{ padding: 8px 10px; }
+    .hero{ padding: 130px 0 60px; }
+    .contact-card{ padding: 40px 24px; }
+    .glass-panel{ padding: 26px; }
+    .nav{ top: 12px; }
+  }
+  @media (max-width: 480px){
+    .stats{ grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stat{ padding: 22px 16px; }
+    .hero .role .sep{ display:block; height:0; margin: 4px auto; }
+    .hero .role .sep{ content:""; }
+  }
+
+  /* ============== REDUCED MOTION ============== */
+  @media (prefers-reduced-motion: reduce){
+    .blob{ animation: none !important; }
+    .status .dot{ animation: none !important; }
+    .reveal{ opacity:1 !important; transform:none !important; transition: none !important; }
+    .fill{ transition: none !important; }
+    *{ scroll-behavior: auto !important; }
+    .bg-stage{
+      background:
+        radial-gradient(60% 60% at 15% 10%, rgba(255,137,6,0.35), transparent 60%),
+        radial-gradient(60% 60% at 85% 15%, rgba(229,49,112,0.32), transparent 60%),
+        radial-gradient(60% 60% at 80% 85%, rgba(127,90,240,0.35), transparent 60%),
+        radial-gradient(60% 60% at 20% 80%, rgba(44,182,125,0.25), transparent 60%),
+        var(--bg);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- FLUID BACKGROUND -->
+<div class="bg-stage" aria-hidden="true">
+  <div class="blob b1"></div>
+  <div class="blob b2"></div>
+  <div class="blob b3"></div>
+  <div class="blob b4"></div>
+  <div class="blob b5"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" aria-label="主导航">
+  <div class="nav-inner">
+    <a class="brand" href="#top" aria-label="林墨白 首页">
+      <span class="mark" aria-hidden="true"></span>
+      <span>林墨白</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#about">关于</a>
+      <a href="#skills">能力</a>
+      <a href="#works">作品</a>
+      <a href="#journey">历程</a>
+      <a href="#contact">联系</a>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <a class="nav-back" href="../index.html" aria-label="返回总览">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        <span class="lbl">总览</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="打开菜单" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<a id="top"></a>
+
+<!-- HERO -->
+<header class="hero wrap">
+  <div class="status reveal">
+    <span class="dot" aria-hidden="true"></span>
+    可接新项目 · 2024 Q4
+  </div>
+  <h1 class="reveal">林墨白</h1>
+  <p class="role reveal">
+    全栈工程师 <span class="sep">/</span> 数字设计师
+  </p>
+  <p class="loc reveal">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+    中国 · 杭州 · 5 年经验
+  </p>
+  <div class="cta-row reveal">
+    <a href="#works" class="btn btn-primary">
+      查看作品
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+    </a>
+    <a href="#contact" class="btn btn-ghost">联系合作</a>
+  </div>
+</header>
+
+<!-- STATS -->
+<section class="wrap" aria-label="核心数据">
+  <div class="stats">
+    <div class="stat reveal">
+      <div class="num">5+</div>
+      <div class="label">年专业经验</div>
+    </div>
+    <div class="stat reveal">
+      <div class="num">42</div>
+      <div class="label">已交付项目</div>
+    </div>
+    <div class="stat reveal">
+      <div class="num">18</div>
+      <div class="label">长期合作客户</div>
+    </div>
+    <div class="stat reveal">
+      <div class="num">99%</div>
+      <div class="label">客户满意度</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="wrap" id="about" aria-label="关于">
+  <div class="sec-head reveal">
+    <span class="sec-tag">About</span>
+    <h2 class="sec-title">在代码与设计之间游走</h2>
+  </div>
+  <div class="about">
+    <div class="glass-panel about-bio reveal">
+      <p>我是 <strong>林墨白</strong>，一名常驻杭州的<strong>全栈工程师与数字设计师</strong>。过去 5 年里，我专注于把复杂的逻辑转化为简单、克制、富有质感的数字体验——从交互原型到工程落地，独立完成端到端交付。</p>
+      <p>我相信好的产品来自<strong>克制的留白、稳定的节奏与对细节的偏执</strong>。前端是我的画布，工程是我的骨架，而设计是连接两者的语言。</p>
+      <div class="tags">
+        <span class="tag">全栈开发</span>
+        <span class="tag">交互设计</span>
+        <span class="tag">动效工程</span>
+        <span class="tag">WebGL / 三维</span>
+        <span class="tag">设计系统</span>
+        <span class="tag">远程协作</span>
+      </div>
+    </div>
+    <div class="about-side">
+      <div class="mini reveal">
+        <div class="k">现居</div>
+        <div class="v">杭州 · 西湖区</div>
+      </div>
+      <div class="mini reveal">
+        <div class="k">专注领域</div>
+        <div class="v">Web 应用 · 创意编程</div>
+      </div>
+      <div class="mini accent reveal">
+        <div class="k">当前状态</div>
+        <div class="v">开放接单 · 可远程</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section class="wrap" id="skills" aria-label="能力">
+  <div class="sec-head reveal">
+    <span class="sec-tag">Skills</span>
+    <h2 class="sec-title">四条主线，一条河流</h2>
+  </div>
+  <div class="skills">
+    <div class="skill reveal">
+      <div class="skill-top">
+        <span class="skill-name">前端工程</span>
+        <span class="skill-val">92</span>
+      </div>
+      <div class="track"><div class="fill" data-w="92"></div></div>
+      <div class="skill-sub">React / Vue / TypeScript / 动效</div>
+    </div>
+    <div class="skill reveal">
+      <div class="skill-top">
+        <span class="skill-name">视觉设计</span>
+        <span class="skill-val">88</span>
+      </div>
+      <div class="track"><div class="fill" data-w="88"></div></div>
+      <div class="skill-sub">界面设计 · 设计系统 · 排版</div>
+    </div>
+    <div class="skill reveal">
+      <div class="skill-top">
+        <span class="skill-name">后端服务</span>
+        <span class="skill-val">85</span>
+      </div>
+      <div class="track"><div class="fill" data-w="85"></div></div>
+      <div class="skill-sub">Node.js / Python / 数据库 / 云</div>
+    </div>
+    <div class="skill reveal">
+      <div class="skill-top">
+        <span class="skill-name">三维与创意</span>
+        <span class="skill-val">76</span>
+      </div>
+      <div class="track"><div class="fill" data-w="76"></div></div>
+      <div class="skill-sub">Three.js / WebGL / Shader</div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKS -->
+<section class="wrap" id="works" aria-label="作品">
+  <div class="sec-head reveal">
+    <span class="sec-tag">Works</span>
+    <h2 class="sec-title">精选项目</h2>
+  </div>
+  <div class="works">
+    <article class="work reveal" style="--sheen: linear-gradient(135deg, rgba(255,137,6,0.18), transparent 60%);">
+      <div class="work-top">
+        <div class="work-ico" style="color:var(--orange);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4L12 17l-6.3 4.4L8 14 2 9.4h7.6z"/></svg>
+        </div>
+        <span class="work-cat">笔记 · SaaS</span>
+      </div>
+      <h3>极光笔记</h3>
+      <p>一款主打沉浸式写作的双链笔记应用，支持本地优先同步与可视化知识图谱，月活用户突破 3 万。</p>
+      <div class="work-meta">
+        <span class="chip">React</span><span class="chip">Tauri</span><span class="chip">CRDT</span>
+      </div>
+    </article>
+
+    <article class="work reveal" style="--sheen: linear-gradient(135deg, rgba(229,49,112,0.2), transparent 60%);">
+      <div class="work-top">
+        <div class="work-ico" style="color:var(--pink);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        </div>
+        <span class="work-cat">设计 · 工具</span>
+      </div>
+      <h3>像素工坊</h3>
+      <p>面向独立设计师的浏览器内像素绘画与动画工具，集成图层、时间轴与导出预设，零安装即开即用。</p>
+      <div class="work-meta">
+        <span class="chip">Canvas</span><span class="chip">WebGL</span><span class="chip">PWA</span>
+      </div>
+    </article>
+
+    <article class="work reveal" style="--sheen: linear-gradient(135deg, rgba(127,90,240,0.22), transparent 60%);">
+      <div class="work-top">
+        <div class="work-ico" style="color:var(--purple);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12h4l3-9 4 18 3-9h6"/></svg>
+        </div>
+        <span class="work-cat">数据 · 可视化</span>
+      </div>
+      <h3>数据之眼</h3>
+      <p>实时业务监控仪表盘，支持自定义看板、流式指标与异常预警，服务于多家电商与金融客户。</p>
+      <div class="work-meta">
+        <span class="chip">D3.js</span><span class="chip">WebSocket</span><span class="chip">Next.js</span>
+      </div>
+    </article>
+
+    <article class="work reveal" style="--sheen: linear-gradient(135deg, rgba(44,182,125,0.2), transparent 60%);">
+      <div class="work-top">
+        <div class="work-ico" style="color:var(--green);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h3l3-9 4 18 3-9h5"/></svg>
+        </div>
+        <span class="work-cat">创意 · 实验</span>
+      </div>
+      <h3>声波画廊</h3>
+      <p>基于 Web Audio 与 Three.js 的声音可视化实验项目，把音乐实时渲染为可漫游的三维粒子空间。</p>
+      <div class="work-meta">
+        <span class="chip">Three.js</span><span class="chip">GLSL</span><span class="chip">Audio API</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section class="wrap" id="journey" aria-label="职业历程">
+  <div class="sec-head reveal">
+    <span class="sec-tag">Journey</span>
+    <h2 class="sec-title">走过的路</h2>
+  </div>
+  <div class="timeline">
+    <div class="tl-item reveal">
+      <span class="tl-dot" aria-hidden="true"></span>
+      <span class="tl-line" aria-hidden="true"></span>
+      <div class="tl-year">2019</div>
+      <div class="tl-title">前端工程师</div>
+      <div class="tl-org">某电商科技公司 · 杭州 — 入门组件库与工程化</div>
+    </div>
+    <div class="tl-item reveal">
+      <span class="tl-dot" aria-hidden="true"></span>
+      <span class="tl-line" aria-hidden="true"></span>
+      <div class="tl-year">2021</div>
+      <div class="tl-title">高级前端 + 设计双线</div>
+      <div class="tl-org">独立工作室 — 主导多个 Web 应用与品牌官网</div>
+    </div>
+    <div class="tl-item reveal">
+      <span class="tl-dot" aria-hidden="true"></span>
+      <span class="tl-line" aria-hidden="true"></span>
+      <div class="tl-year">2023</div>
+      <div class="tl-title">全栈 + 创意工程</div>
+      <div class="tl-org">自由职业 — 端到端交付 SaaS 与交互装置</div>
+    </div>
+    <div class="tl-item reveal">
+      <span class="tl-dot" aria-hidden="true"></span>
+      <div class="tl-year">2024</div>
+      <div class="tl-title">数字设计师 · 独立顾问</div>
+      <div class="tl-org">长期合作客户稳定，开放接新项目</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="wrap" id="contact" aria-label="联系">
+  <div class="contact-card reveal">
+    <h2>有想法？一起把它做出来。</h2>
+    <p>无论是产品落地页、内部工具，还是更野的创意实验，欢迎写信聊聊。我通常在 24 小时内回复。</p>
+    <div class="cta-row" style="justify-content:center;">
+      <a href="mailto:hi@linmobai.studio" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M3 7l9 6 9-6"/></svg>
+        hi@linmobai.studio
+      </a>
+    </div>
+    <div class="social-row">
+      <a class="social" href="#" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.8 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0C17 5 18 5.3 18 5.3c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5 4.5-1.5 7.8-5.8 7.8-10.9C23.5 5.7 18.3.5 12 .5z"/></svg>
+        GitHub
+      </a>
+      <a class="social" href="#" aria-label="Dribbble">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 3.5c3 4 5 8.5 6 17"/><path d="M21 8c-5 1-12 1-16.5-2"/><path d="M3.5 17c4-4 11-4 16.5 1"/></svg>
+        Dribbble
+      </a>
+      <a class="social" href="#" aria-label="X / Twitter">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L6 22H3l7.5-8.6L2.5 2h6.6l4.5 6.7L18.9 2zm-1.1 18h1.7L7.3 3.7H5.5L17.8 20z"/></svg>
+        X / Twitter
+      </a>
+      <a class="social" href="mailto:hi@linmobai.studio" aria-label="邮箱">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="3"/><path d="M3 7l9 6 9-6"/></svg>
+        Email
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="wrap">
+  <div class="foot-inner">
+    <span>© 2024 林墨白 · 用代码与设计构筑数字体验</span>
+    <a class="foot-back" href="#top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      返回总览
+    </a>
+  </div>
+</footer>
+
+<script>
+  // Mobile menu
+  (function(){
+    var toggle = document.getElementById('navToggle');
+    var links = document.getElementById('navLinks');
+    if(!toggle || !links) return;
+    function close(){ links.classList.remove('open'); toggle.setAttribute('aria-expanded','false'); toggle.setAttribute('aria-label','打开菜单'); }
+    toggle.addEventListener('click', function(){
+      var open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      toggle.setAttribute('aria-label', open ? '关闭菜单' : '打开菜单');
+    });
+    links.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', close); });
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape') close(); });
+  })();
+
+  // Reveal on scroll
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!('IntersectionObserver' in window)){
+      els.forEach(function(el){ el.classList.add('in'); });
+      document.querySelectorAll('.fill').forEach(function(f){ f.style.width = (f.getAttribute('data-w')||0) + '%'; });
+      return;
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.add('in');
+          // animate skill bars when their parent reveals
+          var fill = en.target.querySelector('.fill');
+          if(fill){ fill.style.width = (fill.getAttribute('data-w')||0) + '%'; }
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+    els.forEach(function(el){ io.observe(el); });
+  })();
+
+  // Smooth close on outside click (mobile)
+  document.addEventListener('click', function(e){
+    var nav = document.querySelector('.nav');
+    var links = document.getElementById('navLinks');
+    if(links && links.classList.contains('open') && nav && !nav.contains(e.target)){
+      links.classList.remove('open');
+      var t = document.getElementById('navToggle');
+      if(t){ t.setAttribute('aria-expanded','false'); t.setAttribute('aria-label','打开菜单'); }
+    }
+  });
+</script>
+
+</body>
+</html>

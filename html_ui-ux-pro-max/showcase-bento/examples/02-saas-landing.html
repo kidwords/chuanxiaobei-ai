@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>极光笔记 Aurora · 笔记，真正属于你自己</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   设计令牌
+   ============================================================ */
+:root{
+  --bg:#FAFAFA;
+  --card:#FFFFFF;
+  --ink:#1D1D1F;
+  --muted:#6B7280;
+  --soft:#86868B;
+  --line:#E5E7EB;
+  --accent:#6366F1;          /* 主色 indigo */
+  --accent-2:#0071E3;        /* 辅助 Apple Blue */
+  --accent-soft:#EEF0FF;
+
+  --pink:#FFE4E6; --blue:#DBEAFE; --green:#DCFCE7; --amber:#FEF3C7;
+
+  --radius:26px;
+  --shadow:0 4px 20px rgba(0,0,0,0.06);
+  --shadow-hover:0 16px 40px rgba(0,0,0,0.13);
+  --transition:280ms cubic-bezier(.4,0,.2,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter','Noto Sans SC',system-ui,sans-serif;
+  background:var(--bg); color:var(--ink);
+  line-height:1.6; font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+img{max-width:100%;display:block;}
+
+.page{ max-width:1240px; margin:0 auto; padding:28px 24px 72px; }
+
+/* ============================================================
+   顶部导航
+   ============================================================ */
+.topbar{
+  position:sticky; top:0; z-index:30;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 22px; margin-bottom:28px;
+  background:rgba(250,250,250,0.78);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border-radius:18px;
+  border:1px solid rgba(229,231,235,0.7);
+}
+.brand{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:17px; letter-spacing:-.01em; }
+.logo{
+  width:32px; height:32px; border-radius:9px; flex-shrink:0;
+  background:linear-gradient(135deg,#6366F1,#0071E3);
+  display:grid; place-items:center;
+}
+.logo svg{ width:18px; height:18px; color:#fff; }
+.topnav{ display:flex; gap:4px; }
+.topnav a{
+  padding:9px 16px; border-radius:999px; font-size:14px; font-weight:500;
+  color:var(--muted); transition:var(--transition);
+}
+.topnav a:hover{ color:var(--ink); background:rgba(0,0,0,0.04); }
+.btn-pill{
+  padding:10px 20px; border-radius:999px; font-size:14px; font-weight:600;
+  background:var(--ink); color:#fff; transition:var(--transition);
+}
+.btn-pill:hover{ transform:translateY(-2px); box-shadow:0 8px 22px rgba(0,0,0,0.18); }
+
+/* ============================================================
+   Bento 网格
+   ============================================================ */
+.bento{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-auto-rows:minmax(110px,auto);
+  gap:20px;
+}
+.card{
+  background:var(--card); border-radius:var(--radius);
+  padding:28px; box-shadow:var(--shadow);
+  transition:transform var(--transition), box-shadow var(--transition);
+  border:1px solid rgba(0,0,0,0.03); position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.card.clickable{cursor:pointer;}
+.card.clickable:hover{ transform:translateY(-4px); box-shadow:var(--shadow-hover); }
+
+.span-hero{grid-column:span 7; grid-row:span 2;}
+.span-5{grid-column:span 5;}
+.span-4{grid-column:span 4;}
+.span-3{grid-column:span 3;}
+.span-6{grid-column:span 6;}
+.span-8{grid-column:span 8;}
+.span-12{grid-column:span 12;}
+
+.card.dark{ background:#1D1D1F; color:#F5F5F7; }
+.card.dark .muted{ color:#A1A1A6; }
+.card.blue{ background:var(--blue); }
+.card.pink{ background:var(--pink); }
+.card.green{ background:var(--green); }
+.card.amber{ background:var(--amber); }
+.card.indigo-grad{ background:linear-gradient(140deg,#4F46E5,#6366F1 60%,#818CF8); color:#fff; }
+
+/* ============================================================
+   HERO 卡片
+   ============================================================ */
+.hero{ justify-content:space-between; }
+.hero .badge{
+  display:inline-flex; align-items:center; gap:7px; width:fit-content;
+  padding:7px 14px; border-radius:999px; font-size:13px; font-weight:500;
+  background:var(--accent-soft); color:var(--accent);
+  border:1px solid rgba(99,102,241,0.18);
+}
+.hero h1{
+  margin-top:18px;
+  font-size:clamp(34px,4.4vw,56px); font-weight:800;
+  letter-spacing:-.03em; line-height:1.08;
+}
+.hero h1 .grad{
+  background:linear-gradient(120deg,#6366F1,#0071E3);
+  -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+}
+.hero p.lead{
+  margin-top:18px; color:var(--muted); font-size:17px; line-height:1.65;
+  max-width:520px;
+}
+.signup{
+  margin-top:26px; display:flex; gap:10px; max-width:480px;
+  background:#fff; padding:7px; border-radius:14px;
+  border:1px solid var(--line); box-shadow:0 2px 10px rgba(0,0,0,0.04);
+}
+.signup input{
+  flex:1; border:none; outline:none; background:transparent;
+  padding:11px 14px; font-size:15px; font-family:inherit; color:var(--ink);
+}
+.signup input::placeholder{ color:var(--soft); }
+.signup button{
+  padding:11px 22px; border-radius:10px; font-size:14px; font-weight:600;
+  background:var(--ink); color:#fff; transition:var(--transition);
+  display:inline-flex; align-items:center; gap:7px; white-space:nowrap;
+}
+.signup button:hover{ background:var(--accent); }
+.hero-meta{ margin-top:16px; font-size:13px; color:var(--soft); display:flex; gap:18px; flex-wrap:wrap; }
+.hero-meta span{ display:inline-flex; align-items:center; gap:5px; }
+
+/* ============================================================
+   产品截图 Mockup (右侧大卡)
+   ============================================================ */
+.mockup-card{
+  background:linear-gradient(160deg,#1D1D1F,#111114);
+  color:#F5F5F7; padding:0; overflow:hidden;
+}
+.mockup-head{
+  display:flex; align-items:center; gap:8px; padding:16px 20px 12px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.mockup-head .dots{ display:flex; gap:6px; }
+.mockup-head .dots span{ width:11px; height:11px; border-radius:50%; background:#3A3A3C; }
+.mockup-head .dots span:nth-child(1){ background:#FF5F57; }
+.mockup-head .dots span:nth-child(2){ background:#FEBC2E; }
+.mockup-head .dots span:nth-child(3){ background:#28C840; }
+.mockup-head .url{
+  margin-left:12px; font-size:12px; color:#86868B;
+  background:rgba(255,255,255,0.06); padding:5px 14px; border-radius:999px;
+}
+.mockup-body{ padding:18px; display:grid; grid-template-columns:130px 1fr; gap:14px; flex:1; }
+.mockup-side{
+  background:rgba(255,255,255,0.04); border-radius:12px; padding:14px;
+  display:flex; flex-direction:column; gap:9px;
+}
+.mockup-side .nav-item{
+  font-size:11px; color:#A1A1A6; padding:7px 10px; border-radius:7px;
+  display:flex; align-items:center; gap:7px;
+}
+.mockup-side .nav-item.active{ background:rgba(99,102,241,0.25); color:#C7D2FE; }
+.mockup-side .nav-item .ico{ width:13px; height:13px; background:currentColor; border-radius:3px; opacity:.7; }
+.mockup-main{ display:flex; flex-direction:column; gap:10px; }
+.mockup-line{ height:11px; border-radius:5px; background:rgba(255,255,255,0.09); }
+.mockup-line.w-90{ width:90%; }
+.mockup-line.w-70{ width:70%; }
+.mockup-line.w-60{ width:60%; }
+.mockup-line.w-40{ width:40%; }
+.mockup-line.grad{ background:linear-gradient(90deg,rgba(99,102,241,0.55),rgba(0,113,227,0.35)); }
+.mockup-title{ height:18px; width:55%; border-radius:6px; background:rgba(255,255,255,0.18); margin-bottom:8px; }
+.mockup-chips{ display:flex; gap:7px; margin-top:6px; }
+.mockup-chips span{
+  font-size:10px; padding:4px 9px; border-radius:999px;
+  background:rgba(255,255,255,0.08); color:#A1A1A6;
+}
+
+/* ============================================================
+   通用内容
+   ============================================================ */
+.eyebrow{
+  font-size:12px; font-weight:600; letter-spacing:.08em;
+  text-transform:uppercase; color:var(--soft); margin-bottom:10px;
+}
+.card-title{ font-size:18px; font-weight:700; letter-spacing:-.01em; }
+
+/* 社会证明 - logos */
+.proof-card{ align-items:center; text-align:center; }
+.proof-num{
+  font-size:clamp(36px,4vw,48px); font-weight:800; letter-spacing:-.03em;
+}
+.proof-label{ color:var(--muted); font-size:14px; margin-top:4px; }
+.logos{
+  margin-top:22px; display:flex; flex-wrap:wrap; justify-content:center;
+  align-items:center; gap:14px 28px;
+}
+.logo-mark{
+  display:inline-flex; align-items:center; gap:8px;
+  font-weight:700; font-size:16px; color:#9CA3AF; letter-spacing:-.01em;
+  transition:var(--transition); opacity:.8;
+}
+.logo-mark:hover{ color:var(--muted); opacity:1; }
+.logo-mark .mark{
+  width:24px; height:24px; border-radius:7px; background:#D1D5DB;
+  display:grid; place-items:center; color:#fff; font-size:13px;
+}
+
+/* 功能卡 */
+.feature{ justify-content:flex-start; }
+.feature .ficon{
+  width:50px; height:50px; border-radius:14px;
+  display:grid; place-items:center; margin-bottom:18px;
+}
+.feature .ficon svg{ width:24px; height:24px; }
+.feature h3{ font-size:19px; font-weight:700; letter-spacing:-.01em; }
+.feature p{ color:var(--muted); font-size:14px; line-height:1.7; margin-top:8px; }
+
+/* 大数据卡 (可用性) */
+.stat-big{
+  background:linear-gradient(140deg,#0F172A,#1E293B); color:#fff;
+  justify-content:space-between; align-items:flex-start;
+}
+.stat-big .num{
+  font-size:clamp(46px,5vw,64px); font-weight:800; letter-spacing:-.03em; line-height:1;
+}
+.stat-big .num small{ font-size:28px; font-weight:700; color:#A5B4FC; }
+.stat-big .bar{
+  margin-top:18px; height:8px; border-radius:999px;
+  background:rgba(255,255,255,0.1); overflow:hidden; width:100%;
+}
+.stat-big .bar > span{ display:block; height:100%; width:0; border-radius:999px;
+  background:linear-gradient(90deg,#34D399,#10B981); transition:width 1.4s ease; }
+.stat-big .label{ color:#94A3B8; font-size:13px; margin-top:10px; }
+
+/* 推荐 testimonial */
+.quote-card{ justify-content:space-between; }
+.quote-mark{
+  font-size:64px; line-height:.5; color:var(--accent); font-family:Georgia,serif;
+  height:30px;
+}
+.quote-text{
+  font-size:18px; line-height:1.65; font-weight:500; letter-spacing:-.01em;
+  margin-top:6px;
+}
+.quote-meta{ margin-top:auto; padding-top:22px; display:flex; align-items:center; gap:12px; }
+.quote-avatar{
+  width:44px; height:44px; border-radius:50%;
+  background:linear-gradient(135deg,#F472B6,#FB7185);
+  display:grid; place-items:center; color:#fff; font-weight:700; font-size:15px;
+}
+.quote-name{ font-weight:600; font-size:14px; }
+.quote-role{ font-size:12px; color:var(--soft); }
+.stars{ color:#F59E0B; font-size:13px; letter-spacing:2px; margin-top:4px; }
+
+/* CTA 卡片 */
+.cta-card{
+  background:linear-gradient(135deg,#6366F1 0%,#0071E3 100%);
+  color:#fff; align-items:center; text-align:center;
+  padding:48px 32px;
+}
+.cta-card h2{ font-size:clamp(26px,3vw,34px); font-weight:800; letter-spacing:-.02em; }
+.cta-card p{ color:rgba(255,255,255,0.85); margin-top:10px; font-size:15px; max-width:480px; }
+.cta-card .actions{ margin-top:26px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+.btn-white{
+  padding:13px 26px; border-radius:12px; background:#fff; color:#1D1D1F;
+  font-weight:600; font-size:14px; transition:var(--transition);
+  display:inline-flex; align-items:center; gap:8px;
+}
+.btn-white:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,0.2); }
+.btn-line{
+  padding:13px 26px; border-radius:12px; font-weight:600; font-size:14px;
+  background:rgba(255,255,255,0.12); color:#fff;
+  border:1px solid rgba(255,255,255,0.3); transition:var(--transition);
+}
+.btn-line:hover{ background:rgba(255,255,255,0.22); }
+
+/* 区块标题 */
+.section-head{ grid-column:span 12; padding:18px 4px 2px; }
+.section-head h2{ font-size:24px; font-weight:700; letter-spacing:-.01em; }
+.section-head p{ color:var(--muted); margin-top:4px; font-size:14px; }
+
+/* footer */
+.footer{
+  margin-top:48px; padding:24px 0 0; border-top:1px solid var(--line);
+  display:flex; justify-content:space-between; color:var(--soft); font-size:13px; flex-wrap:wrap; gap:10px;
+}
+
+/* ============================================================
+   动画
+   ============================================================ */
+.reveal{ opacity:0; transform:translateY(22px); transition:opacity .6s ease, transform .6s ease; }
+.reveal.in{ opacity:1; transform:none; }
+
+/* ============================================================
+   响应式
+   ============================================================ */
+@media (max-width:1024px){
+  .span-hero{ grid-column:span 12; grid-row:span 1; }
+  .span-8,.span-7,.span-6,.span-5{ grid-column:span 6; }
+  .span-4,.span-3{ grid-column:span 6; }
+}
+@media (max-width:640px){
+  .page{ padding:18px 16px 56px; }
+  .bento{ grid-template-columns:1fr; }
+  .span-hero,.span-3,.span-4,.span-5,.span-6,.span-7,.span-8,.span-12{ grid-column:span 1; }
+  .card{ padding:22px; }
+  .topnav{ display:none; }
+  .signup{ flex-direction:column; }
+  .signup button{ justify-content:center; }
+  .mockup-body{ grid-template-columns:1fr; }
+  .mockup-side{ flex-direction:row; overflow-x:auto; }
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+  .reveal{ opacity:1; transform:none; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- 顶部毛玻璃导航 -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      </span>
+      <span>极光笔记 Aurora</span>
+    </div>
+    <nav class="topnav" aria-label="主导航">
+      <a href="#features">功能</a>
+      <a href="#proof">客户</a>
+      <a href="#pricing">价格</a>
+      <a href="#">登录</a>
+    </nav>
+    <button class="btn-pill">免费开始</button>
+  </header>
+
+  <main class="bento">
+
+    <!-- HERO (7x2) -->
+    <section class="card hero span-hero reveal" aria-label="产品介绍">
+      <div>
+        <span class="badge">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7 7 .5-5.5 4.5 2 7L12 17l-6.5 4 2-7L2 9.5 9 9z"/></svg>
+          v2.0 现已支持协作编辑
+        </span>
+        <h1>笔记，<br>真正属于<span class="grad">你自己</span>。</h1>
+        <p class="lead">极光笔记是一款本地优先、双向链接的笔记工具。数据加密存放在你自己的设备上，所有想法都安静地连成一张网。</p>
+      </div>
+      <div>
+        <form class="signup" onsubmit="event.preventDefault();">
+          <input type="email" placeholder="输入你的邮箱，免费试用 14 天" aria-label="邮箱">
+          <button type="submit">
+            开始使用
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg>
+          </button>
+        </form>
+        <div class="hero-meta">
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg> 无需信用卡</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg> macOS / Windows / Linux</span>
+          <span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-11"/></svg> 中文原生支持</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 产品截图 mockup (5x2) -->
+    <section class="card mockup-card span-5 reveal" aria-label="产品预览">
+      <div class="mockup-head">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span class="url">aurora.app/notes/想法花园</span>
+      </div>
+      <div class="mockup-body">
+        <aside class="mockup-side">
+          <div class="nav-item active"><span class="ico"></span> 想法花园</div>
+          <div class="nav-item"><span class="ico"></span> 工作日志</div>
+          <div class="nav-item"><span class="ico"></span> 读书笔记</div>
+          <div class="nav-item"><span class="ico"></span> 项目清单</div>
+          <div class="nav-item"><span class="ico"></span> 灵感库</div>
+        </aside>
+        <div class="mockup-main">
+          <div class="mockup-title"></div>
+          <div class="mockup-line grad w-90"></div>
+          <div class="mockup-line w-70"></div>
+          <div class="mockup-line w-90"></div>
+          <div class="mockup-line w-60"></div>
+          <div class="mockup-line grad w-40"></div>
+          <div class="mockup-chips">
+            <span># 灵感</span><span># 双向链接</span><span># 2026</span>
+          </div>
+          <div class="mockup-line w-70" style="margin-top:6px;"></div>
+          <div class="mockup-line w-40"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 社会证明 (12x1) -->
+    <section class="card proof-card span-12 reveal" id="proof">
+      <div>
+        <div class="eyebrow" style="text-align:center;">深受信任</div>
+        <div class="proof-num" data-count="10000" data-suffix="+">10,000+</div>
+        <div class="proof-label">来自全球的团队与独立创作者，每天都在用极光笔记</div>
+      </div>
+      <div class="logos">
+        <span class="logo-mark"><span class="mark">N</span> Nimbus</span>
+        <span class="logo-mark"><span class="mark">F</span> Foundry</span>
+        <span class="logo-mark"><span class="mark">P</span> Polaris</span>
+        <span class="logo-mark"><span class="mark">K</span> Kestrel</span>
+        <span class="logo-mark"><span class="mark">M</span> Meridian</span>
+        <span class="logo-mark"><span class="mark">A</span> Atelier</span>
+      </div>
+    </section>
+
+    <!-- 功能区 标题 -->
+    <div class="section-head reveal">
+      <h2>为什么是极光笔记</h2>
+      <p>四个核心特性，重新定义"属于你自己的"知识管理。</p>
+    </div>
+
+    <!-- 功能 1: 双向链接 (4x1) -->
+    <section class="card feature span-4 reveal" id="features">
+      <div class="ficon" style="background:var(--accent-soft); color:var(--accent);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+      </div>
+      <h3>双向链接</h3>
+      <p>用 [[[]]] 把任何一篇笔记连起来。想法不再孤立，而是形成一张持续生长的知识网络。</p>
+    </section>
+
+    <!-- 功能 2: 本地优先 (4x1) -->
+    <section class="card feature span-4 reveal">
+      <div class="ficon" style="background:var(--green); color:#16A34A;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/><path d="M8 16v4"/><path d="M16 16v4"/></svg>
+      </div>
+      <h3>本地优先</h3>
+      <p>所有笔记默认存放在你自己的设备上。离线可用、瞬时响应，速度与你的思维同步。</p>
+    </section>
+
+    <!-- 功能 3: 端到端加密 (4x1) -->
+    <section class="card feature span-4 reveal">
+      <div class="ficon" style="background:var(--amber); color:#D97706;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+      </div>
+      <h3>端到端加密</h3>
+      <p>同步过程全程加密，连我们也无法读取你的内容。隐私，从来不是一句口号。</p>
+    </section>
+
+    <!-- 大数据卡: 可用性 (8x1) -->
+    <section class="card stat-big span-8 reveal">
+      <div>
+        <div class="eyebrow muted" style="color:#94A3B8;">服务可用性 (过去 12 个月)</div>
+        <div class="num"><span data-count="99" data-suffix=".9">99.9</span><small>%</small></div>
+      </div>
+      <div style="width:100%;">
+        <div class="bar"><span data-width="99.9%"></span></div>
+        <div class="label">平均每月停机时间 &lt; 5 分钟 · 全自托管基础设施 · 多区域容灾</div>
+      </div>
+    </section>
+
+    <!-- 功能 4: 跨平台同步 (4x1) -->
+    <section class="card feature pink span-4 reveal">
+      <div class="ficon" style="background:#fff; color:#E11D48;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+      </div>
+      <h3 style="color:#9F1239;">跨平台同步</h3>
+      <p style="color:#9F1239; opacity:.85;">桌面、平板、手机无缝衔接。在一台设备上记下，下一秒就在另一台继续。</p>
+    </section>
+
+    <!-- 推荐 testimonial (7x1) -->
+    <section class="card quote-card span-7 reveal">
+      <div>
+        <div class="quote-mark">&ldquo;</div>
+        <p class="quote-text">从 Notion 迁移过来之后，整个团队的写作量翻了一倍。本地优先让我们在任何网络环境下都能工作，加密同步让我们对客户数据彻底放心。</p>
+      </div>
+      <div class="quote-meta">
+        <div class="quote-avatar">沈</div>
+        <div>
+          <div class="quote-name">沈知行</div>
+          <div class="quote-role">Nimbus 产品负责人</div>
+          <div class="stars">★★★★★</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 价格 teaser (5x1) -->
+    <section class="card dark span-5 reveal" id="pricing" style="justify-content:space-between;">
+      <div class="eyebrow muted">个人版定价</div>
+      <div>
+        <div style="display:flex; align-items:baseline; gap:6px;">
+          <span style="font-size:48px; font-weight:800; letter-spacing:-.03em;">¥0</span>
+          <span class="muted" style="font-size:15px;">起 / 永久免费</span>
+        </div>
+        <p class="muted" style="margin-top:8px; font-size:14px;">不限笔记数量，本地使用完全免费。<br>Pro 版 ¥28/月，解锁加密同步与协作。</p>
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn-white" style="background:#fff; color:#1D1D1F; padding:12px 20px;">查看完整对比</button>
+      </div>
+    </section>
+
+    <!-- 最终 CTA (12x1) -->
+    <section class="card cta-card span-12 reveal">
+      <h2>把你的想法，安顿在一个安静的地方。</h2>
+      <p>14 天免费试用 Pro，随时取消。无需绑定信用卡。</p>
+      <div class="actions">
+        <button class="btn-white">
+          免费下载
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+        </button>
+        <button class="btn-line">查看在线 Demo</button>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 极光笔记 Aurora · 数据主权，回归个人</span>
+    <span>Made with care in Hangzhou</span>
+  </footer>
+</div>
+
+<script>
+/* 入场动画 */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('in'), (i%6)*60);
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* 进度条 */
+const barObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.querySelectorAll('[data-width]').forEach(b=> b.style.width = b.dataset.width);
+      barObs.unobserve(e.target);
+    }
+  });
+},{threshold:.3});
+document.querySelectorAll('.card').forEach(c=>{ if(c.querySelector('[data-width]')) barObs.observe(c); });
+
+/* 数字计数 */
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const numObs = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el = e.target;
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    if(reduce){ el.textContent = target + suffix; numObs.unobserve(el); return; }
+    let cur = 0;
+    const dur = 1200, start = performance.now();
+    const step = (now)=>{
+      const p = Math.min(1, (now-start)/dur);
+      const ease = 1 - Math.pow(1-p, 3);
+      const val = Math.round(target * ease);
+      el.textContent = (val >= 1000 ? val.toLocaleString() : val) + suffix;
+      if(p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+    numObs.unobserve(el);
+  });
+},{threshold:.5});
+document.querySelectorAll('[data-count]').forEach(el=> numObs.observe(el));
+</script>
+
+</body>
+</html>

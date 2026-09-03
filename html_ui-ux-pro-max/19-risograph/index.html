@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>林墨白 — 全栈工程师 / 数字设计师</title>
+<meta name="description" content="林墨白,杭州全栈工程师与数字设计师的个人作品集。Riso印刷风格。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;600;700;800;900&family=Space+Mono:wght@400;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RISOGRAPH / RETRO PRINT — DESIGN SYSTEM
+   Two-ink print: Red #FF4D5E + Blue #2D7DD2 -> overlap #5A2A6C
+   ============================================================ */
+:root{
+  --paper:#F5E6D3;
+  --paper-2:#EFDCC4;
+  --ink:#1A1A1A;
+  --red:#FF4D5E;
+  --blue:#2D7DD2;
+  --purple:#5A2A6C;   /* red * blue overlap (multiply) */
+  --yellow:#FFD43B;
+  --ink-soft:#3a3530;
+  --rule:#1A1A1A;
+
+  --display:"Anton","Archivo",sans-serif;
+  --sans:"Archivo","Noto Sans SC",sans-serif;
+  --mono:"Space Mono",monospace;
+  --body:"Noto Sans SC","Archivo",sans-serif;
+
+  --r-sm:10px; --r:14px; --r-lg:16px;
+  --maxw:1200px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+  position:relative;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- PAPER GRAIN OVERLAY (fixed, multiply blend) ---------- */
+.grain{
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:9999;
+  opacity:.38;
+  mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+  background-size:240px 240px;
+}
+/* faint paper fiber tint */
+.fiber{
+  position:fixed; inset:0;
+  pointer-events:none; z-index:9998;
+  background:
+    repeating-linear-gradient(90deg, rgba(26,26,26,.012) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(0deg,  rgba(26,26,26,.010) 0 1px, transparent 1px 4px);
+  mix-blend-mode:multiply;
+}
+
+/* ---------- LAYOUT ---------- */
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px; position:relative; z-index:2;}
+.section{padding:96px 0; position:relative;}
+@media(max-width:768px){.section{padding:64px 0;}}
+
+/* ---------- TYPOGRAPHY ---------- */
+.h-display{font-family:var(--display); font-weight:400; line-height:.92; letter-spacing:.005em; text-transform:uppercase;}
+.mono-label{font-family:var(--mono); font-size:12px; letter-spacing:.22em; text-transform:uppercase; font-weight:700;}
+.eyebrow{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--mono); font-size:12px; letter-spacing:.22em;
+  text-transform:uppercase; font-weight:700; color:var(--ink);
+  padding:7px 14px; border:2px solid var(--ink); border-radius:999px;
+  background:var(--paper);
+}
+.eyebrow::before{content:""; width:8px;height:8px;border-radius:50%;background:var(--red); display:inline-block;}
+
+/* ---------- RISO SHAPE PRIMITIVES (multiply blend = overlap colors) ---------- */
+.ink-red{background:var(--red); mix-blend-mode:multiply;}
+.ink-blue{background:var(--blue); mix-blend-mode:multiply;}
+.ink-yellow{background:var(--yellow); mix-blend-mode:multiply;}
+.ink-black{background:var(--ink); mix-blend-mode:multiply;}
+.riso-shape{position:absolute; mix-blend-mode:multiply; pointer-events:none;}
+
+/* Halftone dot sheet — for texture on shapes */
+.halftone{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:radial-gradient(rgba(26,26,26,.16) 1px, transparent 1.6px);
+  background-size:6px 6px;
+  mix-blend-mode:multiply; opacity:.5;
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.nav{
+  position:sticky; top:0; z-index:100;
+  background:var(--paper);
+  border-bottom:2px solid var(--ink);
+}
+.nav-inner{
+  max-width:var(--maxw); margin:0 auto; padding:14px 24px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+}
+.brand{display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--ink);}
+.brand-mark{
+  width:42px; height:42px; position:relative; flex:none;
+  border-radius:50%;
+}
+.brand-mark .b1{position:absolute; inset:0; border-radius:50%; background:var(--red); mix-blend-mode:multiply;}
+.brand-mark .b2{position:absolute; inset:0; border-radius:50%; background:var(--blue); mix-blend-mode:multiply; transform:translate(5px,3px);}
+.brand-name{font-family:var(--display); font-size:22px; letter-spacing:.02em; line-height:1;}
+.brand-name .small{display:block; font-family:var(--mono); font-size:9px; letter-spacing:.28em; color:var(--ink-soft); margin-top:4px;}
+
+.nav-links{display:flex; align-items:center; gap:6px;}
+.nav-links a{
+  text-decoration:none; color:var(--ink);
+  font-family:var(--mono); font-size:13px; font-weight:700;
+  letter-spacing:.05em; padding:8px 12px; border-radius:var(--r-sm);
+  transition:all .25s ease; position:relative;
+}
+.nav-links a:hover{background:var(--ink); color:var(--paper);}
+.nav-links a.back{
+  border:2px solid var(--ink);
+}
+.nav-links a.back:hover{background:var(--red); border-color:var(--red); color:var(--paper); transform:translate(-2px,-2px); box-shadow:3px 3px 0 var(--ink);}
+
+.burger{display:none; width:44px;height:44px; border:2px solid var(--ink); background:var(--paper); border-radius:var(--r-sm); cursor:pointer; align-items:center; justify-content:center; flex-direction:column; gap:5px;}
+.burger span{display:block; width:20px; height:2px; background:var(--ink); transition:.25s;}
+@media(max-width:860px){
+  .nav-links{
+    position:absolute; top:100%; left:0; right:0;
+    flex-direction:column; align-items:stretch; gap:0;
+    background:var(--paper); border-bottom:2px solid var(--ink);
+    padding:0; max-height:0; overflow:hidden; transition:max-height .35s ease;
+  }
+  .nav-links.open{max-height:420px;}
+  .nav-links a{padding:14px 24px; border-top:1px solid rgba(26,26,26,.15); border-radius:0;}
+  .nav-links a.back{margin:8px 24px 16px; border-radius:var(--r-sm);}
+  .burger{display:flex;}
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{
+  position:relative; overflow:hidden;
+  padding:72px 0 96px;
+  border-bottom:2px solid var(--ink);
+}
+/* hero background shapes */
+.hero-shapes{position:absolute; inset:0; pointer-events:none; z-index:0;}
+.hero .sunburst{
+  position:absolute; right:-160px; top:-120px;
+  width:560px; height:560px;
+}
+.hero .ring{
+  position:absolute; border-radius:50%; mix-blend-mode:multiply;
+}
+.hero .ring.r1{width:300px;height:300px; left:-90px; top:120px; background:var(--red);}
+.hero .ring.r2{width:300px;height:300px; left:-60px; top:140px; background:var(--blue);}
+.hero .ring.r3{width:200px;height:200px; right:18%; top:60%; background:var(--yellow); opacity:.85;}
+.hero .ring.r4{width:120px;height:120px; left:46%; top:8%; background:var(--blue); opacity:.9;}
+
+.hero-grid{
+  position:relative; z-index:2;
+  display:grid; grid-template-columns:1.4fr .9fr; gap:48px; align-items:end;
+}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr; gap:40px;}}
+
+.hero-meta{display:flex; flex-direction:column; gap:18px;}
+.hero h1{
+  font-family:var(--display);
+  font-size:clamp(72px, 14vw, 200px);
+  line-height:.85; letter-spacing:-.01em;
+  color:var(--ink);
+  position:relative;
+  text-transform:none;
+}
+/* registration offset: duplicate text layers */
+.h1-stack{position:relative; display:inline-block;}
+.h1-stack .layer{
+  position:absolute; inset:0;
+  font-family:var(--display);
+  font-size:clamp(72px, 14vw, 200px);
+  line-height:.85; letter-spacing:-.01em;
+  pointer-events:none;
+}
+.h1-stack .layer.red{color:var(--red); transform:translate(-5px,-3px); mix-blend-mode:multiply;}
+.h1-stack .layer.blue{color:var(--blue); transform:translate(5px,3px); mix-blend-mode:multiply;}
+.h1-stack .layer.base{position:relative; color:var(--ink);}
+
+.hero-role{display:flex; flex-wrap:wrap; gap:10px 18px; align-items:center; margin-top:8px;}
+.hero-role .title{font-family:var(--sans); font-weight:800; font-size:20px;}
+.hero-role .dot{width:6px;height:6px;border-radius:50%;background:var(--ink);}
+.hero-role .loc{font-family:var(--mono); font-size:13px; letter-spacing:.06em; color:var(--ink-soft);}
+
+.status{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+  padding:8px 14px; border:2px solid var(--ink); border-radius:999px; background:var(--paper);
+  width:fit-content;
+}
+.status .pulse{width:9px;height:9px;border-radius:50%; background:var(--red); position:relative;}
+.status .pulse::after{content:""; position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--red); animation:pulse 1.8s ease-out infinite;}
+@keyframes pulse{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.8);opacity:0}}
+
+.cta-row{display:flex; flex-wrap:wrap; gap:14px; margin-top:6px;}
+.btn{
+  display:inline-flex; align-items:center; gap:10px;
+  font-family:var(--sans); font-weight:700; font-size:15px; letter-spacing:.01em;
+  padding:14px 22px; border-radius:var(--r);
+  text-decoration:none; cursor:pointer; border:2px solid var(--ink);
+  transition:all .25s cubic-bezier(.2,.7,.3,1);
+  position:relative; background:var(--paper); color:var(--ink);
+}
+.btn svg{width:18px;height:18px;}
+.btn-primary{background:var(--red); color:var(--paper);}
+.btn-primary:hover{transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--ink);}
+.btn-ghost:hover{background:var(--blue); color:var(--paper); transform:translate(-3px,-3px); box-shadow:5px 5px 0 var(--ink);}
+
+/* hero side card (poster) */
+.hero-card{
+  position:relative; border:2px solid var(--ink); border-radius:var(--r-lg);
+  background:var(--paper); padding:24px;
+  box-shadow:8px 8px 0 var(--ink);
+  transform:rotate(1.2deg);
+  overflow:hidden;
+}
+.hero-card .hc-shapes{position:absolute; inset:0; pointer-events:none;}
+.hero-card .arc{position:absolute; width:160px;height:160px; border-radius:50%; mix-blend-mode:multiply;}
+.hero-card .hc-line{font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft);}
+.hero-card .hc-title{font-family:var(--display); font-size:34px; line-height:.95; margin:10px 0 14px;}
+.hero-card .hc-desc{font-size:14px; line-height:1.65; position:relative; z-index:2;}
+.hc-tags{display:flex; flex-wrap:wrap; gap:6px; margin-top:16px; position:relative; z-index:2;}
+.tag{
+  font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.05em;
+  padding:5px 10px; border:1.5px solid var(--ink); border-radius:6px; background:var(--paper);
+}
+.tag.red{background:var(--red); color:var(--paper); border-color:var(--red);}
+.tag.blue{background:var(--blue); color:var(--paper); border-color:var(--blue);}
+
+/* hero ticker */
+.ticker{
+  margin-top:64px; border-top:2px solid var(--ink); border-bottom:2px solid var(--ink);
+  background:var(--paper-2); overflow:hidden; position:relative; z-index:2;
+}
+.ticker-track{display:flex; gap:48px; padding:14px 0; white-space:nowrap; animation:scroll 28s linear infinite; width:max-content;}
+.ticker-track span{font-family:var(--display); font-size:22px; letter-spacing:.04em; display:inline-flex; align-items:center; gap:18px; color:var(--ink);}
+.ticker-track span::after{content:"★"; color:var(--red); font-size:18px;}
+@keyframes scroll{to{transform:translateX(-50%);}}
+
+/* ============================================================
+   SECTION HEAD
+   ============================================================ */
+.s-head{display:flex; align-items:flex-end; justify-content:space-between; gap:24px; margin-bottom:48px; flex-wrap:wrap;}
+.s-head h2{
+  font-family:var(--display); font-size:clamp(40px,6vw,72px); line-height:.95; letter-spacing:.005em;
+  position:relative; display:inline-block;
+}
+.s-head h2 .h2-red{color:var(--red); mix-blend-mode:multiply; transform:translate(-3px,-2px); display:inline-block;}
+.s-head h2 .h2-blue{color:var(--blue); mix-blend-mode:multiply; transform:translate(3px,2px); display:inline-block;}
+.s-head .s-num{font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.16em; color:var(--ink-soft);}
+
+/* ============================================================
+   ABOUT
+   ============================================================ */
+.about{position:relative;}
+.about-grid{display:grid; grid-template-columns:1.1fr .9fr; gap:40px; align-items:stretch;}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr;}}
+
+.about-panel{
+  position:relative; border:2px solid var(--ink); border-radius:var(--r-lg);
+  padding:40px; overflow:hidden; background:var(--paper);
+  box-shadow:6px 6px 0 var(--ink);
+}
+.about-panel .ab-shapes{position:absolute; inset:0; pointer-events:none; z-index:0;}
+.ab-circle{position:absolute; border-radius:50%; mix-blend-mode:multiply;}
+.ab-zig{
+  position:absolute; bottom:0; left:0; right:0; height:30px; opacity:.6; mix-blend-mode:multiply;
+}
+.about-panel p{position:relative; z-index:2; font-size:17px; line-height:1.75; margin-bottom:16px;}
+.about-panel p strong{background:var(--yellow); padding:1px 4px; mix-blend-mode:multiply;}
+
+.about-stats{display:grid; grid-template-columns:1fr 1fr; gap:16px; align-content:start;}
+.stat{
+  position:relative; border:2px solid var(--ink); border-radius:var(--r-lg);
+  padding:28px 20px; background:var(--paper); overflow:hidden;
+  transition:transform .25s ease, box-shadow .25s ease;
+}
+.stat:hover{transform:translate(-3px,-3px); box-shadow:6px 6px 0 var(--ink);}
+.stat .s-shape{position:absolute; right:-30px; top:-30px; width:90px; height:90px; border-radius:50%; mix-blend-mode:multiply;}
+.stat .num{
+  font-family:var(--display); font-size:64px; line-height:1; position:relative; z-index:2;
+  display:inline-block;
+}
+.stat .num .red{color:var(--red);}
+.stat .num .blue{color:var(--blue);}
+.stat .lab{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase; margin-top:10px; position:relative; z-index:2; color:var(--ink-soft); font-weight:700;}
+
+/* ============================================================
+   SKILLS
+   ============================================================ */
+.skills{position:relative; background:var(--paper-2); border-top:2px solid var(--ink); border-bottom:2px solid var(--ink);}
+.skill-grid{display:grid; grid-template-columns:1fr 1fr; gap:32px 48px;}
+@media(max-width:760px){.skill-grid{grid-template-columns:1fr;}}
+.skill{position:relative;}
+.skill-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px;}
+.skill-name{font-family:var(--display); font-size:32px; letter-spacing:.01em;}
+.skill-val{font-family:var(--mono); font-size:18px; font-weight:700;}
+.skill-bar{
+  height:28px; border:2px solid var(--ink); border-radius:8px;
+  position:relative; overflow:hidden; background:var(--paper);
+}
+.skill-fill-red, .skill-fill-blue{
+  position:absolute; left:0; top:0; bottom:0;
+  mix-blend-mode:multiply;
+  transform-origin:left;
+  transform:scaleX(0);
+  transition:transform 1.2s cubic-bezier(.2,.7,.2,1);
+}
+.skill-bar.revealed .skill-fill-red{transform:scaleX(var(--p));}
+.skill-bar.revealed .skill-fill-blue{transform:scaleX(var(--p)) translate(4px,3px);}
+.skill-fill-red{background:var(--red); width:100%;}
+.skill-fill-blue{background:var(--blue); width:100%;}
+.skill-marks{
+  position:absolute; inset:0; pointer-events:none;
+  background-image:repeating-linear-gradient(90deg, transparent 0 9.9%, rgba(26,26,26,.18) 9.9% 10%);
+}
+.skill-note{font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin-top:8px; letter-spacing:.06em;}
+
+/* ============================================================
+   WORKS
+   ============================================================ */
+.works-grid{display:grid; grid-template-columns:1fr 1fr; gap:32px;}
+@media(max-width:860px){.works-grid{grid-template-columns:1fr;}}
+.work{
+  position:relative; border:2px solid var(--ink); border-radius:var(--r-lg);
+  background:var(--paper); overflow:hidden; cursor:pointer;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s ease;
+}
+.work:hover{transform:translate(-5px,-5px); box-shadow:8px 8px 0 var(--ink);}
+.work-poster{
+  position:relative; height:240px; overflow:hidden; border-bottom:2px solid var(--ink);
+  background:var(--paper);
+}
+.work-poster .wp-shape{position:absolute; mix-blend-mode:multiply; transition:transform .4s ease;}
+.work:hover .work-poster .wp-shape{transform:translate(0,0) scale(1.04);}
+.wp-num{position:absolute; right:18px; bottom:10px; z-index:3; font-family:var(--display); font-size:90px; line-height:.8; color:var(--ink); opacity:.18;}
+.wp-label{position:absolute; left:18px; top:16px; z-index:3; font-family:var(--mono); font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; background:var(--paper); padding:4px 8px; border:1.5px solid var(--ink); border-radius:6px;}
+.work-body{padding:22px 24px 26px;}
+.work-body h3{font-family:var(--display); font-size:30px; line-height:1; margin-bottom:8px;}
+.work-body p{font-size:14.5px; line-height:1.65; color:var(--ink-soft); margin-bottom:14px;}
+.work-tags{display:flex; flex-wrap:wrap; gap:6px;}
+
+/* poster shape variants */
+.shape-circle{border-radius:50%;}
+.shape-arch{border-radius:50% 50% 0 0;}
+
+/* ============================================================
+   JOURNEY
+   ============================================================ */
+.journey{position:relative;}
+.timeline{position:relative; padding-left:32px;}
+.timeline::before{
+  content:""; position:absolute; left:9px; top:6px; bottom:6px; width:3px;
+  background:var(--ink);
+}
+.tl-item{position:relative; padding:0 0 44px;}
+.tl-item:last-child{padding-bottom:0;}
+.tl-dot{
+  position:absolute; left:-32px; top:4px;
+  width:22px; height:22px;
+}
+.tl-dot .d-red, .tl-dot .d-blue{position:absolute; inset:0; border-radius:50%; mix-blend-mode:multiply;}
+.tl-dot .d-red{background:var(--red);}
+.tl-dot .d-blue{background:var(--blue); transform:translate(4px,3px);}
+.tl-year{font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.12em; color:var(--ink-soft);}
+.tl-title{font-family:var(--display); font-size:28px; margin:4px 0 8px;}
+.tl-desc{font-size:15px; line-height:1.65; max-width:640px; color:var(--ink-soft);}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact{
+  position:relative; overflow:hidden;
+  border-top:2px solid var(--ink);
+}
+.contact-bg{position:absolute; inset:0; pointer-events:none; z-index:0;}
+.contact-card{
+  position:relative; z-index:2;
+  border:2px solid var(--ink); border-radius:var(--r-lg);
+  background:var(--paper); padding:56px 48px;
+  box-shadow:10px 10px 0 var(--ink);
+  overflow:hidden;
+}
+@media(max-width:760px){.contact-card{padding:36px 24px;}}
+.contact-card .cc-shapes{position:absolute; inset:0; pointer-events:none;}
+.contact-card h2{
+  font-family:var(--display); font-size:clamp(44px,8vw,96px); line-height:.9;
+  position:relative; z-index:2;
+}
+.contact-card .cc-offset-red{color:var(--red); mix-blend-mode:multiply; transform:translate(-4px,-2px); display:inline-block;}
+.contact-card .cc-offset-blue{color:var(--blue); mix-blend-mode:multiply; transform:translate(4px,2px); display:inline-block;}
+.contact-card p{position:relative; z-index:2; max-width:520px; margin:18px 0 28px; font-size:17px; line-height:1.7;}
+.social-row{display:flex; flex-wrap:wrap; gap:12px; position:relative; z-index:2;}
+.social{
+  display:inline-flex; align-items:center; gap:10px;
+  border:2px solid var(--ink); border-radius:var(--r);
+  padding:12px 18px; text-decoration:none; color:var(--ink);
+  font-family:var(--mono); font-size:13px; font-weight:700; letter-spacing:.04em;
+  background:var(--paper); cursor:pointer; transition:all .25s ease;
+}
+.social svg{width:18px;height:18px;}
+.social:hover{background:var(--blue); color:var(--paper); transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--ink);}
+.email-line{
+  position:relative; z-index:2; margin-top:28px; padding-top:20px; border-top:2px dashed rgba(26,26,26,.35);
+  font-family:var(--mono); font-size:14px; letter-spacing:.04em;
+}
+.email-line a{color:var(--ink); font-weight:700; text-decoration:underline; text-decoration-color:var(--red); text-underline-offset:4px;}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.footer{
+  border-top:2px solid var(--ink); padding:32px 0; background:var(--paper-2);
+}
+.footer-inner{display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+.footer-inner .f-copy{font-family:var(--mono); font-size:12px; letter-spacing:.08em; color:var(--ink-soft);}
+.footer-inner .f-back{font-family:var(--mono); font-size:12px; font-weight:700; letter-spacing:.08em; color:var(--ink); text-decoration:none; border:1.5px solid var(--ink); padding:8px 14px; border-radius:var(--r-sm); transition:all .25s;}
+.footer-inner .f-back:hover{background:var(--red); color:var(--paper); border-color:var(--red);}
+
+/* ============================================================
+   REVEAL ANIMATION
+   ============================================================ */
+.reveal{opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1);}
+.reveal.in{opacity:1; transform:none;}
+
+/* ============================================================
+   FOCUS / A11Y
+   ============================================================ */
+a:focus-visible, button:focus-visible{
+  outline:3px solid var(--blue); outline-offset:3px; border-radius:6px;
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important;}
+  .ticker-track{animation:none;}
+  .status .pulse::after{animation:none;}
+  .reveal{opacity:1; transform:none;}
+  html{scroll-behavior:auto;}
+}
+
+/* selection */
+::selection{background:var(--red); color:var(--paper);}
+</style>
+</head>
+<body>
+
+<!-- ============ PAPER TEXTURE OVERLAYS ============ -->
+<div class="grain" aria-hidden="true"></div>
+<div class="fiber" aria-hidden="true"></div>
+
+<!-- ============ NAVBAR ============ -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#top" class="brand" aria-label="林墨白 首页">
+      <span class="brand-mark" aria-hidden="true">
+        <span class="b1"></span>
+        <span class="b2"></span>
+      </span>
+      <span class="brand-name">
+        林墨白
+        <span class="small">MOBAI · LIN</span>
+      </span>
+    </a>
+
+    <nav class="nav-links" id="navLinks" aria-label="主导航">
+      <a href="#about">关于</a>
+      <a href="#skills">技能</a>
+      <a href="#works">作品</a>
+      <a href="#journey">经历</a>
+      <a href="#contact">联系</a>
+      <a href="../index.html" class="back" aria-label="返回总览">← 总览</a>
+    </nav>
+
+    <button class="burger" id="burger" aria-label="切换菜单" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero" aria-label="首页">
+  <div class="hero-shapes" aria-hidden="true">
+    <!-- sunburst SVG -->
+    <svg class="sunburst" viewBox="0 0 200 200" aria-hidden="true">
+      <g style="mix-blend-mode:multiply;">
+        <g fill="#FF4D5E">
+          <path d="M100 100 L100 0 L110 0 Z"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(30 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(60 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(90 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(120 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(150 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(180 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(210 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(240 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(270 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(300 100 100)"/>
+          <path d="M100 100 L100 0 L110 0 Z" transform="rotate(330 100 100)"/>
+        </g>
+      </g>
+    </svg>
+    <div class="ring r1"></div>
+    <div class="ring r2"></div>
+    <div class="ring r3"></div>
+    <div class="ring r4"></div>
+  </div>
+
+  <div class="wrap hero-grid">
+    <div class="hero-meta">
+      <span class="eyebrow reveal">RISO · 2024 · 杭州</span>
+
+      <h1>
+        <span class="h1-stack">
+          <span class="layer red" aria-hidden="true">林墨白</span>
+          <span class="layer blue" aria-hidden="true">林墨白</span>
+          <span class="layer base">林墨白</span>
+        </span>
+      </h1>
+
+      <div class="hero-role reveal">
+        <span class="title">全栈工程师 / 数字设计师</span>
+        <span class="dot" aria-hidden="true"></span>
+        <span class="loc">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:-2px;margin-right:5px"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          杭州 · 中国
+        </span>
+      </div>
+
+      <div class="status reveal" role="status">
+        <span class="pulse" aria-hidden="true"></span>
+        <span>可接新项目 · AVAILABLE FOR WORK</span>
+      </div>
+
+      <div class="cta-row reveal">
+        <a href="#works" class="btn btn-primary">
+          查看作品
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+        <a href="#contact" class="btn btn-ghost">
+          联系合作
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M4 4l8 8 8-8"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- hero side poster card -->
+    <aside class="hero-card reveal" aria-label="个人简介卡">
+      <div class="hc-shapes" aria-hidden="true">
+        <div class="arc" style="background:var(--red); width:180px; height:180px; right:-60px; top:-50px;"></div>
+        <div class="arc" style="background:var(--blue); width:180px; height:180px; right:-50px; top:-40px;"></div>
+        <div class="halftone"></div>
+      </div>
+      <div class="hc-line">PERSONA / N°001</div>
+      <div class="hc-title">5 年<br>独立创作</div>
+      <p class="hc-desc">在代码与设计之间寻找平衡,相信「印刷感」与「像素」可以共存。专注于让界面同时拥有结构与温度。</p>
+      <div class="hc-tags">
+        <span class="tag red">前端</span>
+        <span class="tag blue">设计</span>
+        <span class="tag">三维</span>
+        <span class="tag">后端</span>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ticker -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <span>RISOGRAPH PRINT</span><span>SCREEN-PRINT</span><span>TWO INK OVERLAP</span><span>HALFTONE</span><span>REGISTRATION MARK</span><span>HANDMADE</span>
+      <span>RISOGRAPH PRINT</span><span>SCREEN-PRINT</span><span>TWO INK OVERLAP</span><span>HALFTONE</span><span>REGISTRATION MARK</span><span>HANDMADE</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="section about" id="about" aria-label="关于">
+  <div class="wrap">
+    <div class="s-head">
+      <h2 class="reveal">
+        <span class="h2-red" aria-hidden="true">关于</span><span class="h2-blue" aria-hidden="true">关于</span>关于
+      </h2>
+      <span class="s-num reveal">§ 01 / ABOUT</span>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-panel reveal">
+        <div class="ab-shapes" aria-hidden="true">
+          <div class="ab-circle" style="background:var(--red); width:140px;height:140px; right:-40px; top:-40px;"></div>
+          <div class="ab-circle" style="background:var(--blue); width:140px;height:140px; right:-30px; top:-30px;"></div>
+          <div class="halftone"></div>
+          <svg class="ab-zig" viewBox="0 0 600 30" preserveAspectRatio="none" aria-hidden="true">
+            <polygon points="0,30 30,0 60,30 90,0 120,30 150,0 180,30 210,0 240,30 270,0 300,30 330,0 360,30 390,0 420,30 450,0 480,30 510,0 540,30 570,0 600,30" fill="#FF4D5E" style="mix-blend-mode:multiply;"/>
+          </svg>
+        </div>
+        <p>我是 <strong>林墨白</strong>,常驻杭州的全栈工程师与数字设计师。过去五年里,我一直在前端工程、交互设计与系统架构之间穿梭,热衷于把抽象的想法变成可触可感的界面。</p>
+        <p>我尤其偏爱「印刷感」的设计语言——粗糙的网点、错位的色版、克制的双色叠印。它们提醒我:技术可以精密,但产品应当有温度。</p>
+        <p>目前以独立身份接洽项目,涵盖品牌官网、数据可视化、WebGL 体验与小型 SaaS 工具。</p>
+      </div>
+
+      <div class="about-stats">
+        <div class="stat reveal">
+          <span class="s-shape" style="background:var(--red);" aria-hidden="true"></span>
+          <div class="num"><span class="red">5</span>+</div>
+          <div class="lab">年经验</div>
+        </div>
+        <div class="stat reveal">
+          <span class="s-shape" style="background:var(--blue);" aria-hidden="true"></span>
+          <div class="num"><span class="blue">42</span></div>
+          <div class="lab">交付项目</div>
+        </div>
+        <div class="stat reveal">
+          <span class="s-shape" style="background:var(--yellow);" aria-hidden="true"></span>
+          <div class="num">18</div>
+          <div class="lab">长期客户</div>
+        </div>
+        <div class="stat reveal">
+          <span class="s-shape" style="background:var(--red);" aria-hidden="true"></span>
+          <div class="num"><span class="red">99</span>%</div>
+          <div class="lab">满意复购</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SKILLS ============ -->
+<section class="section skills" id="skills" aria-label="技能">
+  <div class="wrap">
+    <div class="s-head">
+      <h2 class="reveal">
+        <span class="h2-red" aria-hidden="true">技能</span><span class="h2-blue" aria-hidden="true">技能</span>技能
+      </h2>
+      <span class="s-num reveal">§ 02 / SKILLS</span>
+    </div>
+
+    <div class="skill-grid">
+      <div class="skill reveal">
+        <div class="skill-head">
+          <span class="skill-name">前端 / Frontend</span>
+          <span class="skill-val">92</span>
+        </div>
+        <div class="skill-bar" style="--p:.92;">
+          <div class="skill-fill-red"></div>
+          <div class="skill-fill-blue"></div>
+          <div class="skill-marks" aria-hidden="true"></div>
+        </div>
+        <div class="skill-note">React · Vue · TypeScript · 动效 · 无障碍</div>
+      </div>
+
+      <div class="skill reveal">
+        <div class="skill-head">
+          <span class="skill-name">设计 / Design</span>
+          <span class="skill-val">88</span>
+        </div>
+        <div class="skill-bar" style="--p:.88;">
+          <div class="skill-fill-red"></div>
+          <div class="skill-fill-blue"></div>
+          <div class="skill-marks" aria-hidden="true"></div>
+        </div>
+        <div class="skill-note">视觉系统 · 品牌识别 · 排版 · Riso 印刷</div>
+      </div>
+
+      <div class="skill reveal">
+        <div class="skill-head">
+          <span class="skill-name">后端 / Backend</span>
+          <span class="skill-val">85</span>
+        </div>
+        <div class="skill-bar" style="--p:.85;">
+          <div class="skill-fill-red"></div>
+          <div class="skill-fill-blue"></div>
+          <div class="skill-marks" aria-hidden="true"></div>
+        </div>
+        <div class="skill-note">Node.js · Python · 数据库 · API 设计</div>
+      </div>
+
+      <div class="skill reveal">
+        <div class="skill-head">
+          <span class="skill-name">三维 / 3D</span>
+          <span class="skill-val">76</span>
+        </div>
+        <div class="skill-bar" style="--p:.76;">
+          <div class="skill-fill-red"></div>
+          <div class="skill-fill-blue"></div>
+          <div class="skill-marks" aria-hidden="true"></div>
+        </div>
+        <div class="skill-note">Three.js · WebGL · Blender · 着色器</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WORKS ============ -->
+<section class="section works" id="works" aria-label="作品">
+  <div class="wrap">
+    <div class="s-head">
+      <h2 class="reveal">
+        <span class="h2-red" aria-hidden="true">作品</span><span class="h2-blue" aria-hidden="true">作品</span>作品
+      </h2>
+      <span class="s-num reveal">§ 03 / SELECTED WORKS</span>
+    </div>
+
+    <div class="works-grid">
+      <!-- Work 1: 极光笔记 -->
+      <article class="work reveal" tabindex="0" aria-label="极光笔记">
+        <div class="work-poster">
+          <span class="wp-label">N°001</span>
+          <span class="wp-num" aria-hidden="true">01</span>
+          <div class="wp-shape shape-circle" style="background:var(--red); width:160px;height:160px; left:30px; top:40px;"></div>
+          <div class="wp-shape shape-circle" style="background:var(--blue); width:160px;height:160px; left:50px; top:55px;"></div>
+          <div class="wp-shape shape-arch" style="background:var(--yellow); width:90px;height:120px; right:40px; bottom:0; opacity:.9;"></div>
+          <div class="halftone"></div>
+        </div>
+        <div class="work-body">
+          <h3>极光笔记</h3>
+          <p>一款主打「沉浸写作」的跨端笔记应用,自定义渲染引擎与本地优先同步。</p>
+          <div class="work-tags">
+            <span class="tag red">React</span>
+            <span class="tag blue">CRDT</span>
+            <span class="tag">Electron</span>
+            <span class="tag">TypeScript</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Work 2: 像素工坊 -->
+      <article class="work reveal" tabindex="0" aria-label="像素工坊">
+        <div class="work-poster">
+          <span class="wp-label">N°002</span>
+          <span class="wp-num" aria-hidden="true">02</span>
+          <div class="wp-shape shape-arch" style="background:var(--blue); width:200px;height:200px; left:20px; bottom:-30px;"></div>
+          <div class="wp-shape shape-arch" style="background:var(--red); width:200px;height:200px; left:40px; bottom:-15px;"></div>
+          <div class="wp-shape shape-circle" style="background:var(--yellow); width:60px;height:60px; right:50px; top:40px; opacity:.9;"></div>
+          <div class="halftone"></div>
+        </div>
+        <div class="work-body">
+          <h3>像素工坊</h3>
+          <p>面向独立创作者的像素画与动画编辑器,支持帧动画、调色板与导出sprite sheet。</p>
+          <div class="work-tags">
+            <span class="tag red">Canvas</span>
+            <span class="tag blue">WebGL</span>
+            <span class="tag">PWA</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Work 3: 数据之眼 -->
+      <article class="work reveal" tabindex="0" aria-label="数据之眼">
+        <div class="work-poster">
+          <span class="wp-label">N°003</span>
+          <span class="wp-num" aria-hidden="true">03</span>
+          <svg class="wp-shape" style="left:20px; top:20px; width:200px; height:200px; mix-blend-mode:multiply;" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="44" fill="none" stroke="#FF4D5E" stroke-width="6"/>
+            <circle cx="50" cy="50" r="30" fill="none" stroke="#2D7DD2" stroke-width="6"/>
+            <circle cx="50" cy="50" r="16" fill="#FF4D5E"/>
+          </svg>
+          <div class="wp-shape shape-circle" style="background:var(--blue); width:50px;height:50px; right:60px; top:60px;"></div>
+          <div class="halftone"></div>
+        </div>
+        <div class="work-body">
+          <h3>数据之眼</h3>
+          <p>为金融研究团队打造的实时数据可视化看板,支持自定义图表与异常告警。</p>
+          <div class="work-tags">
+            <span class="tag red">D3.js</span>
+            <span class="tag blue">WebSocket</span>
+            <span class="tag">Vue</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Work 4: 声波画廊 -->
+      <article class="work reveal" tabindex="0" aria-label="声波画廊">
+        <div class="work-poster">
+          <span class="wp-label">N°004</span>
+          <span class="wp-num" aria-hidden="true">04</span>
+          <svg class="wp-shape" style="left:0; right:0; top:60px; width:100%; height:120px; mix-blend-mode:multiply;" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
+            <g>
+              <rect x="20" y="40" width="14" height="40" fill="#FF4D5E"/>
+              <rect x="44" y="20" width="14" height="80" fill="#FF4D5E"/>
+              <rect x="68" y="50" width="14" height="20" fill="#FF4D5E"/>
+              <rect x="92" y="10" width="14" height="100" fill="#2D7DD2"/>
+              <rect x="116" y="35" width="14" height="50" fill="#2D7DD2"/>
+              <rect x="140" y="25" width="14" height="70" fill="#2D7DD2"/>
+              <rect x="164" y="45" width="14" height="30" fill="#FF4D5E"/>
+              <rect x="188" y="15" width="14" height="90" fill="#2D7DD2"/>
+              <rect x="212" y="40" width="14" height="40" fill="#FF4D5E"/>
+              <rect x="236" y="20" width="14" height="80" fill="#2D7DD2"/>
+              <rect x="260" y="50" width="14" height="20" fill="#FF4D5E"/>
+              <rect x="284" y="30" width="14" height="60" fill="#2D7DD2"/>
+              <rect x="308" y="45" width="14" height="30" fill="#FF4D5E"/>
+              <rect x="332" y="25" width="14" height="70" fill="#2D7DD2"/>
+              <rect x="356" y="40" width="14" height="40" fill="#FF4D5E"/>
+            </g>
+          </svg>
+          <div class="halftone"></div>
+        </div>
+        <div class="work-body">
+          <h3>声波画廊</h3>
+          <p>沉浸式音频可视化实验,将音乐实时转化为三维粒子与几何形态的交互装置。</p>
+          <div class="work-tags">
+            <span class="tag red">Three.js</span>
+            <span class="tag blue">Web Audio</span>
+            <span class="tag">GLSL</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ JOURNEY ============ -->
+<section class="section journey" id="journey" aria-label="经历">
+  <div class="wrap">
+    <div class="s-head">
+      <h2 class="reveal">
+        <span class="h2-red" aria-hidden="true">经历</span><span class="h2-blue" aria-hidden="true">经历</span>经历
+      </h2>
+      <span class="s-num reveal">§ 04 / JOURNEY</span>
+    </div>
+
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-dot" aria-hidden="true"><span class="d-red"></span><span class="d-blue"></span></div>
+        <div class="tl-year">2024 — 现在</div>
+        <h3 class="tl-title">独立全栈 / 数字设计师</h3>
+        <p class="tl-desc">以独立身份承接品牌官网、数据可视化与 WebGL 体验项目。专注「印刷感」设计语言与高完成度前端工程。</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-dot" aria-hidden="true"><span class="d-red"></span><span class="d-blue"></span></div>
+        <div class="tl-year">2022 — 2024</div>
+        <h3 class="tl-title">高级前端工程师 · 某设计工作室</h3>
+        <p class="tl-desc">主导多个国际品牌项目的前端架构,建立可复用的设计系统与动效规范,团队交付效率提升约 40%。</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-dot" aria-hidden="true"><span class="d-red"></span><span class="d-blue"></span></div>
+        <div class="tl-year">2020 — 2022</div>
+        <h3 class="tl-title">全栈工程师 · 某创业公司</h3>
+        <p class="tl-desc">从 0 到 1 搭建 SaaS 产品,负责前后端、数据库与部署,产品服务超过 5 万活跃用户。</p>
+      </div>
+      <div class="tl-item reveal">
+        <div class="tl-dot" aria-hidden="true"><span class="d-red"></span><span class="d-blue"></span></div>
+        <div class="tl-year">2019</div>
+        <h3 class="tl-title">入行 · 自学与第一份代码</h3>
+        <p class="tl-desc">从设计专业转向编程,完成第一个上线项目。从此在代码与视觉之间持续探索。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="section contact" id="contact" aria-label="联系">
+  <div class="contact-bg" aria-hidden="true">
+    <div class="riso-shape" style="background:var(--red); width:340px;height:340px; border-radius:50%; left:-80px; top:-60px;"></div>
+    <div class="riso-shape" style="background:var(--blue); width:340px;height:340px; border-radius:50%; left:-50px; top:-30px;"></div>
+    <div class="riso-shape" style="background:var(--blue); width:260px;height:260px; border-radius:50%; right:-60px; bottom:-80px;"></div>
+    <div class="riso-shape" style="background:var(--red); width:260px;height:260px; border-radius:50%; right:-90px; bottom:-100px;"></div>
+    <div class="riso-shape" style="background:var(--yellow); width:140px;height:140px; border-radius:50%; right:18%; top:10%; opacity:.85;"></div>
+  </div>
+
+  <div class="wrap">
+    <div class="contact-card reveal">
+      <div class="cc-shapes" aria-hidden="true">
+        <div class="halftone"></div>
+      </div>
+
+      <span class="eyebrow" style="position:relative; z-index:2;">让我们一起做点东西</span>
+      <h2 style="margin-top:18px;">
+        <span class="cc-offset-red" aria-hidden="true">合作?</span><span class="cc-offset-blue" aria-hidden="true">合作?</span>合作?
+      </h2>
+      <p>无论是品牌官网、交互实验还是完整的产品开发,我都乐意聊聊。当前状态:可接新项目。</p>
+
+      <div class="social-row">
+        <a href="mailto:hi@mobai.studio" class="social" aria-label="发送邮件给林墨白">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          Email
+        </a>
+        <a href="#" class="social" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.09.68-.22.68-.49v-1.7c-2.78.62-3.37-1.21-3.37-1.21-.46-1.17-1.11-1.48-1.11-1.48-.91-.64.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.55-1.14-4.55-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05A9.34 9.34 0 0112 6.84c.85 0 1.71.12 2.51.34 1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.81-4.57 5.06.36.32.68.94.68 1.9v2.82c0 .27.18.59.69.49A10.02 10.02 0 0022 12.25C22 6.58 17.52 2 12 2z"/></svg>
+          GitHub
+        </a>
+        <a href="#" class="social" aria-label="Dribbble">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M8 3.5c4 4.5 6 9.5 6.5 16M21.5 10c-6 0-12 1-16.5 4M3 13c5-1 11 0 14.5 3.5"/></svg>
+          Dribbble
+        </a>
+        <a href="#" class="social" aria-label="Twitter / X">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2H21.5l-7.5 8.57L22.5 22h-6.6l-5.17-6.76L4.8 22H1.54l8.02-9.17L1.5 2h6.77l4.68 6.18L18.244 2zm-1.16 18h1.83L7.01 3.9H5.06L17.084 20z"/></svg>
+          Twitter / X
+        </a>
+      </div>
+
+      <div class="email-line">
+        或直接来信 → <a href="mailto:hi@mobai.studio">hi@mobai.studio</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <span class="f-copy">© 2024 林墨白 · MOBAI LIN · 杭州 · RISO PRINT EDITION</span>
+    <a href="../index.html" class="f-back" aria-label="返回总览">← 返回总览</a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // ---------- Mobile menu ----------
+  var burger = document.getElementById('burger');
+  var navLinks = document.getElementById('navLinks');
+  if(burger && navLinks){
+    burger.addEventListener('click', function(){
+      var open = navLinks.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navLinks.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        navLinks.classList.remove('open');
+        burger.setAttribute('aria-expanded','false');
+      });
+    });
+  }
+
+  // ---------- IntersectionObserver reveal ----------
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reveals = document.querySelectorAll('.reveal');
+  if(reduce || !('IntersectionObserver' in window)){
+    reveals.forEach(function(el){ el.classList.add('in'); });
+    document.querySelectorAll('.skill-bar').forEach(function(b){ b.classList.add('revealed'); });
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          // reveal skill bars inside (if any)
+          var bar = e.target.querySelector ? e.target.querySelector('.skill-bar') : null;
+          if(bar){ bar.classList.add('revealed'); }
+          if(e.target.classList && e.target.classList.contains('skill-bar')){ e.target.classList.add('revealed'); }
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+    reveals.forEach(function(el){ io.observe(el); });
+    document.querySelectorAll('.skill-bar').forEach(function(b){ io.observe(b); });
+  }
+
+  // ---------- Subtle parallax on hero shapes (respect reduced motion) ----------
+  if(!reduce){
+    var heroShapes = document.querySelector('.hero-shapes');
+    if(heroShapes){
+      var ticking = false;
+      window.addEventListener('scroll', function(){
+        if(!ticking){
+          window.requestAnimationFrame(function(){
+            var y = window.scrollY;
+            if(y < 800){
+              heroShapes.style.transform = 'translateY(' + (y * 0.12) + 'px)';
+            }
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, {passive:true});
+    }
+  }
+})();
+</script>
+</body>
+</html>

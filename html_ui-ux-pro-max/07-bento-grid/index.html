@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="林墨白 — 全栈工程师 / 数字设计师，杭州。个人作品集。">
+<title>林墨白 · 全栈工程师 / 数字设计师</title>
+
+<!-- Google Fonts: Inter + Noto Sans SC -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+  /* ============================================================
+     DESIGN TOKENS
+  ============================================================ */
+  :root{
+    --bg:        #F5F5F7;   /* page background (Apple gray) */
+    --card:      #FFFFFF;   /* card surface */
+    --ink:       #1D1D1F;   /* primary text / dark card bg */
+    --ink-soft:  #515154;   /* secondary text */
+    --ink-mute:  #86868B;   /* muted text */
+    --line:      #E8E8ED;   /* hairline borders */
+    --accent:    #0071E3;   /* Apple blue */
+    --accent-d:  #0058B0;   /* accent pressed */
+    --accent-soft:#EAF3FE;  /* accent tint */
+
+    /* pastel variety */
+    --pink:  #FFE4E6;
+    --blue:  #DBEAFE;
+    --green: #DCFCE7;
+    --amber: #FEF3C7;
+
+    --r-lg: 28px;
+    --r-md: 22px;
+    --r-sm: 14px;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+    --shadow-lg: 0 18px 48px rgba(0,0,0,0.12);
+
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --font-sans: "SF Pro Display", "SF Pro Text", "Inter", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  }
+
+  /* ============================================================
+     RESET
+  ============================================================ */
+  *,*::before,*::after{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+  body{
+    font-family:var(--font-sans);
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.6;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  img{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; border:none; background:none; }
+  :focus-visible{
+    outline:2px solid var(--accent);
+    outline-offset:3px;
+    border-radius:6px;
+  }
+
+  /* ============================================================
+     LAYOUT WRAPPERS
+  ============================================================ */
+  .wrap{
+    width:100%;
+    max-width:1200px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  /* ============================================================
+     STICKY FROSTED NAV
+  ============================================================ */
+  .nav{
+    position:fixed;
+    top:16px; left:50%;
+    transform:translateX(-50%);
+    z-index:100;
+    width:calc(100% - 32px);
+    max-width:1140px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    padding:10px 12px 10px 18px;
+    background:rgba(255,255,255,0.72);
+    backdrop-filter:saturate(180%) blur(20px);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);
+    border:1px solid rgba(255,255,255,0.7);
+    border-radius:999px;
+    box-shadow:var(--shadow-md);
+  }
+  .nav__brand{
+    display:flex; align-items:center; gap:10px;
+    font-weight:700; font-size:15px; letter-spacing:-0.01em;
+  }
+  .nav__brand .dot{
+    width:26px; height:26px; border-radius:50%;
+    background:linear-gradient(135deg, var(--ink) 0%, #3a3a3c 100%);
+    display:grid; place-items:center;
+    color:#fff; font-size:12px; font-weight:700;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.15);
+  }
+  .nav__links{
+    display:flex; align-items:center; gap:4px;
+  }
+  .nav__links a{
+    padding:8px 14px;
+    font-size:14px; font-weight:500;
+    color:var(--ink-soft);
+    border-radius:999px;
+    transition:color .2s var(--ease), background .2s var(--ease);
+  }
+  .nav__links a:hover{ color:var(--ink); background:rgba(0,0,0,0.05); }
+  .nav__back{
+    display:inline-flex; align-items:center; gap:6px;
+    padding:9px 16px 9px 12px;
+    font-size:13px; font-weight:600;
+    color:#fff;
+    background:var(--ink);
+    border-radius:999px;
+    transition:transform .2s var(--ease), background .2s var(--ease);
+  }
+  .nav__back:hover{ background:#000; transform:translateY(-1px); }
+  .nav__back svg{ width:14px; height:14px; }
+
+  .nav__toggle{
+    display:none;
+    width:40px; height:40px;
+    border-radius:50%;
+    align-items:center; justify-content:center;
+    color:var(--ink);
+  }
+  .nav__toggle svg{ width:20px; height:20px; }
+
+  @media (max-width:860px){
+    .nav__links{
+      position:absolute;
+      top:calc(100% + 10px); left:0; right:0;
+      flex-direction:column;
+      align-items:stretch;
+      gap:2px;
+      padding:10px;
+      background:rgba(255,255,255,0.92);
+      backdrop-filter:saturate(180%) blur(20px);
+      -webkit-backdrop-filter:saturate(180%) blur(20px);
+      border-radius:22px;
+      box-shadow:var(--shadow-lg);
+      opacity:0; pointer-events:none;
+      transform:translateY(-8px);
+      transition:opacity .25s var(--ease), transform .25s var(--ease);
+    }
+    .nav__links.open{ opacity:1; pointer-events:auto; transform:translateY(0); }
+    .nav__links a{ padding:12px 14px; font-size:15px; }
+    .nav__toggle{ display:inline-flex; }
+    .nav__back span{ display:none; }
+    .nav__back{ padding:9px 12px; }
+  }
+
+  /* ============================================================
+     SECTION SHELL
+  ============================================================ */
+  main{ padding-top:96px; padding-bottom:48px; }
+  section{ padding:56px 0; }
+  .sec-head{ margin-bottom:28px; padding:0 4px; }
+  .sec-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:12px; font-weight:600; letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:10px;
+  }
+  .sec-eyebrow::before{
+    content:""; width:18px; height:2px; border-radius:2px;
+    background:var(--accent);
+  }
+  .sec-title{
+    font-size:clamp(26px, 3.4vw, 38px);
+    font-weight:800; letter-spacing:-0.02em;
+    line-height:1.15;
+  }
+  .sec-sub{
+    margin-top:8px;
+    color:var(--ink-mute);
+    font-size:15px; max-width:60ch;
+  }
+
+  /* ============================================================
+     BENTO GRID BASE
+  ============================================================ */
+  .bento{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    grid-auto-rows:minmax(150px, auto);
+    gap:18px;
+  }
+  .card{
+    position:relative;
+    background:var(--card);
+    border-radius:var(--r-lg);
+    padding:26px;
+    box-shadow:var(--shadow-md);
+    border:1px solid rgba(0,0,0,0.04);
+    overflow:hidden;
+    transition:transform .28s var(--ease), box-shadow .28s var(--ease);
+    display:flex; flex-direction:column;
+  }
+  .card:hover{
+    transform:translateY(-4px);
+    box-shadow:var(--shadow-lg);
+  }
+  .card--dark{ background:var(--ink); color:#fff; border-color:transparent; }
+  .card--dark .c-label,
+  .card--dark .c-meta{ color:rgba(255,255,255,0.6); }
+  .card--pink{ background:var(--pink); }
+  .card--blue{ background:var(--blue); }
+  .card--green{ background:var(--green); }
+  .card--amber{ background:var(--amber); }
+  .card--accent{ background:var(--accent); color:#fff; border-color:transparent; }
+
+  .c-label{
+    font-size:12px; font-weight:600; letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--ink-mute);
+  }
+  .c-meta{ color:var(--ink-mute); font-size:13px; }
+
+  /* spans */
+  .span-2{ grid-column:span 2; }
+  .span-3{ grid-column:span 3; }
+  .row-2{ grid-row:span 2; }
+
+  /* ============================================================
+     HERO
+  ============================================================ */
+  .hero .card--feature{
+    grid-column:span 2; grid-row:span 2;
+    background:linear-gradient(160deg, #ffffff 0%, #fafafc 100%);
+    justify-content:space-between;
+    padding:34px;
+  }
+  .hero__top{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+  .avatar{
+    width:72px; height:72px; border-radius:50%;
+    background:linear-gradient(135deg, #2c2c2e 0%, #1d1d1f 100%);
+    display:grid; place-items:center;
+    color:#fff; font-weight:700; font-size:26px; letter-spacing:-0.02em;
+    box-shadow:0 8px 24px rgba(0,0,0,0.18);
+    flex-shrink:0;
+  }
+  .status-pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:7px 14px 7px 12px;
+    background:#1d1d1f; color:#fff;
+    border-radius:999px;
+    font-size:12px; font-weight:600;
+  }
+  .status-pill .ping{
+    position:relative; width:8px; height:8px;
+  }
+  .status-pill .ping::before,
+  .status-pill .ping::after{
+    content:""; position:absolute; inset:0;
+    border-radius:50%; background:#34d399;
+  }
+  .status-pill .ping::after{
+    animation:ping 1.8s var(--ease) infinite;
+  }
+  @keyframes ping{
+    0%{ transform:scale(1); opacity:.7; }
+    80%,100%{ transform:scale(2.4); opacity:0; }
+  }
+  .hero__name{
+    font-size:clamp(32px, 4.4vw, 52px);
+    font-weight:800; letter-spacing:-0.03em;
+    line-height:1.05; margin-top:18px;
+  }
+  .hero__role{
+    margin-top:10px;
+    font-size:17px; color:var(--ink-soft); font-weight:500;
+  }
+  .hero__role .sep{ margin:0 8px; color:var(--ink-mute); }
+  .hero__loc{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:6px; font-size:14px; color:var(--ink-mute);
+  }
+  .hero__loc svg{ width:14px; height:14px; }
+  .hero__cta{ display:flex; flex-wrap:wrap; gap:12px; margin-top:6px; }
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:13px 22px;
+    border-radius:999px;
+    font-size:14px; font-weight:600;
+    transition:transform .2s var(--ease), background .2s var(--ease), color .2s var(--ease);
+  }
+  .btn--primary{ background:var(--accent); color:#fff; }
+  .btn--primary:hover{ background:var(--accent-d); transform:translateY(-1px); }
+  .btn--ghost{ background:rgba(0,0,0,0.05); color:var(--ink); }
+  .btn--ghost:hover{ background:rgba(0,0,0,0.09); }
+  .btn svg{ width:16px; height:16px; }
+
+  /* hero side cards */
+  .stat-card .big{
+    font-size:clamp(40px, 5vw, 56px);
+    font-weight:800; letter-spacing:-0.04em;
+    line-height:1;
+  }
+  .stat-card .big sup{ font-size:.42em; font-weight:700; color:var(--accent); margin-left:4px; vertical-align:super; }
+  .stat-card .desc{ margin-top:8px; color:var(--ink-mute); font-size:14px; }
+
+  .tag-card .tag-cloud{
+    display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;
+  }
+  .chip{
+    padding:7px 13px;
+    background:rgba(0,0,0,0.04);
+    border-radius:999px;
+    font-size:13px; font-weight:500; color:var(--ink);
+    transition:background .2s var(--ease);
+  }
+  .chip:hover{ background:rgba(0,113,227,0.1); color:var(--accent); }
+
+  .now-card .now-row{
+    display:flex; align-items:center; gap:14px; margin-top:14px;
+  }
+  .now-card .now-art{
+    width:54px; height:54px; border-radius:14px;
+    background:linear-gradient(135deg, var(--accent) 0%, #6d3df5 100%);
+    flex-shrink:0; display:grid; place-items:center; color:#fff;
+    box-shadow:0 6px 16px rgba(0,113,227,0.3);
+  }
+  .now-card .now-art svg{ width:24px; height:24px; }
+  .now-card .now-title{ font-weight:600; font-size:15px; }
+  .now-card .now-sub{ font-size:13px; color:var(--ink-mute); }
+  .eq{
+    display:flex; align-items:flex-end; gap:3px; height:18px; margin-top:14px;
+  }
+  .eq span{
+    width:4px; background:var(--accent); border-radius:2px;
+    animation:eq 1s ease-in-out infinite;
+  }
+  .eq span:nth-child(1){ height:40%; animation-delay:-.4s; }
+  .eq span:nth-child(2){ height:80%; animation-delay:-.2s; }
+  .eq span:nth-child(3){ height:60%; animation-delay:0s; }
+  .eq span:nth-child(4){ height:90%; animation-delay:-.6s; }
+  .eq span:nth-child(5){ height:50%; animation-delay:-.3s; }
+  @keyframes eq{
+    0%,100%{ transform:scaleY(0.5); }
+    50%{ transform:scaleY(1); }
+  }
+
+  /* ============================================================
+     STATS MINI
+  ============================================================ */
+  .mini-stats{
+    grid-column:span 4;
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:18px;
+  }
+  .mini{
+    background:var(--card);
+    border-radius:var(--r-md);
+    padding:22px;
+    box-shadow:var(--shadow-sm);
+    border:1px solid rgba(0,0,0,0.04);
+    transition:transform .28s var(--ease), box-shadow .28s var(--ease);
+  }
+  .mini:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); }
+  .mini .num{
+    font-size:clamp(28px, 3vw, 38px);
+    font-weight:800; letter-spacing:-0.03em; line-height:1;
+  }
+  .mini .num .u{ color:var(--accent); font-size:.55em; font-weight:700; }
+  .mini .lbl{ margin-top:8px; font-size:13px; color:var(--ink-mute); }
+
+  /* ============================================================
+     SKILLS
+  ============================================================ */
+  .skill .s-head{ display:flex; align-items:center; gap:14px; margin-bottom:auto; }
+  .s-ico{
+    width:48px; height:48px; border-radius:14px;
+    display:grid; place-items:center;
+    background:rgba(0,0,0,0.05); color:var(--ink);
+    flex-shrink:0;
+  }
+  .s-ico svg{ width:24px; height:24px; }
+  .card--dark .s-ico{ background:rgba(255,255,255,0.12); color:#fff; }
+  .card--pink .s-ico{ background:rgba(255,255,255,0.55); color:#9d174d; }
+  .card--blue .s-ico{ background:rgba(255,255,255,0.55); color:#1d4ed8; }
+  .card--green .s-ico{ background:rgba(255,255,255,0.55); color:#15803d; }
+  .s-name{ font-weight:700; font-size:17px; letter-spacing:-0.01em; }
+  .s-tag{ font-size:12px; color:var(--ink-mute); margin-top:2px; }
+  .card--dark .s-tag{ color:rgba(255,255,255,0.6); }
+  .s-bottom{ margin-top:24px; }
+  .s-pct{
+    display:flex; align-items:baseline; justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .s-pct .pct{ font-size:24px; font-weight:800; letter-spacing:-0.02em; }
+  .s-pct .pct .u{ font-size:14px; color:var(--ink-mute); font-weight:600; margin-left:2px; }
+  .card--dark .s-pct .pct .u{ color:rgba(255,255,255,0.6); }
+  .s-track{
+    height:6px; border-radius:999px;
+    background:rgba(0,0,0,0.07); overflow:hidden;
+  }
+  .card--dark .s-track{ background:rgba(255,255,255,0.15); }
+  .s-fill{
+    height:100%; border-radius:999px;
+    background:var(--ink);
+    width:0;
+    transition:width 1.1s var(--ease);
+  }
+  .card--dark .s-fill{ background:#fff; }
+  .card--pink .s-fill{ background:#be185d; }
+  .card--blue .s-fill{ background:#1d4ed8; }
+  .card--green .s-fill{ background:#15803d; }
+
+  /* ============================================================
+     WORKS
+  ============================================================ */
+  .work{ padding:0; overflow:hidden; }
+  .work__cover{
+    height:160px;
+    position:relative;
+    display:grid; place-items:center;
+    color:#fff;
+  }
+  .work--feature .work__cover{ height:230px; }
+  .work__cover svg{ width:42px; height:42px; opacity:.92; }
+  .work--feature .work__cover svg{ width:56px; height:56px; }
+  .work__year{
+    position:absolute; top:14px; right:14px;
+    padding:5px 11px; border-radius:999px;
+    background:rgba(0,0,0,0.28); backdrop-filter:blur(8px);
+    -webkit-backdrop-filter:blur(8px);
+    font-size:12px; font-weight:600; color:#fff;
+  }
+  .work__body{ padding:22px 24px 24px; }
+  .work__title{ font-size:19px; font-weight:700; letter-spacing:-0.01em; }
+  .work--feature .work__title{ font-size:24px; }
+  .work__desc{
+    margin-top:8px; font-size:14px; color:var(--ink-soft); line-height:1.55;
+  }
+  .work__tags{ display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .work__tags span{
+    padding:5px 10px; border-radius:8px;
+    background:rgba(0,0,0,0.045);
+    font-size:12px; font-weight:500; color:var(--ink-soft);
+  }
+
+  /* cover gradients */
+  .cv-aurora{ background:linear-gradient(135deg, #0ea5e9 0%, #6366f1 50%, #a855f7 100%); }
+  .cv-pixel{ background:linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); }
+  .cv-data{ background:linear-gradient(135deg, #10b981 0%, #059669 100%); }
+  .cv-wave{ background:linear-gradient(135deg, #1d1d1f 0%, #4b5563 100%); }
+
+  /* ============================================================
+     JOURNEY / TIMELINE
+  ============================================================ */
+  .tl{ padding:24px 26px; }
+  .tl__year{
+    font-size:13px; font-weight:700; letter-spacing:0.04em;
+    color:var(--accent);
+  }
+  .card--dark .tl__year{ color:#60a5fa; }
+  .tl__title{ font-size:18px; font-weight:700; margin-top:6px; letter-spacing:-0.01em; }
+  .tl__org{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:4px; font-size:13px; color:var(--ink-mute);
+  }
+  .card--dark .tl__org{ color:rgba(255,255,255,0.6); }
+  .tl__desc{ margin-top:12px; font-size:14px; color:var(--ink-soft); line-height:1.6; }
+  .card--dark .tl__desc{ color:rgba(255,255,255,0.75); }
+
+  /* ============================================================
+     CONTACT
+  ============================================================ */
+  .contact__main{
+    grid-column:span 3; grid-row:span 2;
+    justify-content:space-between;
+    padding:40px;
+  }
+  .contact__title{
+    font-size:clamp(30px, 4vw, 46px);
+    font-weight:800; letter-spacing:-0.03em; line-height:1.1;
+  }
+  .contact__email{
+    display:inline-flex; align-items:center; gap:10px;
+    margin-top:18px;
+    font-size:18px; font-weight:600;
+    padding:14px 22px;
+    background:rgba(255,255,255,0.1);
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:14px;
+    transition:background .2s var(--ease), transform .2s var(--ease);
+  }
+  .contact__email:hover{ background:rgba(255,255,255,0.16); transform:translateY(-2px); }
+  .contact__email svg{ width:18px; height:18px; }
+
+  .social-stack{
+    grid-column:span 1; grid-row:span 2;
+    display:grid; grid-template-rows:repeat(4, 1fr);
+    gap:18px;
+  }
+  .social{
+    display:flex; align-items:center; justify-content:center;
+    background:var(--card);
+    border-radius:var(--r-md);
+    box-shadow:var(--shadow-sm);
+    border:1px solid rgba(0,0,0,0.04);
+    transition:transform .25s var(--ease), box-shadow .25s var(--ease), color .25s var(--ease);
+    color:var(--ink);
+  }
+  .social:hover{ transform:translateY(-4px); box-shadow:var(--shadow-md); color:var(--accent); }
+  .social svg{ width:24px; height:24px; }
+  .social .s-label{
+    position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+    overflow:hidden; clip:rect(0 0 0 0); border:0;
+  }
+
+  /* ============================================================
+     FOOTER
+  ============================================================ */
+  footer{
+    border-top:1px solid var(--line);
+    margin-top:48px;
+    padding:36px 0 24px;
+  }
+  .foot{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:16px; flex-wrap:wrap;
+  }
+  .foot p{ color:var(--ink-mute); font-size:14px; }
+  .foot a{
+    display:inline-flex; align-items:center; gap:6px;
+    color:var(--ink-soft); font-weight:500; font-size:14px;
+    transition:color .2s var(--ease);
+  }
+  .foot a:hover{ color:var(--accent); }
+  .foot a svg{ width:14px; height:14px; }
+
+  /* ============================================================
+     REVEAL ANIMATION
+  ============================================================ */
+  .reveal{
+    opacity:0;
+    transform:translateY(22px);
+    transition:opacity .7s var(--ease), transform .7s var(--ease);
+    will-change:opacity, transform;
+  }
+  .reveal.in{ opacity:1; transform:none; }
+
+  /* ============================================================
+     RESPONSIVE
+  ============================================================ */
+  @media (max-width:980px){
+    .bento{ grid-template-columns:repeat(2, 1fr); }
+    .hero .card--feature,
+    .contact__main{ grid-column:span 2; grid-row:auto; }
+    .mini-stats{ grid-column:span 2; grid-template-columns:repeat(2, 1fr); }
+    .social-stack{ grid-column:span 2; grid-row:auto; grid-template-columns:repeat(4, 1fr); grid-template-rows:auto; }
+    .span-2, .span-3{ grid-column:span 2; }
+    .row-2{ grid-row:auto; }
+  }
+  @media (max-width:560px){
+    .wrap{ padding:0 16px; }
+    main{ padding-top:84px; }
+    section{ padding:40px 0; }
+    .bento{ grid-template-columns:1fr; gap:14px; }
+    .hero .card--feature,
+    .contact__main,
+    .mini-stats,
+    .social-stack,
+    .span-2, .span-3{ grid-column:span 1; }
+    .mini-stats{ grid-template-columns:repeat(2, 1fr); }
+    .social-stack{ grid-template-columns:repeat(2, 1fr); }
+    .card{ padding:22px; border-radius:24px; }
+    .hero .card--feature{ padding:26px; }
+    .contact__main{ padding:28px; }
+    .hero__cta .btn{ flex:1; justify-content:center; }
+  }
+
+  /* ============================================================
+     REDUCED MOTION
+  ============================================================ */
+  @media (prefers-reduced-motion:reduce){
+    *{ animation:none !important; transition:none !important; scroll-behavior:auto !important; }
+    .reveal{ opacity:1; transform:none; }
+    .s-fill{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================ NAV ============================ -->
+<header>
+  <nav class="nav" aria-label="主导航">
+    <a href="#top" class="nav__brand" aria-label="林墨白 首页">
+      <span class="dot" aria-hidden="true">林</span>
+      <span>林墨白</span>
+    </a>
+
+    <div class="nav__links" id="navLinks">
+      <a href="#about">关于</a>
+      <a href="#skills">技能</a>
+      <a href="#works">作品</a>
+      <a href="#journey">经历</a>
+      <a href="#contact">联系</a>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:8px;">
+      <a href="../index.html" class="nav__back" aria-label="返回总览">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+        </svg>
+        <span>总览</span>
+      </a>
+      <button class="nav__toggle" id="navToggle" aria-label="切换菜单" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ============================ HERO ============================ -->
+  <section class="hero" id="hero" aria-label="个人简介">
+    <div class="wrap">
+      <div class="bento">
+
+        <!-- Feature 2x2 -->
+        <article class="card card--feature reveal">
+          <div class="hero__top">
+            <div class="avatar" aria-hidden="true">林</div>
+            <span class="status-pill" role="status">
+              <span class="ping" aria-hidden="true"></span>
+              可接新项目
+            </span>
+          </div>
+
+          <div>
+            <h1 class="hero__name">林墨白</h1>
+            <p class="hero__role">
+              全栈工程师<span class="sep">·</span>数字设计师
+            </p>
+            <p class="hero__loc">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
+              </svg>
+              中国 · 杭州
+            </p>
+          </div>
+
+          <div class="hero__cta">
+            <a href="#works" class="btn btn--primary">
+              查看作品
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>
+              </svg>
+            </a>
+            <a href="#contact" class="btn btn--ghost">联系合作</a>
+          </div>
+        </article>
+
+        <!-- Stat card -->
+        <article class="card stat-card reveal" style="transition-delay:.05s">
+          <span class="c-label">从业年限</span>
+          <div class="big" style="margin-top:14px;">5<sup>+</sup></div>
+          <p class="desc">深耕产品与设计的全栈实践者</p>
+        </article>
+
+        <!-- Now playing / working on -->
+        <article class="card now-card reveal" style="transition-delay:.1s">
+          <span class="c-label">正在创作</span>
+          <div class="now-row">
+            <div class="now-art" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <div class="now-title">声波画廊</div>
+              <div class="now-sub">WebAudio · Three.js</div>
+            </div>
+          </div>
+          <div class="eq" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </article>
+
+        <!-- Tech tags -->
+        <article class="card tag-card card--blue span-2 reveal" style="transition-delay:.15s">
+          <span class="c-label">技术栈</span>
+          <div class="tag-cloud">
+            <span class="chip">React</span>
+            <span class="chip">Vue</span>
+            <span class="chip">TypeScript</span>
+            <span class="chip">Node.js</span>
+            <span class="chip">Three.js</span>
+            <span class="chip">D3.js</span>
+            <span class="chip">Figma</span>
+            <span class="chip">PostgreSQL</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ ABOUT ============================ -->
+  <section id="about" aria-label="关于我">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">关于</span>
+        <h2 class="sec-title">在代码与设计之间，<br>寻找产品的优雅解。</h2>
+      </div>
+
+      <div class="bento">
+        <!-- text card -->
+        <article class="card span-2 row-2 reveal">
+          <span class="c-label">设计哲学</span>
+          <p style="margin-top:16px; font-size:17px; line-height:1.7; color:var(--ink-soft);">
+            我相信好的产品诞生于<strong style="color:var(--ink);">工程严谨</strong>与<strong style="color:var(--ink);">设计直觉</strong>的交汇点。
+            过去五年，我穿梭于前端框架、设计系统与三维可视化之间，
+            帮助团队把抽象的想法，变成可被触摸、被使用的体验。
+          </p>
+          <p style="margin-top:14px; font-size:15px; color:var(--ink-mute); line-height:1.7;">
+            专注于交互细节、性能与可访问性。偏爱克制的视觉、清晰的信息层级，
+            以及那些用户不会注意到、却让一切更顺滑的微交互。
+          </p>
+          <div style="margin-top:auto; padding-top:22px; display:flex; gap:24px; flex-wrap:wrap;">
+            <div>
+              <div style="font-size:13px; color:var(--ink-mute);">专注领域</div>
+              <div style="font-weight:600; margin-top:2px;">Web 交互 / 数据可视化</div>
+            </div>
+            <div>
+              <div style="font-size:13px; color:var(--ink-mute);">工作方式</div>
+              <div style="font-weight:600; margin-top:2px;">远程 / 现场</div>
+            </div>
+          </div>
+        </article>
+
+        <!-- 4 mini stats -->
+        <div class="mini-stats reveal" style="transition-delay:.05s">
+          <div class="mini">
+            <div class="num">5<span class="u">+ 年</span></div>
+            <div class="lbl">行业经验</div>
+          </div>
+          <div class="mini">
+            <div class="num">42</div>
+            <div class="lbl">交付项目</div>
+          </div>
+          <div class="mini">
+            <div class="num">18</div>
+            <div class="lbl">合作客户</div>
+          </div>
+          <div class="mini">
+            <div class="num">99<span class="u">%</span></div>
+            <div class="lbl">客户好评</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ SKILLS ============================ -->
+  <section id="skills" aria-label="技能">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">技能</span>
+        <h2 class="sec-title">四条主线，一个完整的我。</h2>
+        <p class="sec-sub">从前端像素到后端数据，再到三维空间与视觉系统，持续打磨每一环。</p>
+      </div>
+
+      <div class="bento">
+        <!-- Frontend 92% - feature -->
+        <article class="card card--dark skill span-2 row-2 reveal">
+          <div class="s-head">
+            <div class="s-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+              </svg>
+            </div>
+            <div>
+              <div class="s-name">前端开发</div>
+              <div class="s-tag">React · Vue · TypeScript</div>
+            </div>
+          </div>
+          <div class="s-bottom">
+            <div class="s-pct">
+              <span style="color:rgba(255,255,255,0.7); font-size:13px;">熟练度</span>
+              <span class="pct" data-target="92">0<span class="u">%</span></span>
+            </div>
+            <div class="s-track"><div class="s-fill" data-w="92"></div></div>
+          </div>
+        </article>
+
+        <!-- Design 88% -->
+        <article class="card card--pink skill reveal" style="transition-delay:.05s">
+          <div class="s-head">
+            <div class="s-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/>
+                <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/>
+              </svg>
+            </div>
+            <div>
+              <div class="s-name">视觉设计</div>
+              <div class="s-tag">Figma · 设计系统</div>
+            </div>
+          </div>
+          <div class="s-bottom">
+            <div class="s-pct">
+              <span class="c-meta" style="color:#9d174d;">熟练度</span>
+              <span class="pct" data-target="88">0<span class="u">%</span></span>
+            </div>
+            <div class="s-track"><div class="s-fill" data-w="88"></div></div>
+          </div>
+        </article>
+
+        <!-- Backend 85% -->
+        <article class="card card--blue skill reveal" style="transition-delay:.1s">
+          <div class="s-head">
+            <div class="s-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+              </svg>
+            </div>
+            <div>
+              <div class="s-name">后端开发</div>
+              <div class="s-tag">Node.js · PostgreSQL</div>
+            </div>
+          </div>
+          <div class="s-bottom">
+            <div class="s-pct">
+              <span class="c-meta" style="color:#1d4ed8;">熟练度</span>
+              <span class="pct" data-target="85">0<span class="u">%</span></span>
+            </div>
+            <div class="s-track"><div class="s-fill" data-w="85"></div></div>
+          </div>
+        </article>
+
+        <!-- 3D 76% -->
+        <article class="card card--green skill span-2 reveal" style="transition-delay:.15s">
+          <div class="s-head">
+            <div class="s-ico" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+              </svg>
+            </div>
+            <div>
+              <div class="s-name">三维与创意编程</div>
+              <div class="s-tag">Three.js · WebGL · Shader</div>
+            </div>
+          </div>
+          <div class="s-bottom">
+            <div class="s-pct">
+              <span class="c-meta" style="color:#15803d;">熟练度</span>
+              <span class="pct" data-target="76">0<span class="u">%</span></span>
+            </div>
+            <div class="s-track"><div class="s-fill" data-w="76"></div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ WORKS ============================ -->
+  <section id="works" aria-label="作品">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">精选作品</span>
+        <h2 class="sec-title">用代码塑造的四个世界。</h2>
+        <p class="sec-sub">每一个项目，都是一次关于交互、数据与美学的实验。</p>
+      </div>
+
+      <div class="bento">
+        <!-- Feature: 极光笔记 -->
+        <article class="card work work--feature span-2 row-2 reveal">
+          <div class="work__cover cv-aurora">
+            <span class="work__year">2024</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+          </div>
+          <div class="work__body">
+            <h3 class="work__title">极光笔记</h3>
+            <p class="work__desc">
+              支持多人实时协作的所见即所得笔记应用，基于 CRDT 算法实现冲突自动合并，
+              离线优先，本地 SQLite 持久化，让灵感永不掉线。
+            </p>
+            <div class="work__tags">
+              <span>React</span><span>CRDT</span><span>SQLite</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- 像素工坊 -->
+        <article class="card work reveal" style="transition-delay:.05s">
+          <div class="work__cover cv-pixel">
+            <span class="work__year">2023</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>
+            </svg>
+          </div>
+          <div class="work__body">
+            <h3 class="work__title">像素工坊</h3>
+            <p class="work__desc">面向独立创作者的在线像素画编辑器，图层、调色板与动画帧一站式搞定。</p>
+            <div class="work__tags"><span>Vue</span><span>Canvas</span></div>
+          </div>
+        </article>
+
+        <!-- 数据之眼 -->
+        <article class="card work reveal" style="transition-delay:.1s">
+          <div class="work__cover cv-data">
+            <span class="work__year">2023</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/>
+            </svg>
+          </div>
+          <div class="work__body">
+            <h3 class="work__title">数据之眼</h3>
+            <p class="work__desc">企业级实时数据看板，WebSocket 推送，D3 驱动的多维可视化。</p>
+            <div class="work__tags"><span>D3.js</span><span>WebSocket</span></div>
+          </div>
+        </article>
+
+        <!-- 声波画廊 -->
+        <article class="card work span-2 reveal" style="transition-delay:.15s">
+          <div class="work__cover cv-wave">
+            <span class="work__year">2024</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 12h2l3-9 4 18 3-12 2 6h6"/>
+            </svg>
+          </div>
+          <div class="work__body">
+            <h3 class="work__title">声波画廊</h3>
+            <p class="work__desc">
+              将音乐可视化为三维雕塑的沉浸式画廊。WebAudio 实时频谱分析驱动 Three.js 粒子，
+              每一首歌都长出独一无二的形态。
+            </p>
+            <div class="work__tags"><span>Three.js</span><span>WebAudio</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ JOURNEY ============================ -->
+  <section id="journey" aria-label="经历">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">旅程</span>
+        <h2 class="sec-title">一路走来的脚印。</h2>
+      </div>
+
+      <div class="bento">
+        <article class="card tl card--dark reveal">
+          <div class="tl__year">2024 — 至今</div>
+          <h3 class="tl__title">独立创作者</h3>
+          <div class="tl__org">自由职业 · 杭州</div>
+          <p class="tl__desc">专注于交互体验与创意编程，为初创团队与品牌打造数字产品。</p>
+        </article>
+
+        <article class="card tl reveal" style="transition-delay:.05s">
+          <div class="tl__year">2022 — 2024</div>
+          <h3 class="tl__title">高级前端工程师</h3>
+          <div class="tl__org">流光科技 · 杭州</div>
+          <p class="tl__desc">主导设计系统与可视化平台建设，团队从 3 人成长至 12 人。</p>
+        </article>
+
+        <article class="card tl card--blue reveal" style="transition-delay:.1s">
+          <div class="tl__year">2020 — 2022</div>
+          <h3 class="tl__title">全栈工程师</h3>
+          <div class="tl__org">云栖网络 · 上海</div>
+          <p class="tl__desc">负责 SaaS 产品从 0 到 1 的研发，覆盖前后端与基础架构。</p>
+        </article>
+
+        <article class="card tl reveal" style="transition-delay:.15s">
+          <div class="tl__year">2019</div>
+          <h3 class="tl__title">计算机科学学士</h3>
+          <div class="tl__org">浙江大学 · 毕业</div>
+          <p class="tl__desc">人机交互方向，毕业设计获评优秀，自此开启职业旅程。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ CONTACT ============================ -->
+  <section id="contact" aria-label="联系">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="sec-eyebrow">联系</span>
+        <h2 class="sec-title">让我们聊聊下一个项目。</h2>
+      </div>
+
+      <div class="bento">
+        <article class="card card--dark contact__main reveal">
+          <div>
+            <span class="c-label" style="color:rgba(255,255,255,0.6);">合作邀请</span>
+            <h2 class="contact__title" style="margin-top:14px;">
+              有想法？<br>让我们一起把它变成现实。
+            </h2>
+            <p style="margin-top:16px; color:rgba(255,255,255,0.7); font-size:15px; max-width:46ch; line-height:1.7;">
+              无论是产品研发、交互设计，还是创意编程合作，
+              我都很乐意倾听。通常会在 24 小时内回复。
+            </p>
+          </div>
+
+          <a href="mailto:linmobai@example.com" class="contact__email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>
+            </svg>
+            linmobai@example.com
+          </a>
+        </article>
+
+        <div class="social-stack reveal" style="transition-delay:.08s">
+          <!-- Email -->
+          <a href="mailto:linmobai@example.com" class="social" aria-label="发送邮件给林墨白">
+            <svg class="s-label">邮件</svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>
+            </svg>
+          </a>
+          <!-- GitHub -->
+          <a href="https://github.com" class="social" target="_blank" rel="noopener" aria-label="访问林墨白的 GitHub">
+            <svg class="s-label">GitHub</svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.2.8-.5v-2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17 5 18 5.3 18 5.3c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.6.8.5 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z"/>
+            </svg>
+          </a>
+          <!-- 微信 -->
+          <a href="#" class="social" aria-label="添加林墨白的微信">
+            <svg class="s-label">微信</svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M8.7 3.5C4.7 3.5 1.5 6.3 1.5 9.8c0 2 1.1 3.7 2.9 4.9l-.7 2.2 2.6-1.3c.9.2 1.7.4 2.6.4h.6c-.1-.4-.2-.9-.2-1.3 0-3.2 3-5.8 6.6-5.8h.6c-.5-3.2-3.5-5.4-7.4-5.4h-.4zm-2.5 4a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8zm5 0a.9.9 0 1 1 0 1.8.9.9 0 0 1 0-1.8z"/>
+              <path d="M22.5 14.7c0-2.9-2.8-5.2-6.2-5.2s-6.2 2.3-6.2 5.2 2.8 5.2 6.2 5.2c.8 0 1.5-.1 2.2-.3l2.1 1.1-.6-1.8c1.5-.9 2.5-2.4 2.5-4.2zm-8.2-.9a.7.7 0 1 1 0 1.4.7.7 0 0 1 0-1.4zm4 0a.7.7 0 1 1 0 1.4.7.7 0 0 1 0-1.4z"/>
+            </svg>
+          </a>
+          <!-- 知乎 -->
+          <a href="https://www.zhihu.com" class="social" target="_blank" rel="noopener" aria-label="访问林墨白的知乎">
+            <svg class="s-label">知乎</svg>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M5.7 3h5.5v1.3h-2v3.4h2.4V9H9.2v3.7l2.4-1.2-.5 1.6-1.9 1V19c0 .6-.2 1-.7 1.3-.5.3-1.2.5-2 .5l-.5-1.6c.6 0 1-.1 1.3-.3.2-.2.3-.4.3-.7v-4.3l-2.4 1.2.2-1.6 2.2-1.1V4.3H5.7V3zm6.7 0h7.6v9.7h-2.6l1.4 1.4c-.5.8-1.2 1.5-2.1 2.1 1 .5 2.1.8 3.4 1l-.6 1.7c-1.7-.3-3.2-.9-4.4-1.8-1.3.9-2.9 1.5-4.7 1.8l-.6-1.7c1.3-.2 2.5-.6 3.5-1.1-.9-.6-1.6-1.3-2.2-2.1l1.3-1.3h-2.6V3zm1.8 1.6v2.7h4V4.6h-4zm0 4v2.8h4V8.6h-4z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <p>© 2024 林墨白 · 用代码与设计，认真对待每一个像素。</p>
+      <a href="../index.html">
+        返回总览
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Mobile nav toggle ---------- */
+  var toggle = document.getElementById('navToggle');
+  var links  = document.getElementById('navLinks');
+  if(toggle && links){
+    toggle.addEventListener('click', function(){
+      var open = links.classList.toggle('open');
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    links.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        links.classList.remove('open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Reveal on scroll (stagger) ---------- */
+  var revealEls = document.querySelectorAll('.reveal');
+
+  if(prefersReduced || !('IntersectionObserver' in window)){
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+    animateSkills(true);
+    return;
+  }
+
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+
+        /* trigger skill fills / counters inside this card */
+        var fills = entry.target.querySelectorAll('.s-fill');
+        var pcts  = entry.target.querySelectorAll('.pct[data-target]');
+        if(fills.length || pcts.length){
+          animateCard(fills, pcts);
+        }
+      }
+    });
+  }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+  revealEls.forEach(function(el){ io.observe(el); });
+
+  function animateCard(fills, pcts){
+    fills.forEach(function(f){
+      var w = f.getAttribute('data-w');
+      requestAnimationFrame(function(){ f.style.width = w + '%'; });
+    });
+    pcts.forEach(function(p){
+      var target = parseInt(p.getAttribute('data-target'), 10) || 0;
+      var u = p.querySelector('.u');
+      var start = null, dur = 1100;
+      function step(ts){
+        if(start === null) start = ts;
+        var t = Math.min((ts - start) / dur, 1);
+        var eased = 1 - Math.pow(1 - t, 3);
+        var val = Math.round(eased * target);
+        p.firstChild.nodeValue = String(val);
+        if(t < 1){ requestAnimationFrame(step); }
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  function animateSkills(){
+    document.querySelectorAll('.s-fill').forEach(function(f){
+      f.style.width = (f.getAttribute('data-w') || 0) + '%';
+    });
+    document.querySelectorAll('.pct[data-target]').forEach(function(p){
+      var target = parseInt(p.getAttribute('data-target'), 10) || 0;
+      p.firstChild.nodeValue = String(target);
+    });
+  }
+})();
+</script>
+</body>
+</html>

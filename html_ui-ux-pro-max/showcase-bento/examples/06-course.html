@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React 实战进阶 — 从入门到上线 · 极光学院</title>
+<!-- Google Fonts: Inter + Noto Sans SC -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ============ 设计系统变量 ============ */
+  :root {
+    --bg: #F5F5F7;
+    --card: #FFFFFF;
+    --ink: #1D1D1F;
+    --muted: #6B7280;
+    --muted-2: #86868B;
+    --line: rgba(0,0,0,0.06);
+    --accent: #0071E3;
+    --accent-soft: #EAF3FE;
+    --dark: #1D1D1F;
+    --pastel-rose: #FFE4E6;
+    --pastel-blue: #DBEAFE;
+    --pastel-green: #DCFCE7;
+    --pastel-amber: #FEF3C7;
+    --shadow: 0 4px 20px rgba(0,0,0,0.06);
+    --shadow-deep: 0 18px 50px rgba(0,0,0,0.12);
+    --radius: 26px;
+    --radius-sm: 16px;
+    --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Inter', 'Noto Sans SC', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding: 32px 24px 80px;
+  }
+
+  /* ============ 页面顶部导航 ============ */
+  .topbar {
+    max-width: 1240px;
+    margin: 0 auto 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px;
+    background: rgba(255,255,255,0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    position: sticky;
+    top: 16px;
+    z-index: 50;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; }
+  .brand .logo {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: linear-gradient(135deg, #6366F1 0%, #0071E3 100%);
+    display: grid; place-items: center; color: #fff;
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500;
+    transition: color .25s var(--ease);
+  }
+  .nav-links a:hover { color: var(--ink); }
+  @media (max-width: 720px) { .nav-links { display: none; } }
+
+  /* ============ 标题区 ============ */
+  .page-head {
+    max-width: 1240px;
+    margin: 0 auto 28px;
+    padding: 0 8px;
+  }
+  .crumb { color: var(--muted-2); font-size: 14px; margin-bottom: 12px; }
+  .crumb a { color: var(--muted); text-decoration: none; }
+  .crumb a:hover { color: var(--accent); }
+  .page-title {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .page-sub { color: var(--muted); margin-top: 10px; font-size: 16px; }
+
+  /* ============ Bento Grid 主网格 ============ */
+  .bento {
+    max-width: 1240px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: minmax(120px, auto);
+    gap: 20px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px;
+    transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .card.clickable { cursor: pointer; }
+  .card.clickable:hover { transform: translateY(-4px); box-shadow: var(--shadow-deep); }
+  .card.dark { background: var(--dark); color: #fff; border-color: transparent; }
+  .card.dark .muted { color: rgba(255,255,255,0.65); }
+  .card.pastel-rose { background: var(--pastel-rose); }
+  .card.pastel-blue { background: var(--pastel-blue); }
+  .card.pastel-green { background: var(--pastel-green); }
+  .card.pastel-amber { background: var(--pastel-amber); }
+
+  /* ============ 跨度 ============ */
+  .col-4 { grid-column: span 4; }
+  .col-3 { grid-column: span 3; }
+  .col-2 { grid-column: span 2; }
+  .row-2 { grid-row: span 2; }
+
+  /* ============ Hero 课程卡 ============ */
+  .hero {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 28px;
+    align-items: stretch;
+  }
+  .hero-left { display: flex; flex-direction: column; justify-content: space-between; gap: 22px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-soft); color: var(--accent);
+    padding: 6px 12px; border-radius: 999px;
+    font-size: 12.5px; font-weight: 600; width: fit-content;
+  }
+  .hero h2 {
+    font-size: clamp(26px, 3.2vw, 40px);
+    font-weight: 700; letter-spacing: -0.02em; line-height: 1.15;
+  }
+  .instructor { display: flex; align-items: center; gap: 12px; }
+  .avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, #FBBF24, #F97316);
+    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 16px;
+    flex-shrink: 0;
+  }
+  .instructor-meta .name { font-weight: 600; font-size: 15px; }
+  .instructor-meta .role { color: var(--muted); font-size: 13px; }
+  .stats-row { display: flex; flex-wrap: wrap; gap: 22px; }
+  .stat { display: flex; flex-direction: column; }
+  .stat .num { font-weight: 700; font-size: 18px; display: flex; align-items: center; gap: 4px; }
+  .stat .lab { color: var(--muted); font-size: 12.5px; }
+  .star { color: #F59E0B; }
+  .cta-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 24px; border-radius: 999px; border: none;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    font-family: inherit; transition: transform .25s var(--ease), background .25s var(--ease);
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #0062c4; transform: translateY(-2px); }
+  .btn-ghost { background: rgba(0,0,0,0.04); color: var(--ink); }
+  .btn-ghost:hover { background: rgba(0,0,0,0.08); }
+  .price { display: flex; align-items: baseline; gap: 8px; }
+  .price .now { font-size: 28px; font-weight: 700; letter-spacing: -0.01em; }
+  .price .was { color: var(--muted-2); text-decoration: line-through; font-size: 15px; }
+
+  /* 课程封面 */
+  .cover {
+    border-radius: 20px;
+    background: linear-gradient(135deg, #6366F1 0%, #0071E3 60%, #06B6D4 100%);
+    position: relative;
+    min-height: 240px;
+    overflow: hidden;
+    display: flex; align-items: flex-end; padding: 24px;
+  }
+  .cover::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.25), transparent 50%);
+  }
+  .cover-mark {
+    position: relative; color: #fff;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .cover-mark .pill {
+    background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+    padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 600; width: fit-content;
+  }
+  .cover-mark .big { font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+  .react-logo {
+    position: absolute; top: 22px; right: 22px;
+    width: 56px; height: 56px; border-radius: 16px;
+    background: rgba(255,255,255,0.18); backdrop-filter: blur(10px);
+    display: grid; place-items: center;
+    animation: spin 14s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 720px) { .hero { grid-template-columns: 1fr; } }
+
+  /* ============ 卡片小标题 ============ */
+  .card-label {
+    font-size: 12.5px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px;
+  }
+  .card h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
+
+  /* 你将学到 */
+  .learn-list { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; }
+  .learn-list li {
+    list-style: none; display: flex; gap: 12px; align-items: flex-start;
+    font-size: 14.5px; color: #374151;
+  }
+  .check {
+    flex-shrink: 0; width: 22px; height: 22px; border-radius: 7px;
+    background: var(--pastel-green); color: #16A34A;
+    display: grid; place-items: center;
+  }
+
+  /* 课程特色 */
+  .feature { display: flex; flex-direction: column; gap: 14px; }
+  .feature .ic {
+    width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center;
+  }
+  .feature h4 { font-size: 15.5px; font-weight: 700; }
+  .feature p { font-size: 13.5px; color: var(--muted); }
+
+  /* 课程大纲 */
+  .module-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+  .module {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 0; border-bottom: 1px solid var(--line);
+    transition: padding-left .25s var(--ease);
+  }
+  .module:last-child { border-bottom: none; }
+  .card.clickable:hover .module { padding-left: 4px; }
+  .module .num {
+    width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+    background: var(--accent-soft); color: var(--accent);
+    display: grid; place-items: center; font-weight: 700; font-size: 13px;
+  }
+  .module .m-info { flex: 1; }
+  .module .m-title { font-weight: 600; font-size: 14.5px; }
+  .module .m-meta { color: var(--muted); font-size: 12.5px; margin-top: 2px; }
+  .module .arrow { color: var(--muted-2); }
+
+  /* 讲师介绍 */
+  .instructor-card { display: flex; flex-direction: column; gap: 16px; }
+  .instructor-card .top { display: flex; gap: 14px; align-items: center; }
+  .instructor-card .avatar-lg {
+    width: 64px; height: 64px; border-radius: 18px;
+    background: linear-gradient(135deg, #FBBF24, #F97316);
+    display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 22px;
+  }
+  .instructor-card .creds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .cred {
+    background: rgba(0,0,0,0.04); padding: 5px 11px; border-radius: 999px;
+    font-size: 12px; color: var(--muted); font-weight: 500;
+  }
+  .bio { font-size: 14px; color: #4B5563; }
+
+  /* 学员评价 */
+  .reviews { display: flex; flex-direction: column; gap: 16px; }
+  .review {
+    padding: 18px; border-radius: var(--radius-sm);
+    background: rgba(0,0,0,0.025);
+  }
+  .review .head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .review .avatar-sm {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, #6366F1, #8B5CF6);
+    display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 700;
+  }
+  .review .name { font-weight: 600; font-size: 13.5px; }
+  .review .stars { color: #F59E0B; font-size: 12px; }
+  .review p { font-size: 13.5px; color: #4B5563; }
+
+  /* 保障卡 */
+  .guarantee { display: flex; flex-direction: column; gap: 14px; }
+  .guarantee .ic {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: rgba(255,255,255,0.12); display: grid; place-items: center;
+  }
+
+  /* FAQ */
+  .faq-list { display: flex; flex-direction: column; gap: 4px; }
+  .faq details {
+    padding: 14px 0; border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .faq details:last-child { border-bottom: none; }
+  .faq summary {
+    font-weight: 600; font-size: 14.5px; list-style: none;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after { content: "+"; font-size: 20px; color: var(--muted); transition: transform .25s; }
+  .faq details[open] summary::after { transform: rotate(45deg); }
+  .faq details p { margin-top: 10px; color: var(--muted); font-size: 13.5px; }
+
+  /* ============ 响应式 ============ */
+  @media (max-width: 1024px) {
+    .bento { grid-template-columns: repeat(4, 1fr); }
+    .col-4 { grid-column: span 4; }
+    .col-3 { grid-column: span 4; }
+    .col-2 { grid-column: span 2; }
+  }
+  @media (max-width: 720px) {
+    body { padding: 16px 14px 60px; }
+    .bento { grid-template-columns: 1fr; gap: 14px; }
+    .col-4, .col-3, .col-2 { grid-column: span 1; }
+    .row-2 { grid-row: span 1; }
+    .card { padding: 22px; }
+  }
+
+  /* ============ 进入动画 ============ */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+    .react-logo { animation: none; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- 顶部导航 -->
+  <nav class="topbar">
+    <div class="brand">
+      <span class="logo">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+      </span>
+      极光学院
+    </div>
+    <div class="nav-links">
+      <a href="#">课程</a>
+      <a href="#">学习路径</a>
+      <a href="#">社区</a>
+      <a href="#">企业培训</a>
+      <a href="#">登录</a>
+    </div>
+  </nav>
+
+  <!-- 标题 -->
+  <header class="page-head">
+    <div class="crumb"><a href="#">课程</a> / 前端开发 / 进阶</div>
+    <h1 class="page-title">React 实战进阶</h1>
+    <p class="page-sub">从 Hooks 原理到性能优化，构建可上线的现代 React 应用</p>
+  </header>
+
+  <!-- Bento Grid -->
+  <main class="bento">
+
+    <!-- Hero 课程卡 (4x2) -->
+    <section class="card col-4 row-2 reveal" style="padding:32px;">
+      <div class="hero">
+        <div class="hero-left">
+          <div>
+            <span class="tag">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 9.1 8.6 2 9.2l5.5 4.6L5.8 21 12 17.3 18.2 21l-1.7-7.2L22 9.2l-7.1-.6z"/></svg>
+              限时早鸟价 · 剩 3 天
+            </span>
+            <h2 style="margin-top:14px;">React 实战进阶<br>从入门到上线</h2>
+          </div>
+          <div class="instructor">
+            <div class="avatar">陈</div>
+            <div class="instructor-meta">
+              <div class="name">陈一鸣 · 资深前端架构师</div>
+              <div class="role">前 ByteDance 高级工程师 · 8 年实战经验</div>
+            </div>
+          </div>
+          <div class="stats-row">
+            <div class="stat">
+              <div class="num"><span class="star">★</span> 4.9</div>
+              <div class="lab">2,341 评价</div>
+            </div>
+            <div class="stat">
+              <div class="num">12,580+</div>
+              <div class="lab">已报名学员</div>
+            </div>
+            <div class="stat">
+              <div class="num">48 节</div>
+              <div class="lab">视频 + 实战</div>
+            </div>
+          </div>
+          <div>
+            <div class="price" style="margin-bottom:14px;">
+              <span class="now">¥299</span>
+              <span class="was">¥599</span>
+              <span style="color:#16A34A;font-weight:600;font-size:13px;background:#DCFCE7;padding:3px 8px;border-radius:999px;">立省 ¥300</span>
+            </div>
+            <div class="cta-row">
+              <a href="#" class="btn btn-primary">
+                立即报名
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+              <a href="#" class="btn btn-ghost">试看第一课</a>
+            </div>
+          </div>
+        </div>
+        <div class="cover">
+          <div class="react-logo">
+            <svg width="34" height="34" viewBox="-11.5 -10.23 23 20.46" fill="none" stroke="#fff" stroke-width="1.5">
+              <circle cx="0" cy="0" r="2.05" fill="#fff"/>
+              <g stroke-width="1"><ellipse rx="11" ry="4.2"/><ellipse rx="11" ry="4.2" transform="rotate(60)"/><ellipse rx="11" ry="4.2" transform="rotate(120)"/></g>
+            </svg>
+          </div>
+          <div class="cover-mark">
+            <span class="pill">React 18 · TypeScript</span>
+            <div class="big">2024 全新升级</div>
+            <div style="font-size:13px;opacity:0.85;">配套源码 · 终身更新</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 你将学到 (2x2) -->
+    <section class="card col-2 row-2 reveal" style="background:linear-gradient(160deg,#1D1D1F,#2D2D33);color:#fff;border:none;">
+      <div class="card-label" style="color:rgba(255,255,255,0.5);">你将学到</div>
+      <h3 style="margin-bottom:18px;font-size:22px;">6 大核心能力</h3>
+      <ul class="learn-list">
+        <li><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>掌握 React Hooks 底层原理与自定义 Hook 设计</li>
+        <li><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>使用 TypeScript 构建类型安全的大型项目</li>
+        <li><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>性能优化：渲染、内存、首屏加载全面提速</li>
+        <li><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>状态管理：Context / Zustand / Jotai 实战</li>
+        <li><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>从 0 搭建企业级组件库与工程化体系</li>
+        <li><span class="check"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>上线部署 + CI/CD 自动化交付完整闭环</li>
+      </ul>
+    </section>
+
+    <!-- 课程特色 - 4 小卡 -->
+    <section class="card col-2 pastel-blue reveal">
+      <div class="feature">
+        <span class="ic" style="background:rgba(37,99,235,0.15);color:#2563EB;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"/><circle cx="12" cy="12" r="9"/></svg>
+        </span>
+        <h4>终身访问</h4>
+        <p>一次购买，永久学习，跟随 React 版本持续更新</p>
+      </div>
+    </section>
+    <section class="card col-2 pastel-green reveal">
+      <div class="feature">
+        <span class="ic" style="background:rgba(22,163,74,0.15);color:#16A34A;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m20 7-9 9-4-4"/><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+        </span>
+        <h4>项目实战</h4>
+        <p>3 个完整商业项目，源码全部开源可写进简历</p>
+      </div>
+    </section>
+    <section class="card col-2 pastel-amber reveal">
+      <div class="feature">
+        <span class="ic" style="background:rgba(217,119,6,0.15);color:#D97706;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        <h4>答疑社区</h4>
+        <p>讲师与助教 48 小时内回复，学员互助不孤单</p>
+      </div>
+    </section>
+    <section class="card col-2 pastel-rose reveal">
+      <div class="feature">
+        <span class="ic" style="background:rgba(225,29,72,0.15);color:#E11D48;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        </span>
+        <h4>结业证书</h4>
+        <p>完成课程即获电子证书，支持验证与简历展示</p>
+      </div>
+    </section>
+
+    <!-- 课程大纲 (4x2) -->
+    <section class="card col-4 row-2 reveal clickable">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;">
+        <div>
+          <div class="card-label">课程大纲</div>
+          <h3>5 大模块 · 48 节课</h3>
+        </div>
+        <span style="color:var(--muted);font-size:13px;">共 18 小时</span>
+      </div>
+      <div class="module-list">
+        <div class="module">
+          <div class="num">01</div>
+          <div class="m-info">
+            <div class="m-title">React 心智模型与 Hooks 深度剖析</div>
+            <div class="m-meta">useState / useEffect / useMemo 底层逻辑 · 自定义 Hook 设计模式</div>
+          </div>
+          <div class="m-meta">8 节 · 2.5h</div>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="module">
+          <div class="num">02</div>
+          <div class="m-info">
+            <div class="m-title">TypeScript 在 React 中的工程实践</div>
+            <div class="m-meta">泛型组件 · 类型推导 · 与第三方库协作</div>
+          </div>
+          <div class="m-meta">9 节 · 3.5h</div>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="module">
+          <div class="num">03</div>
+          <div class="m-info">
+            <div class="m-title">状态管理与数据流：Context / Zustand / Jotai</div>
+            <div class="m-meta">选择合适方案 · 性能边界 · 服务端状态 SWR/React Query</div>
+          </div>
+          <div class="m-meta">10 节 · 4h</div>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="module">
+          <div class="num">04</div>
+          <div class="m-info">
+            <div class="m-title">性能优化实战：渲染、内存、首屏</div>
+            <div class="m-meta">React Profiler · 虚拟列表 · 代码分割 · 图片优化</div>
+          </div>
+          <div class="m-meta">11 节 · 4.5h</div>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+        <div class="module">
+          <div class="num">05</div>
+          <div class="m-info">
+            <div class="m-title">项目实战：从设计稿到上线交付</div>
+            <div class="m-meta">完整 SaaS 仪表盘 · 工程化 · CI/CD · 监控告警</div>
+          </div>
+          <div class="m-meta">10 节 · 3.5h</div>
+          <svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- 讲师介绍 (2x2) -->
+    <section class="card col-2 row-2 reveal">
+      <div class="card-label">讲师介绍</div>
+      <div class="instructor-card">
+        <div class="top">
+          <div class="avatar-lg">陈</div>
+          <div>
+            <div style="font-size:18px;font-weight:700;">陈一鸣</div>
+            <div style="color:var(--muted);font-size:13.5px;">资深前端架构师</div>
+          </div>
+        </div>
+        <div class="creds">
+          <span class="cred">前 ByteDance</span>
+          <span class="cred">GitHub 8k+</span>
+          <span class="cred">掘金签约作者</span>
+        </div>
+        <p class="bio">8 年一线前端开发经验，主导过日活千万级产品的架构设计。专注于 React 生态与前端工程化，写过 100+ 篇技术文章，乐于把复杂的原理讲得简单透彻。</p>
+        <div style="display:flex;gap:10px;margin-top:auto;">
+          <a href="#" class="btn btn-ghost" style="padding:10px 16px;font-size:13.5px;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.9 1.2 1.9 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.2-3.2-.1-.4-.5-1.6.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.6.2 2.8.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.7-5.5 6 .5.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></svg>
+            关注讲师
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 学员评价 (3x2) -->
+    <section class="card col-3 row-2 reveal">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <div>
+          <div class="card-label">学员评价</div>
+          <h3>真实口碑</h3>
+        </div>
+        <div style="text-align:right;">
+          <div style="font-weight:700;font-size:22px;"><span class="star">★</span> 4.9</div>
+          <div style="color:var(--muted);font-size:12px;">2,341 评价</div>
+        </div>
+      </div>
+      <div class="reviews" style="margin-top:14px;">
+        <div class="review">
+          <div class="head">
+            <div class="avatar-sm" style="background:linear-gradient(135deg,#EC4899,#F43F5E);">李</div>
+            <div style="flex:1;">
+              <div class="name">李雨桐 · 前端开发</div>
+              <div class="stars">★★★★★</div>
+            </div>
+          </div>
+          <p>Hooks 原理那章讲得太通透了，以前只知道怎么用，现在能讲清楚为什么。性能优化模块直接让我司项目的首屏从 4s 降到 1.2s。</p>
+        </div>
+        <div class="review">
+          <div class="head">
+            <div class="avatar-sm" style="background:linear-gradient(135deg,#10B981,#06B6D4);">王</div>
+            <div style="flex:1;">
+              <div class="name">王志远 · 转行求职者</div>
+              <div class="stars">★★★★★</div>
+            </div>
+          </div>
+          <p>跟着实战项目做下来，简历上有东西可写了，拿到了 3 个 offer。答疑社区响应很快，遇到坑都能及时解决。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7 天无理由退款 (3x1) -->
+    <section class="card col-3 dark reveal">
+      <div class="guarantee" style="flex-direction:row;align-items:center;gap:20px;">
+        <div class="ic">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.7 9.7 0 0 0-6.5 2.5L3 8"/><path d="M3 3v5h5"/></svg>
+        </div>
+        <div style="flex:1;">
+          <h3 style="font-size:18px;margin-bottom:4px;">7 天无理由退款保障</h3>
+          <p class="muted" style="font-size:13.5px;">不满意全额退款，零风险试学。我们相信内容质量，更尊重你的选择。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ (3x1) -->
+    <section class="card col-3 reveal faq">
+      <div class="card-label">常见问题</div>
+      <div class="faq-list">
+        <details open>
+          <summary>需要什么样的基础？</summary>
+          <p>熟悉 HTML/CSS/JS 基础语法即可。建议有 React 函数组件与 Hooks 的初步使用经验，能更好吸收进阶内容。</p>
+        </details>
+        <details>
+          <summary>课程有效期多久？</summary>
+          <p>终身有效，购买后可永久访问。React 大版本更新时课程会同步迭代，老学员免费获取新版内容。</p>
+        </details>
+        <details>
+          <summary>是否提供发票？</summary>
+          <p>支持开具电子普通发票与增值税专用发票，下单后联系客服或在「我的订单」中申请即可。</p>
+        </details>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // IntersectionObserver 错峰显现
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('in'), i * 60);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  </script>
+</body>
+</html>

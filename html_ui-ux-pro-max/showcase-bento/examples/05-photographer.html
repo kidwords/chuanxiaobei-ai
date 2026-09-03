@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>陈晚风 · 风光摄影 / Chen Wanfeng Photography</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   设计令牌 - 摄影质感，深色画廊
+   ============================================================ */
+:root{
+  --bg:#F5F5F7;
+  --card:#FFFFFF;
+  --ink:#1D1D1F;
+  --muted:#6B7280;
+  --soft:#86868B;
+  --line:#E5E7EB;
+  --accent:#0EA5E9;          /* 天空蓝 */
+  --accent-soft:#E0F2FE;
+
+  --radius:24px;
+  --shadow:0 4px 20px rgba(0,0,0,0.06);
+  --shadow-hover:0 18px 44px rgba(0,0,0,0.18);
+  --transition:300ms cubic-bezier(.4,0,.2,1);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Inter','Noto Sans SC',system-ui,sans-serif;
+  background:var(--bg); color:var(--ink); font-size:16px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+.page{ max-width:1280px; margin:0 auto; padding:24px 24px 64px; }
+
+/* 顶部 */
+.topbar{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:24px; padding:6px 4px;
+}
+.brand{ display:flex; align-items:center; gap:11px; font-weight:700; font-size:18px; letter-spacing:-.01em; }
+.brand .logo{
+  width:34px; height:34px; border-radius:10px;
+  background:linear-gradient(135deg,#1D1D1F,#4B5563);
+  display:grid; place-items:center;
+}
+.brand .logo svg{ width:18px; height:18px; color:#fff; }
+.topnav{ display:flex; gap:4px; }
+.topnav a{
+  padding:9px 16px; border-radius:999px; font-size:14px; font-weight:500;
+  color:var(--muted); transition:var(--transition);
+}
+.topnav a:hover{ color:var(--ink); background:rgba(0,0,0,0.04); }
+
+/* ============================================================
+   Bento 网格
+   ============================================================ */
+.bento{
+  display:grid;
+  grid-template-columns:repeat(12,1fr);
+  grid-auto-rows:minmax(120px,auto);
+  gap:18px;
+}
+.card{
+  background:var(--card); border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  border:1px solid rgba(0,0,0,0.03);
+  transition:transform var(--transition), box-shadow var(--transition);
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.card.clickable{cursor:pointer;}
+.card.clickable:hover{ transform:translateY(-4px); box-shadow:var(--shadow-hover); }
+
+.span-hero{grid-column:span 5; grid-row:span 2;}
+.span-photo-lg{grid-column:span 4; grid-row:span 2;}   /* 大幅作品 */
+.span-photo{grid-column:span 4;}
+.span-photo-s{grid-column:span 3;}
+.span-photo-w{grid-column:span 8;}                     /* 宽幅 */
+.span-4{grid-column:span 4;}
+.span-3{grid-column:span 3;}
+.span-5{grid-column:span 5;}
+.span-6{grid-column:span 6;}
+.span-7{grid-column:span 7;}
+.span-8{grid-column:span 8;}
+.span-12{grid-column:span 12;}
+
+/* ============================================================
+   HERO 卡 (摄影师介绍)
+   ============================================================ */
+.hero{
+  background:linear-gradient(165deg,#0F172A 0%,#1E293B 60%,#334155 100%);
+  color:#F8FAFC; padding:32px; justify-content:space-between;
+}
+.hero::before{
+  content:""; position:absolute; top:-50px; right:-50px;
+  width:200px; height:200px; border-radius:50%;
+  background:radial-gradient(circle, rgba(14,165,233,0.3), transparent 70%);
+  pointer-events:none;
+}
+.hero .portrait{
+  width:78px; height:78px; border-radius:50%; flex-shrink:0;
+  background:linear-gradient(135deg,#F59E0B,#EA580C,#7C2D12);
+  display:grid; place-items:center; color:#fff; font-size:30px; font-weight:800;
+  box-shadow:0 10px 28px rgba(245,158,11,0.35);
+  border:3px solid rgba(255,255,255,0.15);
+}
+.hero-top{ display:flex; gap:18px; align-items:center; }
+.hero h1{
+  font-size:clamp(30px,3.4vw,42px); font-weight:800; letter-spacing:-.025em; line-height:1.08;
+}
+.hero .role{ color:#94A3B8; font-size:15px; margin-top:5px; font-weight:500; }
+.hero-loc{
+  display:inline-flex; align-items:center; gap:6px; margin-top:14px;
+  font-size:13px; color:#CBD5E1;
+}
+.hero-tag{
+  margin-top:20px; color:#CBD5E1; font-size:15px; line-height:1.7; max-width:380px;
+}
+.hero-stats{ display:flex; gap:26px; margin-top:auto; padding-top:24px; }
+.hero-stat .n{ font-size:24px; font-weight:800; letter-spacing:-.02em; }
+.hero-stat .l{ font-size:12px; color:#94A3B8; }
+.hero-cta{
+  display:inline-flex; align-items:center; gap:8px; margin-top:20px;
+  padding:13px 24px; border-radius:13px; font-size:14px; font-weight:600;
+  background:#fff; color:#1D1D1F; transition:var(--transition);
+}
+.hero-cta:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(255,255,255,0.2); }
+
+/* ============================================================
+   照片卡片 - 渐变模拟摄影
+   ============================================================ */
+.photo{
+  padding:0; cursor:pointer;
+}
+.photo .canvas{
+  position:relative; flex:1; min-height:180px;
+  display:grid; place-items:end stretch;
+  overflow:hidden;
+}
+.photo .canvas::after{
+  /* 底部渐变蒙版，让文字更易读 */
+  content:""; position:absolute; left:0; right:0; bottom:0; height:55%;
+  background:linear-gradient(to top, rgba(0,0,0,0.65), transparent);
+  pointer-events:none;
+}
+.photo .caption{
+  position:relative; z-index:1; padding:20px 22px; color:#fff;
+  transform:translateY(8px); opacity:0; transition:var(--transition);
+}
+.photo:hover .caption{ transform:translateY(0); opacity:1; }
+.photo .caption .ttl{ font-size:17px; font-weight:700; letter-spacing:-.01em; }
+.photo .caption .meta{ font-size:12px; color:rgba(255,255,255,0.78); margin-top:4px; display:flex; gap:10px; flex-wrap:wrap; }
+/* 常驻显示的小标签 (左上角) */
+.photo .corner-tag{
+  position:absolute; top:16px; left:16px; z-index:2;
+  padding:5px 11px; border-radius:999px; font-size:11px; font-weight:600;
+  background:rgba(255,255,255,0.18); backdrop-filter:blur(8px);
+  color:#fff; letter-spacing:.04em;
+}
+
+/* 大幅作品特例: caption 默认显示 */
+.photo.featured .caption{ opacity:1; transform:none; }
+.photo.featured .canvas{ min-height:340px; }
+.photo.featured .caption .ttl{ font-size:24px; }
+.photo.featured .caption .desc{ font-size:13px; color:rgba(255,255,255,0.85); margin-top:8px; line-height:1.6; max-width:340px; }
+
+/* 渐变主题 (模拟不同照片) */
+.grad-mountain{ background:linear-gradient(165deg,#0F172A 0%,#1E3A5F 35%,#475569 70%,#94A3B8 100%); }
+.grad-ocean{ background:linear-gradient(165deg,#0C4A6E 0%,#0369A1 40%,#0EA5E9 75%,#7DD3FC 100%); }
+.grad-city{ background:linear-gradient(165deg,#18181B 0%,#3F3F46 45%,#71717A 80%,#A1A1AA 100%); }
+.grad-forest{ background:linear-gradient(165deg,#14532D 0%,#166534 40%,#15803D 75%,#4ADE80 100%); }
+.grad-desert{ background:linear-gradient(165deg,#7C2D12 0%,#C2410C 40%,#EA580C 70%,#FB923C 100%); }
+.grad-aurora{ background:linear-gradient(165deg,#0F172A 0%,#1E3A8A 30%,#4C1D95 60%,#7C3AED 85%,#10B981 100%); }
+.grad-sunrise{ background:linear-gradient(165deg,#7C2D12 0%,#DC2626 30%,#F59E0B 60%,#FCD34D 100%); }
+.grad-night{ background:linear-gradient(165deg,#020617 0%,#1E1B4B 50%,#312E81 100%); }
+
+/* ============================================================
+   文字卡片通用
+   ============================================================ */
+.text-card{ padding:26px; }
+.eyebrow{ font-size:12px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--soft); }
+.card-title{ font-size:18px; font-weight:700; letter-spacing:-.01em; }
+.card-body{ color:var(--muted); font-size:14px; line-height:1.75; margin-top:10px; }
+
+/* 关于卡片 + 器材 */
+.gear-list{ margin-top:18px; display:flex; flex-direction:column; gap:11px; }
+.gear-row{ display:flex; align-items:center; gap:11px; font-size:13px; }
+.gear-row .gicon{
+  width:34px; height:34px; border-radius:9px; flex-shrink:0;
+  background:#F1F1F4; display:grid; place-items:center; color:var(--ink);
+}
+.gear-row .gicon svg{ width:17px; height:17px; }
+.gear-row .gname{ font-weight:600; }
+.gear-row .gdetail{ color:var(--soft); font-size:12px; }
+
+/* 服务卡片 */
+.service-list{ margin-top:14px; display:flex; flex-direction:column; gap:10px; }
+.service-item{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:13px 15px; border-radius:13px; background:#F8F8FA;
+  transition:var(--transition);
+}
+.service-item:hover{ background:#F1F1F4; }
+.service-item .sname{ font-weight:600; font-size:14px; display:flex; align-items:center; gap:9px; }
+.service-item .sname svg{ width:16px; height:16px; color:var(--accent); }
+.service-item .sprice{ font-size:13px; color:var(--muted); font-weight:500; }
+
+/* 预约 / 联系 卡片 */
+.contact-card{
+  background:linear-gradient(135deg,#0EA5E9,#0369A1); color:#fff;
+  padding:28px; justify-content:space-between;
+}
+.contact-card .card-title{ color:#fff; font-size:20px; }
+.contact-card .card-body{ color:rgba(255,255,255,0.85); }
+.contact-card .btn-white{
+  display:inline-flex; align-items:center; gap:8px; margin-top:18px;
+  padding:12px 22px; border-radius:12px; background:#fff; color:#1D1D1F;
+  font-size:14px; font-weight:600; transition:var(--transition);
+}
+.contact-card .btn-white:hover{ transform:translateY(-2px); box-shadow:0 10px 24px rgba(0,0,0,0.2); }
+
+/* Instagram 卡 */
+.ig-card{
+  background:linear-gradient(135deg,#F59E0B,#E11D48,#7C3AED); color:#fff;
+  padding:26px; align-items:flex-start;
+}
+.ig-card .ig-handle{ font-size:20px; font-weight:700; margin-top:14px; letter-spacing:-.01em; }
+.ig-card .ig-followers{ color:rgba(255,255,255,0.85); font-size:13px; margin-top:4px; }
+.ig-card .ig-btn{
+  display:inline-flex; align-items:center; gap:8px; margin-top:auto;
+  padding:11px 20px; border-radius:11px; background:rgba(255,255,255,0.18);
+  color:#fff; font-size:13px; font-weight:600; border:1px solid rgba(255,255,255,0.3);
+  transition:var(--transition); backdrop-filter:blur(6px);
+}
+.ig-card .ig-btn:hover{ background:rgba(255,255,255,0.3); }
+
+/* 区块标题 */
+.section-head{ grid-column:span 12; display:flex; align-items:baseline; justify-content:space-between; padding:14px 4px 0; }
+.section-head h2{ font-size:22px; font-weight:700; letter-spacing:-.01em; }
+.section-head span{ color:var(--soft); font-size:13px; }
+
+/* footer */
+.footer{
+  margin-top:40px; padding-top:22px; border-top:1px solid var(--line);
+  display:flex; justify-content:space-between; color:var(--soft); font-size:13px; flex-wrap:wrap; gap:8px;
+}
+
+/* 动画 */
+.reveal{ opacity:0; transform:translateY(20px); transition:opacity .6s ease, transform .6s ease; }
+.reveal.in{ opacity:1; transform:none; }
+
+/* 响应式 */
+@media (max-width:1024px){
+  .span-hero{grid-column:span 12; grid-row:span 1;}
+  .span-photo-lg{grid-column:span 6; grid-row:span 2;}
+  .span-photo-w{grid-column:span 12;}
+  .span-photo{grid-column:span 6;}
+  .span-photo-s{grid-column:span 6;}
+  .span-8,.span-7,.span-6,.span-5{grid-column:span 6;}
+  .span-4,.span-3{grid-column:span 6;}
+}
+@media (max-width:640px){
+  .page{padding:18px 16px 48px;}
+  .bento{grid-template-columns:1fr;}
+  .span-hero,.span-photo-lg,.span-photo,.span-photo-s,.span-photo-w,
+  .span-3,.span-4,.span-5,.span-6,.span-7,.span-8,.span-12{grid-column:span 1;}
+  .span-photo-lg{grid-row:span 1;}
+  .topnav{display:none;}
+  .photo .caption{opacity:1; transform:none;}  /* 移动端默认显示标题 */
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms !important; transition-duration:.001ms !important;}
+  .reveal{opacity:1; transform:none;}
+  .photo .caption{opacity:1; transform:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- 顶部 -->
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </span>
+      <span>陈晚风 · Photography</span>
+    </div>
+    <nav class="topnav" aria-label="主导航">
+      <a href="#works">作品</a>
+      <a href="#about">关于</a>
+      <a href="#services">服务</a>
+      <a href="#contact">联系</a>
+    </nav>
+  </header>
+
+  <main class="bento">
+
+    <!-- HERO (5x2) -->
+    <section class="card hero span-hero reveal" aria-label="摄影师介绍">
+      <div class="hero-top">
+        <div class="portrait" aria-hidden="true">陈</div>
+        <div>
+          <h1>陈晚风</h1>
+          <div class="role">风光摄影 · 自然纪实</div>
+          <div class="hero-loc">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            现居成都 · 全球拍摄
+          </div>
+        </div>
+      </div>
+      <p class="hero-tag">追逐光线的旅人。十年间走过 23 个国家，在山川、海洋与荒野之间，寻找那些转瞬即逝的瞬间。</p>
+      <div>
+        <a href="#contact" class="hero-cta">
+          预约拍摄
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg>
+        </a>
+        <div class="hero-stats">
+          <div class="hero-stat"><div class="n">10<span style="font-size:16px;color:#94A3B8;">年</span></div><div class="l">从业经验</div></div>
+          <div class="hero-stat"><div class="n">23<span style="font-size:16px;color:#94A3B8;">国</span></div><div class="l">足迹所至</div></div>
+          <div class="hero-stat"><div class="n">12</div><div class="l">国际奖项</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 特色大幅作品 - 极光 (4x2) -->
+    <article class="card photo featured span-photo-lg reveal clickable">
+      <div class="canvas grad-aurora">
+        <span class="corner-tag">特色作品</span>
+        <div class="caption">
+          <div class="ttl">极光之下</div>
+          <div class="meta">
+            <span>冰岛 · 维克</span>
+            <span>2026.03</span>
+            <span>Sony A7R V</span>
+          </div>
+          <div class="desc">零下 18 度的凌晨，等了整整七个小时。当绿色的光带铺满整个天空时，所有的寒冷都值得了。</div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 雪山 (3x1) -->
+    <article class="card photo span-photo-s reveal clickable">
+      <div class="canvas grad-mountain">
+        <span class="corner-tag">山岳</span>
+        <div class="caption">
+          <div class="ttl">沉默的山</div>
+          <div class="meta"><span>西藏 · 珠峰</span><span>2025</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 预约/联系卡 (4x1) -->
+    <section class="card contact-card span-4 reveal" id="contact">
+      <div>
+        <div class="eyebrow" style="color:rgba(255,255,255,0.7);">商业合作</div>
+        <h3 class="card-title">一起记录属于你的瞬间</h3>
+        <p class="card-body">商业拍摄、品牌合作、定制旅行摄影，欢迎来信。通常 48 小时内回复。</p>
+      </div>
+      <a href="mailto:hello@chenwanfeng.com" class="btn-white">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+        预约咨询
+      </a>
+    </section>
+
+    <!-- 区块标题 -->
+    <div class="section-head reveal" id="works">
+      <h2>精选作品集</h2>
+      <span>2024 — 2026 · 自然与人文</span>
+    </div>
+
+    <!-- 海洋 (4x1) -->
+    <article class="card photo span-photo reveal clickable">
+      <div class="canvas grad-ocean">
+        <span class="corner-tag">海洋</span>
+        <div class="caption">
+          <div class="ttl">深蓝的呼吸</div>
+          <div class="meta"><span>马尔代夫</span><span>2025.11</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 城市 (4x1) -->
+    <article class="card photo span-photo reveal clickable">
+      <div class="canvas grad-city">
+        <span class="corner-tag">城市</span>
+        <div class="caption">
+          <div class="ttl">霓虹与雾</div>
+          <div class="meta"><span>香港</span><span>2025.06</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 森林 (4x1) -->
+    <article class="card photo span-photo reveal clickable">
+      <div class="canvas grad-forest">
+        <span class="corner-tag">森林</span>
+        <div class="caption">
+          <div class="ttl">苔藓的低语</div>
+          <div class="meta"><span>日本 · 屋久岛</span><span>2024.10</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 沙漠 - 宽幅 (8x1) -->
+    <article class="card photo span-photo-w reveal clickable">
+      <div class="canvas grad-desert" style="min-height:220px;">
+        <span class="corner-tag">荒野</span>
+        <div class="caption">
+          <div class="ttl">沙海无垠</div>
+          <div class="meta"><span>摩洛哥 · 撒哈拉</span><span>2024.04</span><span>日出 05:42</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 日出 (4x1) -->
+    <article class="card photo span-4 reveal clickable">
+      <div class="canvas grad-sunrise">
+        <span class="corner-tag">光影</span>
+        <div class="caption">
+          <div class="ttl">第一缕光</div>
+          <div class="meta"><span>云南 · 元阳</span><span>2025.02</span></div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 关于卡片 (4x1) -->
+    <section class="card text-card span-4 reveal" id="about">
+      <div class="eyebrow">关于我</div>
+      <h3 class="card-title" style="margin-top:4px;">用十年，等一束光</h3>
+      <p class="card-body">从一台二手胶片机开始，到今天走过半个地球。我相信风景从不重复，每一次按下快门，都是与这个世界的一次私语。作品散见于《国家地理》《中国国家地理》。</p>
+      <div class="gear-list">
+        <div class="gear-row">
+          <div class="gicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+          <div><div class="gname">Sony A7R V</div><div class="gdetail">主机 · 6100 万像素</div></div>
+        </div>
+        <div class="gear-row">
+          <div class="gicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <div><div class="gname">FE 16-35mm F2.8 GM</div><div class="gdetail">风光主力镜头</div></div>
+        </div>
+        <div class="gear-row">
+          <div class="gicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M7 6V4h10v2"/></svg></div>
+          <div><div class="gname">Hasselberg X2D</div><div class="gdetail">中画幅 · 精细作品</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 服务卡片 (4x1) -->
+    <section class="card text-card span-4 reveal" id="services">
+      <div class="eyebrow">服务</div>
+      <h3 class="card-title" style="margin-top:4px;">我能为你拍什么</h3>
+      <div class="service-list">
+        <div class="service-item">
+          <span class="sname">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            商业品牌拍摄
+          </span>
+          <span class="sprice">详询</span>
+        </div>
+        <div class="service-item">
+          <span class="sname">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+            婚礼纪实
+          </span>
+          <span class="sprice">¥18,800 起</span>
+        </div>
+        <div class="service-item">
+          <span class="sname">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+            限量艺术冲印
+          </span>
+          <span class="sprice">¥1,200 起</span>
+        </div>
+        <div class="service-item">
+          <span class="sname">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15 15 0 010 20"/></svg>
+            定制旅行摄影
+          </span>
+          <span class="sprice">详询</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Instagram 卡 (4x1) -->
+    <section class="card ig-card span-4 reveal">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+      <div class="ig-handle">@chenwanfeng.photo</div>
+      <div class="ig-followers">128.4k 关注 · 每周更新作品</div>
+      <a href="#" class="ig-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg>
+        关注 Instagram
+      </a>
+    </section>
+
+    <!-- 星夜 (8x1) 宽幅收尾 -->
+    <article class="card photo span-8 reveal clickable">
+      <div class="canvas grad-night" style="min-height:220px;">
+        <span class="corner-tag">星空</span>
+        <div class="caption">
+          <div class="ttl">银河的中心</div>
+          <div class="meta"><span>青海 · 茶卡盐湖</span><span>2025.08</span><span>30s · f/2.8 · ISO 3200</span></div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <footer class="footer">
+    <span>© 2026 陈晚风 Chen Wanfeng · All Rights Reserved</span>
+    <span>图像版权归摄影师所有，转载请联系</span>
+  </footer>
+</div>
+
+<script>
+/* 入场动画 - IntersectionObserver 分批 */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('in'), (i%6)*55);
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* 照片卡片轻微视差 (鼠标移动) - 仅非触屏 & 非 reduced-motion */
+const isTouch = window.matchMedia('(hover: none)').matches;
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!isTouch && !reduce){
+  document.querySelectorAll('.photo .canvas').forEach(canvas=>{
+    canvas.addEventListener('mousemove', (e)=>{
+      const r = canvas.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      canvas.style.transform = `scale(1.04) translate(${x*6}px, ${y*6}px)`;
+      canvas.style.transition = 'transform .1s ease-out';
+    });
+    canvas.addEventListener('mouseleave', ()=>{
+      canvas.style.transform = '';
+      canvas.style.transition = 'transform .6s ease';
+    });
+  });
+}
+</script>
+
+</body>
+</html>
