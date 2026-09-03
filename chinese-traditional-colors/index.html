@@ -1688,7 +1688,19 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .color-wall-bg { display:none; position:fixed; inset:0; z-index:0; pointer-events:none; background-color:#e7ede9; background-image:radial-gradient(ellipse at 12% 18%,rgba(255,255,255,.48),transparent 44%),radial-gradient(ellipse at 88% 82%,rgba(255,255,255,.24),transparent 46%),linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,0)); transition:background-color .75s ease; will-change:background-color; }
 #gallery.is-color-wall-mode #colorWallBg { display:block; }
 .color-wall-content { position:relative; z-index:1; display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,340px); gap:20px; align-items:start; }
-.color-wall-browser { min-width:0; padding:16px; border:none; border-radius:0; background:transparent; box-shadow:none; }
+.color-wall-browser {
+  --color-wall-card-surface:rgba(248,247,244,.72);
+  --color-wall-card-border:rgba(23,23,23,.14);
+  --color-wall-card-shadow:rgba(23,23,23,.12);
+  min-width:0;
+  padding:16px;
+  border:1px solid var(--color-wall-card-border);
+  border-radius:16px;
+  background:var(--color-wall-card-surface);
+  box-shadow:0 12px 28px var(--color-wall-card-shadow);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
 .color-wall-tools { display:grid; grid-template-columns:minmax(220px,1fr) auto auto; gap:10px; align-items:end; margin-bottom:14px; }
 .color-wall-drag-status { margin:0 0 10px; color:#9a8c83; font-size:.68rem; line-height:1.4; }
 .color-wall-search { display:flex; flex-direction:column; gap:6px; color:#81766f; font-size:.68rem; font-weight:700; letter-spacing:.08em; }
@@ -5042,6 +5054,9 @@ function setColorWallForeground(backgroundHex) {
   gallery.style.setProperty('--color-wall-ink', ink);
   gallery.style.setProperty('--color-wall-control-surface', isLightInk ? 'rgba(23,23,23,.38)' : 'rgba(248,247,244,.72)');
   gallery.style.setProperty('--color-wall-control-border', isLightInk ? 'rgba(248,247,244,.42)' : 'rgba(23,23,23,.24)');
+  gallery.style.setProperty('--color-wall-card-surface', isLightInk ? 'rgba(23,23,23,.42)' : 'rgba(248,247,244,.72)');
+  gallery.style.setProperty('--color-wall-card-border', isLightInk ? 'rgba(248,247,244,.28)' : 'rgba(23,23,23,.14)');
+  gallery.style.setProperty('--color-wall-card-shadow', isLightInk ? 'rgba(0,0,0,.24)' : 'rgba(23,23,23,.12)');
 }
 
 function setColorWallBackground(value) {
