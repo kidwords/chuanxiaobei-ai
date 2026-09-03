@@ -1098,21 +1098,28 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   --imm-auto-border: rgba(248,247,244,0.34);
   --imm-auto-surface: rgba(23,23,23,0.36);
   --imm-auto-shadow: rgba(0,0,0,0.3);
+  --imm-auto-shift-x: 0px;
+  --imm-auto-shift-y: 0px;
+  --imm-auto-rotate: 0deg;
+  --imm-auto-scale: 1;
+  --imm-auto-width: min(560px, calc(100vw - 48px));
+  --imm-auto-radius: 14px;
+  --imm-auto-padding: 24px 30px;
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(calc(-50% + var(--imm-auto-shift-x)), calc(-50% + var(--imm-auto-shift-y))) rotate(var(--imm-auto-rotate)) scale(var(--imm-auto-scale));
   z-index: 210;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  width: min(560px, calc(100vw - 48px));
+  width: var(--imm-auto-width);
   min-width: min(360px, calc(100vw - 48px));
   box-sizing: border-box;
-  padding: 24px 30px;
+  padding: var(--imm-auto-padding);
   border: 1px solid var(--imm-auto-border);
-  border-radius: 14px;
+  border-radius: var(--imm-auto-radius);
   background: var(--imm-auto-surface);
   color: var(--imm-auto-ink);
   box-shadow: 0 16px 36px rgba(0,0,0,0.16);
@@ -1120,7 +1127,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   -webkit-backdrop-filter: blur(14px);
   text-align: center;
   pointer-events: none;
-  transition: opacity 0.4s ease, color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+  transition: transform 0.65s cubic-bezier(0.22, 0.8, 0.28, 1), width 0.55s ease, padding 0.55s ease, border-radius 0.55s ease, opacity 0.4s ease, color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.55s ease;
 }
 .imm-auto-name {
   font-size: clamp(2.4rem, 6vw, 4rem);
@@ -1147,6 +1154,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 }
 @media (prefers-reduced-motion: reduce) {
   .imm-auto-label, .imm-auto-name, .imm-auto-font { transition: none; }
+  .imm-auto-label { --imm-auto-shift-x: 0px !important; --imm-auto-shift-y: 0px !important; --imm-auto-rotate: 0deg !important; }
 }
 .auto-playing .imm-nav { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
 .auto-playing .imm-left { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
@@ -1686,7 +1694,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 /* VIEW 3: HEX COLOR WALL          */
 /* ============================== */
 .color-wall-bg { display:none; position:fixed; inset:0; z-index:0; pointer-events:none; background-color:#e7ede9; background-image:radial-gradient(ellipse at 12% 18%,rgba(255,255,255,.48),transparent 44%),radial-gradient(ellipse at 88% 82%,rgba(255,255,255,.24),transparent 46%),linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,0)); transition:background-color .75s ease; will-change:background-color; }
-#gallery.is-color-wall-mode #colorWallBg { display:block; }
+#gallery.active .color-wall-bg { display:block; }
 .color-wall-content { position:relative; z-index:1; display:grid; grid-template-columns:minmax(0,1fr) minmax(280px,340px); gap:20px; align-items:start; }
 .color-wall-browser {
   --color-wall-card-surface:rgba(248,247,244,.72);
@@ -1701,11 +1709,19 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);
 }
-.color-wall-tools { display:grid; grid-template-columns:minmax(220px,1fr) auto auto; gap:10px; align-items:end; margin-bottom:14px; }
+.color-wall-tools { display:grid; grid-template-columns:minmax(250px,1.2fr) minmax(270px,1fr) auto auto; gap:10px; align-items:end; margin-bottom:14px; }
 .color-wall-drag-status { margin:0 0 10px; color:#9a8c83; font-size:.68rem; line-height:1.4; }
+.color-wall-search-area { display:grid; grid-template-columns:minmax(0,1fr); gap:6px; min-width:0; }
 .color-wall-search { display:flex; flex-direction:column; gap:6px; color:#81766f; font-size:.68rem; font-weight:700; letter-spacing:.08em; }
 .color-wall-search input { box-sizing:border-box; width:100%; min-height:44px; padding:9px 12px; border:1px solid rgba(49,45,42,.16); border-radius:10px; background:#fff; color:#3d3733; font:inherit; font-size:.8rem; outline:none; }
 .color-wall-search input:focus { border-color:rgba(146,118,51,.62); box-shadow:0 0 0 3px rgba(146,118,51,.12); }
+.color-wall-search-hint { color:#9a8c83; font-size:.62rem; font-weight:500; letter-spacing:0; line-height:1.3; }
+.color-wall-category { min-width:0; }
+.color-wall-category-label { display:block; margin-bottom:6px; color:#81766f; font-size:.68rem; font-weight:700; letter-spacing:.08em; }
+.color-wall-category-group { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.color-wall-category-btn { min-height:44px; padding:7px 8px; border:1px solid rgba(49,45,42,.14); border-radius:10px; background:rgba(255,255,255,.72); color:#5f554e; font:inherit; font-size:.7rem; cursor:pointer; transition:all .25s ease; }
+.color-wall-category-btn:hover { transform:translateY(-1px) scale(1.02); border-color:rgba(78,71,66,.42); background:#f5f2eb; }
+.color-wall-category-btn.active, .color-wall-category-btn[aria-pressed="true"] { border-color:#4e4742; background:#4e4742; color:#fff; box-shadow:0 5px 12px rgba(42,34,38,.1); }
 .color-wall-tool-actions { display:flex; gap:8px; }
 .color-wall-reset { min-height:44px; padding:7px 12px; border:1px solid rgba(49,45,42,.14); border-radius:10px; background:rgba(255,255,255,.78); color:#5f554e; font:inherit; font-size:.74rem; cursor:pointer; transition:all .25s ease; }
 .color-wall-reset:hover { transform:translateY(-1px) scale(1.02); border-color:rgba(78,71,66,.42); background:#4e4742; color:#fff; box-shadow:0 5px 12px rgba(42,34,38,.1); }
@@ -1756,7 +1772,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .color-wall-inspector-facts strong { margin-top:4px; color:#4d453f; font-family:'SF Mono','Consolas',monospace; font-size:.72rem; font-weight:600; }
 .color-wall-inspector-note { margin-top:16px; color:#6f665f; font-size:.76rem; line-height:1.6; }
 @media (max-width: 900px) { .color-wall-content { grid-template-columns:1fr; } .color-wall-inspector { position:static; min-height:0; } .color-wall-inspector-swatch { width:min(100%,240px); height:auto; } .color-wall-grid { grid-template-columns:repeat(12,minmax(0,1fr)); } }
-@media (max-width: 640px) { .color-wall-tools { grid-template-columns:1fr auto; gap:10px; } .color-wall-search { grid-column:1/-1; } .color-wall-count { text-align:left; } .color-wall-tool-actions { grid-column:1/-1; width:100%; } .color-wall-tool-actions .color-wall-reset { flex:1 1 0; } .color-wall-grid { grid-template-columns:repeat(8,minmax(0,1fr)); gap:5px; } .color-wall-cell { border-radius:7px; } .color-wall-cell-meta { min-width:104px; } }
+@media (max-width: 640px) { .color-wall-tools { grid-template-columns:1fr auto; gap:10px; } .color-wall-search-area, .color-wall-category { grid-column:1/-1; } .color-wall-count { text-align:left; } .color-wall-tool-actions { grid-column:1/-1; width:100%; } .color-wall-tool-actions .color-wall-reset { flex:1 1 0; } .color-wall-grid { grid-template-columns:repeat(8,minmax(0,1fr)); gap:5px; } .color-wall-cell { border-radius:7px; } .color-wall-cell-meta { min-width:104px; } }
 @media (max-width: 420px) { .color-wall-grid { grid-template-columns:repeat(6,minmax(0,1fr)); } .color-wall-browser, .color-wall-inspector { padding:14px; } }
 @media (prefers-reduced-motion: reduce) { .color-wall-bg { transition:none; } .color-wall-cell-meta { transform:translate(-50%,0); } .color-wall-drag-ghost, .color-wall-cell.is-reordered { animation:none; } }
 
@@ -2599,10 +2615,22 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
       <div class="color-wall-content">
         <main class="color-wall-browser" aria-labelledby="galleryTitle">
           <div class="color-wall-tools">
-            <label class="color-wall-search" for="colorWallSearchInput">
-              <span>搜索颜色</span>
-              <input id="colorWallSearchInput" type="search" placeholder="颜色名或 HEX 色号" autocomplete="off" oninput="updateColorWallSearch(this.value)">
-            </label>
+            <div class="color-wall-search-area">
+              <label class="color-wall-search" for="colorWallSearchInput">
+                <span>查找颜色</span>
+                <input id="colorWallSearchInput" type="search" placeholder="输入色名、HEX 或节气" autocomplete="off" oninput="updateColorWallSearch(this.value)">
+              </label>
+              <span class="color-wall-search-hint" id="colorWallSearchHint">支持色名、HEX、节气；结果会保留当前整理顺序</span>
+            </div>
+            <div class="color-wall-category">
+              <span class="color-wall-category-label">色彩分类</span>
+              <div class="color-wall-category-group" role="group" aria-label="色彩分类筛选">
+                <button type="button" class="color-wall-category-btn active" data-color-category="all" aria-pressed="true" onclick="setColorWallCategoryFilter('all')">全部</button>
+                <button type="button" class="color-wall-category-btn" data-color-category="warm" aria-pressed="false" onclick="setColorWallCategoryFilter('warm')">暖色</button>
+                <button type="button" class="color-wall-category-btn" data-color-category="cool" aria-pressed="false" onclick="setColorWallCategoryFilter('cool')">冷色</button>
+                <button type="button" class="color-wall-category-btn" data-color-category="neutral" aria-pressed="false" onclick="setColorWallCategoryFilter('neutral')">中性色/灰色</button>
+              </div>
+            </div>
             <div class="color-wall-count" id="colorWallCount" aria-live="polite">384 / 384 色</div>
             <div class="color-wall-tool-actions">
               <button type="button" class="color-wall-reset" onclick="resetColorWallFilters()">重置筛选</button>
@@ -4036,8 +4064,11 @@ function showView(name) {
   document.body.style.backgroundRepeat = name === 'gallery' ? 'no-repeat' : '';
   document.body.classList.toggle('gallery-fixed-background', name === 'gallery');
   if (name !== 'immersive') {
-    document.body.style.background = defaultSolarBg;
-    document.body.style.backgroundSize = 'cover';
+    if (name === 'gallery') setGalleryBackground(getGalleryBackgroundValue());
+    else {
+      document.body.style.background = defaultSolarBg;
+      document.body.style.backgroundSize = 'cover';
+    }
   }
   if (name === 'home') { updateHomeMotionUi(); window.setTimeout(startHomeSolarEffect, 0); }
 }
@@ -4066,12 +4097,11 @@ function setGalleryDisplayMode(mode) {
   var subtitle = document.getElementById('gallerySubtitle');
   var button = document.getElementById('galleryColorModeButton');
   var label = document.getElementById('galleryColorModeButtonLabel');
-  var wallBackground = document.getElementById('colorWallBg');
   if (gallery) {
     gallery.classList.toggle('is-color-wall-mode', isWall);
     gallery.setAttribute('data-display-mode', galleryDisplayMode);
   }
-  if (wallBackground) wallBackground.style.display = isWall ? 'block' : 'none';
+  setColorWallBackground(getGalleryBackgroundValue());
   if (title) title.textContent = isWall ? '色号长廊' : '全部浏览';
   if (subtitle) subtitle.textContent = isWall ? '按整体亮度浏览 384 色 · 拖动色块整理顺序' : '左侧筛选与浏览 384 色 · 右侧查看单色详情与节气关联';
   if (modeMount) modeMount.setAttribute('aria-hidden', isWall ? 'false' : 'true');
@@ -4086,6 +4116,7 @@ function setGalleryDisplayMode(mode) {
 function renderGalleryViewDirect() {
   if (currentView !== 'gallery') showView('gallery');
   setGalleryDisplayMode('gallery');
+  setColorWallBackground(getGalleryBackgroundValue());
   renderSolarSectionsInGallery();
   renderSolarTermInfo();
 }
@@ -4095,7 +4126,7 @@ function renderColorWallViewDirect() {
   setGalleryDisplayMode('color-wall');
   renderColorWallPage();
   renderSolarTermInfo();
-  if (colorWallBackgroundValue) setColorWallBackground(colorWallBackgroundValue);
+  setColorWallBackground(getGalleryBackgroundValue());
 }
 
 function clearColorBrowseMotionClasses() {
@@ -4472,6 +4503,37 @@ var AUTO_PLAY_MAX = 5000;
 // 可用切换特效
 var TRANSITION_FX = ['wipeFromLeft','wipeFromRight','wipeFromTop','wipeFromBottom','circleTopRight','circleCenter','circleBottomLeft','scaleIn','slideRight','slideLeft','slideUp','slideDown'];
 
+var IMM_AUTO_LABEL_VARIANTS = [
+  {x:'0px', y:'0px', rotate:'-1deg', scale:'0.96', width:'min(500px, calc(100vw - 48px))', radius:'12px', padding:'22px 26px'},
+  {x:'clamp(-140px, -12vw, -48px)', y:'clamp(-84px, -8vh, -28px)', rotate:'1.4deg', scale:'1.02', width:'min(470px, calc(100vw - 48px))', radius:'18px', padding:'28px 24px'},
+  {x:'clamp(-128px, -11vw, -44px)', y:'clamp(28px, 7vh, 72px)', rotate:'2.4deg', scale:'0.94', width:'min(600px, calc(100vw - 48px))', radius:'10px', padding:'20px 34px'},
+  {x:'clamp(44px, 13vw, 160px)', y:'clamp(30px, 8vh, 86px)', rotate:'-1.8deg', scale:'1.04', width:'min(520px, calc(100vw - 48px))', radius:'16px', padding:'26px 30px'},
+  {x:'0px', y:'clamp(-112px, -11vh, -42px)', rotate:'-3deg', scale:'0.98', width:'min(430px, calc(100vw - 48px))', radius:'22px', padding:'30px 22px'}
+];
+
+function getStableAutoLabelVariantIndex(key, serial) {
+  var text = String(key || ''), hash = 2166136261;
+  for (var i = 0; i < text.length; i++) hash = Math.imul(hash ^ text.charCodeAt(i), 16777619);
+  var offset = Number(serial);
+  if (!isFinite(offset)) offset = 0;
+  return (Math.abs(hash) + Math.abs(Math.floor(offset))) % IMM_AUTO_LABEL_VARIANTS.length;
+}
+
+function applyAutoLabelVariant(key, serial) {
+  var label = document.getElementById('immAutoLabel');
+  if (!label) return;
+  var index = getStableAutoLabelVariantIndex(key, serial);
+  var variant = IMM_AUTO_LABEL_VARIANTS[index];
+  label.dataset.layoutIndex = String(index);
+  label.style.setProperty('--imm-auto-shift-x', variant.x);
+  label.style.setProperty('--imm-auto-shift-y', variant.y);
+  label.style.setProperty('--imm-auto-rotate', variant.rotate);
+  label.style.setProperty('--imm-auto-scale', variant.scale);
+  label.style.setProperty('--imm-auto-width', variant.width);
+  label.style.setProperty('--imm-auto-radius', variant.radius);
+  label.style.setProperty('--imm-auto-padding', variant.padding);
+}
+
 function toggleAutoPlay() {
   if (isAutoPlaying) { stopAutoPlay(); }
   else { startAutoPlay(); }
@@ -4684,6 +4746,7 @@ function updateAutoLabel() {
   if (!label) return;
   if (isPaletteAutoPlay) {
     var co = paletteAutoColors[paletteAutoIndex] || {name:'',hex:'#f5f5f5',solarTerm:''};
+    applyAutoLabelVariant('palette|' + co.solarTerm + '|' + co.hex, paletteAutoIndex);
     document.getElementById('immAutoName').textContent = co.name;
     document.getElementById('immAutoMeta').textContent = co.solarTerm + ' · HEX ' + co.hex;
     var fontEl = document.getElementById('immAutoFont');
@@ -4700,6 +4763,8 @@ function updateAutoLabel() {
   var data = immersiveMode === 'scene' ? SCENES[name] : SOLAR_SCENES[name];
   var scheme = data[currentMode] || data.light;
   var representativeHex = getBlendSpec(scheme.colors).first.hex;
+  var cyclePosition = getCyclePosition();
+  applyAutoLabelVariant(name + '|' + representativeHex + '|' + currentMode, cyclePosition.group * 64 + cyclePosition.index);
   var modeLabel = currentMode === 'light' ? '浅色' : '深色';
   var typeLabel = immersiveMode === 'scene' ? '场景' : '节气';
   document.getElementById('immAutoName').textContent = name;
@@ -4770,6 +4835,7 @@ var gallerySelectedColor = null;
 var galleryColorRecords = null;
 var galleryBlendPreview = null;
 var colorWallSearchQuery = '';
+var colorWallCategoryFilter = 'all';
 var colorWallBackgroundValue = '';
 var colorWallManualOrder = null;
 var colorWallDragState = null;
@@ -4877,7 +4943,7 @@ function getGalleryColorRecords() {
     var data = SOLAR_SCENES[term] || {};
     var colors = SOLAR_16_COLORS[term] || [];
     for (var c = 0; c < colors.length; c++) {
-      galleryColorRecords.push({uid: uid, globalIndex: uid + 1, term: term, season: data.season || '', desc: data.desc || '', name: colors[c].name, hex: colors[c].hex, index: c, tone: ['浅阶','中浅阶','中深阶','深阶'][Math.floor(c / 4)] || '色阶'});
+      galleryColorRecords.push({uid: uid, globalIndex: uid + 1, term: term, season: data.season || '', desc: data.desc || '', name: colors[c].name, hex: colors[c].hex, category: getGalleryColorCategory(colors[c].hex), index: c, tone: ['浅阶','中浅阶','中深阶','深阶'][Math.floor(c / 4)] || '色阶'});
       uid++;
     }
   }
@@ -4937,7 +5003,14 @@ function renderGalleryColorList(records) {
   list.innerHTML = html;
 }
 
+function getGalleryColorCategory(hex) {
+  var hsl = rgbToHslForGallery(hexToRgbForGallery(hex));
+  if (hsl.s <= 18 || hsl.l <= 10 || hsl.l >= 92) return 'neutral';
+  return hsl.h < 75 || hsl.h >= 330 ? 'warm' : 'cool';
+}
+
 function colorWallRecordMatches(record) {
+  if (colorWallCategoryFilter !== 'all' && record.category !== colorWallCategoryFilter) return false;
   if (!colorWallSearchQuery) return true;
   return [record.name, record.hex, record.term, record.season, record.desc].join(' ').toLowerCase().indexOf(colorWallSearchQuery) !== -1;
 }
@@ -4954,11 +5027,29 @@ function updateColorWallSearch(value) {
   renderColorWallPage();
 }
 
+function updateColorWallCategoryButtons() {
+  var buttons = document.querySelectorAll('.color-wall-category-btn');
+  for (var i = 0; i < buttons.length; i++) {
+    var active = buttons[i].getAttribute('data-color-category') === colorWallCategoryFilter;
+    buttons[i].classList.toggle('active', active);
+    buttons[i].setAttribute('aria-pressed', active ? 'true' : 'false');
+  }
+}
+
+function setColorWallCategoryFilter(category) {
+  colorWallCategoryFilter = ['all','warm','cool','neutral'].indexOf(category) !== -1 ? category : 'all';
+  colorWallSwapPair = null;
+  updateColorWallCategoryButtons();
+  renderColorWallPage();
+}
+
 function resetColorWallFilters() {
   colorWallSearchQuery = '';
+  colorWallCategoryFilter = 'all';
   colorWallSwapPair = null;
   var input = document.getElementById('colorWallSearchInput');
   if (input) input.value = '';
+  updateColorWallCategoryButtons();
   renderColorWallPage();
 }
 
@@ -5044,11 +5135,27 @@ function resetColorWallOrder() {
   renderColorWallPage();
 }
 
+function getGalleryBackgroundValue() {
+  var current = String(colorWallBackgroundValue || '').trim();
+  if (current) return current;
+  if (gallerySelectedColor && gallerySelectedColor.hex) return gallerySelectedColor.hex;
+  return String(defaultSolarBg || '#e7ede9');
+}
+
+function setGalleryBackground(value) {
+  var backgroundValue = String(value || '').trim() || getGalleryBackgroundValue();
+  setColorWallBackground(backgroundValue);
+  if (document.body.style.background !== backgroundValue || document.body.style.backgroundSize !== 'cover') {
+    setPageBackground(backgroundValue);
+  }
+}
+
 function setColorWallForeground(backgroundHex) {
   var gallery = document.getElementById('gallery');
   if (!gallery) return;
   var normalized = String(backgroundHex || '').trim();
-  if (!/^#[0-9a-f]{6}$/i.test(normalized)) normalized = '#e7ede9';
+  var foregroundMatch = normalized.match(/#[0-9a-f]{6}/i);
+  normalized = foregroundMatch ? foregroundMatch[0] : '#e7ede9';
   var ink = getReadableTextColor(normalized);
   var isLightInk = ink === '#f8f7f4';
   gallery.style.setProperty('--color-wall-ink', ink);
@@ -5060,7 +5167,7 @@ function setColorWallForeground(backgroundHex) {
 }
 
 function setColorWallBackground(value) {
-  var backgroundValue = String(value || '').trim();
+  var backgroundValue = String(value || '').trim() || (gallerySelectedColor && gallerySelectedColor.hex) || defaultSolarBg || '#e7ede9';
   colorWallBackgroundValue = backgroundValue;
   setColorWallForeground(backgroundValue);
   var layer = document.getElementById('colorWallBg');
@@ -5071,9 +5178,15 @@ function setColorWallBackground(value) {
     return;
   }
   var normalized = backgroundValue.toUpperCase();
-  if (layer.getAttribute('data-color-hex') === normalized && layer.style.backgroundColor) return;
+  if (layer.getAttribute('data-color-hex') === normalized && (layer.style.backgroundColor || layer.style.background)) return;
   layer.setAttribute('data-color-hex', normalized);
-  layer.style.backgroundColor = backgroundValue;
+  if (/^#[0-9a-f]{6}$/i.test(backgroundValue)) {
+    layer.style.background = '';
+    layer.style.backgroundColor = backgroundValue;
+  } else {
+    layer.style.backgroundColor = '';
+    layer.style.background = backgroundValue;
+  }
 }
 
 function setColorWallDragStatus(text) {
@@ -5487,10 +5600,13 @@ function renderColorWallPage() {
   var visible = getColorWallVisibleRecords();
   pruneColorWallSelection(visible);
   var ordered = getColorWallDisplayOrder(visible);
+  var selectionChanged = false;
   if (ordered.length && (!gallerySelectedColor || ordered.every(function(record) { return record.uid !== gallerySelectedColor.uid; }))) {
     gallerySelectedColor = ordered[0];
     galleryBlendPreview = null;
+    selectionChanged = true;
   }
+  if (selectionChanged) setGalleryBackground(gallerySelectedColor.hex);
   renderColorWallGrid(ordered);
   renderColorWallInspector(visible.length ? gallerySelectedColor : null);
   var count = document.getElementById('colorWallCount');
@@ -5522,14 +5638,14 @@ function getGalleryHarmonyRecords(record) {
 function applyGalleryHarmony(first, second) {
   if (!first || !second) return;
   galleryBlendPreview = {first:first, second:second, gradient:'linear-gradient(135deg,' + first.hex + ',' + second.hex + ')'};
-  setPageBackground(galleryBlendPreview.gradient);
+  setGalleryBackground(galleryBlendPreview.gradient);
   renderGalleryInspector(gallerySelectedColor);
 }
 
 function resetGalleryHarmony() {
   if (!gallerySelectedColor) return;
   galleryBlendPreview = null;
-  setPageBackground(gallerySelectedColor.hex);
+  setGalleryBackground(gallerySelectedColor.hex);
   renderGalleryInspector(gallerySelectedColor);
 }
 
@@ -5621,8 +5737,8 @@ function selectGalleryColor(term, name, hex, button, record) {
   var selected = record || {uid:-1, term:term, name:name, hex:hex, season:(SOLAR_SCENES[term] || {}).season || '', desc:(SOLAR_SCENES[term] || {}).desc || '', index:0, tone:'色阶'};
   gallerySelectedColor = selected;
   galleryBlendPreview = null;
-  if (currentView === 'gallery' && galleryDisplayMode === 'color-wall') {
-    setColorWallBackground(hex);
+  if (currentView === 'gallery') {
+    setGalleryBackground(hex);
   } else if (previousBackground.trim().toLowerCase() !== String(hex).trim().toLowerCase()) {
     setPageBackground(hex);
   }
@@ -5677,6 +5793,7 @@ document.addEventListener('webkitfullscreenchange', updateGalleryInspectorFullsc
 function renderGalleryColorBrowser() {
   initGalleryBrowserControls();
   var visible = getGalleryVisibleColorRecords();
+  var selectionChanged = false;
   if (!visible.length) {
     gallerySelectedColor = null;
   } else if (!gallerySelectedColor || visible.every(function(record) { return record.uid !== gallerySelectedColor.uid; })) {
@@ -5684,7 +5801,10 @@ function renderGalleryColorBrowser() {
     try { preferredTerm = getCurrentSolarTerm().current; } catch (error) {}
     gallerySelectedColor = visible[0];
     for (var i = 0; i < visible.length; i++) if (visible[i].term === preferredTerm) { gallerySelectedColor = visible[i]; break; }
+    galleryBlendPreview = null;
+    selectionChanged = true;
   }
+  if (selectionChanged) setGalleryBackground(gallerySelectedColor.hex);
   var select = document.getElementById('galleryTermFilter');
   if (select) select.value = galleryTermFilter;
   renderGalleryColorList(visible);
