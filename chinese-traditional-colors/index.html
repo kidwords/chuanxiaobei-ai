@@ -1179,41 +1179,20 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 #immersive.ppt .ppt-stage[hidden],
 #immersive.present .ppt-stage[hidden] { display: block !important; }
 .ppt-wash {
-  position: absolute; inset: -18%;
+  position: absolute; inset: 0;
   z-index: 0;
-  filter: blur(52px) saturate(0.86);
-  transform: scale(1.04);
 }
 .ppt-flow {
   position: absolute;
-  left: -14%; top: 26%;
-  width: 128%; height: 42%;
+  left: -8%; top: 18%;
+  width: 116%; height: 58%;
   z-index: 1;
-  border-radius: 50% 44% 48% 42%;
-  transform: rotate(-16deg);
-  filter: blur(42px);
-  opacity: 0.42;
+  border-radius: 48% 42% 50% 44%;
+  transform: rotate(-12deg);
+  filter: blur(64px);
+  opacity: 0.55;
 }
-.ppt-mount {
-  position: absolute;
-  left: -10%; right: -10%; bottom: -14%;
-  height: 46%;
-  z-index: 1;
-  border-radius: 80% 70% 0 0 / 100% 90% 0 0;
-  filter: blur(28px);
-  opacity: 0.18;
-}
-.ppt-cloud {
-  position: absolute; z-index: 1;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,252,246,.55) 0%, rgba(255,252,246,0) 70%);
-  filter: blur(16px);
-}
-.ppt-cloud-a { width: 28vw; height: 16vw; left: 4vw; top: 8vh; }
-.ppt-cloud-b { width: 22vw; height: 12vw; right: 6vw; top: 12vh; }
-.ppt-cloud-c { width: 18vw; height: 10vw; left: 10vw; bottom: 10vh; }
-
-.ppt-kicker, .ppt-count, .ppt-plaque, .ppt-quote, .ppt-hint { position: absolute; }
+.ppt-kicker, .ppt-count, .ppt-title, .ppt-quote, .ppt-hint { position: absolute; }
 .ppt-kicker {
   left: 5.2vw; top: 5.6rem;
   font-size: .72rem; letter-spacing: .42em; font-weight: 500; opacity: .78;
@@ -1224,29 +1203,20 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   font-size: .78rem; letter-spacing: .28em; font-variant-numeric: tabular-nums; opacity: .7;
   z-index: 2;
 }
-.ppt-plaque {
-  left: 46%; top: 46%;
-  transform: translate(-50%, -50%);
+.ppt-title {
+  left: 6vw; top: 18vh;
   z-index: 3;
-  width: 9.6rem; height: 9.6rem;
-  display: grid; place-items: center;
-  background:
-    radial-gradient(circle at 50% 46%, #fffdf6 0 58%, transparent 59%),
-    radial-gradient(circle at 50% 18%, #fffdf6 0 22%, transparent 23%),
-    radial-gradient(circle at 50% 82%, #fffdf6 0 22%, transparent 23%),
-    radial-gradient(circle at 18% 50%, #fffdf6 0 22%, transparent 23%),
-    radial-gradient(circle at 82% 50%, #fffdf6 0 22%, transparent 23%);
-  color: #5a221c;
-  filter: drop-shadow(0 0 1px #d7b56a) drop-shadow(0 10px 28px rgba(40,20,12,.18));
-}
-.ppt-plaque span {
-  font-size: clamp(1.8rem, 4.2vw, 2.6rem);
+  margin: 0;
+  writing-mode: vertical-rl;
+  font-size: clamp(3.6rem, 11vh, 7.2rem);
   font-weight: 600;
-  letter-spacing: .18em;
-  writing-mode: horizontal-tb;
-  line-height: 1.15;
-  text-align: center;
+  letter-spacing: .32em;
+  line-height: 1;
   font-family: "Source Han Serif SC","Noto Serif SC","STSong","SimSun",serif;
+  text-shadow: 0 2px 18px rgba(0,0,0,.12);
+  background: none;
+  border: 0;
+  box-shadow: none;
 }
 .ppt-quote {
   right: 6vw; bottom: 9vh; left: auto;
@@ -1269,8 +1239,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .ppt-edge-next { right: 1.4vw; }
 .ppt-edge:hover { background: rgba(255,255,255,.28); }
 @media (max-width: 760px) {
-  .ppt-plaque { width: 7.6rem; height: 7.6rem; }
-  .ppt-plaque span { font-size: 1.6rem; }
+  .ppt-title { font-size: clamp(2.8rem, 14vw, 4.6rem); left: 5vw; }
   .ppt-quote { max-width: 11em; }
 }
 .home-navigation-actions { flex-wrap: nowrap; }
@@ -1893,13 +1862,9 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
     <div class="ppt-stage" id="pptStage" hidden>
       <div class="ppt-wash" id="pptWashBg" aria-hidden="true"></div>
       <div class="ppt-flow" id="pptFlow" aria-hidden="true"></div>
-      <div class="ppt-mount" id="pptMount" aria-hidden="true"></div>
-      <div class="ppt-cloud ppt-cloud-a" aria-hidden="true"></div>
-      <div class="ppt-cloud ppt-cloud-b" aria-hidden="true"></div>
-      <div class="ppt-cloud ppt-cloud-c" aria-hidden="true"></div>
       <div class="ppt-kicker" id="pptKicker">中国传统色</div>
       <div class="ppt-count" id="pptCount">1 / 24</div>
-      <div class="ppt-plaque"><span id="pptVertical">立春</span></div>
+      <h2 class="ppt-title" id="pptVertical">立春</h2>
       <p class="ppt-quote" id="pptQuote"></p>
       <button class="ppt-edge ppt-edge-prev" type="button" onclick="prevScene()" aria-label="上一页">‹</button>
       <button class="ppt-edge ppt-edge-next" type="button" onclick="nextScene()" aria-label="下一页">›</button>
@@ -3872,15 +3837,8 @@ function getPptWashStyle(colors) {
   var bg = (colors[0] && colors[0].hex) || '#f3ead4';
   var surface = (colors[1] && colors[1].hex) || bg;
   var accent = (colors[2] && colors[2].hex) || surface;
-  var paper = mixHex('#f7f1e4', bg, 0.55);
-  var mid = mixHex(paper, surface, 0.42);
-  var far = mixHex(surface, accent, 0.22);
-  return [
-    'radial-gradient(110% 85% at 16% 10%, ' + hexRgba(paper, 0.98) + ' 0%, transparent 58%)',
-    'radial-gradient(90% 75% at 84% 82%, ' + hexRgba(accent, 0.22) + ' 0%, transparent 64%)',
-    'radial-gradient(70% 60% at 48% 46%, ' + hexRgba(surface, 0.34) + ' 0%, transparent 72%)',
-    'linear-gradient(168deg, ' + paper + ' 0%, ' + mid + ' 46%, ' + far + ' 100%)'
-  ].join(',');
+  // Keep scheme hexes mostly intact — soft transition, no cream dilution.
+  return 'linear-gradient(152deg, ' + bg + ' 0%, ' + bg + ' 38%, ' + surface + ' 72%, ' + accent + ' 100%)';
 }
 function updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc) {
   var stage = document.getElementById('pptStage');
@@ -3892,7 +3850,14 @@ function updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc) {
   var wash = colors[1] || colors[0] || ink;
   var ff = getFontFamily((data && data.font) || '');
   var title = document.getElementById('pptVertical');
-  if (title) { title.textContent = name; title.style.fontFamily = ff; title.style.color = ink.hex || '#5a221c'; }
+  if (title) {
+    title.textContent = name;
+    title.style.fontFamily = ff;
+    title.style.color = tc;
+    title.style.background = 'none';
+    title.style.border = '0';
+    title.style.boxShadow = 'none';
+  }
   var kicker = document.getElementById('pptKicker');
   if (kicker) { kicker.textContent = '中国传统色 · ' + ((data && data.season) || '') + '季'; kicker.style.color = mc; }
   var count = document.getElementById('pptCount');
@@ -3902,9 +3867,7 @@ function updatePptStage(name, data, scheme, currentIdx, totalCount, tc, mc) {
   var washBg = document.getElementById('pptWashBg');
   if (washBg) washBg.style.background = getPptWashStyle(colors);
   var flow = document.getElementById('pptFlow');
-  if (flow) flow.style.background = 'radial-gradient(120% 80% at 50% 50%, ' + hexRgba(ink.hex, 0.55) + ' 0%, ' + hexRgba(wash.hex, 0.18) + ' 55%, transparent 78%)';
-  var mount = document.getElementById('pptMount');
-  if (mount) mount.style.background = 'linear-gradient(180deg, ' + hexRgba((colors[4] && colors[4].hex) || ink.hex, 0.0) + ' 0%, ' + hexRgba((colors[4] && colors[4].hex) || ink.hex, 0.35) + ' 100%)';
+  if (flow) flow.style.background = 'linear-gradient(110deg, ' + hexRgba(ink.hex, 0.72) + ' 0%, ' + hexRgba(wash.hex, 0.35) + ' 48%, transparent 78%)';
   var hint = document.querySelector('.ppt-hint');
   if (hint) hint.style.color = mc;
   document.querySelectorAll('.ppt-edge').forEach(function(b) { b.style.color = tc; });
