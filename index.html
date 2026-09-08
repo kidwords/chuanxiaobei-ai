@@ -71,9 +71,7 @@
     .project-cover { position:relative; display:flex; min-height:320px; align-items:center; justify-content:center; overflow:hidden; background:#b58a6d center/cover no-repeat; }
     .project-cover::before { position:absolute; inset:0; background:linear-gradient(135deg,rgba(159,45,45,.22),rgba(180,111,24,.18),rgba(26,91,82,.18)); content:""; }
     .project-cover img { position:relative; width:100%; height:100%; object-fit:contain; }
-    .project-cover-label { position:relative; display:grid; width:100%; height:100%; align-content:end; gap:12px; padding:32px; background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 74%,transparent),transparent 68%); color:var(--text); }
-    .project-cover-label strong { font-size:clamp(88px,10vw,144px); font-weight:600; letter-spacing:-.08em; line-height:.78; }
-    .project-cover-label span { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12px; letter-spacing:.14em; line-height:1.5; text-transform:uppercase; }
+    .project-cover img.project-cover-image { object-fit:cover; }
     .project-content { display:flex; flex-direction:column; padding:32px; }
     .project-meta { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; color:var(--muted); font-size:12px; font-weight:500; }
     .repo { border-radius:10px; background:var(--surface-soft); padding:6px 10px; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
@@ -169,7 +167,7 @@
   </div>
 </article>
 <article class="project-card">
-  <a class="project-cover" href="html_ui-ux-pro-max/index.html" aria-label="打开二十种风格个人网站集"><span class="project-cover-label"><strong>20</strong><span>independent<br>design systems</span></span></a>
+  <a class="project-cover" href="html_ui-ux-pro-max/index.html" aria-label="打开二十种风格个人网站集"><img class="project-cover-image" src="html_ui-ux-pro-max/cover.svg" alt="二十种独立设计系统项目封面" loading="lazy"></a>
   <div class="project-content">
     <div class="project-meta"><span class="repo">html_ui-ux-pro-max</span><span>未声明</span></div>
     <h3><a href="html_ui-ux-pro-max/index.html">GLM UI Test · 二十种风格个人网站集</a></h3>

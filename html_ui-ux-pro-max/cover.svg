@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="cover-title cover-desc">
+  <title id="cover-title">GLM UI Test · 二十种风格个人网站集</title>
+  <desc id="cover-desc">深色设计系统总览封面，展示二十个独立网页风格的缩略矩阵。</desc>
+  <defs>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6366f1" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#a855f7" stop-opacity=".05"/>
+    </linearGradient>
+    <filter id="blur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="44"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="760" fill="#0a0a0b"/>
+  <circle cx="1030" cy="70" r="190" fill="url(#glow)" filter="url(#blur)" opacity=".45"/>
+  <circle cx="260" cy="690" r="150" fill="#6366f1" filter="url(#blur)" opacity=".12"/>
+
+  <g transform="translate(72 58)" font-family="Arial, Helvetica, sans-serif">
+    <text fill="#a1a1aa" font-size="15" font-weight="700" letter-spacing="3">GLM UI TEST / PERSONAL SYSTEMS</text>
+    <text y="156" fill="#f5f5f7" font-size="184" font-weight="700" letter-spacing="-12">20</text>
+    <text y="190" fill="#a1a1aa" font-family="monospace" font-size="15" letter-spacing="3">INDEPENDENT DESIGN SYSTEMS</text>
+    <text x="360" y="98" fill="#f5f5f7" font-size="23" font-weight="700">ONE PERSONA</text>
+    <text x="360" y="132" fill="#71717a" font-family="monospace" font-size="14">TWENTY DIRECTIONS / ONE CONTENT SET</text>
+    <path d="M360 158H1056" stroke="#27272a"/>
+    <circle cx="1056" cy="158" r="4" fill="#6366f1"/>
+
+    <g transform="translate(0 252)">
+      <g transform="translate(0 0)">
+        <rect width="198" height="82" rx="16" fill="#17171b" stroke="#303038"/>
+        <rect x="18" y="18" width="42" height="42" rx="12" fill="#24242b" stroke="#42424a"/>
+        <circle cx="39" cy="39" r="9" fill="#6366f1" opacity=".75"/>
+        <text x="76" y="34" fill="#f5f5f7" font-size="13" font-weight="700">01 / NEUMORPHISM</text>
+        <text x="76" y="55" fill="#71717a" font-family="monospace" font-size="11">SOFT / RAISED</text>
+      </g>
+      <g transform="translate(216 0)">
+        <rect width="198" height="82" rx="16" fill="#15171c" fill-opacity=".9" stroke="#596070"/>
+        <rect x="18" y="17" width="48" height="46" rx="12" fill="#cbd5e1" fill-opacity=".1" stroke="#94a3b8" stroke-opacity=".55"/>
+        <path d="M28 52h27M28 42h18" stroke="#a5b4fc" stroke-width="3" stroke-linecap="round"/>
+        <text x="82" y="34" fill="#f5f5f7" font-size="13" font-weight="700">02 / GLASS</text>
+        <text x="82" y="55" fill="#71717a" font-family="monospace" font-size="11">BLUR / LIGHT</text>
+      </g>
+      <g transform="translate(432 0)">
+        <rect width="198" height="82" rx="16" fill="#f4f4f5"/>
+        <path d="M18 18h160M18 62h160M18 18v44" stroke="#18181b" stroke-width="2"/>
+        <text x="28" y="46" fill="#18181b" font-size="13" font-weight="700">03 / SWISS GRID</text>
+        <circle cx="172" cy="44" r="7" fill="#6366f1"/>
+      </g>
+      <g transform="translate(648 0)">
+        <rect width="198" height="82" rx="16" fill="#e7e5e4" stroke="#18181b" stroke-width="3"/>
+        <rect x="16" y="16" width="84" height="50" fill="#18181b"/>
+        <rect x="112" y="16" width="70" height="14" fill="#6366f1"/>
+        <text x="112" y="54" fill="#18181b" font-size="13" font-weight="700">04 / BRUTAL</text>
+      </g>
+      <g transform="translate(864 0)">
+        <rect width="198" height="82" rx="16" fill="#09090b" stroke="#3f3f46"/>
+        <path d="M18 61L65 20l38 25 42-31" fill="none" stroke="#6366f1" stroke-width="3"/>
+        <text x="112" y="36" fill="#f5f5f7" font-size="13" font-weight="700">05 / DARK</text>
+        <text x="112" y="56" fill="#6366f1" font-family="monospace" font-size="11">NEON</text>
+      </g>
+
+      <g transform="translate(0 98)">
+        <rect width="198" height="82" rx="16" fill="#ede9e5"/>
+        <path d="M18 22h162M18 59h162" stroke="#a8a29e"/>
+        <text x="18" y="48" fill="#292524" font-family="Georgia, serif" font-size="18" font-weight="700">06 / EDITORIAL</text>
+      </g>
+      <g transform="translate(216 98)">
+        <rect width="198" height="82" rx="16" fill="#18181b" stroke="#3f3f46"/>
+        <rect x="16" y="16" width="74" height="50" rx="10" fill="#27272a"/>
+        <rect x="100" y="16" width="82" height="22" rx="8" fill="#6366f1" opacity=".75"/>
+        <rect x="100" y="46" width="52" height="20" rx="8" fill="#3f3f46"/>
+        <text x="18" y="76" fill="#a1a1aa" font-family="monospace" font-size="10">07 / BENTO GRID</text>
+      </g>
+      <g transform="translate(432 98)">
+        <rect width="198" height="82" rx="16" fill="#101412" stroke="#2c4a38"/>
+        <text x="18" y="34" fill="#86efac" font-family="monospace" font-size="14">$ whoami</text>
+        <text x="18" y="58" fill="#4ade80" font-family="monospace" font-size="12">08 / TERMINAL_</text>
+      </g>
+      <g transform="translate(648 98)">
+        <rect width="198" height="82" rx="16" fill="#1f172f" stroke="#6b21a8"/>
+        <circle cx="46" cy="41" r="26" fill="#a855f7" opacity=".55"/>
+        <path d="M20 64h154" stroke="#ec4899" stroke-width="3"/>
+        <text x="82" y="37" fill="#f5d0fe" font-size="13" font-weight="700">09 / VAPORWAVE</text>
+        <text x="82" y="56" fill="#d8b4fe" font-family="monospace" font-size="10">RETRO / DREAM</text>
+      </g>
+      <g transform="translate(864 98)">
+        <rect width="198" height="82" rx="16" fill="#fafafa"/>
+        <text x="18" y="38" fill="#18181b" font-size="24" font-weight="700">10</text>
+        <text x="18" y="59" fill="#71717a" font-family="monospace" font-size="11">MINIMALISM</text>
+        <path d="M126 22h48M126 42h32M126 62h40" stroke="#a1a1aa" stroke-width="3" stroke-linecap="round"/>
+      </g>
+
+      <g transform="translate(0 196)">
+        <rect width="198" height="82" rx="16" fill="#f1f5f9" stroke="#94a3b8"/>
+        <path d="M19 56c21-28 35 20 58-13s37 28 58-8 34 13 48-12" fill="none" stroke="#6366f1" stroke-width="3"/>
+        <text x="18" y="28" fill="#334155" font-family="monospace" font-size="11">11 / SKETCHY</text>
+      </g>
+      <g transform="translate(216 196)">
+        <rect width="198" height="82" rx="16" fill="#17172a" stroke="#4f46e5"/>
+        <circle cx="156" cy="26" r="44" fill="#6366f1" opacity=".42"/>
+        <circle cx="105" cy="70" r="32" fill="#a855f7" opacity=".35"/>
+        <text x="18" y="34" fill="#eef2ff" font-size="13" font-weight="700">12 / FLUID</text>
+        <text x="18" y="54" fill="#a5b4fc" font-family="monospace" font-size="10">GRADIENT</text>
+      </g>
+      <g transform="translate(432 196)">
+        <rect width="198" height="82" rx="16" fill="#e4e4e7"/>
+        <rect x="0" y="0" width="92" height="82" rx="16" fill="#18181b"/>
+        <text x="18" y="32" fill="#f5f5f7" font-size="13" font-weight="700">13 / SPLIT</text>
+        <text x="108" y="49" fill="#52525b" font-family="monospace" font-size="10">SCREEN</text>
+      </g>
+      <g transform="translate(648 196)">
+        <rect width="198" height="82" rx="16" fill="#171717" stroke="#525252"/>
+        <path d="M22 62L82 18l42 36 44-25" fill="none" stroke="#d4d4d4" stroke-width="2"/>
+        <text x="20" y="34" fill="#fafafa" font-family="monospace" font-size="11">14 / PARALLAX</text>
+      </g>
+      <g transform="translate(864 196)">
+        <rect width="198" height="82" rx="16" fill="#0f172a" stroke="#334155"/>
+        <path d="M37 61V24h124v37M23 65h154" fill="none" stroke="#a5b4fc" stroke-width="3"/>
+        <text x="18" y="19" fill="#e0e7ff" font-family="monospace" font-size="10">15 / 3D PERSPECTIVE</text>
+      </g>
+
+      <g transform="translate(0 294)">
+        <rect width="198" height="82" rx="16" fill="#f4f4f5"/>
+        <path d="M22 19v44M70 19v44M118 19v44M166 19v44" stroke="#a1a1aa" stroke-width="2"/>
+        <text x="18" y="52" fill="#18181b" font-size="13" font-weight="700">16 / HORIZONTAL</text>
+      </g>
+      <g transform="translate(216 294)">
+        <rect width="198" height="82" rx="16" fill="#fefce8" stroke="#a16207"/>
+        <rect x="18" y="16" width="50" height="50" rx="8" fill="#facc15"/>
+        <path d="M42 16v50M18 41h50" stroke="#713f12" stroke-width="2"/>
+        <text x="82" y="38" fill="#713f12" font-size="13" font-weight="700">17 / STICKY</text>
+        <text x="82" y="57" fill="#a16207" font-family="monospace" font-size="10">PIN</text>
+      </g>
+      <g transform="translate(432 294)">
+        <rect width="198" height="82" rx="16" fill="#18181b" stroke="#52525b"/>
+        <rect x="16" y="16" width="62" height="50" rx="9" fill="#27272a"/>
+        <rect x="88" y="16" width="94" height="15" rx="7" fill="#6366f1"/>
+        <rect x="88" y="40" width="70" height="11" rx="5" fill="#52525b"/>
+        <text x="18" y="78" fill="#a1a1aa" font-family="monospace" font-size="10">18 / GALLERY</text>
+      </g>
+      <g transform="translate(648 294)">
+        <rect width="198" height="82" rx="16" fill="#e7e5e4"/>
+        <path d="M20 20l160 42M20 42l160-20" stroke="#a8a29e" stroke-width="12" opacity=".55"/>
+        <text x="18" y="70" fill="#292524" font-size="13" font-weight="700">19 / RISOGRAPH</text>
+      </g>
+      <g transform="translate(864 294)">
+        <rect width="198" height="82" rx="16" fill="#09090b" stroke="#6366f1"/>
+        <path d="M18 22h162M18 42h120M18 62h148" stroke="#6366f1" stroke-width="3" stroke-dasharray="7 7"/>
+        <text x="18" y="15" fill="#f5f5f7" font-family="monospace" font-size="11">20 / CYBERPUNK</text>
+      </g>
+    </g>
+
+    <text y="718" fill="#52525b" font-family="monospace" font-size="12" letter-spacing="2">SAME CONTENT / DIFFERENT SYSTEM / OPEN THE COLLECTION</text>
+    <text x="1056" y="718" fill="#6366f1" font-family="monospace" font-size="12" text-anchor="end">KIDWORDS / UI ARCHIVE</text>
+  </g>
+</svg>
