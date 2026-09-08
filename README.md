@@ -20,7 +20,7 @@
 ## 由来
 
 - **为什么是「静态仓」**：本仓库收录的成品都是单文件或纯前端项目（纯 HTML / 纯静态资源），双击即开、复制即用，便于在不同设备、邮件附件、离线环境里直接展示。
-- **为什么首页不是「项目列表」而是「导航仓」**：所有项目在仓库同级平行存在，目录名即 slug；首页通过 `scripts/generate-projects.mjs` 自动扫描子目录的 `meta.json` 生成卡片。新增项目只需丢一个目录进来，再跑一次脚本，零模板、零拷贝。
+- **为什么首页不是「项目列表」而是「导航仓」**：项目目录保持平行、目录名即 slug；首页通过 `scripts/generate-projects.mjs` 扫描带 `meta.json` 的项目目录生成卡片，同时保留需要完整说明的精选项目入口。新增标准项目只需丢一个目录进来，再跑一次脚本，零模板、零拷贝。
 - **为什么不用 `static-project-hub/scripts/...`**：原 README 提到的 `static-project-hub` 子目录已下线；脚本统一迁到仓库根的 `scripts/`。
 
 ## 现有项目
@@ -28,7 +28,7 @@
 | 目录 | 标题 | 来源 | 简介 | 入口 |
 |---|---|---|---|---|
 | [`chinese-traditional-colors/`](./chinese-traditional-colors/) | 中国传统色 | [kidwords/chinese-traditional-colors](https://github.com/kidwords/chinese-traditional-colors)（Apache-2.0） | 整理《中华传统色：故宫里的色彩美学》完整 384 色，按 24 节气与 72 物候编排，附标准 Hex 色值、AI 配色提示词、浅深双模式与节气专属动效。 | [立即打开](./chinese-traditional-colors/index.html) |
-| [`showcase-neumorphism/`](./showcase-neumorphism/) | 新拟态深度探索 | 本地静态示例 | 10 个新拟态（Neumorphism）界面示例，以柔和阴影、内外凹凸层次与可交互评分展示拟物风格的可读性与局限。 | [立即打开](./showcase-neumorphism/index.html) |
+| [`html_ui-ux-pro-max/`](./html_ui-ux-pro-max/) | GLM UI Test · 二十种风格个人网站集 | 本地静态项目集 | 围绕同一份个人主页内容，使用 20 套独立设计系统呈现新拟态、毛玻璃、杂志编辑、便当盒等风格。 | [打开总览](./html_ui-ux-pro-max/index.html) |
 
 每个项目目录都遵循同一约定，便于被首页自动识别：
 
@@ -70,11 +70,11 @@
 **或者直接打开线上版：**
 
 - [中国传统色](https://kidwords.github.io/chuanxiaobei-ai/chinese-traditional-colors/index.html)
-- [新拟态深度探索](https://kidwords.github.io/chuanxiaobei-ai/showcase-neumorphism/index.html)
+- [二十种风格个人网站集](https://kidwords.github.io/chuanxiaobei-ai/html_ui-ux-pro-max/index.html)
 
 ### 2. 跑项目
 
-进任意项目目录双击对应 `index.html`。两个项目都是纯静态、纯前端、零依赖。
+进任意项目目录双击对应 `index.html`。两个项目都是纯静态、纯前端、零依赖；二十种风格项目还可以从总览页进入各个独立页面。
 
 ### 3. 维护项目
 
