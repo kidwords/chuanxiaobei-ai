@@ -34,7 +34,7 @@
 
 - `index.html` — 项目首页（双击运行）
 - `meta.json` — 卡片元数据（title / summary / repository / license / tags / github）
-- `cover.png` — 卡片封面（首页截图即可，可选 `cover.svg`）
+- `cover.<ext>` — 卡片封面（支持 `.png`、`.jpg`、`.jpeg`、`.webp`、`.avif`、`.gif`、`.svg`，脚本按白名单优先选择）
 
 ## Cloudflare 工具入口
 
@@ -80,8 +80,8 @@
 
 | 想做的事 | 命令 / 操作 |
 |---|---|
-| 新增项目 | 在仓库根新建 `<项目名>/` 目录，按上面的约定准备 `index.html` + `meta.json` + `cover.png` |
-| 检查封面是否齐全 | `node scripts/capture-covers.mjs`（缺封面会 `exit 1`） |
+| 新增项目 | 在仓库根新建 `<项目名>/` 目录，按上面的约定准备 `index.html` + `meta.json` + `cover.<ext>` |
+| 检查 PNG 封面是否齐全 | `node scripts/capture-covers.mjs`（当前辅助脚本只检查 `cover.png`） |
 | 重新生成首页项目卡片 | `node scripts/generate-projects.mjs`（脚本会替换 `index.html` 中 `<!-- PROJECTS:START --> ... <!-- PROJECTS:END -->` 之间的内容） |
 
 > Node.js 仅用于维护脚本；项目本身仍是纯静态，不会因为 Node 升级或缺失而出问题。
