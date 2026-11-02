@@ -28,12 +28,12 @@
 | 目录 | 标题 | 来源 | 简介 | 入口 |
 |---|---|---|---|---|
 | [`chinese-traditional-colors/`](./chinese-traditional-colors/) | 中国传统色 | [kidwords/chinese-traditional-colors](https://github.com/kidwords/chinese-traditional-colors)（Apache-2.0） | 整理《中华传统色：故宫里的色彩美学》完整 384 色，按 24 节气与 72 物候编排，附标准 Hex 色值、AI 配色提示词、浅深双模式与节气专属动效。 | [立即打开](./chinese-traditional-colors/index.html) |
-| [`html_ui-ux-pro-max/`](./html_ui-ux-pro-max/) | GLM UI Test · 二十种风格个人网站集 | 本地静态项目集 | 围绕同一份个人主页内容，使用 20 套独立设计系统呈现新拟态、毛玻璃、杂志编辑、便当盒等风格。 | [打开总览](./html_ui-ux-pro-max/index.html) |
+| [`html_ui-ux-pro-max/`](./html_ui-ux-pro-max/) | GLM UI Test · 二十种风格个人网站集 | 本地静态项目集 | 围绕同一虚拟人物「林墨白」，用 20 套完全独立的设计系统呈现同一份个人主页：从新拟态、毛玻璃、杂志编辑到赛博朋克，单文件自包含，另附 Bento 与新拟态两套 showcase。 | [打开总览](./html_ui-ux-pro-max/index.html) |
 
 每个项目目录都遵循同一约定，便于被首页自动识别：
 
 - `index.html` — 项目首页（双击运行）
-- `meta.json` — 卡片元数据（title / summary / repository / license / tags / github）
+- `meta.json` — 卡片元数据（title / summary / repository / license / tags / github，可选 `entry` 覆盖卡片跳转地址，如带查询参数的入口）
 - `cover.<ext>` — 卡片封面（支持 `.png`、`.jpg`、`.jpeg`、`.webp`、`.avif`、`.gif`、`.svg`，脚本按白名单优先选择）
 
 ## Cloudflare 工具入口
@@ -70,7 +70,7 @@
 **或者直接打开线上版：**
 
 - [中国传统色](https://kidwords.github.io/chuanxiaobei-ai/chinese-traditional-colors/index.html)
-- [二十种风格个人网站集](https://kidwords.github.io/chuanxiaobei-ai/html_ui-ux-pro-max/index.html)
+- [GLM UI Test · 二十种风格个人网站集](https://kidwords.github.io/chuanxiaobei-ai/html_ui-ux-pro-max/index.html)
 
 ### 2. 跑项目
 
@@ -95,3 +95,5 @@
 - 首页右上角可切换浅 / 深色主题（沿用仓库根 `index.html` 自带的 `data-theme` 切换逻辑）。
 - 项目卡片标题、摘要、标签均来自 `meta.json`；README 不参与首页渲染，改动不会影响线上卡片。
 - 截图前可手动打开项目首页 → 调整到合适尺寸 → 用浏览器或系统截图工具保存为 `cover.png`，再跑 `generate-projects.mjs`。
+- 第三方字体一律非阻塞引入：`<link rel="stylesheet" href="…" media="print" onload="this.media='all'">`。直接 `rel="stylesheet"` 引 Google Fonts 时，网络不通会连累整页白屏（内联脚本也会等它）。项目首页本身不引外链字体，用系统字体栈。
+- 大面积光晕用 `radial-gradient` 画，不要用 `filter: blur(120px)` 的大色块——静止也吃 GPU，滚动和动画容易掉帧。

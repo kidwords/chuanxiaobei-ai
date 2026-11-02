@@ -4,5 +4,6 @@
   "repository": "kidwords/chinese-traditional-colors",
   "license": "Apache-2.0",
   "tags": ["HTML", "384 色", "东方美学", "Apache-2.0"],
+  "entry": "chinese-traditional-colors/index.html?entrance=1",
   "github": "https://github.com/kidwords/chinese-traditional-colors"
 }

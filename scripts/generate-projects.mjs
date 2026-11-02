@@ -26,20 +26,20 @@ function findCover(slug) {
 }
 
 function projectCard(slug, meta) {
-  const href = esc(`${slug}/index.html`);
+const href = esc(meta.entry ?? `${slug}/index.html`);
   const coverName = findCover(slug);
   const coverSource = coverName ? `${slug}/${coverName}` : '';
   const cover = coverSource ? `<img src="${esc(coverSource)}" alt="${esc(meta.title ?? slug)}项目预览" loading="lazy">` : '';
   const tags = (meta.tags ?? ['HTML']).map((tag) => `<span class="tag">${esc(tag)}</span>`).join('');
   const source = meta.github ? `<a class="button" href="${esc(meta.github)}" target="_blank" rel="noopener noreferrer">查看源代码</a>` : '';
   return `<article class="project-card">
-  <a class="project-cover" href="${href}" aria-label="打开${esc(meta.title ?? slug)}">${cover}</a>
+  <a class="project-cover" href="${esc(href)}" aria-label="打开${esc(meta.title ?? slug)}">${cover}</a>
   <div class="project-content">
     <div class="project-meta"><span class="repo">${esc(meta.repository ?? slug)}</span><span>${esc(meta.license ?? '未声明')}</span></div>
-    <h3><a href="${href}">${esc(meta.title ?? slug)}</a></h3>
+    <h3><a href="${esc(href)}">${esc(meta.title ?? slug)}</a></h3>
     <p class="project-summary">${esc(meta.summary ?? '静态项目成品。')}</p>
     <div class="tags">${tags}</div>
-    <div class="project-actions"><a class="button button-primary" href="${href}">立即体验</a>${source}</div>
+    <div class="project-actions"><a class="button button-primary" href="${esc(href)}">立即体验</a>${source}</div>
   </div>
 </article>`;
 }
