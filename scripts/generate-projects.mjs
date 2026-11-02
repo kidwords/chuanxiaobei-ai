@@ -6,25 +6,40 @@ const excludedDirectories = new Set(['scripts', 'projects', 'assets', 'node_modu
 const indexPath = join(root, 'index.html');
 const start = '<!-- PROJECTS:START -->';
 const end = '<!-- PROJECTS:END -->';
+const coverExtensions = ['.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.svg'];
 
 function esc(value = '') {
   return String(value).replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
 }
 
+function findCover(slug) {
+  const projectDirectory = join(root, slug);
+  const files = readdirSync(projectDirectory, { withFileTypes: true });
+  const byName = new Map(files.filter((entry) => entry.isFile()).map((entry) => [entry.name.toLowerCase(), entry.name]));
+
+  for (const extension of coverExtensions) {
+    const fileName = byName.get(`cover${extension}`);
+    if (fileName) return fileName;
+  }
+
+  return '';
+}
+
 function projectCard(slug, meta) {
-  const href = `${slug}/index.html`;
-  const hasCover = existsSync(join(root, slug, 'cover.png'));
-  const cover = hasCover ? `<img src="${esc(slug)}/cover.png" alt="${esc(meta.title ?? slug)}项目预览" loading="lazy">` : '';
+const href = esc(meta.entry ?? `${slug}/index.html`);
+  const coverName = findCover(slug);
+  const coverSource = coverName ? `${slug}/${coverName}` : '';
+  const cover = coverSource ? `<img src="${esc(coverSource)}" alt="${esc(meta.title ?? slug)}项目预览" loading="lazy">` : '';
   const tags = (meta.tags ?? ['HTML']).map((tag) => `<span class="tag">${esc(tag)}</span>`).join('');
-  const source = meta.github ? `<a class="button" href="${esc(meta.github)}" target="_blank" rel="noreferrer">查看源代码</a>` : '';
+  const source = meta.github ? `<a class="button" href="${esc(meta.github)}" target="_blank" rel="noopener noreferrer">查看源代码</a>` : '';
   return `<article class="project-card">
-  <a class="project-cover" href="${href}" aria-label="打开${esc(meta.title ?? slug)}">${cover}</a>
+  <a class="project-cover" href="${esc(href)}" aria-label="打开${esc(meta.title ?? slug)}">${cover}</a>
   <div class="project-content">
     <div class="project-meta"><span class="repo">${esc(meta.repository ?? slug)}</span><span>${esc(meta.license ?? '未声明')}</span></div>
-    <h3><a href="${href}">${esc(meta.title ?? slug)}</a></h3>
+    <h3><a href="${esc(href)}">${esc(meta.title ?? slug)}</a></h3>
     <p class="project-summary">${esc(meta.summary ?? '静态项目成品。')}</p>
     <div class="tags">${tags}</div>
-    <div class="project-actions"><a class="button button-primary" href="${href}">立即体验</a>${source}</div>
+    <div class="project-actions"><a class="button button-primary" href="${esc(href)}">立即体验</a>${source}</div>
   </div>
 </article>`;
 }

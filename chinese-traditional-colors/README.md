@@ -63,7 +63,7 @@
 ### 直接作为一个页面使用
 
 1. 复制整个 `chinese-traditional-colors` 文件夹到自己网站的静态目录。
-2. 确认文件夹内保留 `index.html`、`cover.png` 和 `cover.svg`。
+2. 确认文件夹内保留 `index.html` 和 `cover.png`。
 3. 通过网站地址访问：
 
    `https://你的网站地址/chinese-traditional-colors/index.html`
@@ -92,9 +92,7 @@
 ```text
 chinese-traditional-colors/
 ├─ index.html                 # 项目唯一入口，页面、样式和脚本都在这里
-├─ download.html              # 一键下载单页 HTML
-├─ cover.png                  # 项目封面
-├─ cover.svg                  # 矢量封面，可选
+├─ cover.png                  # 项目封面（1440×900 截图，与其它项目统一为 PNG）
 ├─ meta.json                  # 仓库首页使用的项目简介
 ├─ LICENSE                   # Apache-2.0 许可证
 └─ docs/

@@ -1,0 +1,13 @@
+{
+  "title": "GLM UI Test · 二十种风格个人网站集",
+  "summary": "围绕同一虚拟人物「林墨白」，用 20 套完全独立的设计系统呈现同一份个人主页：从新拟态、毛玻璃、杂志编辑到赛博朋克，单文件自包含，另附 Bento 与新拟态两套 showcase。",
+  "tags": [
+    "HTML",
+    "20 种风格",
+    "独立设计系统",
+    "UI/UX"
+  ],
+  "repository": "kidwords/chuanxiaobei-ai",
+  "license": "未声明",
+  "github": "https://github.com/kidwords/chuanxiaobei-ai/tree/main/html_ui-ux-pro-max"
+}
