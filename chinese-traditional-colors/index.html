@@ -143,19 +143,19 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   transform: translate(-50%, -1px) scale(.2); animation: home-reference-rain-splash var(--reference-leaf-duration) ease-out var(--reference-leaf-delay) both; animation-iteration-count: infinite;
 }
 .home-reference-fall-item.is-dew {
-  width: var(--reference-leaf-size); height: calc(var(--reference-leaf-size) * 1.25); font-size: 0; border-radius: 0;
-  background: none; box-shadow: none; animation-name: home-reference-dew-down;
+  top: var(--reference-dew-top, -8vh); width: var(--reference-leaf-size); height: calc(var(--reference-leaf-size) * 1.25); font-size: 0; border-radius: 0;
+  background: none; box-shadow: none; transform-origin: 50% 18%; filter: drop-shadow(0 1px 2px rgba(48, 74, 71, .16)); animation-name: home-reference-dew-down; animation-direction: normal; animation-timing-function: linear;
 }
 .home-reference-fall-item.is-dew > svg { width: 100%; height: 100%; }
-.home-reference-fall-item.is-dew.is-depth-foreground { box-shadow: none; }
+.home-reference-fall-item.is-dew.is-depth-foreground { box-shadow: none; filter: drop-shadow(0 1px 2px rgba(48, 74, 71, .2)); }
 .home-reference-fall-item.is-snow { color: #fff; text-shadow: none; animation-name: home-reference-snow-down; }
 .home-reference-fall-item.is-snow.is-depth-foreground { text-shadow: 0 0 5px #fff, 0 0 14px color-mix(in srgb, var(--reference-leaf-color) 72%, transparent); }
 .home-reference-fall-item.is-firefly { color: var(--reference-leaf-color); text-shadow: none; animation-name: home-reference-firefly-down; }
 .home-reference-fall-item.is-firefly.is-depth-foreground { text-shadow: 0 0 8px var(--reference-leaf-color), 0 0 16px color-mix(in srgb, var(--reference-leaf-color) 70%, transparent); }
 .home-reference-fall-item.is-heat { color: var(--reference-leaf-color); text-shadow: none; animation-name: home-reference-heat-down; }
 .home-reference-fall-item.is-heat.is-depth-foreground { text-shadow: 0 0 8px color-mix(in srgb, var(--reference-leaf-color) 78%, transparent), 0 0 18px color-mix(in srgb, var(--reference-leaf-color) 52%, transparent); }
-.home-reference-fall-item.is-bud { animation-name: home-reference-bud-down; }
-.home-reference-fall-item.is-leaf { animation-name: home-reference-leaf-down; }
+.home-reference-fall-item.is-bud { animation-name: home-reference-bud-down; filter: blur(calc(var(--reference-depth-blur, 0px) + .25px)); }
+.home-reference-fall-item.is-leaf { animation-name: home-reference-leaf-down; filter: blur(calc(var(--reference-depth-blur, 0px) + .25px)); }
 .home-reference-fall-item.is-petal { animation-name: home-reference-petal-down; }
 .home-reference-fall-item.is-wheat { animation-name: home-reference-wheat-down; }
 .home-reference-fall-item.is-frost { animation-name: home-reference-frost-down; }
@@ -202,10 +202,12 @@ body[data-home-motion="off"] .cover h1 strong { animation: none !important; }
   100% { opacity: 0; transform: translate(-50%, -1px) scale(1.18); }
 }
 @keyframes home-reference-dew-down {
-  0% { transform: translate3d(0, -8vh, 0) scale(.5); opacity: 0; }
-  15% { opacity: .9; }
-  85% { opacity: .9; }
-  100% { transform: translate3d(0, 115vh, 0) scale(1.1); opacity: 0; }
+  0% { transform: translate3d(0, -7vh, 0) rotate(calc(var(--reference-dew-rotate, 0deg) * .55)) scale(.76); opacity: 0; }
+  9% { transform: translate3d(calc(var(--reference-dew-drift, 0px) * .08), 3vh, 0) rotate(calc(var(--reference-dew-rotate, 0deg) * .62)) scale(.88); opacity: var(--reference-leaf-opacity); }
+  32% { transform: translate3d(calc(var(--reference-dew-drift, 0px) * .34), 31vh, 0) rotate(calc(var(--reference-dew-rotate, 0deg) * .74)) scale(.96); opacity: var(--reference-leaf-opacity); }
+  61% { transform: translate3d(calc(var(--reference-dew-drift, 0px) * .72), 68vh, 0) rotate(calc(var(--reference-dew-rotate, 0deg) * .9)) scale(1); opacity: var(--reference-leaf-opacity); }
+  84% { transform: translate3d(var(--reference-dew-drift, 0px), 96vh, 0) rotate(calc(var(--reference-dew-rotate, 0deg) * 1.06)) scale(1.04); opacity: calc(var(--reference-leaf-opacity) * .78); }
+  100% { transform: translate3d(calc(var(--reference-dew-drift, 0px) * 1.08), 116vh, 0) rotate(var(--reference-dew-rotate, 0deg)) scale(1.08); opacity: 0; }
 }
 @keyframes home-reference-snow-down {
   0% { transform: translate3d(0, -8vh, 0) rotate(0deg); opacity: 0; }
@@ -1161,7 +1163,19 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   .imm-auto-label { --imm-auto-shift-x: 0px !important; --imm-auto-shift-y: 0px !important; --imm-auto-rotate: 0deg !important; }
   .imm-bg-transition { transition: opacity .01ms !important; clip-path: inset(0) !important; transform: none !important; }
 }
-.auto-playing .imm-nav { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
+.auto-playing .imm-nav { opacity: 1; pointer-events: none; transition: none; }
+.auto-playing .imm-nav-bg,
+.auto-playing .imm-nav-left,
+.auto-playing .imm-tab-segment,
+.auto-playing .imm-nav-actions > :not(#autoPlayBtn) { display: none !important; }
+.auto-playing .imm-nav-right,
+.auto-playing .imm-nav-actions { display: block; }
+.auto-playing #autoPlayBtn {
+  position: fixed; top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); z-index: 60;
+  display: inline-flex; width:auto; min-width:120px; max-width:calc(100vw - 24px); min-height:48px; align-items:center; justify-content:center;
+  border: 1px solid rgba(255,255,255,.78); background: rgba(36,34,32,.88); color: #fff !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,.22); pointer-events: auto; opacity: 1;
+}
 .auto-playing .imm-left { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
 .auto-playing .imm-right { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
 .auto-playing .imm-center { opacity: 0; pointer-events: none; transition: opacity 0.5s; }
@@ -1542,10 +1556,9 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   .imm-nav-right { width: 100%; margin-left: 0; padding-right: 0; flex-direction:column; align-items:stretch; gap:8px; overflow:visible; }
   .imm-tab-segment { width:100%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; padding:4px; border:1px solid rgba(255,255,255,.16); border-radius:14px; background:rgba(0,0,0,.12); }
   .imm-tab-segment .imm-tab { width:100%; min-height:44px; padding:8px 10px; }
-  .imm-nav-actions { width:100%; min-width:0; overflow-x:auto; flex-wrap:nowrap; gap:6px; padding:0 1px 2px; scrollbar-width:none; }
-  .imm-nav-actions::-webkit-scrollbar { display:none; }
+  .imm-nav-actions { display:grid; width:100%; min-width:0; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; padding:0 1px 2px; overflow:visible; }
   .imm-nav-actions > span { display:none; }
-  .imm-nav-actions > .imm-btn, .imm-nav-actions > .nav-project-link { flex:0 0 auto; }
+  .imm-nav-actions > .imm-btn, .imm-nav-actions > .nav-project-link { width:100%; min-width:0; min-height:44px; justify-content:center; padding-inline:6px; text-align:center; }
   .imm-nav-context span { display: none; }
   .nav-project-link { padding: 0 9px; font-size: 0.7rem; }
   .imm-nav-project-link { right: auto; }
@@ -1560,8 +1573,8 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
   .gallery-header .nav-project-link { right: auto; }
   .gallery-home-btn { right: auto; }
   .back-btn, .gallery-index-btn { font-size: 0.7rem; padding: 5px 10px; white-space: nowrap; }
-  .gallery-actions { width: 100%; overflow-x: auto; flex-wrap: nowrap !important; padding-bottom: 2px; scrollbar-width: none; }
-  .gallery-actions::-webkit-scrollbar { display: none; }
+  .gallery-actions { display:grid !important; width:100%; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px !important; overflow:visible; }
+  .gallery-actions > * { display:flex; min-width:0; min-height:44px; align-items:center; justify-content:center; padding-inline:8px; text-align:center; }
   .gallery-browser-tools { grid-template-columns: 1fr; gap: 8px; padding: 10px; }
   .gallery-search { width: 100%; }
   .gallery-filter-group { width: 100%; }
@@ -1796,8 +1809,38 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
 .color-wall-inspector-facts span { color:#675d56; font-size:.64rem; }
 .color-wall-inspector-facts strong { margin-top:4px; color:#4d453f; font-family:'SF Mono','Consolas',monospace; font-size:.72rem; font-weight:600; }
 .color-wall-inspector-note { margin-top:16px; color:#6f665f; font-size:.76rem; line-height:1.6; }
-@media (max-width: 900px) { .color-wall-content { grid-template-columns:1fr; } .color-wall-inspector { position:static; min-height:0; } .color-wall-inspector-swatch { width:min(100%,240px); height:auto; } .color-wall-grid { grid-template-columns:repeat(12,minmax(0,1fr)); } }
-@media (max-width: 640px) { .color-wall-tools { grid-template-columns:1fr auto; gap:10px; } .color-wall-search-area, .color-wall-category { grid-column:1/-1; } .color-wall-category-group { grid-template-columns:repeat(2,minmax(0,1fr)); } .color-wall-count { text-align:left; } .color-wall-tool-actions { grid-column:1/-1; width:100%; } .color-wall-tool-actions .color-wall-reset { flex:1 1 0; } .color-wall-grid { grid-template-columns:repeat(8,minmax(0,1fr)); gap:5px; } .color-wall-cell { border-radius:7px; } .color-wall-cell-meta { min-width:104px; } }
+ .color-wall-mobile-summary { display:none; }
+@media (max-width: 900px) {
+  #gallery.is-color-wall-mode:not(.color-view-entering) #galleryColorWallMode { transform:none; }
+  .color-wall-content { grid-template-columns:1fr; }
+  .color-wall-inspector { display:none; }
+  .color-wall-inspector.is-mobile-visible { position:fixed; z-index:90; top:auto; inset-inline:12px; bottom:max(10px,env(safe-area-inset-bottom)); display:block; height:fit-content; min-height:0; max-height:min(380px,calc(100dvh - 24px)); padding:8px; border-color:rgba(49,45,42,.16); background:rgba(250,249,246,.97); box-shadow:0 10px 30px rgba(42,34,38,.2); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+  .color-wall-inspector.is-mobile-visible:not(.is-mobile-expanded) { height:72px; }
+  .color-wall-inspector.is-mobile-visible.is-mobile-expanded { height:fit-content; }
+  .color-wall-mobile-summary { display:grid; width:100%; min-height:56px; grid-template-columns:44px minmax(0,1fr) 40px; align-items:center; gap:10px; padding:5px 7px; border:0; border-radius:12px; background:transparent; color:#302c29; font:inherit; text-align:left; cursor:pointer; touch-action:manipulation; }
+  .color-wall-mobile-summary:focus-visible { outline:3px solid #b3944b; outline-offset:2px; }
+  .color-wall-mobile-swatch { width:42px; height:42px; border:1px solid rgba(49,45,42,.16); border-radius:10px; background:linear-gradient(135deg,#eee,#ddd); box-shadow:inset 0 1px 0 rgba(255,255,255,.3); }
+  .color-wall-mobile-copy { display:flex; min-width:0; flex-direction:column; gap:3px; }
+  .color-wall-mobile-name { overflow:hidden; font-size:.96rem; font-weight:700; line-height:1.2; text-overflow:ellipsis; white-space:nowrap; }
+  .color-wall-mobile-hex { color:#655a53; font-family:'SF Mono','Consolas',monospace; font-size:.72rem; }
+  .color-wall-mobile-toggle { display:grid; width:40px; height:44px; place-items:center; border:1px solid rgba(49,45,42,.12); border-radius:10px; background:rgba(255,255,255,.72); font-size:1rem; }
+  .color-wall-mobile-details { display:none; max-height:42dvh; overflow:auto; padding:8px 8px 4px; overscroll-behavior:contain; -webkit-overflow-scrolling:touch; }
+  .color-wall-inspector.is-mobile-expanded .color-wall-mobile-details { display:block; }
+  .color-wall-mobile-details .color-wall-inspector-kicker,
+  .color-wall-mobile-details .color-wall-inspector-swatch,
+  .color-wall-mobile-details .color-wall-inspector-note { display:none; }
+  .color-wall-mobile-details .color-wall-inspector-context { margin-top:0; }
+  .color-wall-mobile-details h3 { font-size:1.5rem; }
+  .color-wall-mobile-details .color-wall-inspector-facts { margin-top:10px; }
+  /* 窄屏不再显示色格浮签：详情由底部抽屉承担，浮签会压住提示文案 */
+  .color-wall-cell-meta { display:none; }
+  .color-wall-grid { grid-template-columns:repeat(12,minmax(0,1fr)); }
+  #gallery.is-color-wall-mode .color-wall-grid { padding-bottom:calc(86px + env(safe-area-inset-bottom)); }
+  #gallery.is-color-wall-mode .color-wall-content.is-mobile-inspector-expanded .color-wall-grid { padding-bottom:calc(48dvh + 36px + env(safe-area-inset-bottom)); }
+}
+/* 内容列宽 = 视口 − 458（右侧详情栏占 360 固定宽）；单行工具栏要 ≈742px 才放得下，所以视口窄于 1240px 时提前换成多行 */
+@media (max-width: 1240px) { .color-wall-tools { grid-template-columns:1fr auto; gap:10px; } .color-wall-search-area, .color-wall-category { grid-column:1/-1; } .color-wall-count { text-align:left; } .color-wall-tool-actions { grid-column:1/-1; width:100%; } .color-wall-tool-actions .color-wall-reset { flex:1 1 0; } }
+@media (max-width: 640px) { .color-wall-category-group { grid-template-columns:repeat(2,minmax(0,1fr)); } .color-wall-grid { grid-template-columns:repeat(8,minmax(0,1fr)); gap:5px; } .color-wall-cell { border-radius:7px; } }
 @media (max-width: 420px) { .color-wall-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } .color-wall-browser, .color-wall-inspector { padding:14px; } }
 @media (prefers-reduced-motion: reduce) { .color-wall-bg { transition:none; } .color-wall-cell-meta { transform:translate(-50%,0); } .color-wall-drag-ghost, .color-wall-cell.is-reordered { animation:none; } }
 
@@ -2669,6 +2712,12 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
           <div id="colorWallGrid" class="color-wall-grid" role="group" aria-label="按整体亮度由左上至右下排列的 384 个正方形色块"></div>
         </section>
         <aside class="color-wall-inspector" id="colorWallInspector" aria-live="polite" aria-labelledby="colorWallInspectorName">
+          <button type="button" class="color-wall-mobile-summary" id="colorWallMobileToggle" aria-expanded="false" aria-controls="colorWallMobileDetails" aria-label="展开颜色详情" onclick="toggleColorWallMobileDetails()">
+            <span class="color-wall-mobile-swatch" id="colorWallMobileSwatch" aria-hidden="true"></span>
+            <span class="color-wall-mobile-copy"><strong class="color-wall-mobile-name" id="colorWallMobileName">选择一个颜色</strong><span class="color-wall-mobile-hex" id="colorWallMobileHex">点击色块查看</span></span>
+            <span class="color-wall-mobile-toggle" id="colorWallMobileChevron" aria-hidden="true">⌃</span>
+          </button>
+          <div class="color-wall-mobile-details" id="colorWallMobileDetails">
           <div class="color-wall-inspector-kicker">HEX 色号 · 当前选色</div>
           <div class="color-wall-inspector-swatch" id="colorWallDetailSwatch" aria-hidden="true"></div>
           <div class="color-wall-inspector-context" id="colorWallDetailContext"></div>
@@ -2681,6 +2730,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
             <div><span>来源</span><strong id="colorWallDetailTerm">—</strong></div>
           </div>
           <p class="color-wall-inspector-note" id="colorWallDetailNote">选择色块后，这里会显示色名、真实 HEX、色彩数值与来源信息。</p>
+          </div>
         </aside>
       </div>
     </div>
@@ -2707,7 +2757,7 @@ body.home-focus #home .home-focus-exit { display: inline-flex; align-items: cent
       <div class="imm-nav-actions">
         <span aria-hidden="true" style="width:1px;height:20px;background:rgba(255,255,255,0.15);"></span>
         <button class="imm-btn" id="modeBtn" onclick="toggleMode()">切换深色</button>
-        <button class="imm-btn" id="autoPlayBtn" onclick="toggleAutoPlay()">自动轮播</button>
+         <button class="imm-btn" id="autoPlayBtn" aria-pressed="false" aria-label="开始自动轮播" onclick="toggleAutoPlay()">自动轮播</button>
         <button class="imm-btn" onclick="saveBackgroundAsImage()">保存背景</button>
         <button class="imm-btn imm-top-back" onclick="backFromImmersive()">&#8592; 返回</button>
         <a class="nav-project-link imm-nav-project-link" href="../index.html">返回总览</a>
@@ -3662,7 +3712,7 @@ var HOME_TERM_EFFECTS = {
   '大暑': { label: '暑气浮光', shape: 'solar-effect-sun', motion: 'solar-heat-fall', type: 'firefly', svg: 'spark', count: 30, speed: 7, intensity: 'heavy', initial: 9, density: 1, interval: 1080, size: [17, 30], duration: [10400, 13800] },
   '立秋': { label: '初秋叶笺', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 14, speed: 9, intensity: 'light', initial: 12, density: 2, interval: 840, size: [18, 30], duration: [9000, 12200] },
   '处暑': { label: '凉风横过', shape: 'solar-effect-wind', motion: 'solar-drift', type: 'leaf', svg: 'leaf', count: 14, speed: 9, intensity: 'medium', initial: 9, density: 1, interval: 1120, size: [20, 34], duration: [9600, 12800] },
-  '白露': { label: '露凝秋草', shape: 'solar-effect-dew', motion: 'solar-frost-settle', type: 'dew', svg: 'dew', count: 36, speed: 5, intensity: 'light', initial: 13, density: 2, interval: 780, size: [12, 22], duration: [8200, 11200] },
+  '白露': { label: '露凝秋草', shape: 'solar-effect-dew', motion: 'solar-frost-settle', type: 'dew', svg: 'dew', count: 18, speed: 3.2, intensity: 'light', initial: 6, density: 1, interval: 1400, size: [12, 22], duration: [3600, 5200] },
   '秋分': { label: '桂瓣平衡', shape: 'solar-effect-petal', motion: 'solar-petal-fall', type: 'petal', svg: 'petal', count: 16, speed: 8, intensity: 'medium', initial: 11, density: 2, interval: 860, size: [16, 26], duration: [9000, 12000] },
   '寒露': { label: '寒叶初染', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 16, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 820, size: [18, 30], duration: [9800, 13400] },
   '霜降': { label: '霜染枫叶', shape: 'solar-effect-leaf', motion: 'solar-leaf-fall', type: 'leaf', svg: 'leaf', count: 18, speed: 8, intensity: 'heavy', initial: 12, density: 2, interval: 800, size: [18, 30], duration: [8800, 11800] },
@@ -3813,7 +3863,11 @@ function spawnHomeReferenceLeaves(colors, termName) {
   var maxActive = Math.min(HOME_REFERENCE_LEAF_MAX, Math.round(budget * rainScale));
   var countScale = config.type === 'rain' || config.type === 'heat' ? 1 : Math.min(1.35, Math.max(0.95, (Number(config.count) || 40) / 40));
   var baseAmount = config.type === 'rain' ? Math.round(maxActive * 0.92) : Math.round(budget * 0.9);
-  var targetAmount = config.type === 'heat' ? Math.min(maxActive, Math.max(8, Number(config.count) || 18)) : Math.max(8, Math.round(baseAmount * profile.density * countScale));
+  var targetAmount = config.type === 'dew'
+    ? Math.min(maxActive, Math.max(1, Number(config.count) || 18))
+    : config.type === 'heat'
+    ? Math.min(maxActive, Math.max(8, Number(config.count) || 18))
+    : Math.max(8, Math.round(baseAmount * profile.density * countScale));
   var amount = Math.min(maxActive, targetAmount);
   if (config.type === 'sun' || config.type === 'heat') {
     if (!layer.querySelector('.is-sun-aura')) {
@@ -3854,7 +3908,9 @@ function spawnHomeReferenceLeaves(colors, termName) {
     }
     var laneJitter = (Math.random() - 0.5) * (1.05 / Math.max(1, amount));
     var lane = amount > 1 ? (index + 0.5) / amount : 0.5;
-    var xPercent = Math.max(1.5, Math.min(98.5, (lane + laneJitter) * 100));
+    var xPercent = config.type === 'dew'
+      ? 6 + Math.random() * 88
+      : Math.max(1.5, Math.min(98.5, (lane + laneJitter) * 100));
     leaf.style.setProperty('--reference-leaf-x', xPercent.toFixed(2) + '%');
     var rainDepth = config.type === 'rain' ? Math.random() : 0;
     var depthSample = Math.random();
@@ -3865,20 +3921,30 @@ function spawnHomeReferenceLeaves(colors, termName) {
     leaf.className = 'home-reference-fall-item' + typeClass + depthClass;
     leaf.style.setProperty('--reference-depth-z', String(depthProfile.z));
     leaf.style.setProperty('--reference-depth-blur', depthProfile.blur + 'px');
-    var baseSize = config.type === 'rain'
+    var baseSize = config.type === 'dew'
+      ? 12 + Math.random() * 10
+      : config.type === 'rain'
       ? 18 + rainDepth * 28
       : config.type === 'petal'
       ? 22 + Math.random() * 14
       : 16 + Math.random() * 22;
     leaf.style.setProperty('--reference-leaf-size', (baseSize * profile.size * depthProfile.size) + 'px');
     leaf.style.setProperty('--reference-leaf-color', colors[index % colors.length]);
-    var opacityBase = config.type === 'rain'
+    var opacityBase = config.type === 'dew'
+      ? 0.52 + Math.random() * 0.18
+      : config.type === 'rain'
       ? 0.42 + rainDepth * 0.34 + Math.random() * 0.16
       : config.type === 'petal'
       ? 0.82 + Math.random() * 0.16
       : 0.7 + Math.random() * 0.26;
-    leaf.style.setProperty('--reference-leaf-opacity', Math.min(1, opacityBase * profile.opacity * depthProfile.opacity).toFixed(2));
-    var durationSeconds = speed * depthProfile.speed * (config.type === 'rain' ? (1.12 - rainDepth * 0.32) : (0.7 + Math.random() * 0.6));
+    var finalOpacity = Math.min(1, opacityBase * profile.opacity * depthProfile.opacity);
+    leaf.style.setProperty('--reference-leaf-opacity', finalOpacity.toFixed(2));
+    if (config.type === 'dew') {
+      leaf.style.setProperty('--reference-dew-top', (-12 + Math.random() * 10).toFixed(1) + 'vh');
+      leaf.style.setProperty('--reference-dew-drift', ((Math.random() - 0.5) * 18).toFixed(1) + 'px');
+      leaf.style.setProperty('--reference-dew-rotate', ((Math.random() - 0.5) * 14).toFixed(1) + 'deg');
+    }
+    var durationSeconds = speed * depthProfile.speed * (config.type === 'rain' ? (1.12 - rainDepth * 0.32) : config.type === 'dew' ? (1.16 + Math.random() * 0.28) : (0.7 + Math.random() * 0.6));
     leaf.style.setProperty('--reference-leaf-duration', durationSeconds + 's');
     leaf.style.setProperty('--reference-leaf-delay', (-Math.random() * durationSeconds).toFixed(2) + 's');
     leaf.style.setProperty('--reference-leaf-drift', ((-120 + Math.round(Math.random() * 240)) * profile.sway) + 'px');
@@ -3936,8 +4002,18 @@ function homeColorContrast(first, second) {
   return (Math.max(firstLum, secondLum) + 0.05) / (Math.min(firstLum, secondLum) + 0.05);
 }
 
-function getHomeParticleColors(name, colors) {
+var HOME_PARTICLE_COLOR_PALETTES = {
+  petal: ['#C75F7C', '#E789A3', '#F6C5D1'],
+  springLeaf: ['#99BCAC', '#A9BE7B', '#CAD7C5'],
+  autumnLeaf: ['#91828F', '#A7AAA1', '#B2B6B6']
+};
+
+function getHomeParticleColors(name, colors, particleType) {
   var base = (HOME_TERM_EFFECT_COLORS[name] || colors.slice(1, 4).map(function(color) { return color.hex; })).slice();
+  var season = (SOLAR_SCENES[name] || {}).season;
+  if (particleType === 'petal') return HOME_PARTICLE_COLOR_PALETTES.petal.slice();
+  if (season === '春' && (particleType === 'bud' || particleType === 'leaf')) return HOME_PARTICLE_COLOR_PALETTES.springLeaf.slice();
+  if (season === '秋' && particleType === 'leaf') return HOME_PARTICLE_COLOR_PALETTES.autumnLeaf.slice();
   return base;
 }
 
@@ -3965,7 +4041,7 @@ function applyHomeSolarEffect(name) {
   }
   homeSolarActiveName = name;
   setHomeBackground(blend ? blend.gradient : getHomeSolarBackground(colors, effect.shape), blend ? blend.first.hex : colors[4].hex);
-  homeReferenceLeafColors = getHomeParticleColors(name, colors);
+  homeReferenceLeafColors = getHomeParticleColors(name, colors, effect.type);
   if (homeSolarEffectActive && (!previousName || !previousEffect || previousEffect.type !== effect.type || !hasVisibleReferenceLeaves)) {
     startHomeReferenceLeaves(homeReferenceLeafColors, name);
   } else if (homeSolarEffectActive) {
@@ -4161,6 +4237,7 @@ function setGalleryDisplayMode(mode) {
 
 function renderGalleryViewDirect() {
   if (currentView !== 'gallery') showView('gallery');
+  setColorWallMobileInspectorState(false, false);
   setGalleryDisplayMode('gallery');
   setColorWallBackground(getGalleryBackgroundValue());
   renderSolarSectionsInGallery();
@@ -4587,6 +4664,14 @@ function toggleAutoPlay() {
   else { startAutoPlay(); }
 }
 
+function syncAutoPlayButton(running) {
+  var button = document.getElementById('autoPlayBtn');
+  if (!button) return;
+  button.textContent = running ? '停止轮播' : '自动轮播';
+  button.setAttribute('aria-pressed', running ? 'true' : 'false');
+  button.setAttribute('aria-label', running ? '停止自动轮播' : '开始自动轮播');
+}
+
 function getRandomInterval() {
   return AUTO_PLAY_MIN + Math.random() * (AUTO_PLAY_MAX - AUTO_PLAY_MIN);
 }
@@ -4719,7 +4804,7 @@ function startAutoPlay() {
     isPaletteAutoPlay = true;
     var layer = document.getElementById('palBgLayer');
     if (layer) layer.style.display = 'none';
-    document.getElementById('autoPlayBtn').textContent = '停止轮播';
+    syncAutoPlayButton(true);
     document.getElementById('immAutoLabel').style.display = 'flex';
     isAutoPlaying = true;
     document.getElementById('immersive').classList.add('auto-playing');
@@ -4735,7 +4820,7 @@ function startAutoPlay() {
   renderImmersive();
   isAutoPlaying = true;
   document.getElementById('immersive').classList.add('auto-playing');
-  document.getElementById('autoPlayBtn').textContent = '停止轮播';
+  syncAutoPlayButton(true);
   document.getElementById('immAutoLabel').style.display = 'flex';
   updateAutoLabel();
   scheduleNext(token);
@@ -4750,7 +4835,7 @@ function stopAutoPlay() {
   if (nextScheduleTimer) { clearTimeout(nextScheduleTimer); nextScheduleTimer = null; }
   window.skipBgUpdate = false;
   document.getElementById('immersive').classList.remove('auto-playing');
-  document.getElementById('autoPlayBtn').textContent = '自动轮播';
+  syncAutoPlayButton(false);
   document.getElementById('immAutoLabel').style.display = 'none';
   var overlay = document.getElementById('immBgTransition');
   overlay.style.display = 'none';
@@ -4917,6 +5002,8 @@ var galleryTermFilter = 'all';
 var gallerySearchQuery = '';
 var gallerySelectedColor = null;
 var galleryColorRecords = null;
+// 色墙默认选中项：按「节气 + 名称」定位，改色值或调色板顺序都不会失效
+var galleryDefaultColor = { term: '立春', name: '天缥' };
 var galleryBlendPreview = null;
 var colorWallSearchQuery = '';
 var colorWallCategoryFilter = 'all';
@@ -4928,6 +5015,32 @@ var colorWallSwapPair = null;
 var colorWallSelectedUids = [];
 var colorWallSelectionAnchorUid = null;
 var colorWallReflowSnapshot = null;
+var colorWallMobileInspectorVisible = false;
+var colorWallMobileDetailsOpen = false;
+
+function setColorWallMobileInspectorState(visible, expanded) {
+  colorWallMobileInspectorVisible = !!visible;
+  colorWallMobileDetailsOpen = colorWallMobileInspectorVisible && !!expanded;
+  var inspector = document.getElementById('colorWallInspector');
+  var toggle = document.getElementById('colorWallMobileToggle');
+  var chevron = document.getElementById('colorWallMobileChevron');
+  var content = document.querySelector('#galleryColorWallMode .color-wall-content');
+  if (inspector) {
+    inspector.classList.toggle('is-mobile-visible', colorWallMobileInspectorVisible);
+    inspector.classList.toggle('is-mobile-expanded', colorWallMobileDetailsOpen);
+  }
+  if (content) content.classList.toggle('is-mobile-inspector-expanded', colorWallMobileDetailsOpen);
+  if (toggle) {
+    toggle.setAttribute('aria-expanded', colorWallMobileDetailsOpen ? 'true' : 'false');
+    toggle.setAttribute('aria-label', colorWallMobileDetailsOpen ? '收起颜色详情' : '展开颜色详情');
+  }
+  if (chevron) chevron.textContent = colorWallMobileDetailsOpen ? '⌄' : '⌃';
+}
+
+function toggleColorWallMobileDetails() {
+  if (!colorWallMobileInspectorVisible) return;
+  setColorWallMobileInspectorState(true, !colorWallMobileDetailsOpen);
+}
 
 function compareGalleryColorsByHex(a, b) {
   var aHex = String(a && a.hex || '').replace(/^#/, '');
@@ -5048,6 +5161,37 @@ function getGalleryVisibleColorRecords() {
   return visible;
 }
 
+function getDefaultGalleryColorRecord() {
+  var records = getGalleryColorRecords();
+  for (var i = 0; i < records.length; i++) {
+    if (records[i].term === galleryDefaultColor.term && records[i].name === galleryDefaultColor.name) return records[i];
+  }
+  return null;
+}
+
+function getGalleryDisplayColorRecords(records) {
+  var displayRecords = records.slice();
+  if (gallerySeasonFilter !== 'all' || galleryTermFilter !== 'all' || gallerySearchQuery) return displayRecords;
+  var defaultRecord = getDefaultGalleryColorRecord();
+  if (!defaultRecord) return displayRecords;
+  var defaultIndex = displayRecords.findIndex(function(record) { return record.uid === defaultRecord.uid; });
+  if (defaultIndex <= 0) return displayRecords;
+  /* 同色阶的四色整组上移：默认色排首位，同组其余颜色紧随其后，
+     避免默认色被单独提走后把一组色阶拆到两行（立春曾出现黄、绿混排）。 */
+  var defaultGroup = displayRecords.filter(function(record) {
+    return record.term === defaultRecord.term && record.tone === defaultRecord.tone;
+  });
+  if (defaultGroup.length > 1 && defaultGroup.length <= 4) {
+    var leadGroup = [defaultRecord].concat(defaultGroup.filter(function(record) { return record.uid !== defaultRecord.uid; }));
+    var restRecords = displayRecords.filter(function(record) {
+      return !leadGroup.some(function(item) { return item.uid === record.uid; });
+    });
+    return leadGroup.concat(restRecords);
+  }
+  displayRecords.unshift(displayRecords.splice(defaultIndex, 1)[0]);
+  return displayRecords;
+}
+
 function hexToRgbForGallery(hex) {
   var value = String(hex || '').replace('#','');
   if (value.length === 3) value = value.split('').map(function(c) { return c + c; }).join('');
@@ -5148,7 +5292,13 @@ function getColorWallVisualOrder(records) {
     return compareGalleryColorsByHex(a, b);
   }
   /* 先建立全局唯一的明暗顺序，保证右下不会重新出现亮色。 */
-  return records.slice().sort(compareColorTone);
+  var ordered = records.slice().sort(compareColorTone);
+  var defaultRecord = getDefaultGalleryColorRecord();
+  if (defaultRecord) {
+    var defaultIndex = ordered.findIndex(function(record) { return record.uid === defaultRecord.uid; });
+    if (defaultIndex > 0) ordered.unshift(ordered.splice(defaultIndex, 1)[0]);
+  }
+  return ordered;
 }
 
 function getColorWallDisplayOrder(records) {
@@ -5370,6 +5520,7 @@ function handleColorWallCellClick(event, cell) {
   if (event.shiftKey) selectColorWallRange(uid, records);
   else if (event.ctrlKey || event.metaKey) toggleColorWallSelection(uid);
   else setColorWallSingleSelection(uid);
+  setColorWallMobileInspectorState(true, true);
   selectGalleryColorByIndex(uid, cell);
   updateColorWallCellSelectionState();
   if (colorWallSelectedUids.length > 1) setColorWallDragStatus('已选 ' + colorWallSelectedUids.length + ' 张色卡 · 拖动任意一张可整体移动');
@@ -5696,6 +5847,9 @@ function moveColorWallCardsToIndex(sourceUids, targetIndex, visibleRecords, targ
 
 function renderColorWallInspector(record) {
   var swatch = document.getElementById('colorWallDetailSwatch');
+  var mobileSwatch = document.getElementById('colorWallMobileSwatch');
+  var mobileName = document.getElementById('colorWallMobileName');
+  var mobileHex = document.getElementById('colorWallMobileHex');
   var context = document.getElementById('colorWallDetailContext');
   var title = document.getElementById('colorWallInspectorName');
   var hexEl = document.getElementById('colorWallDetailHex');
@@ -5706,6 +5860,9 @@ function renderColorWallInspector(record) {
   var noteEl = document.getElementById('colorWallDetailNote');
   if (!record) {
     if (swatch) swatch.style.background = 'linear-gradient(135deg,#eee,#ddd)';
+    if (mobileSwatch) mobileSwatch.style.background = 'linear-gradient(135deg,#eee,#ddd)';
+    if (mobileName) mobileName.textContent = '选择一个颜色';
+    if (mobileHex) mobileHex.textContent = '点击色块查看';
     if (context) context.textContent = '';
     if (title) title.textContent = '选择一个颜色';
     if (hexEl) hexEl.textContent = '从色块开始探索';
@@ -5714,10 +5871,14 @@ function renderColorWallInspector(record) {
     if (toneEl) toneEl.textContent = '—';
     if (termEl) termEl.textContent = '—';
     if (noteEl) noteEl.textContent = '选择色块后，这里会显示色名、真实 HEX、色彩数值与来源信息。';
+    setColorWallMobileInspectorState(false, false);
     return;
   }
   var rgb = hexToRgbForGallery(record.hex), hsl = rgbToHslForGallery(rgb);
   if (swatch) swatch.style.background = record.hex;
+  if (mobileSwatch) mobileSwatch.style.background = record.hex;
+  if (mobileName) mobileName.textContent = record.name;
+  if (mobileHex) mobileHex.textContent = record.hex;
   if (context) context.textContent = 'HEX 顺序第 ' + String(record.globalIndex).padStart(3, '0') + ' 色 · 色块面积相同';
   if (title) title.textContent = record.name;
   if (hexEl) { hexEl.textContent = record.hex; hexEl.setAttribute('aria-label', '复制 ' + record.hex); }
@@ -5726,6 +5887,7 @@ function renderColorWallInspector(record) {
   if (toneEl) toneEl.textContent = record.tone;
   if (termEl) termEl.textContent = record.term;
   if (noteEl) noteEl.textContent = record.desc || '点击色块查看色名与色值；原始节气来源保留在来源字段中。';
+  setColorWallMobileInspectorState(colorWallMobileInspectorVisible, colorWallMobileDetailsOpen);
 }
 
 function renderColorWallPage() {
@@ -5931,15 +6093,17 @@ function renderGalleryColorBrowser() {
   } else if (!gallerySelectedColor || visible.every(function(record) { return record.uid !== gallerySelectedColor.uid; })) {
     var preferredTerm = '';
     try { preferredTerm = getCurrentSolarTerm().current; } catch (error) {}
-    gallerySelectedColor = visible[0];
-    for (var i = 0; i < visible.length; i++) if (visible[i].term === preferredTerm) { gallerySelectedColor = visible[i]; break; }
+    var defaultRecord = getDefaultGalleryColorRecord();
+    var defaultIsEligible = gallerySeasonFilter === 'all' && galleryTermFilter === 'all' && !gallerySearchQuery && defaultRecord && visible.some(function(record) { return record.uid === defaultRecord.uid; });
+    gallerySelectedColor = defaultIsEligible ? defaultRecord : visible[0];
+    if (!defaultIsEligible) for (var i = 0; i < visible.length; i++) if (visible[i].term === preferredTerm) { gallerySelectedColor = visible[i]; break; }
     galleryBlendPreview = null;
     selectionChanged = true;
   }
   if (selectionChanged) setGalleryBackground(gallerySelectedColor.hex);
   var select = document.getElementById('galleryTermFilter');
   if (select) select.value = galleryTermFilter;
-  renderGalleryColorList(visible);
+  renderGalleryColorList(getGalleryDisplayColorRecords(visible));
   renderGalleryInspector(gallerySelectedColor);
   var result = document.getElementById('galleryResultCount');
   if (result) result.textContent = '筛选 ' + visible.length + ' 色 · 当前第 ' + (gallerySelectedColor ? gallerySelectedColor.globalIndex : '—') + ' / 384 色';
@@ -6589,6 +6753,7 @@ function showSolarToast(name, hex, jieqi, season) {
 document.addEventListener('keydown', function(e) {
   if (currentView !== 'immersive') return;
   if (e.target.matches('input, textarea, select, [contenteditable="true"]')) return;
+  if (e.key === 'Escape' && isAutoPlaying) { e.preventDefault(); stopAutoPlay(); return; }
   if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); nextScene(); }
   if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prevScene(); }
   if (e.key === 'Escape') backFromImmersive();
