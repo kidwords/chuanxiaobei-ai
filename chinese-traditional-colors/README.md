@@ -22,7 +22,7 @@
 ## 在线预览
 
 - [打开中国传统色在线版](https://kidwords.github.io/chuanxiaobei-ai/chinese-traditional-colors/index.html)
-- [下载到本地](https://kidwords.github.io/chuanxiaobei-ai/chinese-traditional-colors/download.html)
+- [总览首页一键下载 HTML](https://kidwords.github.io/chuanxiaobei-ai/)
 - [查看 GitHub 仓库](https://github.com/kidwords/chinese-traditional-colors)
 
 在线版不需要安装任何软件，打开链接后直接点击色卡即可使用。
@@ -129,7 +129,7 @@ node scripts/generate-projects.mjs
 
 - 双击 `chinese-traditional-colors/index.html`，确认页面可以打开。
 - 点击首页单色、混色、逐步览色、全部浏览和配色板入口。
-- 打开 `download.html`，确认可以下载 `中国传统色.html`。
+- 打开总览首页，点「下载 HTML」，确认可以保存 `中国传统色.html`。
 - 在手机或平板上确认页面可以滚动，必要时测试关闭动效。
 - 修改项目简介后，检查 `meta.json` 的 JSON 格式是否正确。
 
